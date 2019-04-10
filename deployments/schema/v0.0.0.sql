@@ -22,7 +22,7 @@ CREATE TABLE `podcast` (
     `Copyright` VARCHAR(255),
     `NewFeedUrl` VARCHAR(500),
     `Block` TINYINT DEFAULT 0,
-    `Complete` TINYINT DEFAULT 0
+    `Complete` TINYINT DEFAULT 0,
 
     -- RSS feed Details
     `FeedUrl` VARCHAR(500) NOT NULL,
