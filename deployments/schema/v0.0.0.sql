@@ -28,6 +28,15 @@ CREATE TABLE `podcast` (
     `FeedUrl` VARCHAR(500) NOT NULL,
     `LastModified` VARCHAR(100),
     `ETag` VARCHAR(255),
+    
+    -- Episode stats
+    `TotalEpisodeCount` INT,
+    `LatestEpisodeGuid` VARCHAR(255),
+    `LatestEpisodePubDate` DATETIME NOT NULL,
+
+    -- others
+    `CreatedAt` DATETIME NOT NULL,
+    `UpdatedAt` DATETIME NOT NULL,
 
     PRIMARY KEY (`Id`),
     UNIQUE KEY (`Title`),
@@ -55,6 +64,9 @@ CREATE TABLE `episode` (
     `Season` SMALLINT,
     `EpisodeType` ENUM('full', 'trailer', 'bonus') DEFAULT 'full',
     `Block` TINYINT DEFAULT 0,
+
+    -- others
+    `CreatedAt` DATETIME NOT NULL,
 
     PRIMARY KEY (`Id`),
     FOREIGN KEY (`PodcastId`) REFERENCES `podcast` (`Id`)
