@@ -1,0 +1,13 @@
+{
+  "Exclude": [
+    "exported \\w+ (\\S*['.]*)([a-zA-Z'.*]*) should have comment or be unexported",
+    "exported \\w+ (\\S*['.]*)([a-zA-Z'.*]*) should have comment (or a comment on this block) or be unexported",
+    "method parameter \\w+ should be \\w+",
+    "struct field \\w+ should be \\w+",
+    "func \\w+ should be \\w+",
+    "func parameter \\w+ should be \\w+",
+    "method \\w+ should be \\w+",
+    "var \\w+ should be \\w+",
+    "type name will be used as *"
+  ]
+}

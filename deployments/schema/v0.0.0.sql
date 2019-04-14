@@ -7,7 +7,7 @@ CREATE TABLE `podcast` (
     `Id` INT AUTO_INCREMENT,
     `Title` VARCHAR(255) NOT NULL,
     `Description` TEXT NOT NULL,
-    `ImageLink` VARCHAR(500) NOT NULL,
+    `ImagePath` VARCHAR(500) NOT NULL,
     `Language` VARCHAR(4) NOT NULL,
     `Explicit` TINYINT NOT NULL,
 
