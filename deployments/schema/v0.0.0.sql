@@ -2,6 +2,8 @@ DROP DATABASE IF EXISTS `phenopod`;
 CREATE DATABASE `phenopod`;
 USE `phenopod`;
 
+-- https://help.apple.com/itc/podcasts_connect/#/itcb54353390
+
 CREATE TABLE `podcast` (
     -- Required Tags
     `Id` INT AUTO_INCREMENT,
@@ -12,26 +14,26 @@ CREATE TABLE `podcast` (
     `Explicit` TINYINT NOT NULL,
 
     -- Recommended Tags
-    `Author` VARCHAR(255),
-    `Link` VARCHAR(500),
-    `OwnerName` VARCHAR (255),
-    `OwnerEmail` VARCHAR (255),
+    `Author` VARCHAR(255) NOT NULL,
+    `Link` VARCHAR(500) NOT NULL,
+    `OwnerName` VARCHAR (255) NOT NULL,
+    `OwnerEmail` VARCHAR (255) NOT NULL,
     
     -- Situational Tags
     `Type` ENUM('episodic', 'serial') DEFAULT 'episodic',
-    `Copyright` VARCHAR(255),
-    `NewFeedUrl` VARCHAR(500),
+    `Copyright` VARCHAR(255) NOT NULL,
+    `NewFeedUrl` VARCHAR(500) NOT NULL,
     `Block` TINYINT DEFAULT 0,
     `Complete` TINYINT DEFAULT 0,
 
     -- RSS feed Details
     `FeedUrl` VARCHAR(500) NOT NULL,
-    `LastModified` VARCHAR(100),
-    `ETag` VARCHAR(255),
+    `LastModified` VARCHAR(100) NOT NULL,
+    `ETag` VARCHAR(255) NOT NULL,
     
     -- Episode stats
     `TotalEpisodeCount` INT,
-    `LatestEpisodeGuid` VARCHAR(255),
+    `LatestEpisodeGuid` VARCHAR(255) NOT NULL,
     `LatestEpisodePubDate` DATETIME NOT NULL,
 
     -- others
@@ -52,16 +54,16 @@ CREATE TABLE `episode` (
     `AudioType` VARCHAR(20) NOT NULL,
 
     -- Recommended Tags
-    `Guid` VARCHAR(255),
-    `PubDate` DATETIME,
-    `Description` TEXT,
-    `Duration` SMALLINT,
-    `Link` VARCHAR(500),
-    `Explicit` TINYINT,
+    `Guid` VARCHAR(255) NOT NULL,
+    `PubDate` DATETIME NOT NULL,
+    `Description` TEXT NOT NULL,
+    `Duration` SMALLINT NOT NULL,
+    `Link` VARCHAR(500) NOT NULL,
+    `Explicit` TINYINT DEFAULT 0,
 
     -- Situational Tags
-    `Episode` SMALLINT,
-    `Season` SMALLINT,
+    `Episode` SMALLINT NOT NULL,
+    `Season` SMALLINT NOT NULL,
     `EpisodeType` ENUM('full', 'trailer', 'bonus') DEFAULT 'full',
     `Block` TINYINT DEFAULT 0,
 
