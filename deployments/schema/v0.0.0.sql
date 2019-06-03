@@ -2,160 +2,141 @@ DROP DATABASE IF EXISTS `phenopod`;
 CREATE DATABASE `phenopod`;
 USE `phenopod`;
 
--- https://help.apple.com/itc/podcasts_connect/#/itcb54353390
+----------------------------------------------------------------
+-- https://help.apple.com/itc/podcasts_connect/#/itcb54353390 --
+----------------------------------------------------------------
 
 CREATE TABLE `podcast` (
-    -- Required Tags
-    `Id` INT AUTO_INCREMENT,
-    `Title` VARCHAR(255) NOT NULL,
-    `Description` TEXT NOT NULL,
-    `ImagePath` VARCHAR(500) NOT NULL,
-    `Language` VARCHAR(4) NOT NULL,
-    `Explicit` TINYINT NOT NULL,
-
-    -- Recommended Tags
-    `Author` VARCHAR(255) NOT NULL,
-    `Link` VARCHAR(500) NOT NULL,
-    `OwnerName` VARCHAR (255) NOT NULL,
-    `OwnerEmail` VARCHAR (255) NOT NULL,
-    
-    -- Situational Tags
-    `Type` ENUM('episodic', 'serial') DEFAULT 'episodic',
-    `Copyright` VARCHAR(255) NOT NULL,
-    `NewFeedUrl` VARCHAR(500) NOT NULL,
-    `Block` TINYINT DEFAULT 0,
-    `Complete` TINYINT DEFAULT 0,
-
-    -- RSS feed Details
-    `FeedUrl` VARCHAR(500) NOT NULL,
-    `LastModified` VARCHAR(100) NOT NULL,
-    `ETag` VARCHAR(255) NOT NULL,
-    
-    -- Episode stats
-    `TotalEpisodeCount` INT,
-    `LatestEpisodeGuid` VARCHAR(255) NOT NULL,
-    `LatestEpisodePubDate` DATETIME NOT NULL,
-
-    -- others
-    `CreatedAt` DATETIME NOT NULL,
-    `UpdatedAt` DATETIME NOT NULL,
-
-    PRIMARY KEY (`Id`),
-    UNIQUE KEY (`Title`),
-    UNIQUE KEY (`FeedUrl`)
+    `id` INT AUTO_INCREMENT,
+    `title` VARCHAR(255) NOT NULL,
+    `description` TEXT NOT NULL,
+    `image_path` VARCHAR(500) NOT NULL,
+    `language` VARCHAR(4) NOT NULL,
+    `explicit` TINYINT NOT NULL,
+	`author` VARCHAR(255) NOT NULL,
+	`type` ENUM('episodic', 'serial') DEFAULT 'episodic',
+	`block` TINYINT DEFAULT 0,
+    `complete` TINYINT DEFAULT 0,
+    `link` VARCHAR(500) NOT NULL,
+    `owner_name` VARCHAR (255) NOT NULL,
+    `owner_email` VARCHAR (255) NOT NULL,
+    `copyright` VARCHAR(255) NOT NULL,
+    `feed_url` VARCHAR(500) NOT NULL,
+    `new_feed_url` VARCHAR(500) NOT NULL,
+    `etag` VARCHAR(255) NOT NULL,
+    `last_modified` VARCHAR(100) NOT NULL,
+    `latest_episode_guid` VARCHAR(255) NOT NULL,
+    `latest_episode_pub_date` DATETIME NOT NULL,
+    `created_at` DATETIME NOT NULL,
+    `updated_at` DATETIME NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`title`),
+    UNIQUE KEY (`feed_url`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `episode` (
-    -- Required Tags
-    `Id` VARCHAR(255),
-    `PodcastId` INT NOT NULL,
-    `Title` VARCHAR(255) NOT NULL,
-    `AudioUrl` VARCHAR(500) NOT NULL,
-    `AudioType` VARCHAR(20) NOT NULL,
-
-    -- Recommended Tags
-    `Guid` VARCHAR(255) NOT NULL,
-    `PubDate` DATETIME NOT NULL,
-    `Description` TEXT NOT NULL,
-    `Duration` SMALLINT NOT NULL,
-    `Link` VARCHAR(500) NOT NULL,
-    `Explicit` TINYINT DEFAULT 0,
-
-    -- Situational Tags
-    `Episode` SMALLINT NOT NULL,
-    `Season` SMALLINT NOT NULL,
-    `EpisodeType` ENUM('full', 'trailer', 'bonus') DEFAULT 'full',
-    `Block` TINYINT DEFAULT 0,
-
-    -- others
-    `CreatedAt` DATETIME NOT NULL,
-
-    PRIMARY KEY (`Id`),
-    FOREIGN KEY (`PodcastId`) REFERENCES `podcast` (`Id`)
+    `id` VARCHAR(255),
+    `guid` VARCHAR(255) NOT NULL,
+    `podcast_id` INT NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `audio_url` VARCHAR(500) NOT NULL,
+    `audio_type` VARCHAR(20) NOT NULL,
+    `pub_date` DATETIME NOT NULL,
+    `description` TEXT NOT NULL,
+    `duration` SMALLINT NOT NULL,
+    `link` VARCHAR(500) NOT NULL,
+    `explicit` TINYINT DEFAULT 0,
+    `episode` SMALLINT NOT NULL,
+    `season` SMALLINT NOT NULL,
+    `type` ENUM('full', 'trailer', 'bonus') DEFAULT 'full',
+    `block` TINYINT DEFAULT 0,
+    `created_at` DATETIME NOT NULL,
+    `upadated_at` DATETIME NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`)
         ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-
 CREATE TABLE `category` (
-    `Id` INT,
-    `Name` VARCHAR(100) NOT NULL,
-    `ParentId` INT, 
-    PRIMARY KEY (`Id`),
-    FOREIGN KEY (`ParentId`) REFERENCES `category` (`Id`)
+    `id` INT,
+    `name` VARCHAR(100) NOT NULL,
+    `parent_id` INT, 
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`parent_id`) REFERENCES `category` (`id`)
         ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
 CREATE TABLE `podcast_category` (
-    `PodcastId` INT NOT NULL,
-    `CategoryId` INT NOT NULL,
-    FOREIGN KEY (`PodcastId`) REFERENCES `podcast` (`Id`)
+    `podcast_id` INT NOT NULL,
+    `category_id` INT NOT NULL,
+    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`)
         ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (`CategoryId`) REFERENCES `category` (`Id`)
+    FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
         ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
-INSERT INTO `category` (`Id`, `Name`) VALUES (1, 'Arts');
-INSERT INTO `category` (`Id`, `Name`) VALUES (2, 'Business');
-INSERT INTO `category` (`Id`, `Name`) VALUES (3, 'Comedy');
-INSERT INTO `category` (`Id`, `Name`) VALUES (4, 'Education');
-INSERT INTO `category` (`Id`, `Name`) VALUES (5, 'Games & Hobbies');
-INSERT INTO `category` (`Id`, `Name`) VALUES (6, 'Government & Organizations');
-INSERT INTO `category` (`Id`, `Name`) VALUES (7, 'Health');
-INSERT INTO `category` (`Id`, `Name`) VALUES (8, 'Music');
-INSERT INTO `category` (`Id`, `Name`) VALUES (9, 'News & Politics');
-INSERT INTO `category` (`Id`, `Name`) VALUES (10, 'Religion & Spirituality');
-INSERT INTO `category` (`Id`, `Name`) VALUES (11, 'Science & Medicine');
-INSERT INTO `category` (`Id`, `Name`) VALUES (12, 'Society & Culture');
-INSERT INTO `category` (`Id`, `Name`) VALUES (13, 'Sports & Recreation');
-INSERT INTO `category` (`Id`, `Name`) VALUES (14, 'Technology');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (15, 1, 'Design');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (16, 1, 'Fashion & Beauty');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (17, 1, 'Food');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (18, 1, 'Literature');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (19, 1, 'Performing Arts');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (20, 1, 'Visual Arts');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (21, 2, 'Business News');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (22, 2, 'Careers');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (23, 2, 'Investing');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (24, 2, 'Management & Marketing');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (25, 2, 'Shopping');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (26, 4, 'Educational Technology');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (27, 4, 'Higher Education');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (28, 4, 'K-12');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (29, 4, 'Training');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (30, 5, 'Automotive');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (31, 5, 'Aviation');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (32, 5, 'Hobbies');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (33, 5, 'Other Games');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (34, 5, 'Video Games');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (35, 6, 'Local');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (36, 6, 'National');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (37, 6, 'Non-Profit');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (38, 7, 'Alternative Health');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (39, 7, 'Fitness & Nutrition');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (40, 7, 'Self-Help');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (41, 7, 'Sexuality');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (42, 7, 'Kids & Family');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (43, 10, 'Buddhism');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (44, 10, 'Christianity');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (45, 10, 'Hinduism');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (46, 10, 'Islam');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (47, 10, 'Judaism');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (48, 10, 'Other');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (49, 10, 'Spirituality');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (50, 11, 'Medicine');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (51, 11, 'Natural Sciences');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (52, 11, 'Social Sciences');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (53, 12, 'History');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (54, 12, 'Personal Journals');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (55, 12, 'Philosophy');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (56, 12, 'Places & Travel');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (57, 13, 'Amateur');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (58, 13, 'College & High School');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (59, 13, 'Outdoor');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (60, 13, 'Professional');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (61, 13, 'TV & Film');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (62, 14, 'Gadgets');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (63, 14, 'Podcasting');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (64, 14, 'Software How-To');
-INSERT INTO `category` (`Id`, `ParentId`, `Name`) VALUES (65, 14, 'Tech News');
+INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
+INSERT INTO `category` (`id`, `name`) VALUES (2, 'Business');
+INSERT INTO `category` (`id`, `name`) VALUES (3, 'Comedy');
+INSERT INTO `category` (`id`, `name`) VALUES (4, 'Education');
+INSERT INTO `category` (`id`, `name`) VALUES (5, 'Games & Hobbies');
+INSERT INTO `category` (`id`, `name`) VALUES (6, 'Government & Organizations');
+INSERT INTO `category` (`id`, `name`) VALUES (7, 'Health');
+INSERT INTO `category` (`id`, `name`) VALUES (8, 'Music');
+INSERT INTO `category` (`id`, `name`) VALUES (9, 'News & Politics');
+INSERT INTO `category` (`id`, `name`) VALUES (10, 'Religion & Spirituality');
+INSERT INTO `category` (`id`, `name`) VALUES (11, 'Science & Medicine');
+INSERT INTO `category` (`id`, `name`) VALUES (12, 'Society & Culture');
+INSERT INTO `category` (`id`, `name`) VALUES (13, 'Sports & Recreation');
+INSERT INTO `category` (`id`, `name`) VALUES (14, 'Technology');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (15, 1, 'Design');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (16, 1, 'Fashion & Beauty');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (17, 1, 'Food');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (18, 1, 'Literature');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (19, 1, 'Performing Arts');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (20, 1, 'Visual Arts');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (21, 2, 'Business News');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (22, 2, 'Careers');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (23, 2, 'Investing');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (24, 2, 'Management & Marketing');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (25, 2, 'Shopping');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (26, 4, 'Educational Technology');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (27, 4, 'Higher Education');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (28, 4, 'K-12');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (29, 4, 'Training');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (30, 5, 'Automotive');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (31, 5, 'Aviation');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (32, 5, 'Hobbies');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (33, 5, 'Other Games');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (34, 5, 'Video Games');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (35, 6, 'Local');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (36, 6, 'National');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (37, 6, 'Non-Profit');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (38, 7, 'Alternative Health');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (39, 7, 'Fitness & Nutrition');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (40, 7, 'Self-Help');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (41, 7, 'Sexuality');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (42, 7, 'Kids & Family');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (43, 10, 'Buddhism');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (44, 10, 'Christianity');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (45, 10, 'Hinduism');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (46, 10, 'Islam');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (47, 10, 'Judaism');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (48, 10, 'Other');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (49, 10, 'Spirituality');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (50, 11, 'Medicine');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (51, 11, 'Natural Sciences');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (52, 11, 'Social Sciences');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (53, 12, 'History');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (54, 12, 'Personal Journals');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (55, 12, 'Philosophy');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (56, 12, 'Places & Travel');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (57, 13, 'Amateur');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (58, 13, 'College & High School');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (59, 13, 'Outdoor');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (60, 13, 'Professional');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (61, 13, 'TV & Film');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (62, 14, 'Gadgets');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (63, 14, 'Podcasting');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (64, 14, 'Software How-To');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (65, 14, 'Tech News');
