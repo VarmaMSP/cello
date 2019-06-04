@@ -9,7 +9,7 @@ import (
 )
 
 type Episode struct {
-	Id          int
+	Id          int    `json:"id,omitempty"`
 	PodcastId   int    `json:"podcast_id,omitempty"`
 	Title       string `json:"title,omitempty"`
 	AudioUrl    string `json:"audio_url,omitempty"`
@@ -31,7 +31,7 @@ type Episode struct {
 }
 
 type EpisodePatch struct {
-	Id        int
+	Id        int    `json:"id,omitempty"`
 	Title     string `json:"title,omitempty"`
 	AudioUrl  string `json:"audio_url,omitempty"`
 	AudioType string `json:"audio_type,omitempty"`
@@ -42,24 +42,11 @@ type EpisodePatch struct {
 func (e *Episode) GetDbColumns() string {
 	return strings.Join(
 		[]string{
-			"id",
-			"title",
-			"audio_url",
-			"audio_type",
-			"audio_size",
-			"guid",
-			"pub_date",
-			"description",
-			"duration",
-			"link",
-			"image_link",
-			"explicit",
-			"episode",
-			"season",
-			"type",
-			"block",
-			"created_at",
-			"updated_at",
+			"id", "title", "audio_url", "audio_type",
+			"audio_size", "guid", "pub_date", "description",
+			"duration", "link", "image_link", "explicit",
+			"episode", "season", "type", "block",
+			"created_at", "updated_at",
 		},
 		",",
 	)
@@ -67,36 +54,43 @@ func (e *Episode) GetDbColumns() string {
 
 func (e *Episode) LoadFromDbRow(row *sql.Rows) {
 	row.Scan(
-		&e.Id,
-		&e.Title,
-		&e.AudioUrl,
-		&e.AudioType,
-		&e.AudioSize,
-		&e.Guid,
-		&e.PubDate,
-		&e.Description,
-		&e.Duration,
-		&e.Link,
-		&e.ImageLink,
-		&e.Explicit,
-		&e.Episode,
-		&e.Season,
-		&e.Type,
-		&e.Block,
-		&e.CreatedAt,
-		&e.UpdatedAt,
+		&e.Id, &e.Title, &e.AudioUrl, &e.AudioType,
+		&e.AudioSize, &e.Guid, &e.PubDate, &e.Description,
+		&e.Duration, &e.Link, &e.ImageLink, &e.Explicit,
+		&e.Episode, &e.Season, &e.Type, &e.Block,
+		&e.CreatedAt, &e.UpdatedAt,
 	)
+}
+
+func (e *Episode) GetValues() []interface{} {
+	i := make([]interface{}, 22)
+	i[0] = e.Id
+	i[1] = e.Title
+	i[2] = e.AudioUrl
+	i[3] = e.AudioType
+	i[4] = e.AudioSize
+	i[5] = e.Guid
+	i[6] = e.PubDate
+	i[7] = e.Description
+	i[8] = e.Duration
+	i[9] = e.Link
+	i[10] = e.ImageLink
+	i[11] = e.Explicit
+	i[12] = e.Episode
+	i[13] = e.Season
+	i[14] = e.Type
+	i[15] = e.Block
+	i[16] = e.CreatedAt
+	i[17] = e.UpdatedAt
+
+	return i
 }
 
 func (e *EpisodePatch) GetDbColumns() string {
 	return strings.Join(
 		[]string{
-			"id",
-			"title",
-			"audio_url",
-			"audio_type",
-			"pub_date",
-			"duration",
+			"id", "title", "audio_url", "audio_type",
+			"pub_date", "duration",
 		},
 		",",
 	)
@@ -104,12 +98,8 @@ func (e *EpisodePatch) GetDbColumns() string {
 
 func (e *EpisodePatch) LoadFromDbRow(row *sql.Rows) {
 	row.Scan(
-		&e.Id,
-		&e.Title,
-		&e.AudioUrl,
-		&e.AudioType,
-		&e.PubDate,
-		&e.Duration,
+		&e.Id, &e.Title, &e.AudioUrl, &e.AudioType,
+		&e.PubDate, &e.Duration,
 	)
 }
 
@@ -129,6 +119,14 @@ func (e *Episode) LoadDataFromFeed(item *rss.Item) error {
 	e.Season, _ = strconv.Atoi(item.ITunesExt.Season)
 	e.Type = "full"
 	e.Block = 0
+
+	if e.Title == "" {
+		return nil
+	}
+
+	if e.AudioUrl == "" {
+		return nil
+	}
 
 	if item.ITunesExt.Explicit == "true" {
 		e.Explicit = 1

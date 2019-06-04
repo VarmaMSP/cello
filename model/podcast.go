@@ -56,28 +56,12 @@ type PodcastFeedDetails struct {
 func (p *Podcast) GetDbColumns() string {
 	return strings.Join(
 		[]string{
-			"id",
-			"title",
-			"description",
-			"image_path",
-			"language",
-			"explicit",
-			"author",
-			"type",
-			"block",
-			"complete",
-			"link",
-			"owner_name",
-			"owner_email",
-			"copyright",
-			"new_feed_url",
-			"feed_url",
-			"feed_etag",
-			"feed_last_modified",
-			"latest_episode_guid",
-			"latest_episode_pub_date",
-			"created_at",
-			"updated_at",
+			"id", "title", "description", "image_path",
+			"language", "explicit", "author", "type",
+			"block", "complete", "link", "owner_name",
+			"owner_email", "copyright", "new_feed_url", "feed_url",
+			"feed_etag", "feed_last_modified", "latest_episode_guid", "latest_episode_pub_date",
+			"created_at", "updated_at",
 		},
 		",",
 	)
@@ -85,41 +69,48 @@ func (p *Podcast) GetDbColumns() string {
 
 func (p *Podcast) LoadFromDbRow(row *sql.Rows) {
 	row.Scan(
-		&p.Id,
-		&p.Title,
-		&p.Description,
-		&p.ImagePath,
-		&p.Language,
-		&p.Explicit,
-		&p.Author,
-		&p.Type,
-		&p.Block,
-		&p.Complete,
-		&p.Link,
-		&p.OwnerName,
-		&p.OwnerEmail,
-		&p.Copyright,
-		&p.NewFeedUrl,
-		&p.FeedUrl,
-		&p.FeedETag,
-		&p.FeedLastModified,
-		&p.LatestEpisodeGuid,
-		&p.LatestEpisodePubDate,
-		&p.CreatedAt,
-		&p.UpdatedAt,
+		&p.Id, &p.Title, &p.Description, &p.ImagePath,
+		&p.Language, &p.Explicit, &p.Author, &p.Type,
+		&p.Block, &p.Complete, &p.Link, &p.OwnerName,
+		&p.OwnerEmail, &p.Copyright, &p.NewFeedUrl, &p.FeedUrl,
+		&p.FeedETag, &p.FeedLastModified, &p.LatestEpisodeGuid, &p.LatestEpisodePubDate,
+		&p.CreatedAt, &p.UpdatedAt,
 	)
+}
+
+func (p *Podcast) GetValues() []interface{} {
+	i := make([]interface{}, 22)
+	i[0] = p.Id
+	i[1] = p.Title
+	i[2] = p.Description
+	i[3] = p.ImagePath
+	i[4] = p.Language
+	i[5] = p.Explicit
+	i[6] = p.Author
+	i[7] = p.Type
+	i[8] = p.Block
+	i[9] = p.Complete
+	i[10] = p.Link
+	i[11] = p.OwnerName
+	i[12] = p.OwnerEmail
+	i[13] = p.Copyright
+	i[14] = p.NewFeedUrl
+	i[15] = p.FeedUrl
+	i[16] = p.FeedETag
+	i[17] = p.FeedLastModified
+	i[18] = p.LatestEpisodeGuid
+	i[19] = p.LatestEpisodePubDate
+	i[20] = p.CreatedAt
+	i[21] = p.UpdatedAt
+
+	return i
 }
 
 func (pp *PodcastPatch) GetDbColumns() string {
 	return strings.Join(
 		[]string{
-			"id",
-			"title",
-			"description",
-			"image_path",
-			"author",
-			"type",
-			"complete",
+			"id", "title", "description", "image_path",
+			"author", "type", "complete",
 		},
 		",",
 	)
@@ -127,25 +118,16 @@ func (pp *PodcastPatch) GetDbColumns() string {
 
 func (pp *PodcastPatch) LoadFromDbRow(row *sql.Rows) {
 	row.Scan(
-		&pp.Id,
-		&pp.Title,
-		&pp.Description,
-		&pp.ImagePath,
-		&pp.Author,
-		&pp.Type,
-		&pp.Complete,
+		&pp.Id, &pp.Title, &pp.Description, &pp.ImagePath,
+		&pp.Author, &pp.Type, &pp.Complete,
 	)
 }
 
 func (pfd *PodcastFeedDetails) GetDbColumns() string {
 	return strings.Join(
 		[]string{
-			"id",
-			"feed_url",
-			"feed_etag",
-			"feed_last_modified",
-			"latest_episode_guid",
-			"latest_episode_pub_date",
+			"id", "feed_url", "feed_etag", "feed_last_modified",
+			"latest_episode_guid", "latest_episode_pub_date",
 		},
 		",",
 	)
@@ -153,12 +135,8 @@ func (pfd *PodcastFeedDetails) GetDbColumns() string {
 
 func (pfd *PodcastFeedDetails) LoadFromDbRow(row *sql.Rows) {
 	row.Scan(
-		&pfd.Id,
-		&pfd.FeedUrl,
-		&pfd.FeedLastModified,
-		&pfd.FeedETag,
-		&pfd.LatestEpisodeGuid,
-		&pfd.LatestEpisodePubDate,
+		&pfd.Id, &pfd.FeedUrl, &pfd.FeedLastModified, &pfd.FeedETag,
+		&pfd.LatestEpisodeGuid, &pfd.LatestEpisodePubDate,
 	)
 }
 
