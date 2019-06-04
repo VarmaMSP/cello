@@ -8,6 +8,7 @@
     "func parameter \\w+ should be \\w+",
     "method \\w+ should be \\w+",
     "var \\w+ should be \\w+",
+    "type \w+ should be \\w+",
     "type name will be used as *"
   ]
 }
