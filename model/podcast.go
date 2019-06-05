@@ -50,7 +50,7 @@ type PodcastFeedDetails struct {
 	LatestEpisodePubDate string `json:"latest_episode_pub_date,omitempty"`
 }
 
-func (p *Podcast) GetDbColumns() []string {
+func (p *Podcast) DbColumns() []string {
 	return []string{
 		"id", "title", "description", "image_path",
 		"language", "explicit", "author", "type",
@@ -61,7 +61,7 @@ func (p *Podcast) GetDbColumns() []string {
 	}
 }
 
-func (p *Podcast) GetFieldAddrs() []interface{} {
+func (p *Podcast) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
 		&p.Id, &p.Title, &p.Description, &p.ImagePath,
@@ -73,14 +73,14 @@ func (p *Podcast) GetFieldAddrs() []interface{} {
 	)
 }
 
-func (pp *PodcastPatch) GetDbColumns() []string {
+func (pp *PodcastPatch) DbColumns() []string {
 	return []string{
 		"id", "title", "description", "image_path",
 		"author", "type", "complete",
 	}
 }
 
-func (pp *PodcastPatch) GetFieldAddrs() []interface{} {
+func (pp *PodcastPatch) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
 		&pp.Id, &pp.Title, &pp.Description, &pp.ImagePath,
@@ -88,14 +88,14 @@ func (pp *PodcastPatch) GetFieldAddrs() []interface{} {
 	)
 }
 
-func (pfd *PodcastFeedDetails) GetDbColumns() []string {
+func (pfd *PodcastFeedDetails) DbColumns() []string {
 	return []string{
 		"id", "feed_url", "feed_etag", "feed_last_modified",
 		"latest_episode_guid", "latest_episode_pub_date",
 	}
 }
 
-func (pfd *PodcastFeedDetails) GetFieldAddrs() []interface{} {
+func (pfd *PodcastFeedDetails) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
 		&pfd.Id, &pfd.FeedUrl, &pfd.FeedLastModified, &pfd.FeedETag,

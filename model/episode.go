@@ -37,7 +37,7 @@ type EpisodePatch struct {
 	Duration  int    `json:"duration,omitempty"`
 }
 
-func (e *Episode) GetDbColumns() []string {
+func (e *Episode) DbColumns() []string {
 	return []string{
 		"id", "title", "audio_url", "audio_type",
 		"audio_size", "guid", "pub_date", "description",
@@ -47,7 +47,7 @@ func (e *Episode) GetDbColumns() []string {
 	}
 }
 
-func (e *Episode) GetFieldAddrs() []interface{} {
+func (e *Episode) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
 		&e.Id, &e.Title, &e.AudioUrl, &e.AudioType,
@@ -58,14 +58,14 @@ func (e *Episode) GetFieldAddrs() []interface{} {
 	)
 }
 
-func (ep *EpisodePatch) GetDbColumns() []string {
+func (ep *EpisodePatch) DbColumns() []string {
 	return []string{
 		"id", "title", "audio_url", "audio_type",
 		"pub_date", "duration",
 	}
 }
 
-func (ep *EpisodePatch) GetFieldAddrs() []interface{} {
+func (ep *EpisodePatch) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
 		&ep.Id, &ep.Title, &ep.AudioUrl, &ep.AudioType,

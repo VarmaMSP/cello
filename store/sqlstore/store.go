@@ -7,15 +7,14 @@ import (
 )
 
 type DbModel interface {
-	GetDbColumns() []string
-	GetFieldAddrs() []interface{}
+	DbColumns() []string
+	FieldAddrs() []interface{}
 }
 
 type SqlStore interface {
 	GetMaster() *sql.DB
 
-	Insert(model DbModel, tableName string)
-	BulkInsert(models []DbModel, tableName string)
+	Insert(models []DbModel, tableName string) (sql.Result, error)
 
 	Podcast() store.PodcastStore
 	Episode() store.EpisodeStore
