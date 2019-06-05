@@ -1,74 +1,69 @@
 package model
 
 import (
-	"database/sql"
-	"strings"
-
 	"github.com/mmcdole/gofeed/rss"
 )
 
 // https://help.apple.com/itc/podcasts_connect/#/itcb54353390
 
 type Podcast struct {
-	Id                   int
-	Title                string
-	Description          string
-	ImagePath            string
-	Language             string
-	Explicit             int
-	Author               string
-	Type                 string
-	Block                int
-	Complete             int
-	Link                 string
-	OwnerName            string
-	OwnerEmail           string
-	Copyright            string
-	NewFeedUrl           string
-	FeedUrl              string
-	FeedETag             string
-	FeedLastModified     string
-	LatestEpisodeGuid    string
-	LatestEpisodePubDate string
-	CreatedAt            string
-	UpdatedAt            string
+	Id                   int    `json:"id,omitempty"`
+	Title                string `json:"title,omitempty"`
+	Description          string `json:"description,omitempty"`
+	ImagePath            string `json:"image_path,omitempty"`
+	Language             string `json:"language,omitempty"`
+	Explicit             int    `json:"explicit,omitempty"`
+	Author               string `json:"author,omitempty"`
+	Type                 string `json:"type,omitempty"`
+	Block                int    `json:"block,omitempty"`
+	Complete             int    `json:"complete,omitempty"`
+	Link                 string `json:"link,omitempty"`
+	OwnerName            string `json:"owner_name,omitempty"`
+	OwnerEmail           string `json:"owner_email,omitempty"`
+	Copyright            string `json:"copyright,omitempty"`
+	NewFeedUrl           string `json:"new_feed_url,omitempty"`
+	FeedUrl              string `json:"feed_url,omitempty"`
+	FeedETag             string `json:"feeed_etag,omitempty"`
+	FeedLastModified     string `json:"feed_last_modified,omitempty"`
+	LatestEpisodeGuid    string `json:"latest_episode_guid,omitempty"`
+	LatestEpisodePubDate string `json:"latest_episode_pub_date,omitempty"`
+	CreatedAt            string `json:"created_at"`
+	UpdatedAt            string `json:"updated_at"`
 }
 
 type PodcastPatch struct {
-	Id          int    `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	ImagePath   string `json:"image_path"`
-	Author      string `json:"author"`
+	Id          int    `json:"id,omitempty"`
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
+	ImagePath   string `json:"image_path,omitempty"`
+	Author      string `json:"author,omitempty"`
 	Type        string `json:"type,omitempty"`
 	Complete    int    `json:"complete,omitempty"`
 }
 
 type PodcastFeedDetails struct {
-	Id                   int
-	FeedUrl              string
-	FeedETag             string
-	FeedLastModified     string
-	LatestEpisodeGuid    string
-	LatestEpisodePubDate string
+	Id                   int    `json:"id,omitempty"`
+	FeedUrl              string `json:"feed_url,omitempty"`
+	FeedETag             string `json:"feed_etag,omitempty"`
+	FeedLastModified     string `json:"feed_last_modified,omitempty"`
+	LatestEpisodeGuid    string `json:"latest_episode_guid,omitempty"`
+	LatestEpisodePubDate string `json:"latest_episode_pub_date,omitempty"`
 }
 
-func (p *Podcast) GetDbColumns() string {
-	return strings.Join(
-		[]string{
-			"id", "title", "description", "image_path",
-			"language", "explicit", "author", "type",
-			"block", "complete", "link", "owner_name",
-			"owner_email", "copyright", "new_feed_url", "feed_url",
-			"feed_etag", "feed_last_modified", "latest_episode_guid", "latest_episode_pub_date",
-			"created_at", "updated_at",
-		},
-		",",
-	)
+func (p *Podcast) GetDbColumns() []string {
+	return []string{
+		"id", "title", "description", "image_path",
+		"language", "explicit", "author", "type",
+		"block", "complete", "link", "owner_name",
+		"owner_email", "copyright", "new_feed_url", "feed_url",
+		"feed_etag", "feed_last_modified", "latest_episode_guid", "latest_episode_pub_date",
+		"created_at", "updated_at",
+	}
 }
 
-func (p *Podcast) LoadFromDbRow(row *sql.Rows) {
-	row.Scan(
+func (p *Podcast) GetFieldAddrs() []interface{} {
+	var i []interface{}
+	return append(i,
 		&p.Id, &p.Title, &p.Description, &p.ImagePath,
 		&p.Language, &p.Explicit, &p.Author, &p.Type,
 		&p.Block, &p.Complete, &p.Link, &p.OwnerName,
@@ -78,63 +73,31 @@ func (p *Podcast) LoadFromDbRow(row *sql.Rows) {
 	)
 }
 
-func (p *Podcast) GetValues() []interface{} {
-	i := make([]interface{}, 22)
-	i[0] = p.Id
-	i[1] = p.Title
-	i[2] = p.Description
-	i[3] = p.ImagePath
-	i[4] = p.Language
-	i[5] = p.Explicit
-	i[6] = p.Author
-	i[7] = p.Type
-	i[8] = p.Block
-	i[9] = p.Complete
-	i[10] = p.Link
-	i[11] = p.OwnerName
-	i[12] = p.OwnerEmail
-	i[13] = p.Copyright
-	i[14] = p.NewFeedUrl
-	i[15] = p.FeedUrl
-	i[16] = p.FeedETag
-	i[17] = p.FeedLastModified
-	i[18] = p.LatestEpisodeGuid
-	i[19] = p.LatestEpisodePubDate
-	i[20] = p.CreatedAt
-	i[21] = p.UpdatedAt
-
-	return i
+func (pp *PodcastPatch) GetDbColumns() []string {
+	return []string{
+		"id", "title", "description", "image_path",
+		"author", "type", "complete",
+	}
 }
 
-func (pp *PodcastPatch) GetDbColumns() string {
-	return strings.Join(
-		[]string{
-			"id", "title", "description", "image_path",
-			"author", "type", "complete",
-		},
-		",",
-	)
-}
-
-func (pp *PodcastPatch) LoadFromDbRow(row *sql.Rows) {
-	row.Scan(
+func (pp *PodcastPatch) GetFieldAddrs() []interface{} {
+	var i []interface{}
+	return append(i,
 		&pp.Id, &pp.Title, &pp.Description, &pp.ImagePath,
 		&pp.Author, &pp.Type, &pp.Complete,
 	)
 }
 
-func (pfd *PodcastFeedDetails) GetDbColumns() string {
-	return strings.Join(
-		[]string{
-			"id", "feed_url", "feed_etag", "feed_last_modified",
-			"latest_episode_guid", "latest_episode_pub_date",
-		},
-		",",
-	)
+func (pfd *PodcastFeedDetails) GetDbColumns() []string {
+	return []string{
+		"id", "feed_url", "feed_etag", "feed_last_modified",
+		"latest_episode_guid", "latest_episode_pub_date",
+	}
 }
 
-func (pfd *PodcastFeedDetails) LoadFromDbRow(row *sql.Rows) {
-	row.Scan(
+func (pfd *PodcastFeedDetails) GetFieldAddrs() []interface{} {
+	var i []interface{}
+	return append(i,
 		&pfd.Id, &pfd.FeedUrl, &pfd.FeedLastModified, &pfd.FeedETag,
 		&pfd.LatestEpisodeGuid, &pfd.LatestEpisodePubDate,
 	)

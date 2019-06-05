@@ -1,9 +1,7 @@
 package model
 
 import (
-	"database/sql"
 	"strconv"
-	"strings"
 
 	"github.com/mmcdole/gofeed/rss"
 )
@@ -39,21 +37,19 @@ type EpisodePatch struct {
 	Duration  int    `json:"duration,omitempty"`
 }
 
-func (e *Episode) GetDbColumns() string {
-	return strings.Join(
-		[]string{
-			"id", "title", "audio_url", "audio_type",
-			"audio_size", "guid", "pub_date", "description",
-			"duration", "link", "image_link", "explicit",
-			"episode", "season", "type", "block",
-			"created_at", "updated_at",
-		},
-		",",
-	)
+func (e *Episode) GetDbColumns() []string {
+	return []string{
+		"id", "title", "audio_url", "audio_type",
+		"audio_size", "guid", "pub_date", "description",
+		"duration", "link", "image_link", "explicit",
+		"episode", "season", "type", "block",
+		"created_at", "updated_at",
+	}
 }
 
-func (e *Episode) LoadFromDbRow(row *sql.Rows) {
-	row.Scan(
+func (e *Episode) GetFieldAddrs() []interface{} {
+	var i []interface{}
+	return append(i,
 		&e.Id, &e.Title, &e.AudioUrl, &e.AudioType,
 		&e.AudioSize, &e.Guid, &e.PubDate, &e.Description,
 		&e.Duration, &e.Link, &e.ImageLink, &e.Explicit,
@@ -62,44 +58,18 @@ func (e *Episode) LoadFromDbRow(row *sql.Rows) {
 	)
 }
 
-func (e *Episode) GetValues() []interface{} {
-	i := make([]interface{}, 22)
-	i[0] = e.Id
-	i[1] = e.Title
-	i[2] = e.AudioUrl
-	i[3] = e.AudioType
-	i[4] = e.AudioSize
-	i[5] = e.Guid
-	i[6] = e.PubDate
-	i[7] = e.Description
-	i[8] = e.Duration
-	i[9] = e.Link
-	i[10] = e.ImageLink
-	i[11] = e.Explicit
-	i[12] = e.Episode
-	i[13] = e.Season
-	i[14] = e.Type
-	i[15] = e.Block
-	i[16] = e.CreatedAt
-	i[17] = e.UpdatedAt
-
-	return i
+func (ep *EpisodePatch) GetDbColumns() []string {
+	return []string{
+		"id", "title", "audio_url", "audio_type",
+		"pub_date", "duration",
+	}
 }
 
-func (e *EpisodePatch) GetDbColumns() string {
-	return strings.Join(
-		[]string{
-			"id", "title", "audio_url", "audio_type",
-			"pub_date", "duration",
-		},
-		",",
-	)
-}
-
-func (e *EpisodePatch) LoadFromDbRow(row *sql.Rows) {
-	row.Scan(
-		&e.Id, &e.Title, &e.AudioUrl, &e.AudioType,
-		&e.PubDate, &e.Duration,
+func (ep *EpisodePatch) GetFieldAddrs() []interface{} {
+	var i []interface{}
+	return append(i,
+		&ep.Id, &ep.Title, &ep.AudioUrl, &ep.AudioType,
+		&ep.PubDate, &ep.Duration,
 	)
 }
 
