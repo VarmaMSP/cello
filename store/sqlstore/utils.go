@@ -7,7 +7,7 @@ import (
 
 func InsertQuery(tableName string, model DbModel, count int) string {
 	cols := model.DbColumns()
-	cols_ := strings.Join(cols, ",")
+	cols_ := "(" + strings.Join(cols, ",") + ")"
 	placeholder_ := "(" + strings.Join(Replicate("?", len(cols)), ",") + ")"
 	placeholders_ := strings.Join(Replicate(placeholder_, count), ",")
 
@@ -25,7 +25,7 @@ func Replicate(s string, n int) []string {
 func ValuesFromAddrs(addrs []interface{}) []interface{} {
 	values := make([]interface{}, len(addrs))
 	for i := range values {
-		values[i] = reflect.ValueOf(addrs[i]).Elem()
+		values[i] = reflect.ValueOf(addrs[i]).Elem().Interface()
 	}
 	return values
 }
