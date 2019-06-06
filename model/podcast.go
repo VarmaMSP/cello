@@ -9,28 +9,28 @@ import (
 // https://help.apple.com/itc/podcasts_connect/#/itcb54353390
 
 type Podcast struct {
-	Id                   int    `json:"id,omitempty"`
-	Title                string `json:"title,omitempty"`
-	Description          string `json:"description,omitempty"`
-	ImagePath            string `json:"image_path,omitempty"`
-	Language             string `json:"language,omitempty"`
-	Explicit             int    `json:"explicit,omitempty"`
-	Author               string `json:"author,omitempty"`
-	Type                 string `json:"type,omitempty"`
-	Block                int    `json:"block,omitempty"`
-	Complete             int    `json:"complete,omitempty"`
-	Link                 string `json:"link,omitempty"`
-	OwnerName            string `json:"owner_name,omitempty"`
-	OwnerEmail           string `json:"owner_email,omitempty"`
-	Copyright            string `json:"copyright,omitempty"`
-	NewFeedUrl           string `json:"new_feed_url,omitempty"`
-	FeedUrl              string `json:"feed_url,omitempty"`
-	FeedETag             string `json:"feeed_etag,omitempty"`
-	FeedLastModified     string `json:"feed_last_modified,omitempty"`
-	LatestEpisodeGuid    string `json:"latest_episode_guid,omitempty"`
-	LatestEpisodePubDate string `json:"latest_episode_pub_date,omitempty"`
-	CreatedAt            string `json:"created_at"`
-	UpdatedAt            string `json:"updated_at"`
+	Id                   NullInt64 `json:"id,omitempty"`
+	Title                string    `json:"title,omitempty"`
+	Description          string    `json:"description,omitempty"`
+	ImagePath            string    `json:"image_path,omitempty"`
+	Language             string    `json:"language,omitempty"`
+	Explicit             int       `json:"explicit,omitempty"`
+	Author               string    `json:"author,omitempty"`
+	Type                 string    `json:"type,omitempty"`
+	Block                int       `json:"block,omitempty"`
+	Complete             int       `json:"complete,omitempty"`
+	Link                 string    `json:"link,omitempty"`
+	OwnerName            string    `json:"owner_name,omitempty"`
+	OwnerEmail           string    `json:"owner_email,omitempty"`
+	Copyright            string    `json:"copyright,omitempty"`
+	NewFeedUrl           string    `json:"new_feed_url,omitempty"`
+	FeedUrl              string    `json:"feed_url,omitempty"`
+	FeedETag             string    `json:"feeed_etag,omitempty"`
+	FeedLastModified     string    `json:"feed_last_modified,omitempty"`
+	LatestEpisodeGuid    string    `json:"latest_episode_guid,omitempty"`
+	LatestEpisodePubDate string    `json:"latest_episode_pub_date,omitempty"`
+	CreatedAt            string    `json:"created_at,omitempty"`
+	UpdatedAt            string    `json:"updated_at,omitempty"`
 }
 
 type PodcastPatch struct {
