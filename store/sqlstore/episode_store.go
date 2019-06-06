@@ -1,6 +1,8 @@
 package sqlstore
 
 import (
+	"net/http"
+
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
 )
@@ -9,13 +11,27 @@ type SqlEpisodeStore struct {
 	SqlStore
 }
 
-func (ess *SqlEpisodeStore) SaveAll(episodes []*model.Episode) store.StoreChannel {
-	return store.Do(func(result *store.StoreResult) {
+func (s *SqlEpisodeStore) SaveAll(episodes []*model.Episode) store.StoreChannel {
+	return store.Do(func(r *store.StoreResult) {
 		models := make([]DbModel, len(episodes))
 		for i := range models {
 			models[i] = episodes[i]
 		}
-		ess.Insert(models, "episode")
+
+		res, err := s.Insert(models, "episode")
+		if err != nil {
+			r.Err = model.NewAppError(
+				"EpisodeStore.SaveAll",
+				"store.sqlstore.sql_episode_store.save_all",
+				map[string]interface{}{
+					"podcast_id": episodes[0].PodcastId,
+				},
+				"Cannot save episodes",
+				http.StatusInternalServerError,
+			)
+			return
+		}
+		r.Data = res
 	})
 }
 

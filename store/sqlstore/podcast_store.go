@@ -1,6 +1,8 @@
 package sqlstore
 
 import (
+	"net/http"
+
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
 )
@@ -9,9 +11,22 @@ type SqlPodcastStore struct {
 	SqlStore
 }
 
-func (pss *SqlPodcastStore) Save(podcast *model.Podcast) store.StoreChannel {
+func (s *SqlPodcastStore) Save(podcast *model.Podcast) store.StoreChannel {
 	return store.Do(func(r *store.StoreResult) {
-		pss.Insert([]DbModel{podcast}, "podcast")
+		res, err := s.Insert([]DbModel{podcast}, "podcast")
+		if err != nil {
+			r.Err = model.NewAppError(
+				"PodcastStore.Save",
+				"store.sqlstore.sql_podcast_store.save",
+				map[string]interface{}{
+					"title": podcast.Title,
+				},
+				"Cannot save podcast",
+				http.StatusInternalServerError,
+			)
+			return
+		}
+		r.Data = res
 	})
 }
 
