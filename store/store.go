@@ -30,6 +30,5 @@ type PodcastStore interface {
 }
 
 type EpisodeStore interface {
-	SaveAll(episodes []model.Episode) StoreChannel
-	BlockEpisodesForPodcastAfter(date string) StoreChannel
+	SaveAll(episodes []*model.Episode) StoreChannel
 }

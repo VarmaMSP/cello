@@ -2,7 +2,10 @@ package sqlstore
 
 import (
 	"database/sql"
+	"log"
+	"os"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/varmamsp/cello/store"
 )
 
@@ -34,4 +37,37 @@ func (s *SqlSupplier) Podcast() store.PodcastStore {
 
 func (s *SqlSupplier) Episode() store.EpisodeStore {
 	return s.episode
+}
+
+func InitDb() *sql.DB {
+	config := mysql.Config{}
+	config.User = "root"
+	config.Passwd = "root"
+	config.Addr = "localhost:3306"
+	config.DBName = "phenopod"
+	config.Params = map[string]string{
+		"charset":   "utf8mb4",
+		"collation": "utf8mb4_unicode_520_ci",
+	}
+
+	db, err := sql.Open("mysql", config.FormatDSN())
+	if err != nil {
+		log.Printf(err.Error())
+		os.Exit(1)
+	}
+	if err := db.Ping(); err != nil {
+		log.Printf(err.Error())
+		os.Exit(1)
+	}
+
+	return db
+}
+
+func NewSqlStore() SqlStore {
+	supplier := &SqlSupplier{}
+	supplier.db = InitDb()
+	supplier.podcast = NewSqlPodcastStore(supplier)
+	supplier.episode = NewSqlEpisodeStore(supplier)
+
+	return supplier
 }

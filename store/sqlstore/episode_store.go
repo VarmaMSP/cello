@@ -9,7 +9,7 @@ type SqlEpisodeStore struct {
 	SqlStore
 }
 
-func (ess SqlEpisodeStore) SaveAll(episodes []*model.Episode) store.StoreChannel {
+func (ess *SqlEpisodeStore) SaveAll(episodes []*model.Episode) store.StoreChannel {
 	return store.Do(func(result *store.StoreResult) {
 		models := make([]DbModel, len(episodes))
 		for i := range models {
@@ -17,4 +17,8 @@ func (ess SqlEpisodeStore) SaveAll(episodes []*model.Episode) store.StoreChannel
 		}
 		ess.Insert(models, "episode")
 	})
+}
+
+func NewSqlEpisodeStore(store SqlStore) store.EpisodeStore {
+	return &SqlEpisodeStore{store}
 }
