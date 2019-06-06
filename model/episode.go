@@ -1,6 +1,7 @@
 package model
 
 import (
+	"net/http"
 	"strconv"
 
 	"github.com/mmcdole/gofeed/rss"
@@ -91,11 +92,23 @@ func (e *Episode) LoadDataFromFeed(item *rss.Item) error {
 	e.Block = 0
 
 	if e.Title == "" {
-		return nil
+		return NewAppError(
+			"Episode.LoadDataFromFeed",
+			"model.epsiode.load_data_from_feed",
+			nil,
+			"title not found",
+			http.StatusBadRequest,
+		)
 	}
 
 	if e.AudioUrl == "" {
-		return nil
+		return NewAppError(
+			"Episode.LoadDataFromFeed",
+			"model.episode.load_data_from_fee",
+			nil,
+			"audio not found",
+			http.StatusBadRequest,
+		)
 	}
 
 	if item.ITunesExt.Explicit == "true" {

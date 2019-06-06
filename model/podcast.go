@@ -1,6 +1,8 @@
 package model
 
 import (
+	"net/http"
+
 	"github.com/mmcdole/gofeed/rss"
 )
 
@@ -120,19 +122,37 @@ func (p *Podcast) LoadDataFromFeed(feed *rss.Feed) error {
 	p.NewFeedUrl = feed.ITunesExt.NewFeedURL
 
 	if p.Title == "" {
-		return nil
+		return NewAppError(
+			"Podcast.LoadDataFromFeed",
+			"model.podcast.load_data_from_feed",
+			nil,
+			"no title found",
+			http.StatusBadRequest,
+		)
 	}
 
 	if p.Description == "" && feed.ITunesExt.Summary != "" {
 		p.Description = feed.ITunesExt.Summary
 	} else {
-		return nil
+		return NewAppError(
+			"Podcast.LoadDataFromFeed",
+			"model.podcast.load_data_from_feed",
+			nil,
+			"no description found",
+			http.StatusBadRequest,
+		)
 	}
 
 	if p.ImagePath == "" && feed.ITunesExt.Image != "" {
 		p.ImagePath = feed.ITunesExt.Image
 	} else {
-		return nil
+		return NewAppError(
+			"Podcast.LoadDataFromFeed",
+			"model.podcast.load_data_from_feed",
+			nil,
+			"no image found",
+			http.StatusBadRequest,
+		)
 	}
 
 	if feed.ITunesExt.Explicit == "true" {

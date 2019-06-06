@@ -5,7 +5,24 @@ import (
 	"strings"
 )
 
-// Function to get seconds from time string (HH:MM:SS / MM:SS / SS).
+type AppError struct {
+	Id            string `json:"id"`
+	Message       string `json:"message"`
+	DetailedError string `json:"detailed_error"`
+	StatusCode    int    `json:"status_code,omitempty"`
+	Where         string `json:"-"`
+	params        map[string]interface{}
+}
+
+func (e *AppError) Error() string {
+	return e.Where + ": " + e.Message + ", " + e.DetailedError
+}
+
+func NewAppError(where string, id string, params map[string]interface{}, details string, status int) *AppError {
+	return &AppError{id, id, details, status, where, params}
+}
+
+// Parse time string (HH:MM:SS / MM:SS / SS) to seconds.
 func ParseTime(timeString string) int {
 	x := strings.Split(timeString, ":")
 	sec := 0
