@@ -4,7 +4,7 @@ import "github.com/varmamsp/cello/model"
 
 type StoreResult struct {
 	Data interface{}
-	Err  error
+	Err  *model.AppError
 }
 
 type StoreChannel chan StoreResult
