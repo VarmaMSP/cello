@@ -6,8 +6,10 @@ jobs:
 
     parallelism: 1
 
+    working_directory: ~/go/src/github.com/varmamsp/
+
     steps:
       - checkout
       - run:
-        name: Hello world
-        command: echo "Hello world" 
+          name: Hello world
+          command: echo "Hello world"
