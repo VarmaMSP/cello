@@ -15,7 +15,13 @@ type Feed struct {
 	LastModified *string
 }
 
-func (client *Client) GetFeeds(feedDetails []*model.PodcastFeedDetails) []*Feed {
+func (client *Client) GetFeed(feedDetails *model.PodcastFeedDetails) *Feed {
+	ch := make(chan *Feed)
+	go client.makeFeedRequest(feedDetails, ch)
+	return <-ch
+}
+
+func (client *Client) GetMultipleFeeds(feedDetails []*model.PodcastFeedDetails) []*Feed {
 	n := len(feedDetails)
 
 	ch := make(chan *Feed)
@@ -39,6 +45,8 @@ func (client *Client) GetFeeds(feedDetails []*model.PodcastFeedDetails) []*Feed 
 func (client *Client) makeFeedRequest(feedDetails *model.PodcastFeedDetails, ch chan<- *Feed) {
 	req, _ := http.NewRequest("GET", feedDetails.FeedUrl, nil)
 	req.Header.Add("Cache-Control", "no-cache")
+	req.Header.Add("If-None-Match", feedDetails.FeedETag)
+	req.Header.Add("If-Modified-Since", feedDetails.FeedLastModified)
 
 	resp, err := client.httpClient.Do(req)
 	if err != nil {
@@ -54,10 +62,10 @@ func (client *Client) makeFeedRequest(feedDetails *model.PodcastFeedDetails, ch 
 	}
 
 	result := Feed{Id: feedDetails.Id, RssFeed: feed}
-	if tmp := resp.Header.Get("etag"); tmp != "" {
+	if tmp := resp.Header.Get("ETag"); tmp != "" {
 		result.Etag = &tmp
 	}
-	if tmp := resp.Header.Get("last-modified"); tmp != "" {
+	if tmp := resp.Header.Get("Last-Modified"); tmp != "" {
 		result.LastModified = &tmp
 	}
 	ch <- &result
