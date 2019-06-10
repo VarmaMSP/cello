@@ -8,8 +8,8 @@ import (
 )
 
 type Episode struct {
-	Id          int    `json:"id,omitempty"`
-	PodcastId   int    `json:"podcast_id,omitempty"`
+	Id          string `json:"id,omitempty"`
+	PodcastId   int64  `json:"podcast_id,omitempty"`
 	Title       string `json:"title,omitempty"`
 	AudioUrl    string `json:"audio_url,omitempty"`
 	AudioType   string `json:"audio_type,omitempty"`
@@ -25,12 +25,12 @@ type Episode struct {
 	Season      int    `json:"season,omitempty"`
 	Type        string `json:"type,omitempty"`
 	Block       int    `json:"block,omitempty"`
-	CreatedAt   string `json:"created_at,omitempty"`
-	UpdatedAt   string `json:"updated_at,omitempty"`
+	CreatedAt   int64  `json:"created_at,omitempty"`
+	UpdatedAt   int64  `json:"updated_at,omitempty"`
 }
 
 type EpisodePatch struct {
-	Id        int    `json:"id,omitempty"`
+	Id        string `json:"id,omitempty"`
 	Title     string `json:"title,omitempty"`
 	AudioUrl  string `json:"audio_url,omitempty"`
 	AudioType string `json:"audio_type,omitempty"`

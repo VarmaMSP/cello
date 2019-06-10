@@ -29,12 +29,12 @@ type Podcast struct {
 	FeedLastModified     string    `json:"feed_last_modified,omitempty"`
 	LatestEpisodeGuid    string    `json:"latest_episode_guid,omitempty"`
 	LatestEpisodePubDate string    `json:"latest_episode_pub_date,omitempty"`
-	CreatedAt            string    `json:"created_at,omitempty"`
-	UpdatedAt            string    `json:"updated_at,omitempty"`
+	CreatedAt            int64     `json:"created_at,omitempty"`
+	UpdatedAt            int64     `json:"updated_at,omitempty"`
 }
 
 type PodcastPatch struct {
-	Id          int    `json:"id,omitempty"`
+	Id          int64  `json:"id,omitempty"`
 	Title       string `json:"title,omitempty"`
 	Description string `json:"description,omitempty"`
 	ImagePath   string `json:"image_path,omitempty"`
@@ -44,7 +44,7 @@ type PodcastPatch struct {
 }
 
 type PodcastFeedDetails struct {
-	Id                   int    `json:"id,omitempty"`
+	Id                   int64  `json:"id,omitempty"`
 	FeedUrl              string `json:"feed_url,omitempty"`
 	FeedETag             string `json:"feed_etag,omitempty"`
 	FeedLastModified     string `json:"feed_last_modified,omitempty"`
