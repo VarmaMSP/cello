@@ -11,8 +11,8 @@ import (
 type Feed struct {
 	Id           int64
 	RssFeed      *rss.Feed
-	Etag         *string
-	LastModified *string
+	Etag         string
+	LastModified string
 }
 
 func (client *Client) GetFeed(feedDetails *model.PodcastFeedDetails) *Feed {
@@ -63,10 +63,10 @@ func (client *Client) makeFeedRequest(feedDetails *model.PodcastFeedDetails, ch 
 
 	result := Feed{Id: feedDetails.Id, RssFeed: feed}
 	if tmp := resp.Header.Get("ETag"); tmp != "" {
-		result.Etag = &tmp
+		result.Etag = tmp
 	}
 	if tmp := resp.Header.Get("Last-Modified"); tmp != "" {
-		result.LastModified = &tmp
+		result.LastModified = tmp
 	}
 	ch <- &result
 }
