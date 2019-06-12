@@ -11,6 +11,7 @@ import (
 type Feed struct {
 	Id           int64
 	RssFeed      *rss.Feed
+	Error        string
 	Etag         string
 	LastModified string
 }
@@ -50,23 +51,44 @@ func (client *Client) makeFeedRequest(feedDetails *model.PodcastFeedDetails, ch 
 
 	resp, err := client.httpClient.Do(req)
 	if err != nil {
-		ch <- &Feed{Id: feedDetails.Id}
+		ch <- &Feed{
+			Id:    feedDetails.Id,
+			Error: err.Error(),
+		}
+		return
+	}
+
+	if resp.StatusCode == 304 {
+		ch <- &Feed{
+			Id:           feedDetails.Id,
+			Etag:         resp.Header.Get("ETag"),
+			LastModified: resp.Header.Get("Last-Modified"),
+		}
+		return
+	}
+
+	if resp.StatusCode != 200 {
+		ch <- &Feed{
+			Id:    feedDetails.Id,
+			Error: fmt.Sprintf("Request Unsuccessful: %d", resp.StatusCode),
+		}
 		return
 	}
 
 	parser := &rss.Parser{}
-	feed, err := parser.Parse(resp.Body)
+	rssFeed, err := parser.Parse(resp.Body)
 	if err != nil {
-		ch <- &Feed{Id: feedDetails.Id}
+		ch <- &Feed{
+			Id:    feedDetails.Id,
+			Error: "Error parsing: " + err.Error(),
+		}
 		return
 	}
 
-	result := Feed{Id: feedDetails.Id, RssFeed: feed}
-	if tmp := resp.Header.Get("ETag"); tmp != "" {
-		result.Etag = tmp
+	ch <- &Feed{
+		Id:           feedDetails.Id,
+		RssFeed:      rssFeed,
+		Etag:         resp.Header.Get("ETag"),
+		LastModified: resp.Header.Get("Last-Modified"),
 	}
-	if tmp := resp.Header.Get("Last-Modified"); tmp != "" {
-		result.LastModified = tmp
-	}
-	ch <- &result
 }
