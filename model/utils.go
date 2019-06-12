@@ -16,20 +16,18 @@ const (
 )
 
 type AppError struct {
-	Id            string `json:"id"`
-	Message       string `json:"message"`
-	DetailedError string `json:"detailed_error"`
-	StatusCode    int    `json:"status_code,omitempty"`
-	Where         string `json:"-"`
-	params        map[string]interface{}
+	Id            string            `json:"id"`          // Function at which the error occured
+	DetailedError string            `json:"error"`       // Internal Error string
+	StatusCode    int               `json:"status_code"` // Http status code
+	params        map[string]string `json:"parmas"`
 }
 
 func (e *AppError) Error() string {
-	return e.Where + ": " + e.Message + ", " + e.DetailedError
+	return e.Id + ": " + e.DetailedError
 }
 
-func NewAppError(where string, id string, params map[string]interface{}, details string, status int) *AppError {
-	return &AppError{id, id, details, status, where, params}
+func NewAppError(where string, details string, statusCode int, params map[string]string) *AppError {
+	return &AppError{where, details, statusCode, params}
 }
 
 type NullInt64 struct {

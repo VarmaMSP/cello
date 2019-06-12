@@ -16,13 +16,13 @@ func (s *SqlPodcastStore) Save(podcast *model.Podcast) store.StoreChannel {
 		res, err := s.Insert([]DbModel{podcast}, "podcast")
 		if err != nil {
 			r.Err = model.NewAppError(
-				"PodcastStore.Save",
 				"store.sqlstore.sql_podcast_store.save",
-				map[string]interface{}{
-					"title": podcast.Title,
-				},
-				"Cannot save podcast",
+				err.Error(),
 				http.StatusInternalServerError,
+				map[string]string{
+					"title":    podcast.Title,
+					"feed_url": podcast.FeedUrl,
+				},
 			)
 			return
 		}

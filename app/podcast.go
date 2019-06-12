@@ -11,13 +11,12 @@ import (
 
 func (app *App) AddNewPodcast(feedUrl string) *model.AppError {
 	feed := app.httpservice.GetFeed(&model.PodcastFeedDetails{FeedUrl: feedUrl})
-	if feed.RssFeed == nil {
+	if feed.Error != "" {
 		return model.NewAppError(
-			"App.AddNewPodcast",
 			"app.podcast.add_new_podcast",
-			nil,
-			"error fetching: "+feedUrl,
+			feed.Error,
 			http.StatusInternalServerError,
+			map[string]string{"feed_url": feedUrl},
 		)
 	}
 

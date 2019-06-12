@@ -2,6 +2,7 @@ package sqlstore
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
@@ -21,13 +22,12 @@ func (s *SqlEpisodeStore) SaveAll(episodes []*model.Episode) store.StoreChannel 
 		res, err := s.Insert(models, "episode")
 		if err != nil {
 			r.Err = model.NewAppError(
-				"EpisodeStore.SaveAll",
 				"store.sqlstore.sql_episode_store.save_all",
-				map[string]interface{}{
-					"podcast_id": episodes[0].PodcastId,
-				},
-				"Cannot save episodes",
+				err.Error(),
 				http.StatusInternalServerError,
+				map[string]string{
+					"podcast_id": strconv.FormatInt(episodes[0].PodcastId, 10),
+				},
 			)
 			return
 		}

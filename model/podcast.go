@@ -125,11 +125,10 @@ func (p *Podcast) LoadDataFromFeed(feed *rss.Feed) *AppError {
 
 	if p.Title == "" {
 		return NewAppError(
-			"Podcast.LoadDataFromFeed",
 			"model.podcast.load_data_from_feed",
-			nil,
 			"no title found",
 			http.StatusBadRequest,
+			map[string]string{"title": p.Title},
 		)
 	}
 
@@ -138,11 +137,10 @@ func (p *Podcast) LoadDataFromFeed(feed *rss.Feed) *AppError {
 			p.Description = feed.ITunesExt.Summary
 		} else {
 			return NewAppError(
-				"Podcast.LoadDataFromFeed",
 				"model.podcast.load_data_from_feed",
-				nil,
 				"no description found",
 				http.StatusBadRequest,
+				map[string]string{"title": p.Title},
 			)
 		}
 	}
@@ -152,11 +150,10 @@ func (p *Podcast) LoadDataFromFeed(feed *rss.Feed) *AppError {
 			p.ImagePath = feed.ITunesExt.Image
 		} else {
 			return NewAppError(
-				"Podcast.LoadDataFromFeed",
 				"model.podcast.load_data_from_feed",
-				nil,
 				"no image found",
 				http.StatusBadRequest,
+				map[string]string{"title": p.Title},
 			)
 		}
 	}

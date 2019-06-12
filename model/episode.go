@@ -93,21 +93,19 @@ func (e *Episode) LoadDataFromFeed(item *rss.Item) *AppError {
 
 	if e.Title == "" {
 		return NewAppError(
-			"Episode.LoadDataFromFeed",
 			"model.epsiode.load_data_from_feed",
-			nil,
 			"title not found",
 			http.StatusBadRequest,
+			nil,
 		)
 	}
 
 	if e.AudioUrl == "" {
 		return NewAppError(
-			"Episode.LoadDataFromFeed",
 			"model.episode.load_data_from_fee",
-			nil,
 			"audio not found",
 			http.StatusBadRequest,
+			nil,
 		)
 	}
 
