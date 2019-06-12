@@ -1,10 +1,18 @@
 package model
 
 import (
+	"bytes"
 	"database/sql"
+	"encoding/base32"
 	"encoding/json"
 	"strconv"
 	"strings"
+
+	"github.com/pborman/uuid"
+)
+
+const (
+	MYSQL_DATETIME = "2006-01-02 15:04:05"
 )
 
 type AppError struct {
@@ -61,4 +69,15 @@ func ParseTime(timeString string) int {
 		sec = sec + t*s
 	}
 	return sec
+}
+
+var encoding = base32.NewEncoding("ybndrfg8ejkmcpqxot1uwisza345h769")
+
+func NewId() string {
+	var b bytes.Buffer
+	encoder := base32.NewEncoder(encoding, &b)
+	encoder.Write(uuid.NewRandom())
+	encoder.Close()
+	b.Truncate(26)
+	return b.String()
 }

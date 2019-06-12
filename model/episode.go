@@ -25,8 +25,8 @@ type Episode struct {
 	Season      int    `json:"season,omitempty"`
 	Type        string `json:"type,omitempty"`
 	Block       int    `json:"block,omitempty"`
-	CreatedAt   int64  `json:"created_at,omitempty"`
-	UpdatedAt   int64  `json:"updated_at,omitempty"`
+	CreatedAt   string `json:"created_at,omitempty"`
+	UpdatedAt   string `json:"updated_at,omitempty"`
 }
 
 type EpisodePatch struct {
@@ -40,22 +40,22 @@ type EpisodePatch struct {
 
 func (e *Episode) DbColumns() []string {
 	return []string{
-		"id", "title", "audio_url", "audio_type",
-		"audio_size", "guid", "pub_date", "description",
-		"duration", "link", "image_link", "explicit",
-		"episode", "season", "type", "block",
-		"created_at", "updated_at",
+		"id", "podcast_id", "title", "audio_url",
+		"audio_type", "audio_size", "guid", "pub_date",
+		"description", "duration", "link", "image_link",
+		"explicit", "episode", "season", "type",
+		"block", "created_at", "updated_at",
 	}
 }
 
 func (e *Episode) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
-		&e.Id, &e.Title, &e.AudioUrl, &e.AudioType,
-		&e.AudioSize, &e.Guid, &e.PubDate, &e.Description,
-		&e.Duration, &e.Link, &e.ImageLink, &e.Explicit,
-		&e.Episode, &e.Season, &e.Type, &e.Block,
-		&e.CreatedAt, &e.UpdatedAt,
+		&e.Id, &e.PodcastId, &e.Title, &e.AudioUrl,
+		&e.AudioType, &e.AudioSize, &e.Guid, &e.PubDate,
+		&e.Description, &e.Duration, &e.Link, &e.ImageLink,
+		&e.Explicit, &e.Episode, &e.Season, &e.Type,
+		&e.Block, &e.CreatedAt, &e.UpdatedAt,
 	)
 }
 
@@ -74,13 +74,13 @@ func (ep *EpisodePatch) FieldAddrs() []interface{} {
 	)
 }
 
-func (e *Episode) LoadDataFromFeed(item *rss.Item) error {
+func (e *Episode) LoadDataFromFeed(item *rss.Item) *AppError {
 	e.Title = item.Title
 	e.AudioUrl = item.Enclosure.URL
 	e.AudioType = item.Enclosure.Type
 	e.AudioSize, _ = strconv.Atoi(item.Enclosure.Length)
 	e.Guid = item.GUID.Value
-	e.PubDate = item.PubDate
+	e.PubDate = item.PubDateParsed.UTC().Format(MYSQL_DATETIME)
 	e.Description = item.Description
 	e.Duration = ParseTime(item.ITunesExt.Duration)
 	e.Link = item.Link

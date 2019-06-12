@@ -29,8 +29,8 @@ type Podcast struct {
 	FeedLastModified     string    `json:"feed_last_modified,omitempty"`
 	LatestEpisodeGuid    string    `json:"latest_episode_guid,omitempty"`
 	LatestEpisodePubDate string    `json:"latest_episode_pub_date,omitempty"`
-	CreatedAt            int64     `json:"created_at,omitempty"`
-	UpdatedAt            int64     `json:"updated_at,omitempty"`
+	CreatedAt            string    `json:"created_at,omitempty"`
+	UpdatedAt            string    `json:"updated_at,omitempty"`
 }
 
 type PodcastPatch struct {
@@ -105,7 +105,7 @@ func (pfd *PodcastFeedDetails) FieldAddrs() []interface{} {
 	)
 }
 
-func (p *Podcast) LoadDataFromFeed(feed *rss.Feed) error {
+func (p *Podcast) LoadDataFromFeed(feed *rss.Feed) *AppError {
 	p.Title = feed.Title
 	p.Description = feed.Description
 	p.ImagePath = feed.ITunesExt.Image
@@ -120,6 +120,8 @@ func (p *Podcast) LoadDataFromFeed(feed *rss.Feed) error {
 	p.OwnerEmail = feed.ITunesExt.Owner.Email
 	p.Copyright = feed.Copyright
 	p.NewFeedUrl = feed.ITunesExt.NewFeedURL
+	p.LatestEpisodeGuid = feed.Items[0].GUID.Value
+	p.LatestEpisodePubDate = feed.Items[0].PubDateParsed.UTC().Format(MYSQL_DATETIME)
 
 	if p.Title == "" {
 		return NewAppError(
@@ -131,28 +133,32 @@ func (p *Podcast) LoadDataFromFeed(feed *rss.Feed) error {
 		)
 	}
 
-	if p.Description == "" && feed.ITunesExt.Summary != "" {
-		p.Description = feed.ITunesExt.Summary
-	} else {
-		return NewAppError(
-			"Podcast.LoadDataFromFeed",
-			"model.podcast.load_data_from_feed",
-			nil,
-			"no description found",
-			http.StatusBadRequest,
-		)
+	if p.Description == "" {
+		if feed.ITunesExt.Summary != "" {
+			p.Description = feed.ITunesExt.Summary
+		} else {
+			return NewAppError(
+				"Podcast.LoadDataFromFeed",
+				"model.podcast.load_data_from_feed",
+				nil,
+				"no description found",
+				http.StatusBadRequest,
+			)
+		}
 	}
 
-	if p.ImagePath == "" && feed.ITunesExt.Image != "" {
-		p.ImagePath = feed.ITunesExt.Image
-	} else {
-		return NewAppError(
-			"Podcast.LoadDataFromFeed",
-			"model.podcast.load_data_from_feed",
-			nil,
-			"no image found",
-			http.StatusBadRequest,
-		)
+	if p.ImagePath == "" {
+		if feed.ITunesExt.Image != "" {
+			p.ImagePath = feed.ITunesExt.Image
+		} else {
+			return NewAppError(
+				"Podcast.LoadDataFromFeed",
+				"model.podcast.load_data_from_feed",
+				nil,
+				"no image found",
+				http.StatusBadRequest,
+			)
+		}
 	}
 
 	if feed.ITunesExt.Explicit == "true" {

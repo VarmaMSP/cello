@@ -25,7 +25,7 @@ func (s *SqlSupplier) Insert(models []DbModel, tableName string) (sql.Result, er
 	for i := range models {
 		values = append(
 			values,
-			ValuesFromAddrs(models[i].FieldAddrs()),
+			ValuesFromAddrs(models[i].FieldAddrs())...,
 		)
 	}
 	return s.db.Exec(query, values...)
@@ -45,6 +45,7 @@ func InitDb() *sql.DB {
 	config.Passwd = "root"
 	config.Addr = "localhost:3306"
 	config.DBName = "phenopod"
+	config.AllowNativePasswords = true
 	config.Params = map[string]string{
 		"charset":   "utf8mb4",
 		"collation": "utf8mb4_unicode_520_ci",

@@ -2,12 +2,8 @@ DROP DATABASE IF EXISTS `phenopod`;
 CREATE DATABASE `phenopod`;
 USE `phenopod`;
 
-----------------------------------------------------------------
--- https://help.apple.com/itc/podcasts_connect/#/itcb54353390 --
-----------------------------------------------------------------
-
 CREATE TABLE `podcast` (
-    `id` INT AUTO_INCREMENT,
+    `id` BIGINT AUTO_INCREMENT,
     `title` VARCHAR(255) NOT NULL,
     `description` TEXT NOT NULL,
     `image_path` VARCHAR(500) NOT NULL,
@@ -35,23 +31,25 @@ CREATE TABLE `podcast` (
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `episode` (
-    `id` VARCHAR(255),
+    `id` VARCHAR(26),
     `guid` VARCHAR(255) NOT NULL,
-    `podcast_id` INT NOT NULL,
+    `podcast_id` BIGINT NOT NULL,
     `title` VARCHAR(255) NOT NULL,
     `audio_url` VARCHAR(500) NOT NULL,
     `audio_type` VARCHAR(20) NOT NULL,
+    `audio_size` INT NOT NULL,
     `pub_date` DATETIME NOT NULL,
     `description` TEXT NOT NULL,
     `duration` SMALLINT NOT NULL,
     `link` VARCHAR(500) NOT NULL,
+    `image_link` VARCHAR(500) NOT NULL,
     `explicit` TINYINT DEFAULT 0,
     `episode` SMALLINT NOT NULL,
     `season` SMALLINT NOT NULL,
     `type` ENUM('full', 'trailer', 'bonus') DEFAULT 'full',
     `block` TINYINT DEFAULT 0,
     `created_at` DATETIME NOT NULL,
-    `upadated_at` DATETIME NOT NULL,
+    `updated_at` DATETIME NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`)
         ON UPDATE CASCADE ON DELETE CASCADE
@@ -67,7 +65,7 @@ CREATE TABLE `category` (
 );
 
 CREATE TABLE `podcast_category` (
-    `podcast_id` INT NOT NULL,
+    `podcast_id` BIGINT NOT NULL,
     `category_id` INT NOT NULL,
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`)
         ON UPDATE CASCADE ON DELETE CASCADE,
