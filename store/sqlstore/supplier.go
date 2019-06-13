@@ -10,9 +10,10 @@ import (
 )
 
 type SqlSupplier struct {
-	db      *sql.DB
-	podcast store.PodcastStore
-	episode store.EpisodeStore
+	db              *sql.DB
+	podcast         store.PodcastStore
+	episode         store.EpisodeStore
+	podcastCategory store.PodcastCategoryStore
 }
 
 func (s *SqlSupplier) GetMaster() *sql.DB {
@@ -37,6 +38,10 @@ func (s *SqlSupplier) Podcast() store.PodcastStore {
 
 func (s *SqlSupplier) Episode() store.EpisodeStore {
 	return s.episode
+}
+
+func (s *SqlSupplier) PodcastCategory() store.PodcastCategoryStore {
+	return s.podcastCategory
 }
 
 func InitDb() *sql.DB {
@@ -69,6 +74,7 @@ func NewSqlStore() SqlStore {
 	supplier.db = InitDb()
 	supplier.podcast = NewSqlPodcastStore(supplier)
 	supplier.episode = NewSqlEpisodeStore(supplier)
+	supplier.podcastCategory = NewSqlPodcastCategoryStore(supplier)
 
 	return supplier
 }

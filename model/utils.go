@@ -19,7 +19,7 @@ type AppError struct {
 	Id            string            `json:"id"`          // Function at which the error occured
 	DetailedError string            `json:"error"`       // Internal Error string
 	StatusCode    int               `json:"status_code"` // Http status code
-	params        map[string]string `json:"parmas"`
+	Params        map[string]string `json:"parmas"`
 }
 
 func (e *AppError) Error() string {

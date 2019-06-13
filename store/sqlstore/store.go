@@ -18,4 +18,5 @@ type SqlStore interface {
 
 	Podcast() store.PodcastStore
 	Episode() store.EpisodeStore
+	PodcastCategory() store.PodcastCategoryStore
 }
