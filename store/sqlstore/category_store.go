@@ -8,11 +8,11 @@ import (
 	"github.com/varmamsp/cello/store"
 )
 
-type SqlPodcastCategoryStore struct {
+type SqlCategoryStore struct {
 	SqlStore
 }
 
-func (s *SqlPodcastCategoryStore) SaveAll(podcastCategories []*model.PodcastCategory) store.StoreChannel {
+func (s *SqlCategoryStore) SavePodcastCategories(podcastCategories []*model.PodcastCategory) store.StoreChannel {
 	return store.Do(func(r *store.StoreResult) {
 		if len(podcastCategories) == 0 {
 			return
@@ -38,6 +38,6 @@ func (s *SqlPodcastCategoryStore) SaveAll(podcastCategories []*model.PodcastCate
 	})
 }
 
-func NewSqlPodcastCategoryStore(store SqlStore) store.PodcastCategoryStore {
-	return &SqlPodcastCategoryStore{store}
+func NewSqlCategoryStore(store SqlStore) store.CategoryStore {
+	return &SqlCategoryStore{store}
 }

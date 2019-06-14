@@ -10,7 +10,7 @@ func TestAddNewPodcast(t *testing.T) {
 	assert := assert.New(t)
 
 	app := NewApp()
-	err := app.AddNewPodcast("https://feeds.megaphone.fm/thechernobylpodcast")
+	err := app.AddNewPodcast("https://wtfmnightshyamalan.podbean.com/feed.xml")
 
 	assert.Nil(err)
 }

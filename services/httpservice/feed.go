@@ -58,12 +58,27 @@ func (client *Client) makeFeedRequest(feedDetails *model.PodcastFeedDetails, ch 
 		return
 	}
 
+	// Not Modified
 	if resp.StatusCode == 304 {
 		ch <- &Feed{
 			Id:           feedDetails.Id,
 			Etag:         resp.Header.Get("ETag"),
 			LastModified: resp.Header.Get("Last-Modified"),
 		}
+		return
+	}
+
+	// URL Redirection
+	if resp.StatusCode == 302 {
+		client.makeFeedRequest(
+			&model.PodcastFeedDetails{
+				Id:               feedDetails.Id,
+				FeedUrl:          resp.Header.Get("Location"),
+				FeedETag:         feedDetails.FeedETag,
+				FeedLastModified: feedDetails.FeedLastModified,
+			},
+			ch,
+		)
 		return
 	}
 

@@ -23,7 +23,7 @@ func Do(f func(result *StoreResult)) StoreChannel {
 type Store interface {
 	Podcast() PodcastStore
 	Episode() EpisodeStore
-	PodcastCategoryStore() PodcastCategoryStore
+	Category() CategoryStore
 }
 
 type PodcastStore interface {
@@ -34,6 +34,6 @@ type EpisodeStore interface {
 	SaveAll(episodes []*model.Episode) StoreChannel
 }
 
-type PodcastCategoryStore interface {
-	SaveAll(podcastCategories []*model.PodcastCategory) StoreChannel
+type CategoryStore interface {
+	SavePodcastCategories(podcastCategories []*model.PodcastCategory) StoreChannel
 }

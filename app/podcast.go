@@ -2,7 +2,6 @@ package app
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -40,7 +39,11 @@ func (app *App) AddNewPodcast(feedUrl string) *model.AppError {
 	data := result.Data.(sql.Result)
 	podcastId, _ := data.LastInsertId()
 
-	fmt.Println(podcastId)
+	podcastCategories := model.LoadCategoriesFromFeed(feed.RssFeed, podcastId)
+	result = <-app.store.Category().SavePodcastCategories(podcastCategories)
+	if result.Err != nil {
+		return result.Err
+	}
 
 	var episodes []*model.Episode
 	for _, item := range feed.RssFeed.Items {
@@ -51,7 +54,6 @@ func (app *App) AddNewPodcast(feedUrl string) *model.AppError {
 			episodes = append(episodes, tmp)
 		}
 	}
-	fmt.Println(episodes[0].PodcastId)
 	result = <-app.store.Episode().SaveAll(episodes)
 	if result.Err != nil {
 		return result.Err
