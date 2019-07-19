@@ -73,6 +73,16 @@ CREATE TABLE `podcast_category` (
         ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
+CREATE TABLE `podcast_itunes` (
+    `itunes_id` VARCHAR(20),
+    `feed_url` VARCHAR(255),
+    `album_art` VARCHAR(255),
+    `scrapped_at` DATETIME NOT NULL,
+    `added_to_phenopod` TINYINT DEFAULT 0,
+    `added_at` DATETIME NOT NULL,
+    PRIMARY KEY (`itunes_id`)
+);
+
 INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
 INSERT INTO `category` (`id`, `name`) VALUES (2, 'Business');
 INSERT INTO `category` (`id`, `name`) VALUES (3, 'Comedy');

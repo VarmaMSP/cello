@@ -24,6 +24,7 @@ type Store interface {
 	Podcast() PodcastStore
 	Episode() EpisodeStore
 	Category() CategoryStore
+	PodcastItunes() PodcastItunesStore
 }
 
 type PodcastStore interface {
@@ -36,4 +37,8 @@ type EpisodeStore interface {
 
 type CategoryStore interface {
 	SavePodcastCategories(podcastCategories []*model.PodcastCategory) StoreChannel
+}
+
+type PodcastItunesStore interface {
+	SaveAll(podcastItunesMeta []*model.PodcastItunes) StoreChannel
 }

@@ -47,13 +47,11 @@ func (i *NullInt64) UnmarshalJSON(b []byte) error {
 		i.Valid = false
 		return err
 	}
-
 	val, err := strconv.ParseInt(str, 10, 0)
 	if err != nil {
 		i.Valid = false
 		return err
 	}
-
 	i.Int64 = val
 	return nil
 }

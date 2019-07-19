@@ -10,10 +10,11 @@ import (
 )
 
 type SqlSupplier struct {
-	db       *sql.DB
-	podcast  store.PodcastStore
-	episode  store.EpisodeStore
-	category store.CategoryStore
+	db            *sql.DB
+	podcast       store.PodcastStore
+	episode       store.EpisodeStore
+	category      store.CategoryStore
+	podcastItunes store.PodcastItunesStore
 }
 
 func NewSqlStore() SqlStore {
@@ -22,6 +23,7 @@ func NewSqlStore() SqlStore {
 	supplier.podcast = NewSqlPodcastStore(supplier)
 	supplier.episode = NewSqlEpisodeStore(supplier)
 	supplier.category = NewSqlCategoryStore(supplier)
+	supplier.podcastItunes = NewSqlPodcastItunesStore(supplier)
 
 	return supplier
 }
@@ -31,6 +33,11 @@ func (s *SqlSupplier) GetMaster() *sql.DB {
 }
 
 func (s *SqlSupplier) Insert(models []DbModel, tableName string) (sql.Result, error) {
+	l := len(models)
+	if l == 0 {
+		return nil, nil
+	}
+
 	query := InsertQuery(tableName, models[0], len(models))
 	values := make([]interface{}, 0)
 	for i := range models {
@@ -52,6 +59,10 @@ func (s *SqlSupplier) Episode() store.EpisodeStore {
 
 func (s *SqlSupplier) Category() store.CategoryStore {
 	return s.category
+}
+
+func (s *SqlSupplier) PodcastItunes() store.PodcastItunesStore {
+	return s.podcastItunes
 }
 
 func InitDb() *sql.DB {

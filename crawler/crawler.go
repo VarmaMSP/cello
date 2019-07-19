@@ -7,7 +7,11 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/golang-collections/go-datastructures/set"
+	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/store"
 )
+
+// TODO: Implement Logging
 
 const (
 	ITUNES_SEED_URL              = "https://podcasts.apple.com/us/genre/podcasts/id26"
@@ -22,44 +26,45 @@ type Crawler struct {
 	urlQ chan string
 	// Queues http responses
 	respQ chan *http.Response
-	// Queues new podcast ids
-	podcastIdQ chan string
+	// Queues batches of new podcast ids
+	podcastIdsQ chan []string
 	// Set of visited urls
 	urlSet *set.Set
 	// Set of podcast ids that are crawled
 	podcastSet *set.Set
 	// http client
 	httpClient *http.Client
+	// store
+	store store.Store
 }
 
-func NewCrawler() *Crawler {
+func NewCrawler(store store.Store) *Crawler {
 	c := &Crawler{
-		urlQ:       make(chan string, 10000),
-		respQ:      make(chan *http.Response),
-		podcastIdQ: make(chan string, 1000),
-		urlSet:     set.New(ITUNES_SEED_URL),
-		podcastSet: set.New(),
-		httpClient: &http.Client{Timeout: time.Second * 50},
+		urlQ:        make(chan string, 10000),
+		respQ:       make(chan *http.Response),
+		podcastIdsQ: make(chan []string, 100),
+		urlSet:      set.New(),
+		podcastSet:  set.New(),
+		httpClient:  &http.Client{Timeout: time.Second * 20},
+		store:       store,
 	}
-	c.bootstrap()
+
+	go c.pollAndFetchPages()
+	go c.pollAndProcessPages()
+	go c.pollAndSaveNewPodcasts()
+
 	return c
 }
 
 func (c *Crawler) Start() {
-	// Seed urlQ with root url to start crawling
+	// Clear visited url set and seed urlQ with root url
+	c.urlSet.Clear()
+	c.urlSet.Add(ITUNES_SEED_URL)
 	c.urlQ <- ITUNES_SEED_URL
-
-	var cx chan int
-	<-cx
 }
 
-func (c *Crawler) bootstrap() {
-	go c.fetchDocuments()
-	go c.processResponses()
-}
-
-func (c *Crawler) fetchDocuments() {
-	// A counting semaphore to keep at most n processes running in parallel
+func (c *Crawler) pollAndFetchPages() {
+	// A counting semaphore to keep at most n processes are running in parallel
 	semaphore := make(chan int, PARALLEL_HTTP_REQUESTS_LIMIT)
 
 	for {
@@ -77,25 +82,26 @@ func (c *Crawler) fetchDocuments() {
 	}
 }
 
-func (c *Crawler) processResponses() {
+func (c *Crawler) pollAndProcessPages() {
 	for {
 		go func(resp *http.Response) {
 			if resp == nil {
 				return
 			}
-			fmt.Printf("PROCESSING %s\n", resp.Request.URL.String())
 			defer resp.Body.Close()
 			doc, err := goquery.NewDocumentFromReader(resp.Body)
 			if err != nil {
 				return
 			}
 
+			var newPodcastIds []string
 			sel := doc.Find("a")
 			for i := range sel.Nodes {
 				if link, exist := sel.Eq(i).Attr("href"); exist {
 					if ok, podcastId := isPodcastPage(link); ok {
 						if !c.podcastSet.Exists(podcastId) {
 							c.podcastSet.Add(podcastId)
+							newPodcastIds = append(newPodcastIds, podcastId)
 						}
 						continue
 					}
@@ -109,6 +115,26 @@ func (c *Crawler) processResponses() {
 					}
 				}
 			}
+			c.podcastIdsQ <- newPodcastIds
 		}(<-c.respQ)
+	}
+}
+
+func (c *Crawler) pollAndSaveNewPodcasts() {
+	for {
+		podcastIds := <-c.podcastIdsQ
+		podcastItunesMeta := make([]*model.PodcastItunes, len(podcastIds))
+		for i := 0; i < len(podcastIds); i++ {
+			podcastItunesMeta[i] = &model.PodcastItunes{
+				ItunesId:   podcastIds[i],
+				ScrappedAt: time.Now().UTC().Format(model.MYSQL_DATETIME),
+				AddedAt:    time.Now().UTC().Format(model.MYSQL_DATETIME),
+			}
+		}
+
+		res := <-c.store.PodcastItunes().SaveAll(podcastItunesMeta)
+		if res.Err != nil {
+			fmt.Println(res.Err.Error())
+		}
 	}
 }
