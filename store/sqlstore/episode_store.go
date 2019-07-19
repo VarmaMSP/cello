@@ -12,6 +12,10 @@ type SqlEpisodeStore struct {
 	SqlStore
 }
 
+func NewSqlEpisodeStore(store SqlStore) store.EpisodeStore {
+	return &SqlEpisodeStore{store}
+}
+
 func (s *SqlEpisodeStore) SaveAll(episodes []*model.Episode) store.StoreChannel {
 	return store.Do(func(r *store.StoreResult) {
 		models := make([]DbModel, len(episodes))
@@ -33,8 +37,4 @@ func (s *SqlEpisodeStore) SaveAll(episodes []*model.Episode) store.StoreChannel 
 		}
 		r.Data = res
 	})
-}
-
-func NewSqlEpisodeStore(store SqlStore) store.EpisodeStore {
-	return &SqlEpisodeStore{store}
 }

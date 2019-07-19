@@ -16,6 +16,16 @@ type SqlSupplier struct {
 	category store.CategoryStore
 }
 
+func NewSqlStore() SqlStore {
+	supplier := &SqlSupplier{}
+	supplier.db = InitDb()
+	supplier.podcast = NewSqlPodcastStore(supplier)
+	supplier.episode = NewSqlEpisodeStore(supplier)
+	supplier.category = NewSqlCategoryStore(supplier)
+
+	return supplier
+}
+
 func (s *SqlSupplier) GetMaster() *sql.DB {
 	return s.db
 }
@@ -67,14 +77,4 @@ func InitDb() *sql.DB {
 	}
 
 	return db
-}
-
-func NewSqlStore() SqlStore {
-	supplier := &SqlSupplier{}
-	supplier.db = InitDb()
-	supplier.podcast = NewSqlPodcastStore(supplier)
-	supplier.episode = NewSqlEpisodeStore(supplier)
-	supplier.category = NewSqlCategoryStore(supplier)
-
-	return supplier
 }

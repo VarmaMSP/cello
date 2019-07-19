@@ -12,6 +12,10 @@ type SqlCategoryStore struct {
 	SqlStore
 }
 
+func NewSqlCategoryStore(store SqlStore) store.CategoryStore {
+	return &SqlCategoryStore{store}
+}
+
 func (s *SqlCategoryStore) SavePodcastCategories(podcastCategories []*model.PodcastCategory) store.StoreChannel {
 	return store.Do(func(r *store.StoreResult) {
 		if len(podcastCategories) == 0 {
@@ -36,8 +40,4 @@ func (s *SqlCategoryStore) SavePodcastCategories(podcastCategories []*model.Podc
 		}
 		r.Data = res
 	})
-}
-
-func NewSqlCategoryStore(store SqlStore) store.CategoryStore {
-	return &SqlCategoryStore{store}
 }

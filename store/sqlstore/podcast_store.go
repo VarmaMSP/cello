@@ -11,6 +11,10 @@ type SqlPodcastStore struct {
 	SqlStore
 }
 
+func NewSqlPodcastStore(store SqlStore) store.PodcastStore {
+	return &SqlPodcastStore{store}
+}
+
 func (s *SqlPodcastStore) Save(podcast *model.Podcast) store.StoreChannel {
 	return store.Do(func(r *store.StoreResult) {
 		res, err := s.Insert([]DbModel{podcast}, "podcast")
@@ -28,8 +32,4 @@ func (s *SqlPodcastStore) Save(podcast *model.Podcast) store.StoreChannel {
 		}
 		r.Data = res
 	})
-}
-
-func NewSqlPodcastStore(store SqlStore) store.PodcastStore {
-	return &SqlPodcastStore{store}
 }
