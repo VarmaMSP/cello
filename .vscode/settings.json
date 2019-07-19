@@ -4,5 +4,6 @@
         "--disable-all",
         "--enable=golint",
         "--config=${workspaceRoot}/.gometalinter"
-    ]
+    ],
+    "workbench.list.automaticKeyboardNavigation": false
 }
