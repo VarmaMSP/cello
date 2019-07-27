@@ -1,8 +1,11 @@
-package crawler
+package itunescrawler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -15,13 +18,14 @@ import (
 
 const (
 	ITUNES_SEED_URL              = "https://podcasts.apple.com/us/genre/podcasts/id26"
+	ITUNES_LOOKUP_URL            = "https://itunes.apple.com/lookup?id="
 	PARALLEL_HTTP_REQUESTS_LIMIT = 5
 )
 
 // A primitive implementation of Mecator crawler to crawl Itunes
 // http://www.cs.cornell.edu/courses/cs685/2002fa/mercator.pdf
 
-type Crawler struct {
+type ItunesCrawler struct {
 	// Url frontier
 	urlQ chan string
 	// Queues http responses
@@ -38,8 +42,8 @@ type Crawler struct {
 	store store.Store
 }
 
-func NewCrawler(store store.Store) *Crawler {
-	c := &Crawler{
+func New(store store.Store) *ItunesCrawler {
+	c := &ItunesCrawler{
 		urlQ:        make(chan string, 10000),
 		respQ:       make(chan *http.Response),
 		podcastIdsQ: make(chan []string, 100),
@@ -56,15 +60,15 @@ func NewCrawler(store store.Store) *Crawler {
 	return c
 }
 
-func (c *Crawler) Start() {
+func (c *ItunesCrawler) Run() {
 	// Clear visited url set and seed urlQ with root url
 	c.urlSet.Clear()
 	c.urlSet.Add(ITUNES_SEED_URL)
 	c.urlQ <- ITUNES_SEED_URL
 }
 
-func (c *Crawler) pollAndFetchPages() {
-	// A counting semaphore to keep at most n processes are running in parallel
+func (c *ItunesCrawler) pollAndFetchPages() {
+	// A counting semaphore to keep at most n processes running in parallel
 	semaphore := make(chan int, PARALLEL_HTTP_REQUESTS_LIMIT)
 
 	for {
@@ -82,7 +86,7 @@ func (c *Crawler) pollAndFetchPages() {
 	}
 }
 
-func (c *Crawler) pollAndProcessPages() {
+func (c *ItunesCrawler) pollAndProcessPages() {
 	for {
 		go func(resp *http.Response) {
 			if resp == nil {
@@ -97,36 +101,62 @@ func (c *Crawler) pollAndProcessPages() {
 			var newPodcastIds []string
 			sel := doc.Find("a")
 			for i := range sel.Nodes {
-				if link, exist := sel.Eq(i).Attr("href"); exist {
-					if ok, podcastId := isPodcastPage(link); ok {
-						if !c.podcastSet.Exists(podcastId) {
-							c.podcastSet.Add(podcastId)
-							newPodcastIds = append(newPodcastIds, podcastId)
-						}
-						continue
-					}
+				link, exist := sel.Eq(i).Attr("href")
+				if !exist {
+					continue
+				}
 
-					if ok, nLink := isGenrePage(link); ok {
-						if !c.urlSet.Exists(nLink) {
-							c.urlSet.Add(nLink)
-							c.urlQ <- nLink
-						}
-						continue
+				if ok, podcastId := isPodcastPage(link); ok {
+					if !c.podcastSet.Exists(podcastId) {
+						c.podcastSet.Add(podcastId)
+						newPodcastIds = append(newPodcastIds, podcastId)
 					}
+					continue
+				}
+
+				if ok, nLink := isGenrePage(link); ok {
+					if !c.urlSet.Exists(nLink) {
+						c.urlSet.Add(nLink)
+						c.urlQ <- nLink
+					}
+					continue
 				}
 			}
-			c.podcastIdsQ <- newPodcastIds
+
+			// Queue batches of size 200
+			i := 0
+			l := len(newPodcastIds)
+			for i < l {
+				if i+200 < l {
+					c.podcastIdsQ <- newPodcastIds[i : i+200]
+				} else {
+					c.podcastIdsQ <- newPodcastIds[i:l]
+				}
+				i = i + 200
+			}
 		}(<-c.respQ)
 	}
 }
 
-func (c *Crawler) pollAndSaveNewPodcasts() {
+func (c *ItunesCrawler) pollAndSaveNewPodcasts() {
 	for {
 		podcastIds := <-c.podcastIdsQ
-		podcastItunesMeta := make([]*model.PodcastItunes, len(podcastIds))
-		for i := 0; i < len(podcastIds); i++ {
+		req, _ := http.NewRequest("GET", ITUNES_LOOKUP_URL+strings.Join(podcastIds, ","), nil)
+		resp, err := c.httpClient.Do(req)
+		if err != nil {
+			continue
+		}
+		lookupResp := &ItunesLookupResp{}
+		err = json.NewDecoder(resp.Body).Decode(lookupResp)
+		if err != nil {
+			continue
+		}
+
+		podcastItunesMeta := make([]*model.PodcastItunes, len(lookupResp.Results))
+		for i, result := range lookupResp.Results {
 			podcastItunesMeta[i] = &model.PodcastItunes{
-				ItunesId:   podcastIds[i],
+				ItunesId:   strconv.Itoa(result.Id),
+				FeedUrl:    result.FeedUrl,
 				ScrappedAt: time.Now().UTC().Format(model.MYSQL_DATETIME),
 				AddedAt:    time.Now().UTC().Format(model.MYSQL_DATETIME),
 			}

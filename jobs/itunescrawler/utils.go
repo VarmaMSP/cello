@@ -1,10 +1,21 @@
-package crawler
+package itunescrawler
 
 import "regexp"
 
 var REGEXP_ITUNES_GENRE_PAGE = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/genre\/.*`)
-var REGEXP_ITUNES_PODCAST_PAGE = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/podcast\/.+\/(id[0-9]+).*`)
+var REGEXP_ITUNES_PODCAST_PAGE = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/podcast\/.+\/id([0-9]+).*`)
 var REGEXP_URL_WITH_FRAGEMENT = regexp.MustCompile(`(https?:\/\/.+)#.*`)
+
+type ItunesLookupResp struct {
+	Count   int                 `json:"resultCount"`
+	Results []ItunesPodcastMeta `json:"results"`
+}
+
+type ItunesPodcastMeta struct {
+	Kind    string `json:"kind"`
+	Id      int    `json:"collectionId"`
+	FeedUrl string `json:"feedUrl"`
+}
 
 // Check if given link points to itunes podcast page
 // and return podcast id if true
