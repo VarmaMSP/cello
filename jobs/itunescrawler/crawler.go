@@ -53,6 +53,7 @@ func New(store store.Store) *ItunesCrawler {
 		store:       store,
 	}
 
+	c.loadPodcastSet()
 	go c.pollAndFetchPages()
 	go c.pollAndProcessPages()
 	go c.pollAndSaveNewPodcasts()
@@ -65,6 +66,23 @@ func (c *ItunesCrawler) Run() {
 	c.urlSet.Clear()
 	c.urlSet.Add(ITUNES_SEED_URL)
 	c.urlQ <- ITUNES_SEED_URL
+}
+
+func (c *ItunesCrawler) loadPodcastSet() {
+	afterId := ""
+
+	for {
+		res := <-c.store.PodcastItunes().GetItunesIdsAfter(afterId, 50000)
+		ids := res.Data.([]string)
+		if len(ids) > 0 {
+			for _, id := range ids {
+				c.podcastSet.Add(id)
+			}
+			afterId = ids[len(ids)-1]
+		} else {
+			return
+		}
+	}
 }
 
 func (c *ItunesCrawler) pollAndFetchPages() {

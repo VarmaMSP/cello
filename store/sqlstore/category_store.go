@@ -18,10 +18,6 @@ func NewSqlCategoryStore(store SqlStore) store.CategoryStore {
 
 func (s *SqlCategoryStore) SavePodcastCategories(podcastCategories []*model.PodcastCategory) store.StoreChannel {
 	return store.Do(func(r *store.StoreResult) {
-		if len(podcastCategories) == 0 {
-			return
-		}
-
 		models := make([]DbModel, len(podcastCategories))
 		for i := range models {
 			models[i] = podcastCategories[i]

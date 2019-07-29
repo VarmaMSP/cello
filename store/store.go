@@ -41,4 +41,5 @@ type CategoryStore interface {
 
 type PodcastItunesStore interface {
 	SaveAll(podcastItunesMeta []*model.PodcastItunes) StoreChannel
+	GetItunesIdsAfter(afterId string, limit int) StoreChannel
 }
