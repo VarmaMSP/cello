@@ -35,12 +35,9 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e58f08f67053e03459eea36b2ef7182208d4463163ca6202a5918cb3f9cdfde2"
+  digest = "1:f18ecfab93811d93b90c06938beae5504d1324ff015807de3adb986cfb166cf9"
   name = "github.com/golang-collections/go-datastructures"
-  packages = [
-    "queue",
-    "set",
-  ]
+  packages = ["set"]
   pruneopts = "UT"
   revision = "59788d5eb2591d3497ffb8fafed2f16fe00e7775"
 
@@ -88,12 +85,36 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:2e76a73cb51f42d63a2a1a85b3dc5731fd4faf6821b434bd0ef2c099186031d6"
+  name = "github.com/rs/xid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "15d26544def341f036c5f8dca987a4cbe575032c"
+  version = "v1.2.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:d6bb6f3240a488ffe5bb6952b513569d009927dcb20ff94885f87b76cef2b698"
+  name = "github.com/streadway/amqp"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "75d898a42a940fbc854dfd1a4199eabdc00cf024"
+
+[[projects]]
   digest = "1:972c2427413d41a1e06ca4897e8528e5a1622894050e2f527b38ddf0f343f759"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = "UT"
   revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
   version = "v1.3.0"
+
+[[projects]]
+  digest = "1:c08f5d8cc28ed4dccb098121d5f1f19f708bf04e3bbd4b772ce6461de6ef1ca2"
+  name = "github.com/teris-io/shortid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "6c56cef5189ca1b3d5ef01dc07f4d611dfc0bb33"
+  version = "v1.0"
 
 [[projects]]
   branch = "master"
@@ -147,11 +168,13 @@
   input-imports = [
     "github.com/PuerkitoBio/goquery",
     "github.com/go-sql-driver/mysql",
-    "github.com/golang-collections/go-datastructures/queue",
     "github.com/golang-collections/go-datastructures/set",
     "github.com/mmcdole/gofeed/rss",
     "github.com/pborman/uuid",
+    "github.com/rs/xid",
+    "github.com/streadway/amqp",
     "github.com/stretchr/testify/assert",
+    "github.com/teris-io/shortid",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
