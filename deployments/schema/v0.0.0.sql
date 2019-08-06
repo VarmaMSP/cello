@@ -3,85 +3,83 @@ CREATE DATABASE `phenopod`;
 USE `phenopod`;
 
 CREATE TABLE `podcast` (
-    `id` BIGINT AUTO_INCREMENT,
-    `title` VARCHAR(255) NOT NULL,
-    `description` TEXT NOT NULL,
-    `image_path` VARCHAR(500) NOT NULL,
-    `language` VARCHAR(4) NOT NULL,
-    `explicit` TINYINT NOT NULL,
-	`author` VARCHAR(255) NOT NULL,
-	`type` ENUM('episodic', 'serial') DEFAULT 'episodic',
-	`block` TINYINT DEFAULT 0,
-    `complete` TINYINT DEFAULT 0,
-    `link` VARCHAR(500) NOT NULL,
-    `owner_name` VARCHAR (255) NOT NULL,
-    `owner_email` VARCHAR (255) NOT NULL,
-    `copyright` VARCHAR(255) NOT NULL,
-    `feed_url` VARCHAR(500) NOT NULL,
-    `feed_etag` VARCHAR(255) NOT NULL,
-    `feed_last_modified` VARCHAR(100) NOT NULL,
-    `new_feed_url` VARCHAR(500) NOT NULL,
-    `latest_episode_guid` VARCHAR(255) NOT NULL,
-    `latest_episode_pub_date` DATETIME NOT NULL,
-    `created_at` DATETIME NOT NULL,
-    `updated_at` DATETIME NOT NULL,
+    `id`                    VARCHAR(20),
+    `title`                 VARCHAR(500) NOT NULL,
+    `description`           BLOB NOT NULL,
+    `image_path`            VARCHAR(500) NOT NULL,
+    `language`              VARCHAR(10) NOT NULL,
+    `explicit`              TINYINT DEFAULT 0,
+	`author`                VARCHAR(255) NOT NULL,
+	`type`                  ENUM('EPISODIC', 'SERIAL') DEFAULT 'EPISODIC',
+	`block`                 TINYINT DEFAULT 0,
+    `complete`              TINYINT DEFAULT 0,
+    `link`                  VARCHAR(500) NOT NULL,
+    `owner_name`            VARCHAR(500) NOT NULL,
+    `owner_email`           VARCHAR(500) NOT NULL,
+    `copyright`             VARCHAR(500) NOT NULL,
+    `feed_url`              VARCHAR(500) NOT NULL,
+    `feed_etag`             VARCHAR(255) NOT NULL,
+    `feed_last_modified`    VARCHAR(255) NOT NULL,
+    `new_feed_url`          VARCHAR(500) NOT NULL,
+    `created_at`            INT NOT NULL,
+    `updated_at`            INT NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`title`),
     UNIQUE KEY (`feed_url`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `episode` (
-    `id` VARCHAR(26),
-    `guid` VARCHAR(255) NOT NULL,
-    `podcast_id` BIGINT NOT NULL,
-    `title` VARCHAR(255) NOT NULL,
-    `audio_url` VARCHAR(500) NOT NULL,
-    `audio_type` VARCHAR(20) NOT NULL,
-    `audio_size` INT NOT NULL,
-    `pub_date` DATETIME NOT NULL,
-    `description` TEXT NOT NULL,
-    `duration` SMALLINT NOT NULL,
-    `link` VARCHAR(500) NOT NULL,
-    `image_link` VARCHAR(500) NOT NULL,
-    `explicit` TINYINT DEFAULT 0,
-    `episode` SMALLINT NOT NULL,
-    `season` SMALLINT NOT NULL,
-    `type` ENUM('full', 'trailer', 'bonus') DEFAULT 'full',
-    `block` TINYINT DEFAULT 0,
-    `created_at` DATETIME NOT NULL,
-    `updated_at` DATETIME NOT NULL,
+    `id`                    VARCHAR(20),
+    `podcast_id`            VARCHAR(20) NOT NULL,
+    `guid`                  VARCHAR(500) NOT NULL,
+    `title`                 VARCHAR(500) NOT NULL,
+    `audio_url`             VARCHAR(700) NOT NULL,
+    `audio_type`            VARCHAR(20) NOT NULL,
+    `audio_size`            BIGINT NOT NULL,
+    `pub_date`              DATETIME NOT NULL,
+    `description`           BLOB NOT NULL,
+    `duration`              INT NOT NULL,
+    `link`                  VARCHAR(500) NOT NULL,
+    `image_link`            VARCHAR(500) NOT NULL,
+    `explicit`              TINYINT DEFAULT 0,
+    `episode`               INT NOT NULL,
+    `season`                INT NOT NULL,
+    `type`                  ENUM('FULL', 'TRAILER', 'BONUS') DEFAULT 'FULL',
+    `block`                 TINYINT DEFAULT 0,
+    `created_at`            INT NOT NULL,
+    `updated_at`            INT NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`)
         ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+CREATE TABLE `itunes_meta` (
+    `itunes_id`             VARCHAR(15),
+    `feed_url`              VARCHAR(500),
+    `scrapped_at`           DATETIME NOT NULL,
+    `added_to_db`           ENUM('SUCCESS', 'FAILURE', 'PENDING') DEFAULT 'PENDING',
+    `updated_at`            INT NOT NULL,
+    PRIMARY KEY (`itunes_id`),
+    UNIQUE KEY (`feed_url`)
+);
+
 CREATE TABLE `category` (
-    `id` INT,
-    `name` VARCHAR(100) NOT NULL,
-    `parent_id` INT, 
+    `id`                    INT,
+    `name`                  VARCHAR(100) NOT NULL,
+    `parent_id`             INT, 
     PRIMARY KEY (`id`),
     FOREIGN KEY (`parent_id`) REFERENCES `category` (`id`)
         ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
 CREATE TABLE `podcast_category` (
-    `podcast_id` BIGINT NOT NULL,
-    `category_id` INT NOT NULL,
+    `podcast_id`            VARCHAR(20) NOT NULL,
+    `category_id`           INT NOT NULL,
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
         ON UPDATE CASCADE ON DELETE NO ACTION
-);
-
-CREATE TABLE `podcast_itunes` (
-    `itunes_id` VARCHAR(20),
-    `feed_url` VARCHAR(255),
-    `album_art` VARCHAR(255),
-    `scrapped_at` DATETIME NOT NULL,
-    `added_to_phenopod` TINYINT DEFAULT 0,
-    `added_at` DATETIME NOT NULL,
-    PRIMARY KEY (`itunes_id`)
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
 INSERT INTO `category` (`id`, `name`) VALUES (2, 'Business');
