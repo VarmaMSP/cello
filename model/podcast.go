@@ -101,7 +101,7 @@ func (pfd *PodcastFeedDetails) FieldAddrs() []interface{} {
 	)
 }
 
-func (p *Podcast) Load(feed *rss.Feed) *AppError {
+func (p *Podcast) LoadDetails(feed *rss.Feed) *AppError {
 	appErrorC := NewAppErrorC(
 		"model.podcast.load_data_from_feed",
 		http.StatusBadRequest,

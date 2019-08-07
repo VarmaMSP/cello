@@ -79,7 +79,7 @@ func (ep *EpisodePatch) FieldAddrs() []interface{} {
 	)
 }
 
-func (e *Episode) Load(item *rss.Item) *AppError {
+func (e *Episode) LoadDetails(item *rss.Item) *AppError {
 	appErrorC := NewAppErrorC(
 		"model.epsiode.load_data_from_feed",
 		http.StatusBadRequest,

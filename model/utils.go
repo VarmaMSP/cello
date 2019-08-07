@@ -1,6 +1,7 @@
 package model
 
 import (
+	"encoding/json"
 	"net/mail"
 	"net/url"
 	"regexp"
@@ -39,7 +40,7 @@ func NewAppErrorC(where string, statusCode int, params map[string]string) func(d
 	}
 }
 
-// Parse time string (HH:MM:SS / MM:SS / SS) to seconds.
+// ParseTime parses number of seconds from a string of HH:MM:SS / MM:SS / SS format
 func ParseTime(timeString string) int {
 	x := strings.Split(timeString, ":")
 	sec := 0
@@ -50,12 +51,12 @@ func ParseTime(timeString string) int {
 	return sec
 }
 
-// Current unix timestamp
+// Now returns unix timestamp
 func Now() int64 {
 	return time.Now().UTC().Unix()
 }
 
-// Current Mysql datetime
+// NowDateTime returns UTC time in Mysql datetime format
 func NowDateTime() string {
 	return time.Now().UTC().Format(MYSQL_DATETIME)
 }
@@ -65,6 +66,7 @@ var (
 	regexpUrlWithFragment = regexp.MustCompile(`(https?:\/\/.+)#.*`)
 )
 
+// RemoveQueryFromUrl removes query string from given url if present
 func RemoveQueryFromUrl(rawUrl string) string {
 	if regexpUrlWithQuery.MatchString(rawUrl) {
 		capture := regexpUrlWithQuery.FindStringSubmatch(rawUrl)
@@ -73,6 +75,7 @@ func RemoveQueryFromUrl(rawUrl string) string {
 	return rawUrl
 }
 
+// RemoveFragementFromUrl removes fragment from given url if present
 func RemoveFragmentFromUrl(rawUrl string) string {
 	if regexpUrlWithFragment.MatchString(rawUrl) {
 		capture := regexpUrlWithFragment.FindStringSubmatch(rawUrl)
@@ -81,6 +84,7 @@ func RemoveFragmentFromUrl(rawUrl string) string {
 	return rawUrl
 }
 
+// IsValidHttpUrl validates a url
 func IsValidHttpUrl(rawUrl string) bool {
 	if strings.Index(rawUrl, "http://") != 0 && strings.Index(rawUrl, "https://") != 0 {
 		return false
@@ -91,6 +95,7 @@ func IsValidHttpUrl(rawUrl string) bool {
 	return true
 }
 
+// IsValidEmail validates a email address
 func IsValidEmail(email string) bool {
 	if _, err := mail.ParseAddress(email); err != nil {
 		return false
@@ -98,6 +103,7 @@ func IsValidEmail(email string) bool {
 	return true
 }
 
+// IsValidAudioType validates audio type for rss feed item
 func IsValidAudioType(audioType string) bool {
 	if ok, err := regexp.MatchString(`(?:audio|video)\/*.`, audioType); err == nil && ok {
 		return true
@@ -106,4 +112,14 @@ func IsValidAudioType(audioType string) bool {
 		return true
 	}
 	return true
+}
+
+// MapFromJson will decode the map with values of type string
+func MapFromJson(data []byte) map[string]string {
+	var res map[string]string
+	if err := json.Unmarshal(data, &res); err != nil {
+		return make(map[string]string)
+	} else {
+		return res
+	}
 }
