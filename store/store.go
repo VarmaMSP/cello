@@ -2,44 +2,28 @@ package store
 
 import "github.com/varmamsp/cello/model"
 
-type StoreResult struct {
-	Data interface{}
-	Err  *model.AppError
-}
-
-type StoreChannel chan StoreResult
-
-func Do(f func(result *StoreResult)) StoreChannel {
-	storeChannel := make(StoreChannel, 1)
-	go func() {
-		storeResult := StoreResult{}
-		f(&storeResult)
-		storeChannel <- storeResult
-		close(storeChannel)
-	}()
-	return storeChannel
-}
-
 type Store interface {
 	Podcast() PodcastStore
 	Episode() EpisodeStore
 	Category() CategoryStore
-	PodcastItunes() PodcastItunesStore
+	ItunesMeta() ItunesMetaStore
 }
 
 type PodcastStore interface {
-	Save(podcast *model.Podcast) StoreChannel
+	Save(podcast *model.Podcast) *model.AppError
 }
 
 type EpisodeStore interface {
-	SaveAll(episodes []*model.Episode) StoreChannel
+	Save(episode *model.Episode) *model.AppError
 }
 
 type CategoryStore interface {
-	SavePodcastCategories(podcastCategories []*model.PodcastCategory) StoreChannel
+	SavePodcastCategory(category *model.PodcastCategory) *model.AppError
 }
 
-type PodcastItunesStore interface {
-	SaveAll(podcastItunesMeta []*model.PodcastItunes) StoreChannel
-	GetItunesIdsAfter(afterId string, limit int) StoreChannel
+type ItunesMetaStore interface {
+	Save(meta *model.ItunesMeta) *model.AppError
+	GetStatus(itunesId string) (string, *model.AppError)
+	GetItunesIdList(offset, limit int) ([]string, *model.AppError)
+	SetStatus(itunesId, status string) *model.AppError
 }

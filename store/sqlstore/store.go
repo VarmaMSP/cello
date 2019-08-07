@@ -19,5 +19,5 @@ type SqlStore interface {
 	Podcast() store.PodcastStore
 	Episode() store.EpisodeStore
 	Category() store.CategoryStore
-	PodcastItunes() store.PodcastItunesStore
+	ItunesMeta() store.ItunesMetaStore
 }

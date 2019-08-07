@@ -10,11 +10,11 @@ import (
 )
 
 type SqlSupplier struct {
-	db            *sql.DB
-	podcast       store.PodcastStore
-	episode       store.EpisodeStore
-	category      store.CategoryStore
-	podcastItunes store.PodcastItunesStore
+	db         *sql.DB
+	podcast    store.PodcastStore
+	episode    store.EpisodeStore
+	category   store.CategoryStore
+	itunesMeta store.ItunesMetaStore
 }
 
 func NewSqlStore() SqlStore {
@@ -23,7 +23,7 @@ func NewSqlStore() SqlStore {
 	supplier.podcast = NewSqlPodcastStore(supplier)
 	supplier.episode = NewSqlEpisodeStore(supplier)
 	supplier.category = NewSqlCategoryStore(supplier)
-	supplier.podcastItunes = NewSqlPodcastItunesStore(supplier)
+	supplier.itunesMeta = NewSqlItunesMetaStore(supplier)
 
 	return supplier
 }
@@ -61,8 +61,8 @@ func (s *SqlSupplier) Category() store.CategoryStore {
 	return s.category
 }
 
-func (s *SqlSupplier) PodcastItunes() store.PodcastItunesStore {
-	return s.podcastItunes
+func (s *SqlSupplier) ItunesMeta() store.ItunesMetaStore {
+	return s.itunesMeta
 }
 
 func InitDb() *sql.DB {
@@ -72,10 +72,7 @@ func InitDb() *sql.DB {
 	config.Addr = "localhost:3306"
 	config.DBName = "phenopod"
 	config.AllowNativePasswords = true
-	config.Params = map[string]string{
-		"charset":   "utf8mb4",
-		"collation": "utf8mb4_unicode_520_ci",
-	}
+	config.Params = map[string]string{"collation": "utf8mb4_unicode_ci"}
 
 	db, err := sql.Open("mysql", config.FormatDSN())
 	if err != nil {

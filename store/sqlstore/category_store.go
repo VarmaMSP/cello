@@ -16,24 +16,15 @@ func NewSqlCategoryStore(store SqlStore) store.CategoryStore {
 	return &SqlCategoryStore{store}
 }
 
-func (s *SqlCategoryStore) SavePodcastCategories(podcastCategories []*model.PodcastCategory) store.StoreChannel {
-	return store.Do(func(r *store.StoreResult) {
-		models := make([]DbModel, len(podcastCategories))
-		for i := range models {
-			models[i] = podcastCategories[i]
-		}
-
-		res, err := s.Insert(models, "podcast_category")
-		if err != nil {
-			r.Err = model.NewAppError(
-				"store.sqlstore.sql_podcast_category_store.save_all",
-				err.Error(),
-				http.StatusInternalServerError,
-				map[string]string{
-					"podcast_id": strconv.FormatInt(podcastCategories[0].PodcastId, 10),
-				},
-			)
-		}
-		r.Data = res
-	})
+func (s *SqlCategoryStore) SavePodcastCategory(category *model.PodcastCategory) *model.AppError {
+	_, err := s.Insert([]DbModel{category}, "podcast_category")
+	if err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_podcast_category_store.save_all",
+			err.Error(),
+			http.StatusInternalServerError,
+			map[string]string{"podcast_id": category.PodcastId, "category_id": strconv.FormatInt(int64(category.CategoryId), 10)},
+		)
+	}
+	return nil
 }
