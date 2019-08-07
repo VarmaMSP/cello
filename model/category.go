@@ -1,9 +1,5 @@
 package model
 
-import (
-	"github.com/mmcdole/gofeed/rss"
-)
-
 type Category struct {
 	Id       int
 	Name     string
@@ -11,7 +7,7 @@ type Category struct {
 }
 
 type PodcastCategory struct {
-	PodcastId  int64
+	PodcastId  string
 	CategoryId int
 }
 
@@ -28,30 +24,7 @@ func (pc *PodcastCategory) FieldAddrs() []interface{} {
 	)
 }
 
-func LoadCategoriesFromFeed(feed *rss.Feed, podcastId int64) []*PodcastCategory {
-	var categories []*PodcastCategory
-	for _, c := range feed.ITunesExt.Categories {
-		if id := getCategoryId(c.Text); id != -1 {
-			categories = append(
-				categories,
-				&PodcastCategory{podcastId, id},
-			)
-			if c.Subcategory == nil {
-				continue
-			}
-
-			if subId := getCategoryId(c.Subcategory.Text); subId != -1 {
-				categories = append(
-					categories,
-					&PodcastCategory{podcastId, subId},
-				)
-			}
-		}
-	}
-	return categories
-}
-
-func getCategoryId(category string) int {
+func CategoryId(category string) int {
 	switch category {
 	case "Arts":
 		return 1

@@ -1,18 +1,17 @@
 package model
 
 import (
-	"bytes"
-	"database/sql"
-	"encoding/base32"
-	"encoding/json"
+	"net/mail"
+	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
-
-	"github.com/pborman/uuid"
+	"time"
 )
 
 const (
-	MYSQL_DATETIME = "2006-01-02 15:04:05"
+	MYSQL_DATETIME      = "2006-01-02 15:04:05"
+	MYSQL_BLOB_MAX_SIZE = 65535
 )
 
 type AppError struct {
@@ -30,30 +29,10 @@ func NewAppError(where string, details string, statusCode int, params map[string
 	return &AppError{where, details, statusCode, params}
 }
 
-type NullInt64 struct {
-	sql.NullInt64
-}
-
-func (i *NullInt64) MarshalJSON() ([]byte, error) {
-	if i.Valid {
-		json.Marshal(i.Int64)
+func NewAppErrorC(where string, statusCode int, params map[string]string) func(details string) *AppError {
+	return func(details string) *AppError {
+		return &AppError{where, details, statusCode, params}
 	}
-	return []byte("null"), nil
-}
-
-func (i *NullInt64) UnmarshalJSON(b []byte) error {
-	var str string
-	if err := json.Unmarshal(b, str); err != nil {
-		i.Valid = false
-		return err
-	}
-	val, err := strconv.ParseInt(str, 10, 0)
-	if err != nil {
-		i.Valid = false
-		return err
-	}
-	i.Int64 = val
-	return nil
 }
 
 // Parse time string (HH:MM:SS / MM:SS / SS) to seconds.
@@ -67,13 +46,60 @@ func ParseTime(timeString string) int {
 	return sec
 }
 
-var encoding = base32.NewEncoding("ybndrfg8ejkmcpqxot1uwisza345h769")
+// Current unix timestamp
+func Now() int64 {
+	return time.Now().UTC().Unix()
+}
 
-func NewId() string {
-	var b bytes.Buffer
-	encoder := base32.NewEncoder(encoding, &b)
-	encoder.Write(uuid.NewRandom())
-	encoder.Close()
-	b.Truncate(26)
-	return b.String()
+// Current Mysql datetime
+func NowDateTime() string {
+	return time.Now().UTC().Format(MYSQL_DATETIME)
+}
+
+var (
+	regexpUrlWithQuery    = regexp.MustCompile(`(https?:\/\/.+)\?.*`)
+	regexpUrlWithFragment = regexp.MustCompile(`(https?:\/\/.+)#.*`)
+)
+
+func RemoveQueryFromUrl(rawUrl string) string {
+	if regexpUrlWithQuery.MatchString(rawUrl) {
+		capture := regexpUrlWithQuery.FindStringSubmatch(rawUrl)
+		return capture[1]
+	}
+	return rawUrl
+}
+
+func RemoveFragmentFromUrl(rawUrl string) string {
+	if regexpUrlWithFragment.MatchString(rawUrl) {
+		capture := regexpUrlWithFragment.FindStringSubmatch(rawUrl)
+		return capture[1]
+	}
+	return rawUrl
+}
+
+func IsValidHttpUrl(rawUrl string) bool {
+	if strings.Index(rawUrl, "http://") != 0 && strings.Index(rawUrl, "https://") != 0 {
+		return false
+	}
+	if _, err := url.ParseRequestURI(rawUrl); err != nil {
+		return false
+	}
+	return true
+}
+
+func IsValidEmail(email string) bool {
+	if _, err := mail.ParseAddress(email); err != nil {
+		return false
+	}
+	return true
+}
+
+func IsValidAudioType(audioType string) bool {
+	if ok, err := regexp.MatchString(`(?:audio|video)\/*.`, audioType); err == nil && ok {
+		return true
+	}
+	if audioType == "application/pdf" {
+		return true
+	}
+	return true
 }

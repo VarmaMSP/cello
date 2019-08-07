@@ -6,35 +6,37 @@ import (
 	"github.com/mmcdole/gofeed/rss"
 )
 
+const (
+	PODCAST_TITLE_MAX_LENGTH = 500
+)
+
 // https://help.apple.com/itc/podcasts_connect/#/itcb54353390
 
 type Podcast struct {
-	Id                   NullInt64 `json:"id,omitempty"`
-	Title                string    `json:"title,omitempty"`
-	Description          string    `json:"description,omitempty"`
-	ImagePath            string    `json:"image_path,omitempty"`
-	Language             string    `json:"language,omitempty"`
-	Explicit             int       `json:"explicit,omitempty"`
-	Author               string    `json:"author,omitempty"`
-	Type                 string    `json:"type,omitempty"`
-	Block                int       `json:"block,omitempty"`
-	Complete             int       `json:"complete,omitempty"`
-	Link                 string    `json:"link,omitempty"`
-	OwnerName            string    `json:"owner_name,omitempty"`
-	OwnerEmail           string    `json:"owner_email,omitempty"`
-	Copyright            string    `json:"copyright,omitempty"`
-	NewFeedUrl           string    `json:"new_feed_url,omitempty"`
-	FeedUrl              string    `json:"feed_url,omitempty"`
-	FeedETag             string    `json:"feeed_etag,omitempty"`
-	FeedLastModified     string    `json:"feed_last_modified,omitempty"`
-	LatestEpisodeGuid    string    `json:"latest_episode_guid,omitempty"`
-	LatestEpisodePubDate string    `json:"latest_episode_pub_date,omitempty"`
-	CreatedAt            string    `json:"created_at,omitempty"`
-	UpdatedAt            string    `json:"updated_at,omitempty"`
+	Id               string
+	Title            string
+	Description      string
+	ImagePath        string
+	Language         string
+	Explicit         int
+	Author           string
+	Type             string
+	Block            int
+	Complete         int
+	Link             string
+	OwnerName        string
+	OwnerEmail       string
+	Copyright        string
+	NewFeedUrl       string
+	FeedUrl          string
+	FeedETag         string
+	FeedLastModified string
+	CreatedAt        int64
+	UpdatedAt        int64
 }
 
 type PodcastPatch struct {
-	Id          int64  `json:"id,omitempty"`
+	Id          string `json:"id,omitempty"`
 	Title       string `json:"title,omitempty"`
 	Description string `json:"description,omitempty"`
 	ImagePath   string `json:"image_path,omitempty"`
@@ -44,12 +46,10 @@ type PodcastPatch struct {
 }
 
 type PodcastFeedDetails struct {
-	Id                   int64  `json:"id,omitempty"`
-	FeedUrl              string `json:"feed_url,omitempty"`
-	FeedETag             string `json:"feed_etag,omitempty"`
-	FeedLastModified     string `json:"feed_last_modified,omitempty"`
-	LatestEpisodeGuid    string `json:"latest_episode_guid,omitempty"`
-	LatestEpisodePubDate string `json:"latest_episode_pub_date,omitempty"`
+	Id               string `json:"id,omitempty"`
+	FeedUrl          string `json:"feed_url,omitempty"`
+	FeedETag         string `json:"feed_etag,omitempty"`
+	FeedLastModified string `json:"feed_last_modified,omitempty"`
 }
 
 func (p *Podcast) DbColumns() []string {
@@ -58,8 +58,7 @@ func (p *Podcast) DbColumns() []string {
 		"language", "explicit", "author", "type",
 		"block", "complete", "link", "owner_name",
 		"owner_email", "copyright", "new_feed_url", "feed_url",
-		"feed_etag", "feed_last_modified", "latest_episode_guid", "latest_episode_pub_date",
-		"created_at", "updated_at",
+		"feed_etag", "feed_last_modified", "created_at", "updated_at",
 	}
 }
 
@@ -70,8 +69,7 @@ func (p *Podcast) FieldAddrs() []interface{} {
 		&p.Language, &p.Explicit, &p.Author, &p.Type,
 		&p.Block, &p.Complete, &p.Link, &p.OwnerName,
 		&p.OwnerEmail, &p.Copyright, &p.NewFeedUrl, &p.FeedUrl,
-		&p.FeedETag, &p.FeedLastModified, &p.LatestEpisodeGuid, &p.LatestEpisodePubDate,
-		&p.CreatedAt, &p.UpdatedAt,
+		&p.FeedETag, &p.FeedLastModified, &p.CreatedAt, &p.UpdatedAt,
 	)
 }
 
@@ -93,7 +91,6 @@ func (pp *PodcastPatch) FieldAddrs() []interface{} {
 func (pfd *PodcastFeedDetails) DbColumns() []string {
 	return []string{
 		"id", "feed_url", "feed_etag", "feed_last_modified",
-		"latest_episode_guid", "latest_episode_pub_date",
 	}
 }
 
@@ -101,78 +98,140 @@ func (pfd *PodcastFeedDetails) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
 		&pfd.Id, &pfd.FeedUrl, &pfd.FeedLastModified, &pfd.FeedETag,
-		&pfd.LatestEpisodeGuid, &pfd.LatestEpisodePubDate,
 	)
 }
 
-func (p *Podcast) LoadDataFromFeed(feed *rss.Feed) *AppError {
-	p.Title = feed.Title
-	p.Description = feed.Description
-	p.ImagePath = feed.ITunesExt.Image
-	p.Language = feed.Language
-	p.Explicit = 0
-	p.Author = feed.ITunesExt.Author
-	p.Type = "episodic"
-	p.Block = 0
-	p.Complete = 0
-	p.Link = feed.Link
-	p.OwnerName = feed.ITunesExt.Owner.Name
-	p.OwnerEmail = feed.ITunesExt.Owner.Email
-	p.Copyright = feed.Copyright
-	p.NewFeedUrl = feed.ITunesExt.NewFeedURL
-	p.LatestEpisodeGuid = feed.Items[0].GUID.Value
-	p.LatestEpisodePubDate = feed.Items[0].PubDateParsed.UTC().Format(MYSQL_DATETIME)
+func (p *Podcast) Load(feed *rss.Feed) *AppError {
+	appErrorC := NewAppErrorC(
+		"model.podcast.load_data_from_feed",
+		http.StatusBadRequest,
+		map[string]string{"title": p.Title, "feed_url": p.FeedUrl},
+	)
 
-	if p.Title == "" {
-		return NewAppError(
-			"model.podcast.load_data_from_feed",
-			"no title found",
-			http.StatusBadRequest,
-			map[string]string{"title": p.Title},
-		)
+	// Title
+	if feed.Title != "" {
+		p.Title = feed.Title
+	} else {
+		return appErrorC("No title found")
 	}
 
-	if p.Description == "" {
-		if feed.ITunesExt.Summary != "" {
-			p.Description = feed.ITunesExt.Summary
-		} else {
-			return NewAppError(
-				"model.podcast.load_data_from_feed",
-				"no description found",
-				http.StatusBadRequest,
-				map[string]string{"title": p.Title},
-			)
-		}
+	// Description
+	if feed.Description != "" {
+		p.Description = feed.Description
+	} else if feed.ITunesExt != nil && feed.ITunesExt.Summary != "" {
+		p.Description = feed.ITunesExt.Summary
+	} else {
+		return appErrorC("No Description found")
 	}
 
-	if p.ImagePath == "" {
-		if feed.ITunesExt.Image != "" {
-			p.ImagePath = feed.ITunesExt.Image
-		} else {
-			return NewAppError(
-				"model.podcast.load_data_from_feed",
-				"no image found",
-				http.StatusBadRequest,
-				map[string]string{"title": p.Title},
-			)
-		}
+	// Image path
+	if feed.ITunesExt != nil && feed.ITunesExt.Image != "" {
+		p.ImagePath = feed.ITunesExt.Image
+	} else {
+		return appErrorC("Image not found")
 	}
 
-	if feed.ITunesExt.Explicit == "true" {
+	// Language
+	if feed.Language != "" {
+		p.Language = feed.Language
+	} else {
+		p.Language = "en"
+	}
+
+	// Explicit
+	if feed.ITunesExt != nil && feed.ITunesExt.Explicit == "true" {
 		p.Explicit = 1
+	} else {
+		p.Explicit = 0
 	}
 
-	if feed.ITunesExt.Type == "serial" {
-		p.Type = "serial"
+	// Author
+	if feed.ITunesExt != nil && feed.ITunesExt.Author != "" {
+		p.Author = feed.ITunesExt.Author
+	} else {
+		p.Author = ""
 	}
 
-	if feed.ITunesExt.Block == "true" {
+	// Type
+	if feed.ITunesExt != nil && feed.ITunesExt.Type == "serial" {
+		p.Type = "SERIAL"
+	} else {
+		p.Type = "EPISODIC"
+	}
+
+	// Block
+	if feed.ITunesExt != nil && feed.ITunesExt.Block == "true" {
 		p.Block = 1
+	} else {
+		p.Block = 0
 	}
 
-	if feed.ITunesExt.Complete == "true" {
+	// Complete
+	if feed.ITunesExt != nil && feed.ITunesExt.Complete == "true" {
 		p.Complete = 1
+	} else {
+		p.Complete = 0
+	}
+
+	// Link
+	if feed.Link != "" {
+		p.Link = RemoveQueryFromUrl(feed.Link)
+	} else {
+		p.Link = ""
+	}
+
+	// Owner
+	if feed.ITunesExt != nil && feed.ITunesExt.Owner != nil {
+		p.OwnerName = feed.ITunesExt.Owner.Name
+		p.OwnerEmail = feed.ITunesExt.Owner.Email
+	}
+
+	// Copyright
+	if feed.Copyright != "" {
+		p.Copyright = feed.Copyright
+	} else {
+		p.Copyright = ""
+	}
+
+	// New Feed Url
+	if feed.ITunesExt != nil && feed.ITunesExt.NewFeedURL != "" {
+		p.NewFeedUrl = feed.ITunesExt.NewFeedURL
 	}
 
 	return nil
+}
+
+func (p *Podcast) PreSave() {
+	title := []rune(p.Title)
+	if len(title) > PODCAST_TITLE_MAX_LENGTH {
+		p.Title = string(title[0:PODCAST_TITLE_MAX_LENGTH-10]) + "..."
+	}
+
+	if len(p.Description) > MYSQL_BLOB_MAX_SIZE {
+		p.Description = p.Description[0:MYSQL_BLOB_MAX_SIZE]
+	}
+
+	if !IsValidHttpUrl(p.ImagePath) {
+		p.ImagePath = ""
+	}
+
+	if !IsValidHttpUrl(p.Link) {
+		p.Link = ""
+	}
+
+	if !IsValidEmail(p.OwnerEmail) {
+		p.OwnerEmail = ""
+	}
+
+	if p.NewFeedUrl != "" && !IsValidHttpUrl(p.NewFeedUrl) {
+		p.NewFeedUrl = ""
+	}
+
+	if p.CreatedAt == 0 {
+		p.CreatedAt = Now()
+	}
+
+	if p.UpdatedAt == 0 {
+		p.UpdatedAt = Now()
+	}
 }
