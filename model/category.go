@@ -24,6 +24,8 @@ func (pc *PodcastCategory) FieldAddrs() []interface{} {
 	)
 }
 
+func (pc *PodcastCategory) PreSave() {}
+
 func CategoryId(category string) int {
 	switch category {
 	case "Arts":

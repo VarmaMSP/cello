@@ -17,10 +17,12 @@ func NewSqlCategoryStore(store SqlStore) store.CategoryStore {
 }
 
 func (s *SqlCategoryStore) SavePodcastCategory(category *model.PodcastCategory) *model.AppError {
+	category.PreSave()
+
 	_, err := s.Insert([]DbModel{category}, "podcast_category")
 	if err != nil {
 		return model.NewAppError(
-			"store.sqlstore.sql_podcast_category_store.save_all",
+			"store.sqlstore.sql_podcast_category_store.save",
 			err.Error(),
 			http.StatusInternalServerError,
 			map[string]string{"podcast_id": category.PodcastId, "category_id": strconv.FormatInt(int64(category.CategoryId), 10)},

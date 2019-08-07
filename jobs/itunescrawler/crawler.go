@@ -98,8 +98,10 @@ func (c *ItunesCrawler) pollAndFetchPages() {
 			req, _ := http.NewRequest("GET", url, nil)
 			resp, err := c.httpClient.Do(req)
 			if err != nil {
-				fmt.Printf("REQ FAILED: GET %s - %s\n\n", url, err.Error())
+				fmt.Printf("GET %s: %s\n\n", url, err.Error())
+				return
 			}
+
 			if resp.StatusCode == 200 {
 				c.pageQ <- resp.Body
 			}

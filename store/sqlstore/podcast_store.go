@@ -16,6 +16,8 @@ func NewSqlPodcastStore(store SqlStore) store.PodcastStore {
 }
 
 func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
+	podcast.PreSave()
+
 	_, err := s.Insert([]DbModel{podcast}, "podcast")
 	if err != nil {
 		return model.NewAppError(

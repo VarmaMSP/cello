@@ -34,7 +34,7 @@ CREATE TABLE `episode` (
     `guid`                  VARCHAR(500) NOT NULL,
     `title`                 VARCHAR(500) NOT NULL,
     `audio_url`             VARCHAR(700) NOT NULL,
-    `audio_type`            VARCHAR(20) NOT NULL,
+    `audio_type`            VARCHAR(50) NOT NULL,
     `audio_size`            BIGINT NOT NULL,
     `pub_date`              DATETIME NOT NULL,
     `description`           BLOB NOT NULL,

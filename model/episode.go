@@ -19,7 +19,7 @@ type Episode struct {
 	Title       string
 	AudioUrl    string
 	AudioType   string
-	AudioSize   int
+	AudioSize   int64
 	PubDate     string
 	Description string
 	Duration    int
@@ -97,7 +97,7 @@ func (e *Episode) LoadDetails(item *rss.Item) *AppError {
 	if item.Enclosure != nil && item.Enclosure.URL != "" {
 		e.AudioUrl = item.Enclosure.URL
 		e.AudioType = item.Enclosure.Type
-		e.AudioSize, _ = strconv.Atoi(item.Enclosure.Length)
+		e.AudioSize, _ = strconv.ParseInt(item.Enclosure.Length, 10, 64)
 	} else {
 		return appErrorC("No audio file found")
 	}
@@ -112,6 +112,8 @@ func (e *Episode) LoadDetails(item *rss.Item) *AppError {
 	// Pub Date
 	if item.PubDateParsed != nil {
 		e.PubDate = item.PubDateParsed.UTC().Format(MYSQL_DATETIME)
+	} else {
+		return appErrorC("No pubdate found")
 	}
 
 	// Description
