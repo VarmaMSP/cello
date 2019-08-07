@@ -103,12 +103,12 @@ func IsValidEmail(email string) bool {
 	return true
 }
 
-// IsValidAudioType validates audio type for rss feed item
-func IsValidAudioType(audioType string) bool {
-	if ok, err := regexp.MatchString(`(?:audio|video)\/*.`, audioType); err == nil && ok {
+// IsValidMediaType validates media type for rss feed item
+func IsValidMediaType(mediaType string) bool {
+	if ok, err := regexp.MatchString(`(?:audio|video)\/*.`, mediaType); err == nil && ok {
 		return true
 	}
-	if audioType == "application/pdf" {
+	if mediaType == "application/pdf" {
 		return true
 	}
 	return true

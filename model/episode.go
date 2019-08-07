@@ -9,7 +9,7 @@ import (
 
 const (
 	EPISODE_TITLE_MAX_LENGTH     = 500
-	EPISODE_AUDIO_URL_MAX_LENGTH = 700
+	EPISODE_MEDIA_URL_MAX_LENGTH = 700
 )
 
 type Episode struct {
@@ -17,9 +17,9 @@ type Episode struct {
 	PodcastId   string
 	Guid        string
 	Title       string
-	AudioUrl    string
-	AudioType   string
-	AudioSize   int64
+	MediaUrl    string
+	MediaType   string
+	MediaSize   int64
 	PubDate     string
 	Description string
 	Duration    int
@@ -37,8 +37,8 @@ type Episode struct {
 type EpisodePatch struct {
 	Id        string `json:"id,omitempty"`
 	Title     string `json:"title,omitempty"`
-	AudioUrl  string `json:"audio_url,omitempty"`
-	AudioType string `json:"audio_type,omitempty"`
+	MediaUrl  string `json:"media_url,omitempty"`
+	MediaType string `json:"media_type,omitempty"`
 	PubDate   string `json:"pub_date,omitempty"`
 	Duration  int    `json:"duration,omitempty"`
 }
@@ -46,7 +46,7 @@ type EpisodePatch struct {
 func (e *Episode) DbColumns() []string {
 	return []string{
 		"id", "podcast_id", "guid", "title",
-		"audio_url", "audio_type", "audio_size", "pub_date",
+		"media_url", "media_type", "media_size", "pub_date",
 		"description", "duration", "link", "image_link",
 		"explicit", "episode", "season", "type",
 		"block", "created_at", "updated_at",
@@ -57,7 +57,7 @@ func (e *Episode) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
 		&e.Id, &e.PodcastId, &e.Guid, &e.Title,
-		&e.AudioUrl, &e.AudioType, &e.AudioSize, &e.PubDate,
+		&e.MediaUrl, &e.MediaType, &e.MediaSize, &e.PubDate,
 		&e.Description, &e.Duration, &e.Link, &e.ImageLink,
 		&e.Explicit, &e.Episode, &e.Season, &e.Type,
 		&e.Block, &e.CreatedAt, &e.UpdatedAt,
@@ -66,7 +66,7 @@ func (e *Episode) FieldAddrs() []interface{} {
 
 func (ep *EpisodePatch) DbColumns() []string {
 	return []string{
-		"id", "title", "audio_url", "audio_type",
+		"id", "title", "media_url", "media_type",
 		"pub_date", "duration",
 	}
 }
@@ -74,14 +74,14 @@ func (ep *EpisodePatch) DbColumns() []string {
 func (ep *EpisodePatch) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
-		&ep.Id, &ep.Title, &ep.AudioUrl, &ep.AudioType,
+		&ep.Id, &ep.Title, &ep.MediaUrl, &ep.MediaType,
 		&ep.PubDate, &ep.Duration,
 	)
 }
 
 func (e *Episode) LoadDetails(item *rss.Item) *AppError {
 	appErrorC := NewAppErrorC(
-		"model.epsiode.load_data_from_feed",
+		"model.epsiode.load_details",
 		http.StatusBadRequest,
 		map[string]string{"title": item.Title},
 	)
@@ -93,20 +93,20 @@ func (e *Episode) LoadDetails(item *rss.Item) *AppError {
 		return appErrorC("No title found")
 	}
 
-	// Audio
+	// Media
 	if item.Enclosure != nil && item.Enclosure.URL != "" {
-		e.AudioUrl = item.Enclosure.URL
-		e.AudioType = item.Enclosure.Type
-		e.AudioSize, _ = strconv.ParseInt(item.Enclosure.Length, 10, 64)
+		e.MediaUrl = item.Enclosure.URL
+		e.MediaType = item.Enclosure.Type
+		e.MediaSize, _ = strconv.ParseInt(item.Enclosure.Length, 10, 64)
 	} else {
-		return appErrorC("No audio file found")
+		return appErrorC("No Media file found")
 	}
 
 	// Guid
 	if item.GUID != nil && item.GUID.Value != "" {
 		e.Guid = item.GUID.Value
 	} else {
-		e.Guid = RemoveQueryFromUrl(e.AudioUrl)
+		e.Guid = RemoveQueryFromUrl(e.MediaUrl)
 	}
 
 	// Pub Date
@@ -190,13 +190,13 @@ func (e *Episode) PreSave() {
 		e.Title = string(title[0:EPISODE_TITLE_MAX_LENGTH-10]) + "..."
 	}
 
-	audioUrl := []rune(e.AudioUrl)
-	if len(audioUrl) > EPISODE_AUDIO_URL_MAX_LENGTH {
-		e.AudioUrl = RemoveQueryFromUrl(e.AudioUrl)
+	mediaUrl := []rune(e.MediaUrl)
+	if len(mediaUrl) > EPISODE_MEDIA_URL_MAX_LENGTH {
+		e.MediaUrl = RemoveQueryFromUrl(e.MediaUrl)
 	}
 
-	if !IsValidAudioType(e.AudioType) {
-		e.AudioType = ""
+	if !IsValidMediaType(e.MediaType) {
+		e.MediaType = ""
 	}
 
 	if len(e.Description) > MYSQL_BLOB_MAX_SIZE {

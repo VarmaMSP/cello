@@ -3,16 +3,40 @@ package main
 import (
 	"fmt"
 
-	"github.com/varmamsp/cello/crawler"
+	"github.com/streadway/amqp"
+	"github.com/varmamsp/cello/jobs/itunescrawler"
+	"github.com/varmamsp/cello/jobs/podcastimport"
+	"github.com/varmamsp/cello/services/rabbitmq"
 	"github.com/varmamsp/cello/store/sqlstore"
 )
 
 func main() {
-	c := crawler.NewCrawler(sqlstore.NewSqlStore())
+	store := sqlstore.NewSqlStore()
+	conn, err := rabbitmq.NewConnection()
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	c.Start()
-	fmt.Println("Mmmm")
+	producer, err := rabbitmq.NewProducer(conn, rabbitmq.QUEUE_NEW_PODCAST, amqp.Transient)
+	if err != nil {
+		fmt.Println(err)
+	}
+	p, err := itunescrawler.New(store, producer, 10)
+	if err != nil {
+		fmt.Println(err)
+	}
+	p.Run()
 
-	var cx chan int
-	<-cx
+	consumer, err := rabbitmq.NewConsumer(conn, rabbitmq.QUEUE_NEW_PODCAST)
+	if err != nil {
+		fmt.Println(err)
+	}
+	c, err := podcastimport.New(store, consumer, 10)
+	if err != nil {
+		fmt.Println(err)
+	}
+	go c.Run()
+
+	var forever chan int
+	<-forever
 }
