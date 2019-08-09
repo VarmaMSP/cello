@@ -57,7 +57,7 @@ CREATE TABLE `itunes_meta` (
     `itunes_id` VARCHAR(15),
     `feed_url` VARCHAR(500),
     `scrapped_at` DATETIME NOT NULL,
-    `added_to_db` NUM('SUCCESS', 'FAILURE', 'PENDING') DEFAULT 'PENDING',
+    `added_to_db` ENUM('SUCCESS', 'FAILURE', 'PENDING') DEFAULT 'PENDING',
     `updated_at` INT NOT NULL,
     PRIMARY KEY (`itunes_id`),
     UNIQUE KEY (`feed_url`)
@@ -80,6 +80,17 @@ CREATE TABLE `podcast_category` (
     FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
         ON UPDATE CASCADE ON DELETE NO ACTION
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE `job_schedule` (
+    `job_name` VARCHAR(100), 
+    `type` ENUM('PERIODIC', 'ONEOFF', 'IMMEDIATE'),
+    `run_at` INT NOT NULL, 
+    `run_after` INT NOT NULL,
+    `is_active` TINYINT DEFAULT 1,
+    `created_at` INT NOT NULL,
+    `updated_at` INT NOT NULL,
+    PRIMARY KEY(`job_name`)
+);
 
 INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
 INSERT INTO `category` (`id`, `name`) VALUES (2, 'Business');

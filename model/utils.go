@@ -11,9 +11,13 @@ import (
 )
 
 const (
-	StatusSuccess = "SUCCESS"
-	StatusFailure = "FAILURE"
-	StatusPending = "PENDING"
+	StatusSuccess    = "SUCCESS"
+	StatusFailure    = "FAILURE"
+	StatusPending    = "PENDING"
+	StatusInProgress = "IN_PROGRESS"
+
+	StateActive   = "ACTIVE"
+	StateInactive = "INACTIVE"
 
 	MYSQL_DATETIME      = "2006-01-02 15:04:05"
 	MYSQL_BLOB_MAX_SIZE = 65535

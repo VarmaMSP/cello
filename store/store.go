@@ -7,6 +7,7 @@ type Store interface {
 	Episode() EpisodeStore
 	Category() CategoryStore
 	ItunesMeta() ItunesMetaStore
+	JobSchedule() JobScheduleStore
 }
 
 type PodcastStore interface {
@@ -26,4 +27,10 @@ type ItunesMetaStore interface {
 	GetStatus(itunesId string) (string, *model.AppError)
 	GetItunesIdList(offset, limit int) ([]string, *model.AppError)
 	SetStatus(itunesId, status string) *model.AppError
+}
+
+type JobScheduleStore interface {
+	GetAllActive() ([]*model.JobSchedule, *model.AppError)
+	Disable(jobName string) *model.AppError
+	SetRunAt(jobName string, runAt int64) *model.AppError
 }
