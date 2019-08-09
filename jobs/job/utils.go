@@ -1,4 +1,4 @@
-package itunescrawler
+package job
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	s "github.com/golang-collections/go-datastructures/set"
 	"github.com/varmamsp/cello/model"
 )
 
@@ -14,6 +15,42 @@ var (
 	regexpItunesGenrePageUrl   = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/genre\/.*`)
 	regexpItunesPodcastPageUrl = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/podcast\/.+\/id([0-9]+).*`)
 )
+
+type Frontier struct {
+	// Input channel
+	I chan string
+	// Output channel
+	O chan string
+	// Set of strings processed till now
+	set *s.Set
+}
+
+func NewFrontier(size int) *Frontier {
+	frontier := &Frontier{
+		I:   make(chan string, 1000),
+		O:   make(chan string, size),
+		set: s.New(),
+	}
+
+	go func(f *Frontier) {
+		for i := range f.I {
+			if !f.set.Exists(i) {
+				f.set.Add(i)
+				f.O <- i
+			}
+		}
+	}(frontier)
+
+	return frontier
+}
+
+func (f *Frontier) Ignore(s string) {
+	f.set.Add(s)
+}
+
+func (f *Frontier) Clear() {
+	f.set.Clear()
+}
 
 type ItunesLookupResp struct {
 	Count   int                  `json:"resultCount"`

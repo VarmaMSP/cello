@@ -1,4 +1,4 @@
-package itunescrawler
+package job
 
 import (
 	"fmt"
@@ -26,7 +26,9 @@ const (
 // 2 - Use Itunes lookup API to fetch feed urls for above ids.
 // 3 - Push this data into rabbitmq queue to process later.
 
-type ItunesCrawler struct {
+type ScrapeItunesJob struct {
+	// input channel
+	I chan interface{}
 	// url frontier
 	urlF *Frontier
 	// itunes Id frontier
@@ -43,8 +45,9 @@ type ItunesCrawler struct {
 	workerLimit int
 }
 
-func New(store store.Store, producer *rabbitmq.Producer, workerLimit int) (*ItunesCrawler, error) {
-	c := &ItunesCrawler{
+func NewScrapeItunesJob(store store.Store, producer *rabbitmq.Producer, workerLimit int) model.Job {
+	return &ScrapeItunesJob{
+		I:         make(chan interface{}),
 		urlF:      NewFrontier(10000),
 		itunesIdF: NewFrontier(10000),
 		pageQ:     make(chan io.ReadCloser, workerLimit),
@@ -59,57 +62,69 @@ func New(store store.Store, producer *rabbitmq.Producer, workerLimit int) (*Itun
 		},
 		workerLimit: workerLimit,
 	}
+}
 
+func (job *ScrapeItunesJob) Start() *model.AppError {
 	for off, lim := 0, 10000; ; off += lim {
-		itunesIds, err := c.store.ItunesMeta().GetItunesIdList(off, lim)
+		itunesIds, err := job.store.ItunesMeta().GetItunesIdList(off, lim)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if len(itunesIds) == 0 {
 			break
 		}
-
 		for _, itunesId := range itunesIds {
-			c.itunesIdF.Ignore(itunesId)
+			job.itunesIdF.Ignore(itunesId)
 		}
 	}
 
-	go c.pollAndFetchPages()
-	go c.pollAndProcessPages()
-	go c.pollAndSaveNewPodcasts()
+	go job.pollInput()
+	go job.pollAndFetchPages()
+	go job.pollAndProcessPages()
+	go job.pollAndSaveItunesMeta()
 
-	return c, nil
+	return nil
 }
 
-func (c *ItunesCrawler) Run() {
-	c.urlF.Clear()
-	c.urlF.I <- ITUNES_SEED_URL
+func (job *ScrapeItunesJob) Stop() *model.AppError {
+	return nil
 }
 
-func (c *ItunesCrawler) pollAndFetchPages() {
-	semaphore := make(chan int, c.workerLimit)
+func (job *ScrapeItunesJob) InputChan() chan interface{} {
+	return job.I
+}
+
+func (job *ScrapeItunesJob) pollInput() {
+	for {
+		<-job.I
+		job.urlF.Clear()
+		job.urlF.I <- ITUNES_SEED_URL
+	}
+}
+
+func (job *ScrapeItunesJob) pollAndFetchPages() {
+	semaphore := make(chan int, job.workerLimit)
 
 	for {
 		semaphore <- 0
-
 		go func(url string) {
 			defer func() { <-semaphore }()
 
 			req, _ := http.NewRequest("GET", url, nil)
-			resp, err := c.httpClient.Do(req)
+			resp, err := job.httpClient.Do(req)
 			if err != nil {
 				fmt.Printf("GET %s: %s\n\n", url, err.Error())
 				return
 			}
 
 			if resp.StatusCode == 200 {
-				c.pageQ <- resp.Body
+				job.pageQ <- resp.Body
 			}
-		}(<-c.urlF.S)
+		}(<-job.urlF.O)
 	}
 }
 
-func (c *ItunesCrawler) pollAndProcessPages() {
+func (job *ScrapeItunesJob) pollAndProcessPages() {
 	for {
 		go func(page io.ReadCloser) {
 			doc, err := goquery.NewDocumentFromReader(page)
@@ -125,19 +140,19 @@ func (c *ItunesCrawler) pollAndProcessPages() {
 					continue
 				}
 				if ok, itunesId := isPodcastPage(link); ok {
-					c.itunesIdF.I <- itunesId
+					job.itunesIdF.I <- itunesId
 					continue
 				}
 				if ok, link := isGenrePage(link); ok {
-					c.urlF.I <- link
+					job.urlF.I <- link
 					continue
 				}
 			}
-		}(<-c.pageQ)
+		}(<-job.pageQ)
 	}
 }
 
-func (c *ItunesCrawler) pollAndSaveNewPodcasts() {
+func (job *ScrapeItunesJob) pollAndSaveItunesMeta() {
 	timeout := time.NewTimer(time.Minute)
 	batchSize := 190
 
@@ -146,7 +161,7 @@ func (c *ItunesCrawler) pollAndSaveNewPodcasts() {
 	BATCH_LOOP:
 		for i, _ := 0, timeout.Reset(30*time.Second); i < batchSize; i++ {
 			select {
-			case itunesId := <-c.itunesIdF.S:
+			case itunesId := <-job.itunesIdF.O:
 				batch = append(batch, itunesId)
 				if len(batch) == batchSize && !timeout.Stop() {
 					<-timeout.C
@@ -159,7 +174,7 @@ func (c *ItunesCrawler) pollAndSaveNewPodcasts() {
 			continue
 		}
 
-		results, err := itunesLookup(batch, c.httpClient)
+		results, err := itunesLookup(batch, job.httpClient)
 		if err != nil {
 			continue
 		}
@@ -169,7 +184,7 @@ func (c *ItunesCrawler) pollAndSaveNewPodcasts() {
 				continue
 			}
 
-			if err := c.store.ItunesMeta().Save(&model.ItunesMeta{
+			if err := job.store.ItunesMeta().Save(&model.ItunesMeta{
 				ItunesId:  strconv.Itoa(result.Id),
 				FeedUrl:   result.FeedUrl,
 				AddedToDb: model.StatusPending,
@@ -177,7 +192,7 @@ func (c *ItunesCrawler) pollAndSaveNewPodcasts() {
 				continue
 			}
 
-			c.producer.D <- map[string]string{
+			job.producer.D <- map[string]string{
 				"source":   "itunes",
 				"id":       strconv.Itoa(result.Id),
 				"feed_url": result.FeedUrl,

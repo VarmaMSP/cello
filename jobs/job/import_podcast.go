@@ -1,4 +1,4 @@
-package podcastimport
+package job
 
 import (
 	"fmt"
@@ -7,67 +7,77 @@ import (
 
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/rs/xid"
-	"github.com/streadway/amqp"
 
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/services/rabbitmq"
 	"github.com/varmamsp/cello/store"
 )
 
-type PodcastImport struct {
+type ImportPodcastJob struct {
+	I           chan interface{}
 	store       store.Store
-	consumer    *rabbitmq.Consumer
 	httpClient  *http.Client
 	workerLimit int
 }
 
-func New(store store.Store, consumer *rabbitmq.Consumer, workerLimit int) (*PodcastImport, error) {
-	return &PodcastImport{
-		store:    store,
-		consumer: consumer,
+func NewImportPodcastJob(store store.Store, workerLimit int) model.Job {
+	return &ImportPodcastJob{
+		I:     make(chan interface{}, 100),
+		store: store,
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
 			Transport: &http.Transport{
 				MaxIdleConns:        2 * workerLimit,
-				MaxIdleConnsPerHost: 2 * workerLimit,
+				MaxIdleConnsPerHost: workerLimit,
 			},
 		},
 		workerLimit: workerLimit,
-	}, nil
-}
-
-func (p *PodcastImport) Run() {
-	semaphore := make(chan int, p.workerLimit)
-
-	for {
-		semaphore <- 0
-
-		go func(d amqp.Delivery) {
-			defer d.Ack(false)
-			defer func() { <-semaphore }()
-
-			msg := model.MapFromJson(d.Body)
-			itunesId, feedUrl := msg["id"], msg["feed_url"]
-			if itunesId == "" || feedUrl == "" {
-				return
-			}
-
-			if status, _ := p.store.ItunesMeta().GetStatus(itunesId); status != model.StatusPending {
-				return
-			}
-
-			newStatus := model.StatusSuccess
-			if err := p.AddToDb(feedUrl); err != nil {
-				newStatus = model.StatusFailure
-			}
-			p.store.ItunesMeta().SetStatus(itunesId, newStatus)
-		}(<-p.consumer.D)
 	}
 }
 
-func (p *PodcastImport) AddToDb(feedUrl string) *model.AppError {
+func (job *ImportPodcastJob) Start() *model.AppError {
+	go job.pollInput()
+
+	return nil
+}
+
+func (job *ImportPodcastJob) Stop() *model.AppError {
+	return nil
+}
+
+func (job *ImportPodcastJob) InputChan() chan interface{} {
+	return job.I
+}
+
+func (job *ImportPodcastJob) pollInput() {
+	semaphore := make(chan int, job.workerLimit)
+
+	for {
+		i, ok := (<-job.I).(*model.ImportPodcastInput)
+		if !ok || i.Id == "" || i.FeedUrl == "" {
+			continue
+		}
+
+		semaphore <- 0
+		go func(feedUrl, itunesId string) {
+			defer func() { <-semaphore }()
+
+			status, _ := job.store.ItunesMeta().GetStatus(itunesId)
+			if status != model.StatusPending {
+				return
+			}
+			status = model.StatusSuccess
+			if err := job.AddToDb(feedUrl); err != nil {
+				status = model.StatusFailure
+			}
+
+			job.store.ItunesMeta().SetStatus(itunesId, status)
+		}(i.FeedUrl, i.Id)
+	}
+}
+
+func (job *ImportPodcastJob) AddToDb(feedUrl string) *model.AppError {
 	appErrorC := model.NewAppErrorC(
-		"jobs.podcast_import.add_to_db",
+		"jobs.podcast_jobort.add_to_db",
 		http.StatusInternalServerError,
 		map[string]string{"feed_url": feedUrl},
 	)
@@ -77,7 +87,7 @@ func (p *PodcastImport) AddToDb(feedUrl string) *model.AppError {
 	if err != nil {
 		return appErrorC(err.Error())
 	}
-	resp, err := p.httpClient.Do(req)
+	resp, err := job.httpClient.Do(req)
 	if err != nil {
 		return appErrorC(err.Error())
 	}
@@ -100,7 +110,7 @@ func (p *PodcastImport) AddToDb(feedUrl string) *model.AppError {
 	if err := podcast.LoadDetails(feed); err != nil {
 		return err
 	}
-	if err := p.store.Podcast().Save(podcast); err != nil {
+	if err := job.store.Podcast().Save(podcast); err != nil {
 		return err
 	}
 
@@ -113,7 +123,7 @@ func (p *PodcastImport) AddToDb(feedUrl string) *model.AppError {
 		if err := episode.LoadDetails(item); err != nil {
 			continue
 		}
-		if err := p.store.Episode().Save(episode); err != nil {
+		if err := job.store.Episode().Save(episode); err != nil {
 			fmt.Printf("%s %s: %s\n", feedUrl, episode.Title, err.Error())
 		}
 	}
@@ -130,7 +140,7 @@ func (p *PodcastImport) AddToDb(feedUrl string) *model.AppError {
 	}
 	for _, categoryId := range categoryIds {
 		if categoryId != -1 {
-			p.store.Category().SavePodcastCategory(&model.PodcastCategory{
+			job.store.Category().SavePodcastCategory(&model.PodcastCategory{
 				PodcastId:  podcast.Id,
 				CategoryId: categoryId,
 			})
