@@ -11,7 +11,7 @@ CREATE TABLE `podcast` (
     `explicit` TINYINT DEFAULT 0,
     `author` VARCHAR(255) NOT NULL,
     `type` ENUM('EPISODIC', 'SERIAL') DEFAULT 'EPISODIC',
-	`block` TINYINT DEFAULT 0,
+    `block` TINYINT DEFAULT 0,
     `complete` TINYINT DEFAULT 0,
     `link` VARCHAR(500) NOT NULL,
     `owner_name` VARCHAR(500) NOT NULL,
@@ -21,8 +21,8 @@ CREATE TABLE `podcast` (
     `feed_etag` VARCHAR(255) NOT NULL,
     `feed_last_modified` VARCHAR(255) NOT NULL,
     `new_feed_url` VARCHAR(500) NOT NULL,
-    `created_at` INT NOT NULL,
-    `updated_at` INT NOT NULL,
+    `created_at` BIGINT NOT NULL,
+    `updated_at` BIGINT NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`title`),
     UNIQUE KEY (`feed_url`)
@@ -46,11 +46,10 @@ CREATE TABLE `episode` (
     `season` INT NOT NULL,
     `type` ENUM('FULL', 'TRAILER', 'BONUS') DEFAULT 'FULL',
     `block` TINYINT DEFAULT 0,
-    `created_at` INT NOT NULL,
-    `updated_at` INT NOT NULL,
+    `created_at` BIGINT NOT NULL,
+    `updated_at` BIGINT NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`)
-        ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `itunes_meta` (
@@ -58,7 +57,7 @@ CREATE TABLE `itunes_meta` (
     `feed_url` VARCHAR(500),
     `scrapped_at` DATETIME NOT NULL,
     `added_to_db` ENUM('SUCCESS', 'FAILURE', 'PENDING') DEFAULT 'PENDING',
-    `updated_at` INT NOT NULL,
+    `updated_at` BIGINT NOT NULL,
     PRIMARY KEY (`itunes_id`),
     UNIQUE KEY (`feed_url`)
 );
@@ -75,20 +74,18 @@ CREATE TABLE `category` (
 CREATE TABLE `podcast_category` (
     `podcast_id` VARCHAR(20) NOT NULL,
     `category_id` INT NOT NULL,
-    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`)
-        ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
-        ON UPDATE CASCADE ON DELETE NO ACTION
+    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON UPDATE CASCADE ON DELETE NO ACTION
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `job_schedule` (
     `job_name` VARCHAR(100), 
     `type` ENUM('PERIODIC', 'ONEOFF', 'IMMEDIATE'),
-    `run_at` INT NOT NULL, 
-    `run_after` INT NOT NULL,
+    `run_at` BIGINT NOT NULL, 
+    `run_after` BIGINT NOT NULL,
     `is_active` TINYINT DEFAULT 1,
-    `created_at` INT NOT NULL,
-    `updated_at` INT NOT NULL,
+    `created_at` BIGINT NOT NULL,
+    `updated_at` BIGINT NOT NULL,
     PRIMARY KEY(`job_name`)
 );
 

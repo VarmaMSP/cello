@@ -7,12 +7,6 @@ import (
 
 const (
 	DEFAULT_EXCAHNGE = ""
-
-	QUEUE_NEW_PODCAST  = "new_podcast"
-	QUEUE_RESIZE_IMAGE = "resize_image"
-
-	Transient  = 1
-	Persistent = 2
 )
 
 func NewConnection() (*amqp.Connection, error) {
@@ -30,7 +24,7 @@ func NewConnection() (*amqp.Connection, error) {
 	if err := createQueue(model.QUEUE_NAME_IMPORT_PODCAST, channel); err != nil {
 		return nil, err
 	}
-	if err := createQueue(model.QUEUE_NAME_SCHEDULED_JOBS, channel); err != nil {
+	if err := createQueue(model.QUEUE_NAME_SCHEDULED_WORK, channel); err != nil {
 		return nil, err
 	}
 	return connection, nil
