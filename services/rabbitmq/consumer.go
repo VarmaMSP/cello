@@ -19,7 +19,7 @@ func NewConsumer(connection *amqp.Connection, queueName string) (*Consumer, erro
 	d, err := channel.Consume(
 		queueName, // queue
 		"",        // consumer
-		false,     // auto-ack
+		true,      // auto-ack
 		false,     // exclusive
 		false,     // no-local
 		false,     // no-wait

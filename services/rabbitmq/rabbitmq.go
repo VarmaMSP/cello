@@ -1,6 +1,9 @@
 package rabbitmq
 
-import "github.com/streadway/amqp"
+import (
+	"github.com/streadway/amqp"
+	"github.com/varmamsp/cello/model"
+)
 
 const (
 	DEFAULT_EXCAHNGE = ""
@@ -24,10 +27,10 @@ func NewConnection() (*amqp.Connection, error) {
 	}
 	defer channel.Close()
 
-	if err := createQueue(QUEUE_NEW_PODCAST, channel); err != nil {
+	if err := createQueue(model.QUEUE_NAME_IMPORT_PODCAST, channel); err != nil {
 		return nil, err
 	}
-	if err := createQueue(QUEUE_RESIZE_IMAGE, channel); err != nil {
+	if err := createQueue(model.QUEUE_NAME_SCHEDULED_JOBS, channel); err != nil {
 		return nil, err
 	}
 	return connection, nil

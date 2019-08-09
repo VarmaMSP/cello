@@ -35,10 +35,10 @@ func (p *Producer) pollAndPublish() error {
 		}
 
 		err = p.channel.Publish(
-			DEFAULT_EXCAHNGE,
-			p.queueName,
-			false,
-			false,
+			DEFAULT_EXCAHNGE, // exchange
+			p.queueName,      // exchange key
+			false,            // immediate
+			false,            // publishing
 			amqp.Publishing{
 				Body:         str,
 				ContentType:  "application/json",

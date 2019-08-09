@@ -77,7 +77,7 @@ func (s *SqlItunesMetaStore) GetItunesIdList(offset, limit int) ([]string, *mode
 }
 
 func (s *SqlItunesMetaStore) SetStatus(itunesId, status string) *model.AppError {
-	sql := `UPDATE itunes_meta SET added_to_db = ? WHERE itunes_id = ?`
+	sql := `UPDATE itunes_meta SET added_to_db = ?, updated_at = ? WHERE itunes_id = ?`
 
 	_, err := s.GetMaster().Exec(sql, status, itunesId)
 	if err != nil {

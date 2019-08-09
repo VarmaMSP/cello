@@ -10,11 +10,12 @@ import (
 )
 
 type SqlSupplier struct {
-	db         *sql.DB
-	podcast    store.PodcastStore
-	episode    store.EpisodeStore
-	category   store.CategoryStore
-	itunesMeta store.ItunesMetaStore
+	db          *sql.DB
+	podcast     store.PodcastStore
+	episode     store.EpisodeStore
+	category    store.CategoryStore
+	itunesMeta  store.ItunesMetaStore
+	jobSchedule store.JobScheduleStore
 }
 
 func NewSqlStore() SqlStore {
@@ -24,6 +25,7 @@ func NewSqlStore() SqlStore {
 	supplier.episode = NewSqlEpisodeStore(supplier)
 	supplier.category = NewSqlCategoryStore(supplier)
 	supplier.itunesMeta = NewSqlItunesMetaStore(supplier)
+	supplier.jobSchedule = NewSqlJobScheduleStore(supplier)
 
 	return supplier
 }
@@ -65,10 +67,14 @@ func (s *SqlSupplier) ItunesMeta() store.ItunesMetaStore {
 	return s.itunesMeta
 }
 
+func (s *SqlSupplier) JobSchedule() store.JobScheduleStore {
+	return s.jobSchedule
+}
+
 func InitDb() *sql.DB {
 	config := mysql.Config{}
 	config.User = "root"
-	config.Passwd = ""
+	config.Passwd = "tiracapeta"
 	config.Addr = "localhost:3306"
 	config.DBName = "phenopod"
 	config.AllowNativePasswords = true
