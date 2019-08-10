@@ -1,0 +1,14 @@
+{
+    "name": "cello",
+    "version": "1.0.0",
+    "description": "phenopod: podcast directory and player",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VarmaMSP/cello"
+    },
+    "author": "pavan varma <varmamsp111@gmail.com>",
+    "private": true,
+    "workspaces": [
+        "ui/server"
+    ]
+}

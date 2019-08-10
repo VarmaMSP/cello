@@ -1,2 +1,5 @@
 *.rdb
 *.out
+/node_modules/
+/ui/server/.next/
+/ui/server/node_modules/
