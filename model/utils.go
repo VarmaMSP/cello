@@ -8,13 +8,14 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/mmcdole/gofeed/rss"
 )
 
 const (
-	StatusSuccess    = "SUCCESS"
-	StatusFailure    = "FAILURE"
-	StatusPending    = "PENDING"
-	StatusInProgress = "IN_PROGRESS"
+	StatusSuccess = "SUCCESS"
+	StatusFailure = "FAILURE"
+	StatusPending = "PENDING"
 
 	StateActive   = "ACTIVE"
 	StateInactive = "INACTIVE"
@@ -42,6 +43,17 @@ func NewAppErrorC(where string, statusCode int, params map[string]string) func(d
 	return func(details string) *AppError {
 		return &AppError{where, details, statusCode, params}
 	}
+}
+
+// RssItemGuid returns guid of the item, Enclosure url is returned if no guid is found
+func RssItemGuid(item *rss.Item) string {
+	if item.GUID != nil && item.GUID.Value != "" {
+		return item.GUID.Value
+	}
+	if item.Enclosure != nil && item.Enclosure.URL != "" {
+		return RemoveQueryFromUrl(item.Enclosure.URL)
+	}
+	return ""
 }
 
 // ParseTime parses number of seconds from a string of HH:MM:SS / MM:SS / SS format
