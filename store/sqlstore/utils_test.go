@@ -29,6 +29,24 @@ func TestInsertQuery(t *testing.T) {
 	assert.Equal(expected, actual)
 }
 
+func TestUpdateQuery(t *testing.T) {
+	assert := assert.New(t)
+
+	x := &TestModel{"pavan", "varma"}
+	y := *x
+	y.x = "varma"
+	y.y = "pavan"
+	actual, values := UpdateQuery("test", x, &y)
+	expected := "UPDATE test SET x = ?,y = ?"
+
+	p, _ := values[0].(string)
+	q, _ := values[1].(string)
+
+	assert.Equal("varma", p)
+	assert.Equal("pavan", q)
+	assert.Equal(expected, actual)
+}
+
 func TestValuesFromAddrs(t *testing.T) {
 	assert := assert.New(t)
 

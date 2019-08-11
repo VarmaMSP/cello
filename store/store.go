@@ -12,10 +12,14 @@ type Store interface {
 
 type PodcastStore interface {
 	Save(podcast *model.Podcast) *model.AppError
+	GetAllToBeRefreshed(createdAfter int64, limit int) ([]*model.PodcastFeedDetails, *model.AppError)
+	UpdateFeedDetails(old, new *model.PodcastFeedDetails) *model.AppError
 }
 
 type EpisodeStore interface {
 	Save(episode *model.Episode) *model.AppError
+	GetAllGuidsByPodcast(podcastId string) ([]string, *model.AppError)
+	Block(podcastId, episodeGuid string) *model.AppError
 }
 
 type CategoryStore interface {
@@ -24,9 +28,8 @@ type CategoryStore interface {
 
 type ItunesMetaStore interface {
 	Save(meta *model.ItunesMeta) *model.AppError
-	GetStatus(itunesId string) (string, *model.AppError)
+	Update(old, new *model.ItunesMeta) *model.AppError
 	GetItunesIdList(offset, limit int) ([]string, *model.AppError)
-	SetStatus(itunesId, status string) *model.AppError
 }
 
 type JobScheduleStore interface {

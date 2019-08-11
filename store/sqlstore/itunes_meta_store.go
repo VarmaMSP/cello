@@ -30,21 +30,21 @@ func (s *SqlItunesMetaStore) Save(meta *model.ItunesMeta) *model.AppError {
 	return nil
 }
 
-func (s *SqlItunesMetaStore) GetStatus(itunesId string) (string, *model.AppError) {
-	sql := `SELECT added_to_db FROM itunes_meta WHERE itunes_id = ?`
+func (s *SqlItunesMetaStore) Update(old, new *model.ItunesMeta) *model.AppError {
+	sql, values := UpdateQuery("itunes_meta", old, new)
+	sql = sql + " WHERE itunes_id = ?"
+	values = append(values, new.ItunesId)
 
-	var status string
-	err := s.GetMaster().QueryRow(sql, itunesId).Scan(&status)
+	_, err := s.GetMaster().Exec(sql, values...)
 	if err != nil {
-		return "", model.NewAppError(
-			"store.sqlstore.sql_itunes_meta_store.get_status",
+		return model.NewAppError(
+			"store.sqlstore.sql_itunes_meta_store.update",
 			err.Error(),
 			http.StatusInternalServerError,
-			map[string]string{"itunes_id": itunesId},
+			map[string]string{"itunes_id": new.ItunesId},
 		)
 	}
-
-	return status, nil
+	return nil
 }
 
 func (s *SqlItunesMetaStore) GetItunesIdList(offset, limit int) ([]string, *model.AppError) {
@@ -74,19 +74,4 @@ func (s *SqlItunesMetaStore) GetItunesIdList(offset, limit int) ([]string, *mode
 		return nil, appErrorC(err.Error())
 	}
 	return res, nil
-}
-
-func (s *SqlItunesMetaStore) SetStatus(itunesId, status string) *model.AppError {
-	sql := `UPDATE itunes_meta SET added_to_db = ?, updated_at = ? WHERE itunes_id = ?`
-
-	_, err := s.GetMaster().Exec(sql, status, itunesId)
-	if err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_itunes_meta_store.set_status",
-			err.Error(),
-			http.StatusInternalServerError,
-			map[string]string{"itunes_id": itunesId, "status": status},
-		)
-	}
-	return nil
 }
