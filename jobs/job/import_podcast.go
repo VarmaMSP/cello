@@ -1,9 +1,12 @@
 package job
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/streadway/amqp"
 
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/rs/xid"
@@ -13,15 +16,13 @@ import (
 )
 
 type ImportPodcastJob struct {
-	I           chan interface{}
 	store       store.Store
 	httpClient  *http.Client
-	workerLimit int
+	rateLimiter chan struct{}
 }
 
 func NewImportPodcastJob(store store.Store, workerLimit int) model.Job {
 	return &ImportPodcastJob{
-		I:     make(chan interface{}, 100),
 		store: store,
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
@@ -30,13 +31,11 @@ func NewImportPodcastJob(store store.Store, workerLimit int) model.Job {
 				MaxIdleConnsPerHost: workerLimit,
 			},
 		},
-		workerLimit: workerLimit,
+		rateLimiter: make(chan struct{}, workerLimit),
 	}
 }
 
 func (job *ImportPodcastJob) Start() *model.AppError {
-	go job.pollInput()
-
 	return nil
 }
 
@@ -44,33 +43,26 @@ func (job *ImportPodcastJob) Stop() *model.AppError {
 	return nil
 }
 
-func (job *ImportPodcastJob) InputChan() chan interface{} {
-	return job.I
-}
+func (job *ImportPodcastJob) Call(delivery *amqp.Delivery) {
+	var input model.ItunesMeta
+	if err := json.Unmarshal(delivery.Body, &input); err != nil {
+		return
+	}
 
-func (job *ImportPodcastJob) pollInput() {
-	semaphore := make(chan int, job.workerLimit)
+	job.rateLimiter <- struct{}{}
 
-	for {
-		input, ok := (<-job.I).(*model.ItunesMeta)
-		if !ok {
-			continue
+	go func(meta *model.ItunesMeta) {
+		defer func() { <-job.rateLimiter }()
+
+		metaU := *meta
+		if err := job.AddToDb(meta.FeedUrl); err != nil {
+			metaU.AddedToDb = model.StatusFailure
+		} else {
+			metaU.AddedToDb = model.StatusSuccess
 		}
 
-		semaphore <- 0
-		go func(meta *model.ItunesMeta) {
-			defer func() { <-semaphore }()
-
-			metaU := *meta
-			if err := job.AddToDb(meta.FeedUrl); err != nil {
-				metaU.AddedToDb = model.StatusFailure
-			} else {
-				metaU.AddedToDb = model.StatusSuccess
-			}
-
-			job.store.ItunesMeta().Update(meta, &metaU)
-		}(input)
-	}
+		job.store.ItunesMeta().Update(meta, &metaU)
+	}(&input)
 }
 
 func (job *ImportPodcastJob) AddToDb(feedUrl string) *model.AppError {

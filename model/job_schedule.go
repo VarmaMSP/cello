@@ -1,5 +1,9 @@
 package model
 
+import (
+	"github.com/streadway/amqp"
+)
+
 const (
 	JOB_NAME_SCRAPE_ITUNES   = "scrape_itunes"
 	JOB_NAME_IMPORT_PODCAST  = "import_podcast"
@@ -18,7 +22,7 @@ const (
 type Job interface {
 	Start() *AppError
 	Stop() *AppError
-	InputChan() chan interface{}
+	Call(delivery *amqp.Delivery)
 }
 
 type ScheduledWorkInput struct {

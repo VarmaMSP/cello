@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/streadway/amqp"
+
 	"github.com/varmamsp/cello/services/rabbitmq"
 
 	"github.com/PuerkitoBio/goquery"
@@ -27,8 +29,6 @@ const (
 // 3 - Push this data into rabbitmq queue to process later.
 
 type ScrapeItunesJob struct {
-	// input channel
-	I chan interface{}
 	// url frontier
 	urlF *Frontier
 	// itunes Id frontier
@@ -41,13 +41,12 @@ type ScrapeItunesJob struct {
 	producer *rabbitmq.Producer
 	// http client
 	httpClient *http.Client
-	// worker limit
-	workerLimit int
+	// rate limiter
+	rateLimiter chan struct{}
 }
 
 func NewScrapeItunesJob(store store.Store, producer *rabbitmq.Producer, workerLimit int) model.Job {
 	return &ScrapeItunesJob{
-		I:         make(chan interface{}),
 		urlF:      NewFrontier(10000),
 		itunesIdF: NewFrontier(10000),
 		pageQ:     make(chan io.ReadCloser, workerLimit),
@@ -60,7 +59,7 @@ func NewScrapeItunesJob(store store.Store, producer *rabbitmq.Producer, workerLi
 				MaxIdleConnsPerHost: 2 * workerLimit,
 			},
 		},
-		workerLimit: workerLimit,
+		rateLimiter: make(chan struct{}, workerLimit),
 	}
 }
 
@@ -78,7 +77,6 @@ func (job *ScrapeItunesJob) Start() *model.AppError {
 		}
 	}
 
-	go job.pollInput()
 	go job.pollAndFetchPages()
 	go job.pollAndProcessPages()
 	go job.pollAndSaveItunesMeta()
@@ -90,25 +88,16 @@ func (job *ScrapeItunesJob) Stop() *model.AppError {
 	return nil
 }
 
-func (job *ScrapeItunesJob) InputChan() chan interface{} {
-	return job.I
-}
-
-func (job *ScrapeItunesJob) pollInput() {
-	for {
-		<-job.I
-		job.urlF.Clear()
-		job.urlF.I <- ITUNES_SEED_URL
-	}
+func (job *ScrapeItunesJob) Call(_ *amqp.Delivery) {
+	job.urlF.Clear()
+	job.urlF.I <- ITUNES_SEED_URL
 }
 
 func (job *ScrapeItunesJob) pollAndFetchPages() {
-	semaphore := make(chan int, job.workerLimit)
-
 	for {
-		semaphore <- 0
+		job.rateLimiter <- struct{}{}
 		go func(url string) {
-			defer func() { <-semaphore }()
+			defer func() { <-job.rateLimiter }()
 
 			req, _ := http.NewRequest("GET", url, nil)
 			resp, err := job.httpClient.Do(req)

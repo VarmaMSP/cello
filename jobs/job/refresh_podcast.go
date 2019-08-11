@@ -1,9 +1,12 @@
 package job
 
 import (
+	"encoding/json"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/streadway/amqp"
 
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/rs/xid"
@@ -12,15 +15,13 @@ import (
 )
 
 type RefreshPodcastJob struct {
-	I           chan interface{}
 	store       store.Store
 	httpClient  *http.Client
-	workerLimit int
+	rateLimiter chan struct{}
 }
 
 func NewRefreshPodcastJob(store store.Store, workerLimit int) model.Job {
 	return &RefreshPodcastJob{
-		I:     make(chan interface{}),
 		store: store,
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
@@ -29,13 +30,11 @@ func NewRefreshPodcastJob(store store.Store, workerLimit int) model.Job {
 				MaxIdleConnsPerHost: workerLimit,
 			},
 		},
-		workerLimit: workerLimit,
+		rateLimiter: make(chan struct{}, workerLimit),
 	}
 }
 
 func (job *RefreshPodcastJob) Start() *model.AppError {
-	go job.pollInput()
-
 	return nil
 }
 
@@ -43,49 +42,43 @@ func (job *RefreshPodcastJob) Stop() *model.AppError {
 	return nil
 }
 
-func (job *RefreshPodcastJob) InputChan() chan interface{} {
-	return job.I
-}
+func (job *RefreshPodcastJob) Call(delivery *amqp.Delivery) {
+	var input model.PodcastFeedDetails
+	if err := json.Unmarshal(delivery.Body, &input); err != nil {
+		return
+	}
 
-func (job *RefreshPodcastJob) pollInput() {
-	semaphore := make(chan int)
-	for {
-		input, ok := (<-job.I).(*model.PodcastFeedDetails)
-		if !ok {
-			continue
+	job.rateLimiter <- struct{}{}
+
+	go func(details *model.PodcastFeedDetails) {
+		defer func() { <-job.rateLimiter }()
+
+		resp, err := job.call(details.FeedUrl, map[string]string{
+			"Cache-Control":     "no-cache",
+			"If-None-Match":     details.FeedETag,
+			"If-Modified-Since": details.FeedLastModified,
+		})
+
+		if err == nil {
+			defer resp.Body.Close()
+			if resp.StatusCode == http.StatusOK {
+				job.updateEpisodes(details.Id, resp.Body)
+			}
 		}
 
-		semaphore <- 0
-		go func(details *model.PodcastFeedDetails) {
-			defer func() { <-semaphore }()
-
-			resp, err := job.call(details.FeedUrl, map[string]string{
-				"Cache-Control":     "no-cache",
-				"If-None-Match":     details.FeedETag,
-				"If-Modified-Since": details.FeedLastModified,
-			})
-
-			if err == nil {
-				defer resp.Body.Close()
-				if resp.StatusCode == http.StatusOK {
-					job.updateEpisodes(details.Id, resp.Body)
-				}
-			}
-
-			detailsU := *details
-			if err != nil {
-				detailsU.FeedUrl = resp.Request.URL.String()
-				detailsU.FeedETag = resp.Header.Get("ETag")
-				detailsU.FeedLastModified = resp.Header.Get("Last-Modified")
-				detailsU.LastRefreshStatus = model.StatusSuccess
-				detailsU.UpdatedAt = model.Now()
-			} else {
-				detailsU.LastRefreshStatus = model.StatusFailure
-				detailsU.UpdatedAt = model.Now()
-			}
-			job.store.Podcast().UpdateFeedDetails(details, &detailsU)
-		}(input)
-	}
+		detailsU := *details
+		if err != nil {
+			detailsU.FeedUrl = resp.Request.URL.String()
+			detailsU.FeedETag = resp.Header.Get("ETag")
+			detailsU.FeedLastModified = resp.Header.Get("Last-Modified")
+			detailsU.LastRefreshStatus = model.StatusSuccess
+			detailsU.UpdatedAt = model.Now()
+		} else {
+			detailsU.LastRefreshStatus = model.StatusFailure
+			detailsU.UpdatedAt = model.Now()
+		}
+		job.store.Podcast().UpdateFeedDetails(details, &detailsU)
+	}(&input)
 }
 
 func (job *RefreshPodcastJob) call(feedUrl string, headers map[string]string) (*http.Response, *model.AppError) {
