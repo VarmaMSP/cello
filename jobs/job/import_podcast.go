@@ -52,26 +52,24 @@ func (job *ImportPodcastJob) pollInput() {
 	semaphore := make(chan int, job.workerLimit)
 
 	for {
-		i, ok := (<-job.I).(*model.ImportPodcastInput)
-		if !ok || i.Id == "" || i.FeedUrl == "" {
+		input, ok := (<-job.I).(*model.ItunesMeta)
+		if !ok {
 			continue
 		}
 
 		semaphore <- 0
-		go func(feedUrl, itunesId string) {
+		go func(meta *model.ItunesMeta) {
 			defer func() { <-semaphore }()
 
-			status, _ := job.store.ItunesMeta().GetStatus(itunesId)
-			if status != model.StatusPending {
-				return
-			}
-			status = model.StatusSuccess
-			if err := job.AddToDb(feedUrl); err != nil {
-				status = model.StatusFailure
+			metaU := *meta
+			if err := job.AddToDb(meta.FeedUrl); err != nil {
+				metaU.AddedToDb = model.StatusFailure
+			} else {
+				metaU.AddedToDb = model.StatusSuccess
 			}
 
-			job.store.ItunesMeta().SetStatus(itunesId, status)
-		}(i.FeedUrl, i.Id)
+			job.store.ItunesMeta().Update(meta, &metaU)
+		}(input)
 	}
 }
 
@@ -106,6 +104,8 @@ func (job *ImportPodcastJob) AddToDb(feedUrl string) *model.AppError {
 		FeedUrl:          feedUrl,
 		FeedETag:         resp.Header.Get("ETag"),
 		FeedLastModified: resp.Header.Get("Last-Modified"),
+		RefreshEnabled:   1,
+		RefreshInterval:  100,
 	}
 	if err := podcast.LoadDetails(feed); err != nil {
 		return err

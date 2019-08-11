@@ -184,19 +184,16 @@ func (job *ScrapeItunesJob) pollAndSaveItunesMeta() {
 				continue
 			}
 
-			if err := job.store.ItunesMeta().Save(&model.ItunesMeta{
+			meta := &model.ItunesMeta{
 				ItunesId:  strconv.Itoa(result.Id),
 				FeedUrl:   result.FeedUrl,
 				AddedToDb: model.StatusPending,
-			}); err != nil {
+			}
+			if err := job.store.ItunesMeta().Save(meta); err != nil {
 				continue
 			}
 
-			job.producer.D <- map[string]string{
-				"source":   "itunes",
-				"id":       strconv.Itoa(result.Id),
-				"feed_url": result.FeedUrl,
-			}
+			job.producer.D <- meta
 		}
 	}
 }

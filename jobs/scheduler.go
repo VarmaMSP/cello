@@ -14,22 +14,56 @@ import (
 // 3 - Repeat the above for every 10 sec.
 
 type Scheduler struct {
-	store    store.Store
-	producer *rabbitmq.Producer
+	store            store.Store
+	refreshPodcastP  *rabbitmq.Producer
+	scheduledJobRunP *rabbitmq.Producer
 }
 
-func NewScheduler(store store.Store, producer *rabbitmq.Producer) *Scheduler {
+func NewScheduler(store store.Store, refreshPodcastP, scheduledJobRunP *rabbitmq.Producer) *Scheduler {
 	return &Scheduler{
-		store:    store,
-		producer: producer,
+		store:            store,
+		refreshPodcastP:  refreshPodcastP,
+		scheduledJobRunP: scheduledJobRunP,
 	}
 }
 
-func (sch *Scheduler) Start() {
+func (s *Scheduler) Start() {
+	go s.scheduleJobRun()
+	go s.schedulePodcastRefresh()
+}
+
+func (s *Scheduler) schedulePodcastRefresh() {
+	limit := 10000
+	ticker := time.NewTicker(time.Minute)
+
+	for t := range ticker.C {
+		for podcastCreatedAfter := int64(0); ; {
+			details, err := s.store.Podcast().GetAllToBeRefreshed(podcastCreatedAfter, limit)
+			if err != nil || len(details) < limit {
+				break
+			}
+
+			for _, d := range details {
+				updated := d
+				updated.LastRefreshAt = model.Now()
+				updated.LastRefreshStatus = model.StatusPending
+				if err := s.store.Podcast().UpdateFeedDetails(d, updated); err != nil {
+					continue
+				}
+
+				s.refreshPodcastP.D <- updated
+			}
+
+			podcastCreatedAfter = details[len(details)-1].CreatedAt
+		}
+	}
+}
+
+func (s *Scheduler) scheduleJobRun() {
 	ticker := time.NewTicker(10 * time.Second)
 
 	for _ = range ticker.C {
-		schedules, err := sch.store.JobSchedule().GetAllActive()
+		schedules, err := s.store.JobSchedule().GetAllActive()
 		if err != nil {
 			continue
 		}
@@ -37,13 +71,13 @@ func (sch *Scheduler) Start() {
 		for _, schedule := range schedules {
 			switch schedule.Type {
 			case model.JOB_SCHEDULE_TYPE_PERIODIC:
-				sch.periodic(schedule.JobName, schedule.RunAt, schedule.RunAfter)
+				s.periodic(schedule.JobName, schedule.RunAt, schedule.RunAfter)
 
 			case model.JOB_SCHEDULE_TYPE_ONEOFF:
-				sch.oneoff(schedule.JobName, schedule.RunAt)
+				s.oneoff(schedule.JobName, schedule.RunAt)
 
 			case model.JOB_SCHEDULE_TYPE_IMMEDIATE:
-				sch.immediate(schedule.JobName)
+				s.immediate(schedule.JobName)
 			}
 		}
 	}
@@ -54,12 +88,11 @@ func (s *Scheduler) periodic(jobName string, lastRunAt, runAfter int64) {
 	if lastRunAt+runAfter > now {
 		return
 	}
-
 	if err := s.store.JobSchedule().SetRunAt(jobName, now); err != nil {
 		return
 	}
 
-	s.producer.D <- map[string]string{"job_name": jobName}
+	s.scheduledJobRunP.D <- map[string]string{"job_name": jobName}
 }
 
 func (s *Scheduler) oneoff(jobName string, runAt int64) {
@@ -67,12 +100,11 @@ func (s *Scheduler) oneoff(jobName string, runAt int64) {
 	if runAt > now {
 		return
 	}
-
 	if err := s.store.JobSchedule().Disable(jobName); err != nil {
 		return
 	}
 
-	s.producer.D <- map[string]string{"job_name": jobName}
+	s.scheduledJobRunP.D <- map[string]string{"job_name": jobName}
 }
 
 func (s *Scheduler) immediate(jobName string) {
@@ -80,5 +112,5 @@ func (s *Scheduler) immediate(jobName string) {
 		return
 	}
 
-	s.producer.D <- map[string]string{"job_name": jobName}
+	s.scheduledJobRunP.D <- map[string]string{"job_name": jobName}
 }
