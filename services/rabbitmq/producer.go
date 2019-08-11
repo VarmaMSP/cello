@@ -11,7 +11,7 @@ type Producer struct {
 	channel      *amqp.Channel
 	queueName    string
 	deliveryMode uint8
-	D            chan map[string]string
+	D            chan interface{}
 }
 
 func NewProducer(connection *amqp.Connection, queueName string, deliveryMode uint8) (*Producer, error) {
@@ -20,7 +20,7 @@ func NewProducer(connection *amqp.Connection, queueName string, deliveryMode uin
 		return nil, err
 	}
 
-	p := &Producer{channel, queueName, deliveryMode, make(chan map[string]string)}
+	p := &Producer{channel, queueName, deliveryMode, make(chan interface{})}
 	go p.pollAndPublish()
 
 	return p, nil

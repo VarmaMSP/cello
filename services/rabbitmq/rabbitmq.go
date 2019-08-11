@@ -27,6 +27,9 @@ func NewConnection() (*amqp.Connection, error) {
 	if err := createQueue(model.QUEUE_NAME_SCHEDULED_WORK, channel); err != nil {
 		return nil, err
 	}
+	if err := createQueue(model.QUEUE_NAME_REFRESH_PODCAST, channel); err != nil {
+		return nil, err
+	}
 	return connection, nil
 }
 
