@@ -44,10 +44,12 @@ func NewFrontier(size int) *Frontier {
 	return frontier
 }
 
+// Ignore input
 func (f *Frontier) Ignore(s string) {
 	f.set.Add(s)
 }
 
+// Clear all values received till now
 func (f *Frontier) Clear() {
 	f.set.Clear()
 }

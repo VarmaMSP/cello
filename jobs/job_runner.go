@@ -2,7 +2,6 @@ package jobs
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/streadway/amqp"
 	"github.com/varmamsp/cello/jobs/job"
@@ -18,13 +17,13 @@ type JobRunner struct {
 	// Scheduler
 	scheduler *Scheduler
 	// Message Producers
-	scheduledWorkP  *rabbitmq.Producer
-	importPodcastP  *rabbitmq.Producer
-	refreshPodcastP *rabbitmq.Producer
+	scheduledJobCallP *rabbitmq.Producer
+	importPodcastP    *rabbitmq.Producer
+	refreshPodcastP   *rabbitmq.Producer
 	// Message Consumers
-	scheduledWorkC  *rabbitmq.Consumer
-	importPodcastC  *rabbitmq.Consumer
-	refreshPodcastC *rabbitmq.Consumer
+	scheduledJobCallC *rabbitmq.Consumer
+	importPodcastC    *rabbitmq.Consumer
+	refreshPodcastC   *rabbitmq.Consumer
 	// Jobs
 	scrapeItunesJob   model.Job
 	importPodcastJob  model.Job
@@ -33,29 +32,56 @@ type JobRunner struct {
 
 func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection) (*JobRunner, error) {
 	// producers
-	scheduledWorkP, err := rabbitmq.NewProducer(producerConn, model.QUEUE_NAME_SCHEDULED_WORK, amqp.Persistent)
+	scheduledJobCallP, err := rabbitmq.NewProducer(producerConn, &rabbitmq.ProducerOpts{
+		ExchangeName: rabbitmq.DefaultExchange,
+		QueueName:    model.QUEUE_NAME_SCHEDULED_JOB_CALL,
+		DeliveryMode: amqp.Persistent,
+	})
 	if err != nil {
 		return nil, err
 	}
-	importPodcastP, err := rabbitmq.NewProducer(producerConn, model.QUEUE_NAME_IMPORT_PODCAST, amqp.Persistent)
+	importPodcastP, err := rabbitmq.NewProducer(producerConn, &rabbitmq.ProducerOpts{
+		ExchangeName: rabbitmq.DefaultExchange,
+		QueueName:    model.QUEUE_NAME_IMPORT_PODCAST,
+		DeliveryMode: amqp.Persistent,
+	})
 	if err != nil {
 		return nil, err
 	}
-	refreshPodcastP, err := rabbitmq.NewProducer(producerConn, model.QUEUE_NAME_REFRESH_PODCAST, amqp.Persistent)
+	refreshPodcastP, err := rabbitmq.NewProducer(producerConn, &rabbitmq.ProducerOpts{
+		ExchangeName: rabbitmq.DefaultExchange,
+		QueueName:    model.QUEUE_NAME_REFRESH_PODCAST,
+		DeliveryMode: amqp.Persistent,
+	})
 	if err != nil {
 		return nil, err
 	}
 
 	// consumers
-	scheduledWorkC, err := rabbitmq.NewConsumer(consumerConn, model.QUEUE_NAME_SCHEDULED_WORK)
+	scheduledJobCallC, err := rabbitmq.NewConsumer(consumerConn, &rabbitmq.ConsumerOpts{
+		QueueName:     model.QUEUE_NAME_SCHEDULED_JOB_CALL,
+		ConsumerName:  "scheduled_job_run",
+		AutoAck:       false,
+		PreFetchCount: 100,
+	})
 	if err != nil {
 		return nil, err
 	}
-	importPodcastC, err := rabbitmq.NewConsumer(consumerConn, model.QUEUE_NAME_IMPORT_PODCAST)
+	importPodcastC, err := rabbitmq.NewConsumer(consumerConn, &rabbitmq.ConsumerOpts{
+		QueueName:     model.QUEUE_NAME_IMPORT_PODCAST,
+		ConsumerName:  "import_podcast",
+		AutoAck:       false,
+		PreFetchCount: 100,
+	})
 	if err != nil {
 		return nil, err
 	}
-	refreshPodcastC, err := rabbitmq.NewConsumer(consumerConn, model.QUEUE_NAME_REFRESH_PODCAST)
+	refreshPodcastC, err := rabbitmq.NewConsumer(consumerConn, &rabbitmq.ConsumerOpts{
+		QueueName:     model.QUEUE_NAME_REFRESH_PODCAST,
+		ConsumerName:  "refresh_podcast",
+		AutoAck:       false,
+		PreFetchCount: 100,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -64,15 +90,15 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		store:        store,
 		producerConn: producerConn,
 		consumerConn: consumerConn,
-		scheduler:    NewScheduler(store, refreshPodcastP, scheduledWorkP),
+		scheduler:    NewScheduler(store, refreshPodcastP, scheduledJobCallP),
 
-		scheduledWorkP:  scheduledWorkP,
-		importPodcastP:  importPodcastP,
-		refreshPodcastP: refreshPodcastP,
+		scheduledJobCallP: scheduledJobCallP,
+		importPodcastP:    importPodcastP,
+		refreshPodcastP:   refreshPodcastP,
 
-		scheduledWorkC:  scheduledWorkC,
-		importPodcastC:  importPodcastC,
-		refreshPodcastC: refreshPodcastC,
+		scheduledJobCallC: scheduledJobCallC,
+		importPodcastC:    importPodcastC,
+		refreshPodcastC:   refreshPodcastC,
 
 		scrapeItunesJob:   job.NewScrapeItunesJob(store, importPodcastP, 10),
 		importPodcastJob:  job.NewImportPodcastJob(store, 10),
@@ -87,43 +113,27 @@ func (r *JobRunner) Start() {
 	r.refreshPodcastJob.Start()
 
 	go func() {
-		for i := range r.scheduledWorkC.D {
-			fmt.Printf("Input scheduled work: %s\n", i.Body)
-			var input model.ScheduledWorkInput
-			if err := json.Unmarshal(i.Body, &input); err != nil {
-				fmt.Println(err)
+		for d := range r.scheduledJobCallC.D {
+			var input map[string]string
+			if err := json.Unmarshal(d.Body, &input); err != nil {
 				continue
 			}
 
-			fmt.Println(input)
-			if input.JobName == model.JOB_NAME_SCRAPE_ITUNES {
-				fmt.Println("starting itunes crawl")
-				r.scrapeItunesJob.InputChan() <- nil
+			if input["job_name"] == model.JOB_NAME_SCRAPE_ITUNES {
+				r.scrapeItunesJob.Call(&d)
 			}
 		}
 	}()
 
 	go func() {
-		for i := range r.importPodcastC.D {
-			var input model.ItunesMeta
-			if err := json.Unmarshal(i.Body, &input); err != nil {
-				continue
-			}
-
-			fmt.Println(input)
-			r.importPodcastJob.InputChan() <- &input
+		for d := range r.importPodcastC.D {
+			r.importPodcastJob.Call(&d)
 		}
 	}()
 
 	go func() {
-		for i := range r.refreshPodcastC.D {
-			fmt.Printf("Input refresh podcast: %s\n", i.Body)
-			var input model.PodcastFeedDetails
-			if err := json.Unmarshal(i.Body, &input); err != nil {
-				continue
-			}
-
-			r.refreshPodcastJob.InputChan() <- &input
+		for d := range r.refreshPodcastC.D {
+			r.refreshPodcastJob.Call(&d)
 		}
 	}()
 }

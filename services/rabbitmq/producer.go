@@ -8,25 +8,29 @@ import (
 )
 
 type Producer struct {
-	channel      *amqp.Channel
-	queueName    string
-	deliveryMode uint8
-	D            chan interface{}
+	channel *amqp.Channel
+	D       chan interface{}
 }
 
-func NewProducer(connection *amqp.Connection, queueName string, deliveryMode uint8) (*Producer, error) {
+type ProducerOpts struct {
+	ExchangeName string
+	QueueName    string
+	DeliveryMode uint8
+}
+
+func NewProducer(connection *amqp.Connection, opts *ProducerOpts) (*Producer, error) {
 	channel, err := connection.Channel()
 	if err != nil {
 		return nil, err
 	}
 
-	p := &Producer{channel, queueName, deliveryMode, make(chan interface{})}
-	go p.pollAndPublish()
+	p := &Producer{channel, make(chan interface{})}
+	go p.pollAndPublish(opts)
 
 	return p, nil
 }
 
-func (p *Producer) pollAndPublish() error {
+func (p *Producer) pollAndPublish(opts *ProducerOpts) error {
 	for {
 		message := <-p.D
 		str, err := json.Marshal(message)
@@ -35,14 +39,14 @@ func (p *Producer) pollAndPublish() error {
 		}
 
 		err = p.channel.Publish(
-			DEFAULT_EXCAHNGE, // exchange
-			p.queueName,      // exchange key
-			false,            // immediate
-			false,            // publishing
+			opts.ExchangeName, // exchange
+			opts.QueueName,    // exchange key
+			false,             // immediate
+			false,             // publishing
 			amqp.Publishing{
 				Body:         str,
 				ContentType:  "application/json",
-				DeliveryMode: p.deliveryMode,
+				DeliveryMode: opts.DeliveryMode,
 			},
 		)
 		if err != nil {

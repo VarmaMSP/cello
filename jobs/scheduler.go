@@ -14,16 +14,16 @@ import (
 // 3 - Repeat the above for every 10 sec.
 
 type Scheduler struct {
-	store            store.Store
-	refreshPodcastP  *rabbitmq.Producer
-	scheduledJobRunP *rabbitmq.Producer
+	store             store.Store
+	refreshPodcastP   *rabbitmq.Producer
+	scheduledJobCallP *rabbitmq.Producer
 }
 
-func NewScheduler(store store.Store, refreshPodcastP, scheduledJobRunP *rabbitmq.Producer) *Scheduler {
+func NewScheduler(store store.Store, refreshPodcastP, scheduledJobCallP *rabbitmq.Producer) *Scheduler {
 	return &Scheduler{
-		store:            store,
-		refreshPodcastP:  refreshPodcastP,
-		scheduledJobRunP: scheduledJobRunP,
+		store:             store,
+		refreshPodcastP:   refreshPodcastP,
+		scheduledJobCallP: scheduledJobCallP,
 	}
 }
 
@@ -36,7 +36,7 @@ func (s *Scheduler) schedulePodcastRefresh() {
 	limit := 10000
 	ticker := time.NewTicker(time.Minute)
 
-	for t := range ticker.C {
+	for _ = range ticker.C {
 		for podcastCreatedAfter := int64(0); ; {
 			details, err := s.store.Podcast().GetAllToBeRefreshed(podcastCreatedAfter, limit)
 			if err != nil || len(details) < limit {
@@ -92,7 +92,7 @@ func (s *Scheduler) periodic(jobName string, lastRunAt, runAfter int64) {
 		return
 	}
 
-	s.scheduledJobRunP.D <- map[string]string{"job_name": jobName}
+	s.scheduledJobCallP.D <- map[string]string{"job_name": jobName}
 }
 
 func (s *Scheduler) oneoff(jobName string, runAt int64) {
@@ -104,7 +104,7 @@ func (s *Scheduler) oneoff(jobName string, runAt int64) {
 		return
 	}
 
-	s.scheduledJobRunP.D <- map[string]string{"job_name": jobName}
+	s.scheduledJobCallP.D <- map[string]string{"job_name": jobName}
 }
 
 func (s *Scheduler) immediate(jobName string) {
@@ -112,5 +112,5 @@ func (s *Scheduler) immediate(jobName string) {
 		return
 	}
 
-	s.scheduledJobRunP.D <- map[string]string{"job_name": jobName}
+	s.scheduledJobCallP.D <- map[string]string{"job_name": jobName}
 }

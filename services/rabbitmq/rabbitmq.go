@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	DEFAULT_EXCAHNGE = ""
+	DefaultExchange = ""
 )
 
 func NewConnection() (*amqp.Connection, error) {
@@ -24,7 +24,7 @@ func NewConnection() (*amqp.Connection, error) {
 	if err := createQueue(model.QUEUE_NAME_IMPORT_PODCAST, channel); err != nil {
 		return nil, err
 	}
-	if err := createQueue(model.QUEUE_NAME_SCHEDULED_WORK, channel); err != nil {
+	if err := createQueue(model.QUEUE_NAME_SCHEDULED_JOB_CALL, channel); err != nil {
 		return nil, err
 	}
 	if err := createQueue(model.QUEUE_NAME_REFRESH_PODCAST, channel); err != nil {
