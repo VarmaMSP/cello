@@ -13,43 +13,45 @@ const (
 // https://help.apple.com/itc/podcasts_connect/#/itcb54353390
 
 type Podcast struct {
-	Id               string
-	Title            string
-	Description      string
-	ImagePath        string
-	Language         string
-	Explicit         int
-	Author           string
-	Type             string
-	Block            int
-	Complete         int
-	Link             string
-	OwnerName        string
-	OwnerEmail       string
-	Copyright        string
-	NewFeedUrl       string
-	FeedUrl          string
-	FeedETag         string
-	FeedLastModified string
-	CreatedAt        int64
-	UpdatedAt        int64
-}
-
-type PodcastPatch struct {
-	Id          string `json:"id,omitempty"`
-	Title       string `json:"title,omitempty"`
-	Description string `json:"description,omitempty"`
-	ImagePath   string `json:"image_path,omitempty"`
-	Author      string `json:"author,omitempty"`
-	Type        string `json:"type,omitempty"`
-	Complete    int    `json:"complete,omitempty"`
+	Id                string
+	Title             string
+	Description       string
+	ImagePath         string
+	Language          string
+	Explicit          int
+	Author            string
+	Type              string
+	Block             int
+	Complete          int
+	Link              string
+	OwnerName         string
+	OwnerEmail        string
+	Copyright         string
+	NewFeedUrl        string
+	FeedUrl           string
+	FeedETag          string
+	FeedLastModified  string
+	RefreshEnabled    int
+	LastRefreshAt     int64
+	NextRefreshAt     int64
+	LastRefreshStatus string
+	RefreshInterval   int
+	CreatedAt         int64
+	UpdatedAt         int64
 }
 
 type PodcastFeedDetails struct {
-	Id               string `json:"id,omitempty"`
-	FeedUrl          string `json:"feed_url,omitempty"`
-	FeedETag         string `json:"feed_etag,omitempty"`
-	FeedLastModified string `json:"feed_last_modified,omitempty"`
+	Id                string `json:"id"`
+	FeedUrl           string `json:"feed_url"`
+	FeedETag          string `json:"feed_etag"`
+	FeedLastModified  string `json:"feed_last_modified"`
+	RefreshEnabled    int    `json:"refresh_enabled"`
+	LastRefreshAt     int64  `json:"last_refresh_at"`
+	NextRefreshAt     int64  `json:"next_refresh_at"`
+	LastRefreshStatus string `json:"last_refresh_status"`
+	RefreshInterval   int    `json:"refresh_interval"`
+	CreatedAt         int64  `json:"created_at"`
+	UpdatedAt         int64  `json:"updated_at"`
 }
 
 func (p *Podcast) DbColumns() []string {
@@ -58,7 +60,9 @@ func (p *Podcast) DbColumns() []string {
 		"language", "explicit", "author", "type",
 		"block", "complete", "link", "owner_name",
 		"owner_email", "copyright", "new_feed_url", "feed_url",
-		"feed_etag", "feed_last_modified", "created_at", "updated_at",
+		"feed_etag", "feed_last_modified", "refresh_enabled", "last_refresh_at",
+		"next_refresh_at", "last_refresh_status", "refresh_interval", "created_at",
+		"updated_at",
 	}
 }
 
@@ -69,35 +73,26 @@ func (p *Podcast) FieldAddrs() []interface{} {
 		&p.Language, &p.Explicit, &p.Author, &p.Type,
 		&p.Block, &p.Complete, &p.Link, &p.OwnerName,
 		&p.OwnerEmail, &p.Copyright, &p.NewFeedUrl, &p.FeedUrl,
-		&p.FeedETag, &p.FeedLastModified, &p.CreatedAt, &p.UpdatedAt,
-	)
-}
-
-func (pp *PodcastPatch) DbColumns() []string {
-	return []string{
-		"id", "title", "description", "image_path",
-		"author", "type", "complete",
-	}
-}
-
-func (pp *PodcastPatch) FieldAddrs() []interface{} {
-	var i []interface{}
-	return append(i,
-		&pp.Id, &pp.Title, &pp.Description, &pp.ImagePath,
-		&pp.Author, &pp.Type, &pp.Complete,
+		&p.FeedETag, &p.FeedLastModified, &p.RefreshEnabled, &p.LastRefreshAt,
+		&p.NextRefreshAt, &p.LastRefreshStatus, &p.RefreshInterval, &p.CreatedAt,
+		&p.UpdatedAt,
 	)
 }
 
 func (pfd *PodcastFeedDetails) DbColumns() []string {
 	return []string{
 		"id", "feed_url", "feed_etag", "feed_last_modified",
+		"refresh_enabled", "last_refresh_at", "next_refresh_at", "last_refresh_status",
+		"refresh_interval", "created_at", "updated_at",
 	}
 }
 
 func (pfd *PodcastFeedDetails) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
-		&pfd.Id, &pfd.FeedUrl, &pfd.FeedLastModified, &pfd.FeedETag,
+		&pfd.Id, &pfd.FeedUrl, &pfd.FeedETag, &pfd.FeedLastModified,
+		&pfd.RefreshEnabled, &pfd.LastRefreshAt, &pfd.NextRefreshAt, &pfd.LastRefreshStatus,
+		&pfd.RefreshInterval, &pfd.CreatedAt, &pfd.UpdatedAt,
 	)
 }
 
@@ -225,6 +220,14 @@ func (p *Podcast) PreSave() {
 
 	if p.NewFeedUrl != "" && !IsValidHttpUrl(p.NewFeedUrl) {
 		p.NewFeedUrl = ""
+	}
+
+	if p.LastRefreshAt == 0 {
+		p.LastRefreshAt = Now()
+	}
+
+	if p.LastRefreshStatus == "" {
+		p.LastRefreshStatus = StatusSuccess
 	}
 
 	if p.CreatedAt == 0 {
