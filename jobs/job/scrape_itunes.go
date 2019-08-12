@@ -38,20 +38,20 @@ type ScrapeItunesJob struct {
 	// store
 	store store.Store
 	// rabbitmq producer
-	producer *rabbitmq.Producer
+	importPodcastP *rabbitmq.Producer
 	// http client
 	httpClient *http.Client
 	// rate limiter
 	rateLimiter chan struct{}
 }
 
-func NewScrapeItunesJob(store store.Store, producer *rabbitmq.Producer, workerLimit int) model.Job {
-	return &ScrapeItunesJob{
-		urlF:      NewFrontier(10000),
-		itunesIdF: NewFrontier(10000),
-		pageQ:     make(chan io.ReadCloser, workerLimit),
-		store:     store,
-		producer:  producer,
+func NewScrapeItunesJob(store store.Store, importPodcastP *rabbitmq.Producer, workerLimit int) (model.Job, error) {
+	job := &ScrapeItunesJob{
+		urlF:           NewFrontier(10000),
+		itunesIdF:      NewFrontier(10000),
+		pageQ:          make(chan io.ReadCloser, workerLimit),
+		store:          store,
+		importPodcastP: importPodcastP,
 		httpClient: &http.Client{
 			Timeout: 40 * time.Second,
 			Transport: &http.Transport{
@@ -61,13 +61,11 @@ func NewScrapeItunesJob(store store.Store, producer *rabbitmq.Producer, workerLi
 		},
 		rateLimiter: make(chan struct{}, workerLimit),
 	}
-}
 
-func (job *ScrapeItunesJob) Start() *model.AppError {
 	for off, lim := 0, 10000; ; off += lim {
 		itunesIds, err := job.store.ItunesMeta().GetItunesIdList(off, lim)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if len(itunesIds) == 0 {
 			break
@@ -81,16 +79,17 @@ func (job *ScrapeItunesJob) Start() *model.AppError {
 	go job.pollAndProcessPages()
 	go job.pollAndSaveItunesMeta()
 
-	return nil
+	return job, nil
+}
+
+func (job *ScrapeItunesJob) Call(d *amqp.Delivery) {
+	job.urlF.Clear()
+	job.urlF.I <- ITUNES_SEED_URL
+	d.Ack(false)
 }
 
 func (job *ScrapeItunesJob) Stop() *model.AppError {
 	return nil
-}
-
-func (job *ScrapeItunesJob) Call(_ *amqp.Delivery) {
-	job.urlF.Clear()
-	job.urlF.I <- ITUNES_SEED_URL
 }
 
 func (job *ScrapeItunesJob) pollAndFetchPages() {
@@ -182,7 +181,7 @@ func (job *ScrapeItunesJob) pollAndSaveItunesMeta() {
 				continue
 			}
 
-			job.producer.D <- meta
+			job.importPodcastP.D <- meta
 		}
 	}
 }
