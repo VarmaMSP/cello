@@ -13,6 +13,7 @@ type ConsumerOpts struct {
 	QueueName     string
 	ConsumerName  string
 	AutoAck       bool
+	Exclusive     bool
 	PreFetchCount int
 }
 
@@ -30,7 +31,7 @@ func NewConsumer(conn *amqp.Connection, opts *ConsumerOpts) (*Consumer, error) {
 		opts.QueueName,    // queue
 		opts.ConsumerName, // consumer
 		opts.AutoAck,      // auto-ack
-		false,             // exclusive
+		opts.Exclusive,    // exclusive
 		false,             // no-local
 		false,             // no-wait
 		nil,               // args

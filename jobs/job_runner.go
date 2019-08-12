@@ -62,6 +62,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		QueueName:     model.QUEUE_NAME_SCHEDULED_JOB_CALL,
 		ConsumerName:  "scheduled_job_run",
 		AutoAck:       false,
+		Exclusive:     true,
 		PreFetchCount: 100,
 	})
 	if err != nil {
@@ -71,6 +72,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		QueueName:     model.QUEUE_NAME_IMPORT_PODCAST,
 		ConsumerName:  "import_podcast",
 		AutoAck:       false,
+		Exclusive:     true,
 		PreFetchCount: 100,
 	})
 	if err != nil {
@@ -80,6 +82,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		QueueName:     model.QUEUE_NAME_REFRESH_PODCAST,
 		ConsumerName:  "refresh_podcast",
 		AutoAck:       false,
+		Exclusive:     true,
 		PreFetchCount: 100,
 	})
 	if err != nil {
