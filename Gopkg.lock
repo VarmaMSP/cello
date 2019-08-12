@@ -26,6 +26,14 @@
   version = "v1.1.1"
 
 [[projects]]
+  digest = "1:6d06faf9d48a63d9ceccf3daea1547996af316f05d0cde35bf2c967c062ccec1"
+  name = "github.com/go-http-utils/headers"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "dd89efed167473dab56959bdfdbfdfed9519f80b"
+  version = "1.0.0"
+
+[[projects]]
   digest = "1:ec6f9bf5e274c833c911923c9193867f3f18788c461f76f05f62bb1510e0ae65"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
@@ -143,6 +151,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/PuerkitoBio/goquery",
+    "github.com/go-http-utils/headers",
     "github.com/go-sql-driver/mysql",
     "github.com/golang-collections/go-datastructures/set",
     "github.com/mmcdole/gofeed/rss",
