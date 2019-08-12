@@ -2,14 +2,12 @@ package job
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
-	"github.com/streadway/amqp"
-
 	"github.com/mmcdole/gofeed/rss"
-	"github.com/rs/xid"
+
+	"github.com/streadway/amqp"
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
@@ -35,88 +33,73 @@ func NewImportPodcastJob(store store.Store, workerLimit int) model.Job {
 	}
 }
 
-func (job *ImportPodcastJob) Start() *model.AppError {
-	return nil
-}
-
 func (job *ImportPodcastJob) Stop() *model.AppError {
 	return nil
 }
 
 func (job *ImportPodcastJob) Call(delivery *amqp.Delivery) {
-	var input model.ItunesMeta
-	if err := json.Unmarshal(delivery.Body, &input); err != nil {
+	var meta model.ItunesMeta
+	if err := json.Unmarshal(delivery.Body, &meta); err != nil {
 		return
 	}
 
 	job.rateLimiter <- struct{}{}
 
-	go func(meta *model.ItunesMeta) {
+	go func() {
+		defer delivery.Ack(false)
 		defer func() { <-job.rateLimiter }()
 
-		metaU := *meta
-		if err := job.AddToDb(meta.FeedUrl); err != nil {
+		// updated meta
+		metaU := meta
+
+		feed, headers, err := fetchRssFeed(meta.FeedUrl, map[string]string{}, job.httpClient)
+		if err != nil || feed == nil {
 			metaU.AddedToDb = model.StatusFailure
-		} else {
-			metaU.AddedToDb = model.StatusSuccess
+			goto update_meta
 		}
 
-		job.store.ItunesMeta().Update(meta, &metaU)
-	}(&input)
+		if err := job.savePodcast(feed, meta.FeedUrl, headers); err != nil {
+			metaU.AddedToDb = model.StatusFailure
+			goto update_meta
+		}
+
+		metaU.AddedToDb = model.StatusSuccess
+
+	update_meta:
+		metaU.UpdatedAt = model.Now()
+		job.store.ItunesMeta().Update(&meta, &metaU)
+	}()
 }
 
-func (job *ImportPodcastJob) AddToDb(feedUrl string) *model.AppError {
+func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers map[string]string) *model.AppError {
 	appErrorC := model.NewAppErrorC(
-		"jobs.podcast_jobort.add_to_db",
+		"jobs.podcast_import_job.save_podcast",
 		http.StatusInternalServerError,
-		map[string]string{"feed_url": feedUrl},
+		map[string]string{"title": feed.Title},
 	)
 
-	// fetch rss feed
-	req, err := http.NewRequest("GET", feedUrl, nil)
-	if err != nil {
-		return appErrorC(err.Error())
-	}
-	resp, err := job.httpClient.Do(req)
-	if err != nil {
-		return appErrorC(err.Error())
-	}
-
-	// parse rss feed
-	parser := &rss.Parser{}
-	feed, err := parser.Parse(resp.Body)
-	resp.Body.Close()
-	if err != nil {
-		return appErrorC(fmt.Sprintf("Cannot parse feed: %s", err.Error()))
-	}
-
-	// Save Podcast
+	// Save podcast
 	podcast := &model.Podcast{
-		Id:               xid.New().String(),
 		FeedUrl:          feedUrl,
-		FeedETag:         resp.Header.Get("ETag"),
-		FeedLastModified: resp.Header.Get("Last-Modified"),
-		RefreshEnabled:   1,
-		RefreshInterval:  100,
+		FeedETag:         headers["ETag"],
+		FeedLastModified: headers["Last-Modified"],
 	}
 	if err := podcast.LoadDetails(feed); err != nil {
-		return err
+		return appErrorC(err.Error())
 	}
+	podcast.SetRefershInterval(feed.Items)
 	if err := job.store.Podcast().Save(podcast); err != nil {
-		return err
+		return appErrorC(err.Error())
 	}
 
 	// Save Episodes
 	for _, item := range feed.Items {
-		episode := &model.Episode{
-			Id:        xid.New().String(),
-			PodcastId: podcast.Id,
-		}
+		episode := &model.Episode{PodcastId: podcast.Id}
 		if err := episode.LoadDetails(item); err != nil {
 			continue
 		}
 		if err := job.store.Episode().Save(episode); err != nil {
-			fmt.Printf("%s %s: %s\n", feedUrl, episode.Title, err.Error())
+			continue
 		}
 	}
 
@@ -132,10 +115,10 @@ func (job *ImportPodcastJob) AddToDb(feedUrl string) *model.AppError {
 	}
 	for _, categoryId := range categoryIds {
 		if categoryId != -1 {
-			job.store.Category().SavePodcastCategory(&model.PodcastCategory{
-				PodcastId:  podcast.Id,
-				CategoryId: categoryId,
-			})
+			category := &model.PodcastCategory{PodcastId: podcast.Id, CategoryId: categoryId}
+			if err := job.store.Category().SavePodcastCategory(category); err != nil {
+				continue
+			}
 		}
 	}
 

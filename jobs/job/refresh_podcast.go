@@ -2,12 +2,12 @@ package job
 
 import (
 	"encoding/json"
-	"io"
 	"net/http"
 	"time"
 
 	"github.com/streadway/amqp"
 
+	h "github.com/go-http-utils/headers"
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/rs/xid"
 	"github.com/varmamsp/cello/model"
@@ -34,87 +34,62 @@ func NewRefreshPodcastJob(store store.Store, workerLimit int) model.Job {
 	}
 }
 
-func (job *RefreshPodcastJob) Start() *model.AppError {
-	return nil
-}
-
 func (job *RefreshPodcastJob) Stop() *model.AppError {
 	return nil
 }
 
 func (job *RefreshPodcastJob) Call(delivery *amqp.Delivery) {
-	var input model.PodcastFeedDetails
-	if err := json.Unmarshal(delivery.Body, &input); err != nil {
+	var details model.PodcastFeedDetails
+	if err := json.Unmarshal(delivery.Body, &details); err != nil {
 		return
 	}
 
 	job.rateLimiter <- struct{}{}
 
-	go func(details *model.PodcastFeedDetails) {
+	go func() {
+		defer delivery.Ack(false)
 		defer func() { <-job.rateLimiter }()
 
-		resp, err := job.call(details.FeedUrl, map[string]string{
-			"Cache-Control":     "no-cache",
-			"If-None-Match":     details.FeedETag,
-			"If-Modified-Since": details.FeedLastModified,
-		})
+		// updated details
+		detailsU := details
 
-		if err == nil {
-			defer resp.Body.Close()
-			if resp.StatusCode == http.StatusOK {
-				job.updateEpisodes(details.Id, resp.Body)
-			}
-		}
-
-		detailsU := *details
+		feed, headers, err := fetchRssFeed(
+			details.FeedUrl,
+			map[string]string{h.ETag: details.FeedETag, h.LastModified: details.FeedLastModified},
+			job.httpClient,
+		)
 		if err != nil {
-			detailsU.FeedUrl = resp.Request.URL.String()
-			detailsU.FeedETag = resp.Header.Get("ETag")
-			detailsU.FeedLastModified = resp.Header.Get("Last-Modified")
-			detailsU.LastRefreshStatus = model.StatusSuccess
-			detailsU.UpdatedAt = model.Now()
-		} else {
 			detailsU.LastRefreshStatus = model.StatusFailure
-			detailsU.UpdatedAt = model.Now()
+			goto update_details
+		} else {
+			detailsU.FeedETag = headers[h.ETag]
+			details.FeedLastModified = headers[h.LastModified]
 		}
-		job.store.Podcast().UpdateFeedDetails(details, &detailsU)
-	}(&input)
+
+		if feed == nil {
+			detailsU.LastRefreshStatus = model.StatusSuccess
+			goto update_details
+		}
+
+		if err := job.updateEpisodes(details.Id, feed); err != nil {
+			detailsU.LastRefreshStatus = model.StatusFailure
+			goto update_details
+		}
+
+		detailsU.LastRefreshStatus = model.StatusSuccess
+
+	update_details:
+		detailsU.UpdatedAt = model.Now()
+		job.store.Podcast().UpdateFeedDetails(&details, &detailsU)
+	}()
 }
 
-func (job *RefreshPodcastJob) call(feedUrl string, headers map[string]string) (*http.Response, *model.AppError) {
-	appErrorC := model.NewAppErrorC(
-		"job.refresh_podcast.fetch_raw_feed",
-		http.StatusInternalServerError,
-		map[string]string{"feed_url": feedUrl},
-	)
-
-	req, err := http.NewRequest("GET", feedUrl, nil)
-	if err != nil {
-		return nil, appErrorC(err.Error())
-	}
-	for k, v := range headers {
-		req.Header.Add(k, v)
-	}
-
-	resp, err := job.httpClient.Do(req)
-	if err != nil {
-		return nil, appErrorC(err.Error())
-	}
-	return resp, nil
-}
-
-func (job *RefreshPodcastJob) updateEpisodes(podcastId string, rawFeed io.ReadCloser) *model.AppError {
+func (job *RefreshPodcastJob) updateEpisodes(podcastId string, feed *rss.Feed) *model.AppError {
 	appErrorC := model.NewAppErrorC(
 		"job.refresh_podcast.fetch_raw_feed",
 		http.StatusInternalServerError,
 		map[string]string{"podcast_id": podcastId},
 	)
-
-	parser := &rss.Parser{}
-	feed, err := parser.Parse(rawFeed)
-	if err != nil {
-		return appErrorC(err.Error())
-	}
 
 	episodeGuidList, err := job.store.Episode().GetAllGuidsByPodcast(podcastId)
 	if err != nil {
