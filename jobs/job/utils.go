@@ -1,12 +1,9 @@
 package job
 
 import (
-	"encoding/json"
-	"net/http"
 	"regexp"
-	"strings"
 
-	s "github.com/golang-collections/go-datastructures/set"
+	"github.com/golang-collections/go-datastructures/set"
 	"github.com/varmamsp/cello/model"
 )
 
@@ -22,14 +19,14 @@ type Frontier struct {
 	// Output channel
 	O chan string
 	// Set of strings processed till now
-	set *s.Set
+	set *set.Set
 }
 
 func NewFrontier(size int) *Frontier {
 	frontier := &Frontier{
 		I:   make(chan string, 1000),
 		O:   make(chan string, size),
-		set: s.New(),
+		set: set.New(),
 	}
 
 	go func(f *Frontier) {
@@ -52,38 +49,6 @@ func (f *Frontier) Ignore(s string) {
 // Clear all values received till now
 func (f *Frontier) Clear() {
 	f.set.Clear()
-}
-
-type ItunesLookupResp struct {
-	Count   int                  `json:"resultCount"`
-	Results []ItunesLookupResult `json:"results"`
-}
-
-type ItunesLookupResult struct {
-	Kind    string `json:"kind"`
-	Id      int    `json:"collectionId"`
-	FeedUrl string `json:"feedUrl"`
-}
-
-// Fetch podcast details from itunes lookup API
-func itunesLookup(podcastIds []string, httpClient *http.Client) ([]ItunesLookupResult, error) {
-	url := itunesLookupUrl + strings.Join(podcastIds, ",")
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	lookupResp := &ItunesLookupResp{}
-	if err := json.NewDecoder(resp.Body).Decode(lookupResp); err != nil {
-		return nil, err
-	}
-
-	return lookupResp.Results, nil
 }
 
 // Check if given link points to itunes podcast page
