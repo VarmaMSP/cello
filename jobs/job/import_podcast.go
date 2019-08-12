@@ -19,7 +19,7 @@ type ImportPodcastJob struct {
 	rateLimiter chan struct{}
 }
 
-func NewImportPodcastJob(store store.Store, workerLimit int) model.Job {
+func NewImportPodcastJob(store store.Store, workerLimit int) (model.Job, error) {
 	return &ImportPodcastJob{
 		store: store,
 		httpClient: &http.Client{
@@ -30,16 +30,13 @@ func NewImportPodcastJob(store store.Store, workerLimit int) model.Job {
 			},
 		},
 		rateLimiter: make(chan struct{}, workerLimit),
-	}
+	}, nil
 }
 
-func (job *ImportPodcastJob) Stop() *model.AppError {
-	return nil
-}
-
-func (job *ImportPodcastJob) Call(delivery *amqp.Delivery) {
+func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 	var meta model.ItunesMeta
 	if err := json.Unmarshal(delivery.Body, &meta); err != nil {
+		delivery.Ack(false)
 		return
 	}
 

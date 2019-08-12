@@ -20,7 +20,7 @@ type RefreshPodcastJob struct {
 	rateLimiter chan struct{}
 }
 
-func NewRefreshPodcastJob(store store.Store, workerLimit int) model.Job {
+func NewRefreshPodcastJob(store store.Store, workerLimit int) (model.Job, error) {
 	return &RefreshPodcastJob{
 		store: store,
 		httpClient: &http.Client{
@@ -31,16 +31,13 @@ func NewRefreshPodcastJob(store store.Store, workerLimit int) model.Job {
 			},
 		},
 		rateLimiter: make(chan struct{}, workerLimit),
-	}
+	}, nil
 }
 
-func (job *RefreshPodcastJob) Stop() *model.AppError {
-	return nil
-}
-
-func (job *RefreshPodcastJob) Call(delivery *amqp.Delivery) {
+func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 	var details model.PodcastFeedDetails
 	if err := json.Unmarshal(delivery.Body, &details); err != nil {
+		delivery.Ack(false)
 		return
 	}
 
@@ -61,10 +58,10 @@ func (job *RefreshPodcastJob) Call(delivery *amqp.Delivery) {
 		if err != nil {
 			detailsU.LastRefreshStatus = model.StatusFailure
 			goto update_details
-		} else {
-			detailsU.FeedETag = headers[h.ETag]
-			details.FeedLastModified = headers[h.LastModified]
 		}
+
+		detailsU.FeedETag = headers[h.ETag]
+		details.FeedLastModified = headers[h.LastModified]
 
 		if feed == nil {
 			detailsU.LastRefreshStatus = model.StatusSuccess

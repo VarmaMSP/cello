@@ -82,14 +82,11 @@ func NewScrapeItunesJob(store store.Store, importPodcastP *rabbitmq.Producer, wo
 	return job, nil
 }
 
-func (job *ScrapeItunesJob) Call(d *amqp.Delivery) {
+func (job *ScrapeItunesJob) Call(delivery amqp.Delivery) {
+	defer delivery.Ack(false)
+
 	job.urlF.Clear()
 	job.urlF.I <- ITUNES_SEED_URL
-	d.Ack(false)
-}
-
-func (job *ScrapeItunesJob) Stop() *model.AppError {
-	return nil
 }
 
 func (job *ScrapeItunesJob) pollAndFetchPages() {

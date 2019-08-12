@@ -89,7 +89,16 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		return nil, err
 	}
 
+	// Jobs
 	scrapeItunesJob, err := job.NewScrapeItunesJob(store, importPodcastP, 10)
+	if err != nil {
+		return nil, err
+	}
+	importPodcastJob, err := job.NewImportPodcastJob(store, 10)
+	if err != nil {
+		return nil, err
+	}
+	refreshPodcastJob, err := job.NewRefreshPodcastJob(store, 10)
 	if err != nil {
 		return nil, err
 	}
@@ -109,8 +118,8 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		refreshPodcastC:   refreshPodcastC,
 
 		scrapeItunesJob:   scrapeItunesJob,
-		importPodcastJob:  job.NewImportPodcastJob(store, 10),
-		refreshPodcastJob: job.NewRefreshPodcastJob(store, 10),
+		importPodcastJob:  importPodcastJob,
+		refreshPodcastJob: refreshPodcastJob,
 	}, nil
 }
 
@@ -125,20 +134,20 @@ func (r *JobRunner) Start() {
 			}
 
 			if input["job_name"] == model.JOB_NAME_SCRAPE_ITUNES {
-				r.scrapeItunesJob.Call(&d)
+				r.scrapeItunesJob.Call(d)
 			}
 		}
 	}()
 
 	go func() {
 		for d := range r.importPodcastC.D {
-			r.importPodcastJob.Call(&d)
+			r.importPodcastJob.Call(d)
 		}
 	}()
 
 	go func() {
 		for d := range r.refreshPodcastC.D {
-			r.refreshPodcastJob.Call(&d)
+			r.refreshPodcastJob.Call(d)
 		}
 	}()
 }

@@ -20,8 +20,7 @@ const (
 
 // A job takes input and does some work with it
 type Job interface {
-	Call(delivery *amqp.Delivery)
-	Stop() *AppError
+	Call(delivery amqp.Delivery)
 }
 
 type JobSchedule struct {
