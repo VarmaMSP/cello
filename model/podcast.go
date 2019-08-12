@@ -2,8 +2,11 @@ package model
 
 import (
 	"net/http"
+	"sort"
+	"time"
 
 	"github.com/mmcdole/gofeed/rss"
+	"github.com/rs/xid"
 )
 
 const (
@@ -196,7 +199,67 @@ func (p *Podcast) LoadDetails(feed *rss.Feed) *AppError {
 	return nil
 }
 
+var (
+	secondsInHour  = 60 * 60
+	secondsInDay   = 60 * 60 * 24
+	secondsInWeek  = 60 * 60 * 24 * 7
+	secondsInMonth = 60 * 60 * 24 * 30
+	secondsInYear  = 60 * 60 * 24 * 365
+)
+
+func (p *Podcast) SetRefershInterval(items []*rss.Item) {
+	// Pub dates ordered from most recent to old
+	var itemPubDates []*time.Time
+	for _, item := range items {
+		if item.PubDateParsed != nil {
+			itemPubDates = append(itemPubDates, item.PubDateParsed)
+		}
+	}
+	sort.SliceStable(itemPubDates, func(i, j int) bool { return itemPubDates[i].After(*itemPubDates[j]) })
+
+	// Do not enable refresh for podcasts that havent published an episode in more than 1 years
+	if int(time.Since(*itemPubDates[0]).Seconds()) > secondsInYear {
+		p.RefreshEnabled = 0
+		p.RefreshInterval = 0
+		return
+	}
+	p.RefreshEnabled = 1
+
+	// Calculate average duration between a maximum of last 5  episodes
+	l, s := MinInt(len(itemPubDates), 5), 0
+	for i := 0; i < l-1; i++ {
+		s += int(itemPubDates[i].Sub(*itemPubDates[i+1]).Seconds())
+	}
+	s /= l - 1
+
+	if s < 2*secondsInDay {
+		p.RefreshInterval = secondsInHour
+		return
+	}
+	if s < 4*secondsInDay {
+		p.RefreshInterval = 2 * secondsInHour
+		return
+	}
+	if s < secondsInWeek {
+		p.RefreshInterval = 3 * secondsInHour
+		return
+	}
+	if s < 2*secondsInWeek {
+		p.RefreshInterval = 5 * secondsInHour
+		return
+	}
+	if s < secondsInMonth {
+		p.RefreshInterval = 6 * secondsInHour
+		return
+	}
+	p.RefreshInterval = secondsInDay
+}
+
 func (p *Podcast) PreSave() {
+	if p.Id == "" {
+		p.Id = xid.New().String()
+	}
+
 	title := []rune(p.Title)
 	if len(title) > PODCAST_TITLE_MAX_LENGTH {
 		p.Title = string(title[0:PODCAST_TITLE_MAX_LENGTH-10]) + "..."
