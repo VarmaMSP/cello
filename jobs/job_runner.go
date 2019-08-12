@@ -86,6 +86,11 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		return nil, err
 	}
 
+	scrapeItunesJob, err := job.NewScrapeItunesJob(store, importPodcastP, 10)
+	if err != nil {
+		return nil, err
+	}
+
 	return &JobRunner{
 		store:        store,
 		producerConn: producerConn,
@@ -100,7 +105,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		importPodcastC:    importPodcastC,
 		refreshPodcastC:   refreshPodcastC,
 
-		scrapeItunesJob:   job.NewScrapeItunesJob(store, importPodcastP, 10),
+		scrapeItunesJob:   scrapeItunesJob,
 		importPodcastJob:  job.NewImportPodcastJob(store, 10),
 		refreshPodcastJob: job.NewRefreshPodcastJob(store, 10),
 	}, nil
@@ -108,9 +113,6 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 
 func (r *JobRunner) Start() {
 	r.scheduler.Start()
-	r.scrapeItunesJob.Start()
-	r.importPodcastJob.Start()
-	r.refreshPodcastJob.Start()
 
 	go func() {
 		for d := range r.scheduledJobCallC.D {
