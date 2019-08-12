@@ -208,6 +208,11 @@ var (
 )
 
 func (p *Podcast) SetRefershInterval(items []*rss.Item) {
+	if p.Complete == 1 || p.Block == 1 {
+		p.RefreshEnabled = 0
+		return
+	}
+
 	// Pub dates ordered from most recent to old
 	var itemPubDates []*time.Time
 	for _, item := range items {
@@ -217,15 +222,29 @@ func (p *Podcast) SetRefershInterval(items []*rss.Item) {
 	}
 	sort.SliceStable(itemPubDates, func(i, j int) bool { return itemPubDates[i].After(*itemPubDates[j]) })
 
-	// Do not enable refresh for podcasts that havent published an episode in more than 1 years
-	if int(time.Since(*itemPubDates[0]).Seconds()) > secondsInYear {
+	// disable refresh for podcasts with no episodes
+	if len(itemPubDates) == 0 {
 		p.RefreshEnabled = 0
-		p.RefreshInterval = 0
+		return
+	}
+
+	if len(itemPubDates) == 1 {
+		p.RefreshEnabled = 1
+		p.RefreshInterval = 4 * secondsInHour
+		if SecondsSince(itemPubDates[0]) > 3*secondsInMonth {
+			p.RefreshEnabled = 0
+		}
+		return
+	}
+
+	// disable refresh for podcasts that havent published an episode in more than 1 years
+	if SecondsSince(itemPubDates[0]) > secondsInYear {
+		p.RefreshEnabled = 0
 		return
 	}
 	p.RefreshEnabled = 1
 
-	// Calculate average duration between a maximum of last 5  episodes
+	// Calculate average duration between maximum of last 5  episodes
 	l, s := MinInt(len(itemPubDates), 5), 0
 	for i := 0; i < l-1; i++ {
 		s += int(itemPubDates[i].Sub(*itemPubDates[i+1]).Seconds())

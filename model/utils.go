@@ -77,6 +77,11 @@ func NowDateTime() string {
 	return time.Now().UTC().Format(MYSQL_DATETIME)
 }
 
+// SecondsSince returns number of seconds elapsed since t
+func SecondsSince(t *time.Time) int {
+	return int(time.Since(*t).Seconds())
+}
+
 var (
 	regexpUrlWithQuery    = regexp.MustCompile(`(https?:\/\/.+)\?.*`)
 	regexpUrlWithFragment = regexp.MustCompile(`(https?:\/\/.+)#.*`)
