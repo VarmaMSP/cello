@@ -28,6 +28,10 @@ func (pi *ItunesMeta) PreSave() *AppError {
 		pi.ScrappedAt = NowDateTime()
 	}
 
+	if pi.AddedToDb == "" {
+		pi.AddedToDb = StatusPending
+	}
+
 	if pi.UpdatedAt == 0 {
 		pi.UpdatedAt = Now()
 	}

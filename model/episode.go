@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/mmcdole/gofeed/rss"
+	"github.com/rs/xid"
 )
 
 const (
@@ -185,6 +186,10 @@ func (e *Episode) LoadDetails(item *rss.Item) *AppError {
 }
 
 func (e *Episode) PreSave() {
+	if e.Id == "" {
+		e.Id = xid.New().String()
+	}
+
 	title := []rune(e.Title)
 	if len(title) > EPISODE_TITLE_MAX_LENGTH {
 		e.Title = string(title[0:EPISODE_TITLE_MAX_LENGTH-10]) + "..."

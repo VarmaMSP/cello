@@ -139,3 +139,11 @@ func MapFromJson(data []byte) map[string]string {
 		return res
 	}
 }
+
+// MinInt returns minimum of two integers
+func MinInt(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
