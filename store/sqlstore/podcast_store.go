@@ -34,8 +34,8 @@ func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) ([]*model.PodcastFeedDetails, *model.AppError) {
 	m := &model.PodcastFeedDetails{}
 	sql := "SELECT " + strings.Join(m.DbColumns(), ",") + ` FROM podcast
-		WHERE refresh_enabled == 1 AND
-		      last_refresh_status != 'PENDING' AND 
+		WHERE refresh_enabled = 1 AND
+		      last_refresh_status <> 'PENDING' AND 
 			  next_refresh_at > ? AND
 			  created_at > ?
 		ORDER BY created_at LIMIT ?`
@@ -69,6 +69,9 @@ func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) ([]
 
 func (s *SqlPodcastStore) UpdateFeedDetails(old, new *model.PodcastFeedDetails) *model.AppError {
 	sql, values := UpdateQuery("podcast", old, new)
+	if len(values) == 0 {
+		return nil
+	}
 	sql = sql + " WHERE podcast_id = ?"
 	values = append(values, new.Id)
 
