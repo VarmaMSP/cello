@@ -72,10 +72,10 @@ func (s *SqlPodcastStore) UpdateFeedDetails(old, new *model.PodcastFeedDetails) 
 	if len(values) == 0 {
 		return nil
 	}
-	sql = sql + " WHERE podcast_id = ?"
+	sql = sql + " WHERE id = ?"
 	values = append(values, new.Id)
 
-	_, err := s.GetMaster().Exec(sql, values)
+	_, err := s.GetMaster().Exec(sql, values...)
 	if err != nil {
 		return model.NewAppError(
 			"sqlstore.sql_podcast_store.update_feed_details",
