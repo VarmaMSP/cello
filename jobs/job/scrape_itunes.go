@@ -55,8 +55,8 @@ func NewScrapeItunesJob(store store.Store, importPodcastP *rabbitmq.Producer, wo
 		httpClient: &http.Client{
 			Timeout: 40 * time.Second,
 			Transport: &http.Transport{
-				MaxIdleConns:        2 * workerLimit,
-				MaxIdleConnsPerHost: 2 * workerLimit,
+				MaxIdleConns:        workerLimit,
+				MaxIdleConnsPerHost: workerLimit,
 			},
 		},
 		rateLimiter: make(chan struct{}, workerLimit),
@@ -67,11 +67,11 @@ func NewScrapeItunesJob(store store.Store, importPodcastP *rabbitmq.Producer, wo
 		if err != nil {
 			return nil, err
 		}
-		if len(itunesIds) == 0 {
-			break
-		}
 		for _, itunesId := range itunesIds {
 			job.itunesIdF.Ignore(itunesId)
+		}
+		if len(itunesIds) < lim {
+			break
 		}
 	}
 

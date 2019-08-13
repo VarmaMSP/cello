@@ -14,16 +14,20 @@ type JobRunner struct {
 	store        store.Store
 	producerConn *amqp.Connection
 	consumerConn *amqp.Connection
+
 	// Scheduler
 	scheduler *Scheduler
+
 	// Message Producers
 	scheduledJobCallP *rabbitmq.Producer
 	importPodcastP    *rabbitmq.Producer
 	refreshPodcastP   *rabbitmq.Producer
+
 	// Message Consumers
 	scheduledJobCallC *rabbitmq.Consumer
 	importPodcastC    *rabbitmq.Consumer
 	refreshPodcastC   *rabbitmq.Consumer
+
 	// Jobs
 	scrapeItunesJob   model.Job
 	importPodcastJob  model.Job

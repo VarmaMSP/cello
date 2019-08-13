@@ -7,8 +7,8 @@ import (
 
 	"github.com/mmcdole/gofeed/rss"
 
+	h "github.com/go-http-utils/headers"
 	"github.com/streadway/amqp"
-
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
 )
@@ -25,8 +25,8 @@ func NewImportPodcastJob(store store.Store, workerLimit int) (model.Job, error) 
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
 			Transport: &http.Transport{
-				MaxIdleConns:        2 * workerLimit,
-				MaxIdleConnsPerHost: workerLimit,
+				MaxIdleConns:        workerLimit,
+				MaxIdleConnsPerHost: int(0.5 * float32(workerLimit)),
 			},
 		},
 		rateLimiter: make(chan struct{}, workerLimit),
@@ -78,8 +78,8 @@ func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers
 	// Save podcast
 	podcast := &model.Podcast{
 		FeedUrl:          feedUrl,
-		FeedETag:         headers["ETag"],
-		FeedLastModified: headers["Last-Modified"],
+		FeedETag:         headers[h.ETag],
+		FeedLastModified: headers[h.LastModified],
 	}
 	if err := podcast.LoadDetails(feed); err != nil {
 		return appErrorC(err.Error())

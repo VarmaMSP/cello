@@ -8,9 +8,9 @@ import (
 	"github.com/varmamsp/cello/store"
 )
 
-// Scheduler schedules jobs to run at certain time
-// 1 - Query Job schedule table.
-// 2 - Push jobs to queue that needs to be run now.
+// Schedules job calls at certain time
+// 1 - Query Job schedule table
+// 2 - Push jobs to queue that needs to be run now
 // 3 - Repeat the above for every 10 sec.
 
 type Scheduler struct {
@@ -37,24 +37,27 @@ func (s *Scheduler) schedulePodcastRefresh() {
 	ticker := time.NewTicker(time.Minute)
 
 	for _ = range ticker.C {
-		for podcastCreatedAfter := int64(0); ; {
-			details, err := s.store.Podcast().GetAllToBeRefreshed(podcastCreatedAfter, limit)
-			if err != nil || len(details) < limit {
+		for createdAfter := int64(0); ; {
+			detailsList, err := s.store.Podcast().GetAllToBeRefreshed(createdAfter, limit)
+			if err != nil {
 				break
 			}
 
-			for _, d := range details {
-				updated := d
-				updated.LastRefreshAt = model.Now()
-				updated.LastRefreshStatus = model.StatusPending
-				if err := s.store.Podcast().UpdateFeedDetails(d, updated); err != nil {
+			for _, details := range detailsList {
+				detailsU := details
+				detailsU.LastRefreshAt = model.Now()
+				detailsU.LastRefreshStatus = model.StatusPending
+				if err := s.store.Podcast().UpdateFeedDetails(details, detailsU); err != nil {
 					continue
 				}
 
-				s.refreshPodcastP.D <- updated
+				s.refreshPodcastP.D <- detailsU
 			}
 
-			podcastCreatedAfter = details[len(details)-1].CreatedAt
+			if len(detailsList) < limit {
+				break
+			}
+			createdAfter = detailsList[len(detailsList)-1].CreatedAt
 		}
 	}
 }

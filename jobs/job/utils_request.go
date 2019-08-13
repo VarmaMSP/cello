@@ -11,6 +11,10 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
+var (
+	itunesLookupUrl = "https://itunes.apple.com/lookup?id="
+)
+
 type ItunesLookupResp struct {
 	Count   int                  `json:"resultCount"`
 	Results []ItunesLookupResult `json:"results"`
@@ -73,8 +77,8 @@ func fetchRssFeed(feedUrl string, headers map[string]string, httpClient *http.Cl
 
 	if resp.StatusCode == http.StatusNotModified {
 		return nil, map[string]string{
-			"ETag":          resp.Header.Get("ETag"),
-			"Last-Modified": resp.Header.Get("Last-Modified"),
+			h.ETag:         resp.Header.Get(h.ETag),
+			h.LastModified: resp.Header.Get(h.LastModified),
 		}, nil
 	}
 
@@ -87,8 +91,8 @@ func fetchRssFeed(feedUrl string, headers map[string]string, httpClient *http.Cl
 		}
 
 		return feed, map[string]string{
-			"ETag":          resp.Header.Get("ETag"),
-			"Last-Modified": resp.Header.Get("Last-Modified"),
+			h.ETag:         resp.Header.Get(h.ETag),
+			h.LastModified: resp.Header.Get(h.LastModified),
 		}, nil
 	}
 

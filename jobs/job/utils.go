@@ -7,12 +7,6 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-var (
-	itunesLookupUrl            = "https://itunes.apple.com/lookup?id="
-	regexpItunesGenrePageUrl   = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/genre\/.*`)
-	regexpItunesPodcastPageUrl = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/podcast\/.+\/id([0-9]+).*`)
-)
-
 type Frontier struct {
 	// Input channel
 	I chan string
@@ -29,14 +23,14 @@ func NewFrontier(size int) *Frontier {
 		set: set.New(),
 	}
 
-	go func(f *Frontier) {
-		for i := range f.I {
-			if !f.set.Exists(i) {
-				f.set.Add(i)
-				f.O <- i
+	go func() {
+		for i := range frontier.I {
+			if !frontier.set.Exists(i) {
+				frontier.set.Add(i)
+				frontier.O <- i
 			}
 		}
-	}(frontier)
+	}()
 
 	return frontier
 }
@@ -50,6 +44,11 @@ func (f *Frontier) Ignore(s string) {
 func (f *Frontier) Clear() {
 	f.set.Clear()
 }
+
+var (
+	regexpItunesGenrePageUrl   = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/genre\/.*`)
+	regexpItunesPodcastPageUrl = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/podcast\/.+\/id([0-9]+).*`)
+)
 
 // Check if given link points to itunes podcast page
 // and return podcast id if true

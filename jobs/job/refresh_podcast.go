@@ -9,7 +9,6 @@ import (
 
 	h "github.com/go-http-utils/headers"
 	"github.com/mmcdole/gofeed/rss"
-	"github.com/rs/xid"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
 )
@@ -26,8 +25,8 @@ func NewRefreshPodcastJob(store store.Store, workerLimit int) (model.Job, error)
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
 			Transport: &http.Transport{
-				MaxIdleConns:        2 * workerLimit,
-				MaxIdleConnsPerHost: workerLimit,
+				MaxIdleConns:        workerLimit,
+				MaxIdleConnsPerHost: int(0.5 * float32(workerLimit)),
 			},
 		},
 		rateLimiter: make(chan struct{}, workerLimit),
@@ -61,7 +60,7 @@ func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 		}
 
 		detailsU.FeedETag = headers[h.ETag]
-		details.FeedLastModified = headers[h.LastModified]
+		detailsU.FeedLastModified = headers[h.LastModified]
 
 		if feed == nil {
 			detailsU.LastRefreshStatus = model.StatusSuccess
@@ -120,10 +119,7 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId string, feed *rss.Feed) *
 	// Add New Episodes
 	for itemGuid, item := range items {
 		if _, ok := episodes[itemGuid]; ok {
-			episode := &model.Episode{
-				Id:        xid.New().String(),
-				PodcastId: podcastId,
-			}
+			episode := &model.Episode{PodcastId: podcastId}
 			if err := episode.LoadDetails(item); err != nil {
 				continue
 			}
