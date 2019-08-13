@@ -34,12 +34,12 @@ type JobRunner struct {
 	refreshPodcastJob model.Job
 }
 
-func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection) (*JobRunner, error) {
+func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection, config *model.RabbitmqQueuesConfig) (*JobRunner, error) {
 	// producers
 	scheduledJobCallP, err := rabbitmq.NewProducer(producerConn, &rabbitmq.ProducerOpts{
 		ExchangeName: rabbitmq.DefaultExchange,
 		QueueName:    model.QUEUE_NAME_SCHEDULED_JOB_CALL,
-		DeliveryMode: amqp.Persistent,
+		DeliveryMode: config.ScheduledJobCallQueue.DeliveryMode,
 	})
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 	importPodcastP, err := rabbitmq.NewProducer(producerConn, &rabbitmq.ProducerOpts{
 		ExchangeName: rabbitmq.DefaultExchange,
 		QueueName:    model.QUEUE_NAME_IMPORT_PODCAST,
-		DeliveryMode: amqp.Persistent,
+		DeliveryMode: config.ImportPodcastQueue.DeliveryMode,
 	})
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 	refreshPodcastP, err := rabbitmq.NewProducer(producerConn, &rabbitmq.ProducerOpts{
 		ExchangeName: rabbitmq.DefaultExchange,
 		QueueName:    model.QUEUE_NAME_REFRESH_PODCAST,
-		DeliveryMode: amqp.Persistent,
+		DeliveryMode: config.RefreshPodcastQueue.DeliveryMode,
 	})
 	if err != nil {
 		return nil, err
@@ -64,30 +64,30 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 	// consumers
 	scheduledJobCallC, err := rabbitmq.NewConsumer(consumerConn, &rabbitmq.ConsumerOpts{
 		QueueName:     model.QUEUE_NAME_SCHEDULED_JOB_CALL,
-		ConsumerName:  "scheduled_job_run",
-		AutoAck:       false,
-		Exclusive:     true,
-		PreFetchCount: 100,
+		ConsumerName:  config.ScheduledJobCallQueue.ConsumerName,
+		AutoAck:       config.ScheduledJobCallQueue.ConsumerAutoAck,
+		Exclusive:     config.ScheduledJobCallQueue.ConsumerExclusive,
+		PreFetchCount: config.ScheduledJobCallQueue.ConsumerPreFetchCount,
 	})
 	if err != nil {
 		return nil, err
 	}
 	importPodcastC, err := rabbitmq.NewConsumer(consumerConn, &rabbitmq.ConsumerOpts{
 		QueueName:     model.QUEUE_NAME_IMPORT_PODCAST,
-		ConsumerName:  "import_podcast",
-		AutoAck:       false,
-		Exclusive:     true,
-		PreFetchCount: 100,
+		ConsumerName:  config.ImportPodcastQueue.ConsumerName,
+		AutoAck:       config.ImportPodcastQueue.ConsumerAutoAck,
+		Exclusive:     config.ImportPodcastQueue.ConsumerExclusive,
+		PreFetchCount: config.ImportPodcastQueue.ConsumerPreFetchCount,
 	})
 	if err != nil {
 		return nil, err
 	}
 	refreshPodcastC, err := rabbitmq.NewConsumer(consumerConn, &rabbitmq.ConsumerOpts{
 		QueueName:     model.QUEUE_NAME_REFRESH_PODCAST,
-		ConsumerName:  "refresh_podcast",
-		AutoAck:       false,
-		Exclusive:     true,
-		PreFetchCount: 100,
+		ConsumerName:  config.RefreshPodcastQueue.ConsumerName,
+		AutoAck:       config.RefreshPodcastQueue.ConsumerAutoAck,
+		Exclusive:     config.RefreshPodcastQueue.ConsumerExclusive,
+		PreFetchCount: config.RefreshPodcastQueue.ConsumerPreFetchCount,
 	})
 	if err != nil {
 		return nil, err

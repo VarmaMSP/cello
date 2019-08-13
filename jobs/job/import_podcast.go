@@ -85,6 +85,7 @@ func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers
 		return appErrorC(err.Error())
 	}
 	podcast.SetRefershInterval(feed.Items)
+	podcast.RefreshInterval = int(float32(podcast.RefreshInterval) * 0.01)
 	if err := job.store.Podcast().Save(podcast); err != nil {
 		return appErrorC(err.Error())
 	}

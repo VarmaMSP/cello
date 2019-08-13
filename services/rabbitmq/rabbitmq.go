@@ -9,8 +9,8 @@ const (
 	DefaultExchange = ""
 )
 
-func NewConnection() (*amqp.Connection, error) {
-	connection, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+func NewConnection(config *model.RabbitmqConfig) (*amqp.Connection, error) {
+	connection, err := amqp.Dial(makeAmqpUrl(config))
 	if err != nil {
 		return nil, err
 	}
@@ -43,4 +43,8 @@ func createQueue(name string, channel *amqp.Channel) error {
 		nil,   // arguments
 	)
 	return err
+}
+
+func makeAmqpUrl(config *model.RabbitmqConfig) string {
+	return "amqp://" + config.User + ":" + config.Password + "@" + config.Address + "/"
 }

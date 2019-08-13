@@ -3,6 +3,9 @@ package sqlstore
 import (
 	"reflect"
 	"strings"
+
+	"github.com/go-sql-driver/mysql"
+	"github.com/varmamsp/cello/model"
 )
 
 func InsertQuery(tableName string, model DbModel, count int) string {
@@ -45,4 +48,16 @@ func ValuesFromAddrs(addrs []interface{}) []interface{} {
 		values[i] = reflect.ValueOf(addrs[i]).Elem().Interface()
 	}
 	return values
+}
+
+func MakeMysqlDSN(config *model.MysqlConfig) string {
+	c := mysql.Config{
+		Addr:                 config.Address,
+		DBName:               config.Database,
+		User:                 config.User,
+		Passwd:               config.Password,
+		AllowNativePasswords: true,
+		Params:               map[string]string{"collation": "utf8mb4_unicode_ci"},
+	}
+	return c.FormatDSN()
 }

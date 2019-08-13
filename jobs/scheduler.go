@@ -1,6 +1,7 @@
 package jobs
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/varmamsp/cello/model"
@@ -51,6 +52,7 @@ func (s *Scheduler) schedulePodcastRefresh() {
 					continue
 				}
 
+				fmt.Printf("Scheduled podcast refresh: %s\n", details.Id)
 				s.refreshPodcastP.D <- detailsU
 			}
 
@@ -95,6 +97,7 @@ func (s *Scheduler) periodic(jobName string, lastRunAt, runAfter int64) {
 		return
 	}
 
+	fmt.Printf("Scheduled Job: %s\n", jobName)
 	s.scheduledJobCallP.D <- map[string]string{"job_name": jobName}
 }
 

@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/go-sql-driver/mysql"
+	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
 )
 
@@ -18,9 +18,20 @@ type SqlSupplier struct {
 	jobSchedule store.JobScheduleStore
 }
 
-func NewSqlStore() SqlStore {
+func NewSqlStore(mysqlConfig *model.MysqlConfig) SqlStore {
+	db, err := sql.Open("mysql", MakeMysqlDSN(mysqlConfig))
+	if err != nil {
+		log.Printf(err.Error())
+		os.Exit(1)
+	}
+	if err := db.Ping(); err != nil {
+		log.Printf(err.Error())
+		os.Exit(1)
+	}
+
 	supplier := &SqlSupplier{}
-	supplier.db = InitDb()
+
+	supplier.db = db
 	supplier.podcast = NewSqlPodcastStore(supplier)
 	supplier.episode = NewSqlEpisodeStore(supplier)
 	supplier.category = NewSqlCategoryStore(supplier)
@@ -69,26 +80,4 @@ func (s *SqlSupplier) ItunesMeta() store.ItunesMetaStore {
 
 func (s *SqlSupplier) JobSchedule() store.JobScheduleStore {
 	return s.jobSchedule
-}
-
-func InitDb() *sql.DB {
-	config := mysql.Config{}
-	config.User = "root"
-	config.Passwd = "tiracapeta"
-	config.Addr = "localhost:3306"
-	config.DBName = "phenopod"
-	config.AllowNativePasswords = true
-	config.Params = map[string]string{"collation": "utf8mb4_unicode_ci"}
-
-	db, err := sql.Open("mysql", config.FormatDSN())
-	if err != nil {
-		log.Printf(err.Error())
-		os.Exit(1)
-	}
-	if err := db.Ping(); err != nil {
-		log.Printf(err.Error())
-		os.Exit(1)
-	}
-
-	return db
 }

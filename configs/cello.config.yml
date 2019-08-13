@@ -1,0 +1,35 @@
+mysql:
+  address: localhost:3306
+  database: phenopod
+  user: root
+  password: tiracapeta
+
+rabbitmq:
+  address: localhost:5672
+  user: guest
+  password: guest
+  queues: 
+    scheduled_job_call_queue: 
+      delivery_mode: 2
+      consumer_name: scheduled_job_run
+      consumer_auto_ack: false
+      consumer_exclusive: true
+      consumer_prefetch_count: 100
+      consumer_worker_limit: 10
+
+    import_podcast_queue: 
+      delivery_mode: 2
+      consumer_name: import_podcast
+      consumer_auto_ack: false
+      consumer_exclusive: true
+      consumer_prefetch_count: 100 
+      consumer_worker_limit: 10
+
+    refresh_podcast_queue: 
+      delivery_mode: 2
+      consumer_name: refresh_podcast
+      consumer_auto_ack: false
+      consumer_exclusive: true
+      consumer_prefetch_count: 100
+      consumer_worker_limit: 10
+
