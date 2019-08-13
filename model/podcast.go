@@ -312,6 +312,10 @@ func (p *Podcast) PreSave() {
 		p.LastRefreshStatus = StatusSuccess
 	}
 
+	if p.RefreshEnabled == 1 && p.NextRefreshAt == 0 {
+		p.NextRefreshAt = p.LastRefreshAt + int64(p.RefreshInterval)
+	}
+
 	if p.CreatedAt == 0 {
 		p.CreatedAt = Now()
 	}
