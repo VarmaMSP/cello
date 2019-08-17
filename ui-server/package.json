@@ -1,9 +1,8 @@
 {
-  "name": "@ui/server",
+  "name": "ui-server",
   "version": "1.0.0",
-  "description": "phenopod: server side rendering engine",
+  "description": "Isomorphic react erver side rendering engine",
   "author": "pavan varma <varmamsp111@gmail.com>",
-  "license": "GPL",
   "scripts": {
     "dev": "next",
     "build": "next build",
