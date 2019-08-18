@@ -7,7 +7,7 @@ import SvgFastForward from './FastForward';
 import SvgFastRewind from './FastRewind';
 import SvgHeart from './Heart';
 import SvgPlay from './Play';
-import SvgSearch from './search';
+import SvgSearch from './Search';
 import SvgUserSolidCircle from './UserSolidCircle';
 
 export type Icon
