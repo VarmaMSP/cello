@@ -3,4 +3,5 @@
 
 /*! purgecss start ignore */
 @import "tailwindcss/base";
+@import "./global.css"
 /*! purgecss end ignore */
