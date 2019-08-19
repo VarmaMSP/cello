@@ -20,5 +20,8 @@ const purgeCssConfig = {
 }
 
 module.exports = withCss(
-  withPurgeCss({purgeCss: purgeCssConfig})
+  withPurgeCss({
+    purgeCss: purgeCssConfig,
+    purgeCssEnabled: ({dev}) => !dev,
+  })
 )
