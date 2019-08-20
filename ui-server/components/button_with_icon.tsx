@@ -6,6 +6,7 @@ interface Props {
   icon: Icon;
   className: string;
   type?: "button" | "submit" | "reset";
+  onClick?: () => void;
 }
 
 // A button containig only a svg icon.
@@ -14,10 +15,14 @@ interface Props {
 // - takes up the full width of the container while preserving its aspect ratio.
 // - is centered vertically
 // - fill is set to button's text-color 
-const ButtonWithIcon: React.SFC<Props> = ({icon, className, type}) => {
+const ButtonWithIcon: React.SFC<Props> = ({icon, className, type, onClick}) => {
   const Icon = iconMap[icon]
 
-  return <button className={classnames('flex center-items focus:outline-none', className)} type={type || "button"}>
+  return <button 
+    className={classnames('flex center-items focus:outline-none', className)}
+    type={type || "button"}
+    onClick={onClick}
+  >
     <Icon className='fill-current w-full h-auto'/>
   </button>
 }

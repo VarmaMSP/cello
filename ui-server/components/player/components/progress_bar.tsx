@@ -4,14 +4,13 @@ import Utils, { TouchOrMouseEvent } from './utils'
 interface Props {
   duration: number;
   currentTime: number;
-  handleOnSeek: (t: number) => void
+  handleSeek: (t: number) => void;
 }
 
 interface State {
   seeking: boolean;
   firstRender: boolean;
   sliderPosition: number;
-
 }
 
 export default class ProgressBar extends Component<Props, State> {
@@ -95,7 +94,7 @@ export default class ProgressBar extends Component<Props, State> {
       seeking: false,
     })
 
-    this.props.handleOnSeek(
+    this.props.handleSeek(
       (sliderPosition / this.getSeekBarPosition().width) * duration
     )
   }
@@ -116,19 +115,19 @@ export default class ProgressBar extends Component<Props, State> {
         <span className="text-sm text-gray-800 leading-relaxed tracking-wider select-none">{t}</span>
         <span className="text-sm text-gray-800 leading-relaxed tracking-wider select-none">{T}</span>
       </div>
-      <div className="relative flex items-center w-full h-4 cursor-pointer"
+      <div className="relative flex items-center w-full h-4 cursor-pointer select-none"
         onTouchStart={this.handleSeekBegin}
         onTouchMove={this.handleSeek}
         onTouchEnd={this.handleSeekComplete}
         onMouseDown={this.handleSeekBegin}
       >
-        <div className="absolute left-0 w-full h-1 bg-gray-300 rounded"
+        <div className="absolute left-0 w-full h-1 bg-gray-300 rounded select-none"
           ref={this.seekBarRef}
         />
-        <div className="absolute left-0 w-10 h-1 bg-green-500 rounded"
+        <div className="absolute left-0 w-10 h-1 bg-green-500 rounded select-none"
           style={{'transition': 'ease', 'width': `${sliderPosition}px`}}
         />
-        <div className="absolute w-4 h-4 -ml-2 rounded-full bg-white border shadow-md z-50"
+        <div className="absolute w-4 h-4 -ml-2 rounded-full bg-white border shadow-md z-50 select-none"
           style={{'transition': 'ease', 'left': `${sliderPosition}px`}}
         />
       </div>
