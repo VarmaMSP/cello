@@ -27,7 +27,6 @@ export default class ProgressBar extends Component<Props, State> {
       if (!this.state.seeking) return
       this.handleSeek(e as any)
     })
-
     document.addEventListener("mouseup", (e: MouseEvent) => {
       if (!this.state.seeking) return
       this.handleSeekComplete(e as any)
@@ -93,7 +92,6 @@ export default class ProgressBar extends Component<Props, State> {
     this.setState({
       seeking: false,
     })
-
     this.props.handleSeek(
       (sliderPosition / this.getSeekBarPosition().width) * duration
     )
@@ -107,8 +105,8 @@ export default class ProgressBar extends Component<Props, State> {
   }
 
   render() {
-    const sliderPosition = this.getSliderPosition()
     const [t, T] = this.getProgressDetails()
+    const sliderPosition = this.getSliderPosition()
 
     return <>
       <div className="flex justify-between items-center w-full px-2">

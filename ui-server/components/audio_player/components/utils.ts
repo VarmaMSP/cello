@@ -1,6 +1,12 @@
 import React from 'react'
 
-export type TouchOrMouseEvent 
+export type AudioState
+  = "PLAYING"
+  | "PAUSED"
+  | "LOADING"
+  | "ENDED"
+
+export type TouchOrMouseEvent
   = React.TouchEvent<HTMLElement>
   | React.MouseEvent<HTMLElement, MouseEvent>
 
@@ -16,16 +22,10 @@ function formatTimeForDisplay(currentTime: number, duration: number): [string, s
   if (duration < 60 * 60) {
     regex = /\d\d:(\d\d:\d\d)/
   }
-  
-  let t = new Date(0, 0, 0, 0, 0, currentTime)
-    .toTimeString()
-    .match(regex)
-    
-  let T = new Date(0, 0, 0, 0, 0, duration)
-    .toTimeString()
-    .match(regex)
-
-  return [t[1], T[1]]
+  return [
+    new Date(0, 0, 0, 0, 0, currentTime).toTimeString().match(regex)[1],
+    new Date(0, 0, 0, 0, 0, duration).toTimeString().match(regex)[1]
+  ]
 }
 
 export default {
