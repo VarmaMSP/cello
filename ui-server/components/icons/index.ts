@@ -9,6 +9,7 @@ import SvgHeart from './Heart';
 import SvgPlay from './Play';
 import SvgSearch from './Search';
 import SvgUserSolidCircle from './UserSolidCircle';
+import SvgPause from './Pause';
 
 export type Icon
   = 'arrow-left'
@@ -18,6 +19,7 @@ export type Icon
   | 'fast-rewind'
   | 'feed'
   | 'heart'
+  | 'pause'
   | 'play'
   | 'search'
   | 'user-solid-circle'
@@ -30,6 +32,7 @@ export const iconMap: {[key in Icon]: React.SFC<{className: string}>} = {
   'fast-rewind': SvgFastRewind,
   'feed': SvgFeed,
   'heart': SvgHeart,
+  'pause': SvgPause,
   'play': SvgPlay,
   'search': SvgSearch,
   'user-solid-circle': SvgUserSolidCircle,
