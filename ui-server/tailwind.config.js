@@ -417,6 +417,20 @@ module.exports = {
       '40': '40',
       '50': '50',
     },
+    spinner: theme => ({
+      default: {
+        color: '#dae1e7',
+        size: '1em',
+        border: '2px',
+        speed: '500ms',
+      },
+      md: {
+        color: theme('colors.gray.800', 'gray'),
+        size: '2em',
+        border: '4px',
+        speed: '500ms',
+      },
+    }),
   },
   variants: {
     alignContent: ['responsive'],
@@ -485,5 +499,7 @@ module.exports = {
     zIndex: ['responsive'],
   },
   corePlugins: {},
-  plugins: [],
+  plugins: [
+    require('tailwindcss-spinner')(),
+  ],
 }
