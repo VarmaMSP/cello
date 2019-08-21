@@ -1,49 +1,68 @@
 import React, { Component } from 'react';
-import SearchBarMobile from './components/search_bar_mobile'
-import AppHeader from './components/app_header';
+import AppLogo from './components/app_logo'
+import FullWidthSearchBar from './components/search_bar_full_width';
+import SearchBar from './components/search_bar'
+import SignInButton from './components/sign_in_button';
+import ButtonWithIcon from '../button_with_icon';
 
 interface Props {
-  showFullSearchBar: boolean;
-  toggleFullSearchBar: () => void;
 }
 
 interface State {
   searchText: string;
+  showFullWidthSearchBar: boolean;
 }
 
 export default class TopNavbar extends Component<Props, State> {
   state = {
-    searchText: ""
+    searchText: "",
+    showFullWidthSearchBar: false
   }
 
-  handleSearchTextChange = (e: React.FormEvent<HTMLInputElement>): void => {
-    e.preventDefault()
-    this.setState({
-      searchText: e.currentTarget.value
-    })
+  handleSearchBarCollapse = () => {
+    const { showFullWidthSearchBar } = this.state
+    this.setState({showFullWidthSearchBar: !showFullWidthSearchBar})
   }
 
-  handleSearchTextSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  handleSearchTextChange = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault()
-    console.log(this.state.searchText)
+    this.setState({searchText: e.currentTarget.value})
+  }
+
+  handleSearchTextSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    console.log("subbmited: ", this.state.searchText)
   }
   
   render() {
-    const { searchText } = this.state
+    const { showFullWidthSearchBar, searchText } = this.state
 
-    return <header className="fixed top-0 left-0 h-12 w-full bg-white lg:border-none">
-      { false && this.props.showFullSearchBar
-        ? <SearchBarMobile 
-            searchText={searchText}
-            handleSearchTextChange={this.handleSearchTextChange}
-            handleSearchTextSubmit={this.handleSearchTextSubmit}
-          />
-        : <AppHeader
-            searchText={searchText}
-            handleSearchTextChange={this.handleSearchTextChange}
-            handleSearchTextSubmit={this.handleSearchTextSubmit}
-          />
-      }
+    if (showFullWidthSearchBar) {
+      return <header className="fixed top-0 left-0 h-12 w-full bg-white">
+        <FullWidthSearchBar
+          searchText={searchText}
+          handleCollapse={this.handleSearchBarCollapse}
+          handleSearchTextChange={this.handleSearchTextChange}
+          handleSearchTextSubmit={this.handleSearchTextSubmit}
+        />
+      </header>
+    }
+
+    return <header className="fixed top-0 left-0 flex justify-between items-center w-full lg:h-12 h-10 lg:pl-48 md:px-10 px-2 bg-white">
+      <div className="lg:hidden w-20">
+        <ButtonWithIcon className="w-5" icon="search"/>
+      </div>
+      <div className="lg:hidden">
+        <AppLogo/>
+      </div>
+      <div className="lg:block hidden">
+        <SearchBar
+          searchText={searchText}
+          handleSearchTextChange={this.handleSearchTextChange}
+          handleSearchTextSubmit={this.handleSearchTextSubmit}
+        />
+      </div>
+      <SignInButton/>
     </header>
   }
 }
