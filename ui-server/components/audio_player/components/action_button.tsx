@@ -25,7 +25,7 @@ const ActionButton: React.SFC<Props> = ({audioState, handleActionButtonPress}) =
   }
 
   if (audioState === "LOADING") {
-    return <div className="w-16 h-16 flex item-center">
+    return <div className="w-16 h-16 flex item-center cursor-wait">
       <div className="spinner-md mx-auto"/>
     </div>
   }
