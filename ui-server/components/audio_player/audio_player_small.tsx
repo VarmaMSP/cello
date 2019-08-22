@@ -42,7 +42,7 @@ export default class AudioPlayerSmall extends Component<Props, State> {
       handleFastForward
     } = this.props
 
-    return <footer className="fixed bottom-0 left-0 flex flex-col justify-between bg-white w-full h-auto md:px-10 lg:pl-56 border-t" style={{
+    return <footer className="fixed bottom-0 left-0 flex flex-col justify-between bg-white w-full h-auto border-t" style={{
         willChange: "height",
         height: expand ? "24rem" : "8rem",
         transition: "0.4s cubic-bezier(.22,.86,.62,.95)",
@@ -50,14 +50,17 @@ export default class AudioPlayerSmall extends Component<Props, State> {
       
       {/* Player minimised */}
       <section className="player justify-between flex h-16 w-full px-2">
-        <div className="details flex-auto px-2 pt-3 mr-1 truncate" style={{opacity: expand ? 0 : 1}}>
+        <div className="details flex-auto px-2 pt-3 mr-1 truncate" style={{
+          opacity: expand ? 0 : 1,
+          transition: "0.1s"
+        }}>
           <h4 className="text-sm font-semibold leading-relaxed">{episode}</h4>
           <h4 className="text-xs leading-relaxed">{podcast}</h4>
         </div>
         <div className="flex-none flex items-center">
           <div className="-mr-3" style={{
             display: expand ? "none" : "block",
-            transition: "0s",
+            transition: "0.1s",
           }}>
             <ActionButton audioState={audioState} handleActionButtonPress={handleActionButtonPress}/>
           </div>
