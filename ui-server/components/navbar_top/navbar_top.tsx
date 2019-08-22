@@ -48,14 +48,14 @@ export default class TopNavbar extends Component<Props, State> {
       </header>
     }
 
-    return <header className="fixed top-0 left-0 flex justify-between items-center w-full lg:h-12 h-10 lg:pl-48 md:px-10 px-2 bg-white">
+    return <header className="fixed top-0 left-0 flex justify-between items-center w-full h-12 lg:pl-56 lg:pr-4 md:px-10 px-3 bg-white">
       <div className="lg:hidden w-20">
         <ButtonWithIcon className="w-5" icon="search" onClick={this.handleSearchBarCollapse}/>
       </div>
       <div className="lg:hidden">
         <AppLogo/>
       </div>
-      <div className="lg:block hidden">
+      <div className="lg:block hidden mx-3 my-1">
         <SearchBar
           searchText={searchText}
           handleSearchTextChange={this.handleSearchTextChange}
