@@ -19,7 +19,7 @@ const ButtonWithIcon: React.SFC<Props> = ({icon, className, type, onClick}) => {
   const Icon = iconMap[icon]
 
   return <button 
-    className={classnames('flex center-items focus:outline-none', className)}
+    className={classnames('flex center-items focus:outline-none cursor-pointer', className)}
     type={type || "button"}
     onClick={onClick}
   >
