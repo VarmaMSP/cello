@@ -33,3 +33,7 @@ rabbitmq:
       consumer_prefetch_count: 100
       consumer_worker_limit: 10
 
+elasticsearch:
+  address: localhost:9200
+  user: elastic
+  password: changeme

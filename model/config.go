@@ -1,8 +1,9 @@
 package model
 
 type Config struct {
-	Mysql    MysqlConfig    `mapstructure:"mysql"`
-	Rabbitmq RabbitmqConfig `mapstructure:"rabbitmq"`
+	Mysql         MysqlConfig         `mapstructure:"mysql"`
+	Rabbitmq      RabbitmqConfig      `mapstructure:"rabbitmq"`
+	Elasticsearch ElasticsearchConfig `mapstrucure:"elasticsearch"`
 }
 
 // MYSQL CONFIGURATION
@@ -34,4 +35,11 @@ type RabbitmqQueueConfig struct {
 	ConsumerExclusive     bool   `mapstructure:"consumer_exclusive"`
 	ConsumerPreFetchCount int    `mapstructure:"consumer_prefetch_count"`
 	ConsumerWorkerLimit   int    `mspstructure:"consumer_worker_limit"`
+}
+
+// ELASTICSEARCH CONFIGURATION
+type ElasticsearchConfig struct {
+	Address  string `mapstructure:"address"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
 }
