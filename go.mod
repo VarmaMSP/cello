@@ -4,14 +4,13 @@ go 1.12
 
 require (
 	github.com/PuerkitoBio/goquery v1.5.0
-	github.com/fortytw2/leaktest v1.3.0 // indirect
 	github.com/go-http-utils/headers v0.0.0-20161116095340-dd89efed1674
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
 	github.com/magiconair/properties v1.8.1 // indirect
-	github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e // indirect
 	github.com/mmcdole/gofeed v0.0.0-20190202050737-d62d841d7427
 	github.com/olivere/elastic v6.2.22+incompatible
+	github.com/olivere/elastic/v7 v7.0.5
 	github.com/pelletier/go-toml v1.4.0 // indirect
 	github.com/rs/xid v1.2.1
 	github.com/spf13/afero v1.2.2 // indirect
