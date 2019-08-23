@@ -5,26 +5,10 @@
         "--enable=golint",
         "--config=${workspaceRoot}/.gometalinter"
     ],
-    "editor.tabSize": 4,
-    "editor.insertSpaces": false,
-    "editor.detectIndentation": false,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": false,
     "[go]": {
-        "editor.tabSize": 4,
+        "editor.insertSpaces": false,
         "editor.formatOnSave": true
-    },
-    "[javascript]": {
-		"editor.tabSize": 2,
-		"editor.insertSpaces": true,
-        "editor.formatOnSave": true
-    },
-    "[typescript]": {
-        "editor.tabSize": 2,
-        "editor.insertSpaces": true,
-        "editor.formatOnSave": true
-	},
-	"[typescriptreact]": {
-		"editor.tabSize": 2,
-		"editor.insertSpaces": true,
-        "editor.formatOnSave": true
-	}
+    }
 }
