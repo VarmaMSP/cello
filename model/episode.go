@@ -153,27 +153,27 @@ func (e *Episode) LoadDetails(item *rss.Item) *AppError {
 	}
 
 	// Episode
-	if item.ITunesExt != nil && item.ITunesExt.Episode != "" {
-		e.Episode, _ = strconv.Atoi(item.ITunesExt.Episode)
-	} else {
-		e.Episode = 0
-	}
+	// if item.ITunesExt != nil && item.ITunesExt.Episode != "" {
+	// 	e.Episode, _ = strconv.Atoi(item.ITunesExt.Episode)
+	// } else {
+	// 	e.Episode = 0
+	// }
 
 	// Season
-	if item.ITunesExt != nil && item.ITunesExt.Season != "" {
-		e.Season, _ = strconv.Atoi(item.ITunesExt.Season)
-	} else {
-		e.Season = 0
-	}
+	// if item.ITunesExt != nil && item.ITunesExt.Season != "" {
+	// 	e.Season, _ = strconv.Atoi(item.ITunesExt.Season)
+	// } else {
+	// 	e.Season = 0
+	// }
 
 	// Type
-	if item.ITunesExt != nil && item.ITunesExt.EpisodeType == "trailer" {
-		e.Type = "TRAILER"
-	} else if item.ITunesExt != nil && item.ITunesExt.EpisodeType == "bonus" {
-		e.Type = "BONUS"
-	} else {
-		e.Type = "FULL"
-	}
+	// if item.ITunesExt != nil && item.ITunesExt.EpisodeType == "trailer" {
+	// 	e.Type = "TRAILER"
+	// } else if item.ITunesExt != nil && item.ITunesExt.EpisodeType == "bonus" {
+	// 	e.Type = "BONUS"
+	// } else {
+	// 	e.Type = "FULL"
+	// }
 
 	// Block
 	if item.ITunesExt != nil && item.ITunesExt.Block == "true" {
