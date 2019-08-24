@@ -62,6 +62,7 @@ CREATE TABLE `itunes_meta` (
     `feed_url` VARCHAR(500),
     `scrapped_at` DATETIME NOT NULL,
     `added_to_db` ENUM('SUCCESS', 'FAILURE', 'PENDING') DEFAULT 'PENDING',
+    `comment` VARCHAR(300) NOT NULL,
     `updated_at` BIGINT NOT NULL,
     PRIMARY KEY (`itunes_id`),
     UNIQUE KEY (`feed_url`)
