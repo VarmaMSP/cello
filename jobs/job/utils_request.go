@@ -96,5 +96,5 @@ func fetchRssFeed(feedUrl string, headers map[string]string, httpClient *http.Cl
 		}, nil
 	}
 
-	return nil, nil, appErrorC("Invalid http status code.")
+	return nil, nil, appErrorC(fmt.Sprintf("Invalid status code: %d", resp.StatusCode))
 }
