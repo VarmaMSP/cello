@@ -6,6 +6,7 @@ import (
 	"github.com/streadway/amqp"
 	"github.com/varmamsp/cello/jobs/job"
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/services/elasticsearch"
 	"github.com/varmamsp/cello/services/rabbitmq"
 	"github.com/varmamsp/cello/store"
 )
@@ -34,12 +35,12 @@ type JobRunner struct {
 	refreshPodcastJob model.Job
 }
 
-func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection, config *model.RabbitmqQueuesConfig) (*JobRunner, error) {
+func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection, qConfig *model.RabbitmqQueuesConfig, esConfig *model.ElasticsearchConfig) (*JobRunner, error) {
 	// producers
 	scheduledJobCallP, err := rabbitmq.NewProducer(producerConn, &rabbitmq.ProducerOpts{
 		ExchangeName: rabbitmq.DefaultExchange,
 		QueueName:    model.QUEUE_NAME_SCHEDULED_JOB_CALL,
-		DeliveryMode: config.ScheduledJobCallQueue.DeliveryMode,
+		DeliveryMode: qConfig.ScheduledJobCallQueue.DeliveryMode,
 	})
 	if err != nil {
 		return nil, err
@@ -47,7 +48,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 	importPodcastP, err := rabbitmq.NewProducer(producerConn, &rabbitmq.ProducerOpts{
 		ExchangeName: rabbitmq.DefaultExchange,
 		QueueName:    model.QUEUE_NAME_IMPORT_PODCAST,
-		DeliveryMode: config.ImportPodcastQueue.DeliveryMode,
+		DeliveryMode: qConfig.ImportPodcastQueue.DeliveryMode,
 	})
 	if err != nil {
 		return nil, err
@@ -55,7 +56,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 	refreshPodcastP, err := rabbitmq.NewProducer(producerConn, &rabbitmq.ProducerOpts{
 		ExchangeName: rabbitmq.DefaultExchange,
 		QueueName:    model.QUEUE_NAME_REFRESH_PODCAST,
-		DeliveryMode: config.RefreshPodcastQueue.DeliveryMode,
+		DeliveryMode: qConfig.RefreshPodcastQueue.DeliveryMode,
 	})
 	if err != nil {
 		return nil, err
@@ -64,31 +65,37 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 	// consumers
 	scheduledJobCallC, err := rabbitmq.NewConsumer(consumerConn, &rabbitmq.ConsumerOpts{
 		QueueName:     model.QUEUE_NAME_SCHEDULED_JOB_CALL,
-		ConsumerName:  config.ScheduledJobCallQueue.ConsumerName,
-		AutoAck:       config.ScheduledJobCallQueue.ConsumerAutoAck,
-		Exclusive:     config.ScheduledJobCallQueue.ConsumerExclusive,
-		PreFetchCount: config.ScheduledJobCallQueue.ConsumerPreFetchCount,
+		ConsumerName:  qConfig.ScheduledJobCallQueue.ConsumerName,
+		AutoAck:       qConfig.ScheduledJobCallQueue.ConsumerAutoAck,
+		Exclusive:     qConfig.ScheduledJobCallQueue.ConsumerExclusive,
+		PreFetchCount: qConfig.ScheduledJobCallQueue.ConsumerPreFetchCount,
 	})
 	if err != nil {
 		return nil, err
 	}
 	importPodcastC, err := rabbitmq.NewConsumer(consumerConn, &rabbitmq.ConsumerOpts{
 		QueueName:     model.QUEUE_NAME_IMPORT_PODCAST,
-		ConsumerName:  config.ImportPodcastQueue.ConsumerName,
-		AutoAck:       config.ImportPodcastQueue.ConsumerAutoAck,
-		Exclusive:     config.ImportPodcastQueue.ConsumerExclusive,
-		PreFetchCount: config.ImportPodcastQueue.ConsumerPreFetchCount,
+		ConsumerName:  qConfig.ImportPodcastQueue.ConsumerName,
+		AutoAck:       qConfig.ImportPodcastQueue.ConsumerAutoAck,
+		Exclusive:     qConfig.ImportPodcastQueue.ConsumerExclusive,
+		PreFetchCount: qConfig.ImportPodcastQueue.ConsumerPreFetchCount,
 	})
 	if err != nil {
 		return nil, err
 	}
 	refreshPodcastC, err := rabbitmq.NewConsumer(consumerConn, &rabbitmq.ConsumerOpts{
 		QueueName:     model.QUEUE_NAME_REFRESH_PODCAST,
-		ConsumerName:  config.RefreshPodcastQueue.ConsumerName,
-		AutoAck:       config.RefreshPodcastQueue.ConsumerAutoAck,
-		Exclusive:     config.RefreshPodcastQueue.ConsumerExclusive,
-		PreFetchCount: config.RefreshPodcastQueue.ConsumerPreFetchCount,
+		ConsumerName:  qConfig.RefreshPodcastQueue.ConsumerName,
+		AutoAck:       qConfig.RefreshPodcastQueue.ConsumerAutoAck,
+		Exclusive:     qConfig.RefreshPodcastQueue.ConsumerExclusive,
+		PreFetchCount: qConfig.RefreshPodcastQueue.ConsumerPreFetchCount,
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Elasticsearch
+	esClient, err := elasticsearch.NewClient(esConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +105,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 	if err != nil {
 		return nil, err
 	}
-	importPodcastJob, err := job.NewImportPodcastJob(store, 10)
+	importPodcastJob, err := job.NewImportPodcastJob(store, esClient, 10)
 	if err != nil {
 		return nil, err
 	}
