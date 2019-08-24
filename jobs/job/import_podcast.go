@@ -1,27 +1,32 @@
 package job
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/mmcdole/gofeed/rss"
+	"github.com/olivere/elastic/v7"
 
 	h "github.com/go-http-utils/headers"
 	"github.com/streadway/amqp"
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/services/elasticsearch"
 	"github.com/varmamsp/cello/store"
 )
 
 type ImportPodcastJob struct {
 	store       store.Store
+	esClient    *elastic.Client
 	httpClient  *http.Client
 	rateLimiter chan struct{}
 }
 
-func NewImportPodcastJob(store store.Store, workerLimit int) (model.Job, error) {
+func NewImportPodcastJob(store store.Store, esClient *elastic.Client, workerLimit int) (model.Job, error) {
 	return &ImportPodcastJob{
-		store: store,
+		store:    store,
+		esClient: esClient,
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
 			Transport: &http.Transport{
@@ -55,12 +60,13 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 			goto update_meta
 		}
 
-		if err := job.savePodcast(feed, meta.FeedUrl, headers); err != nil {
+		if podcastId, err := job.savePodcast(feed, meta.FeedUrl, headers); err != nil {
 			metaU.AddedToDb = model.StatusFailure
 			goto update_meta
+		} else {
+			job.indexPodcast(podcastId, feed)
+			metaU.AddedToDb = model.StatusSuccess
 		}
-
-		metaU.AddedToDb = model.StatusSuccess
 
 	update_meta:
 		metaU.UpdatedAt = model.Now()
@@ -68,7 +74,7 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 	}()
 }
 
-func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers map[string]string) *model.AppError {
+func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers map[string]string) (string, *model.AppError) {
 	appErrorC := model.NewAppErrorC(
 		"jobs.podcast_import_job.save_podcast",
 		http.StatusInternalServerError,
@@ -82,12 +88,11 @@ func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers
 		FeedLastModified: headers[h.LastModified],
 	}
 	if err := podcast.LoadDetails(feed); err != nil {
-		return appErrorC(err.Error())
+		return "", appErrorC(err.Error())
 	}
 	podcast.SetRefershInterval(feed.Items)
-	podcast.RefreshInterval = int(float32(podcast.RefreshInterval) * 0.01)
 	if err := job.store.Podcast().Save(podcast); err != nil {
-		return appErrorC(err.Error())
+		return "", appErrorC(err.Error())
 	}
 
 	// Save Episodes
@@ -120,5 +125,16 @@ func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers
 		}
 	}
 
-	return nil
+	return podcast.Id, nil
+}
+
+func (job *ImportPodcastJob) indexPodcast(podcastId string, feed *rss.Feed) {
+	doc := &model.PodcastDocument{Id: podcastId}
+	doc.LoadDetails(feed)
+
+	job.esClient.Index().
+		Index(elasticsearch.PodcastIndexName).
+		Id(doc.Id).
+		BodyJson(doc).
+		Do(context.TODO())
 }
