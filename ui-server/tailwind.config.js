@@ -148,7 +148,7 @@ module.exports = {
       '56': '14rem',
       '64': '16rem',
     },
-    backgroundColor: theme => theme('colors'),
+    backgroundColor: (theme) => theme('colors'),
     backgroundPosition: {
       bottom: 'bottom',
       center: 'center',
@@ -165,7 +165,7 @@ module.exports = {
       cover: 'cover',
       contain: 'contain',
     },
-    borderColor: theme => ({
+    borderColor: (theme) => ({
       ...theme('colors'),
       default: theme('colors.gray.300', 'currentColor'),
     }),
@@ -184,10 +184,14 @@ module.exports = {
       '8': '8px',
     },
     boxShadow: {
-      default: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-      md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-      lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-      xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+      default:
+        '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+      md:
+        '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+      lg:
+        '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+      xl:
+        '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
       '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
       inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
       outline: '0 0 0 3px rgba(66, 153, 225, 0.5)',
@@ -235,13 +239,7 @@ module.exports = {
         '"Segoe UI Symbol"',
         '"Noto Color Emoji"',
       ],
-      serif: [
-        'Georgia',
-        'Cambria',
-        '"Times New Roman"',
-        'Times',
-        'serif',
-      ],
+      serif: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
       mono: [
         'Menlo',
         'Monaco',
@@ -274,7 +272,7 @@ module.exports = {
       extrabold: '800',
       black: '900',
     },
-    height: theme => ({
+    height: (theme) => ({
       auto: 'auto',
       ...theme('spacing'),
       full: '100%',
@@ -371,12 +369,12 @@ module.exports = {
       '11': '11',
       '12': '12',
     },
-    padding: theme => theme('spacing'),
+    padding: (theme) => theme('spacing'),
     stroke: {
       current: 'currentColor',
     },
-    textColor: theme => theme('colors'),
-    width: theme => ({
+    textColor: (theme) => theme('colors'),
+    width: (theme) => ({
       auto: 'auto',
       ...theme('spacing'),
       '1/2': '50%',
@@ -417,7 +415,7 @@ module.exports = {
       '40': '40',
       '50': '50',
     },
-    spinner: theme => ({
+    spinner: (theme) => ({
       default: {
         color: '#dae1e7',
         size: '1em',
@@ -499,7 +497,5 @@ module.exports = {
     zIndex: ['responsive'],
   },
   corePlugins: {},
-  plugins: [
-    require('tailwindcss-spinner')(),
-  ],
+  plugins: [require('tailwindcss-spinner')()],
 }
