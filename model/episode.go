@@ -35,13 +35,14 @@ type Episode struct {
 	UpdatedAt   int64
 }
 
-type EpisodePatch struct {
-	Id        string `json:"id,omitempty"`
-	Title     string `json:"title,omitempty"`
-	MediaUrl  string `json:"media_url,omitempty"`
-	MediaType string `json:"media_type,omitempty"`
-	PubDate   string `json:"pub_date,omitempty"`
-	Duration  int    `json:"duration,omitempty"`
+type EpisodeInfo struct {
+	Id          string `json:"id,omitempty"`
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
+	MediaUrl    string `json:"media_url,omitempty"`
+	MediaType   string `json:"media_type,omitempty"`
+	PubDate     string `json:"pub_date,omitempty"`
+	Duration    int    `json:"duration,omitempty"`
 }
 
 func (e *Episode) DbColumns() []string {
@@ -65,18 +66,18 @@ func (e *Episode) FieldAddrs() []interface{} {
 	)
 }
 
-func (ep *EpisodePatch) DbColumns() []string {
+func (ep *EpisodeInfo) DbColumns() []string {
 	return []string{
-		"id", "title", "media_url", "media_type",
-		"pub_date", "duration",
+		"id", "title", "description", "media_url",
+		"media_type", "pub_date", "duration",
 	}
 }
 
-func (ep *EpisodePatch) FieldAddrs() []interface{} {
+func (einfo *EpisodeInfo) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
-		&ep.Id, &ep.Title, &ep.MediaUrl, &ep.MediaType,
-		&ep.PubDate, &ep.Duration,
+		&einfo.Id, &einfo.Title, &einfo.Description, &einfo.MediaUrl,
+		&einfo.MediaType, &einfo.PubDate, &einfo.Duration,
 	)
 }
 

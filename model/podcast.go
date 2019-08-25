@@ -57,6 +57,14 @@ type PodcastFeedDetails struct {
 	UpdatedAt         int64  `json:"updated_at"`
 }
 
+type PodcastInfo struct {
+	Title       string `json:"title"`
+	Author      string `json:"author"`
+	Description string `json:"description"`
+	Type        string `json:"type"`
+	Complete    int    `json:"complete"`
+}
+
 func (p *Podcast) DbColumns() []string {
 	return []string{
 		"id", "title", "description", "image_path",
@@ -96,6 +104,21 @@ func (pfd *PodcastFeedDetails) FieldAddrs() []interface{} {
 		&pfd.Id, &pfd.FeedUrl, &pfd.FeedETag, &pfd.FeedLastModified,
 		&pfd.RefreshEnabled, &pfd.LastRefreshAt, &pfd.NextRefreshAt, &pfd.LastRefreshStatus,
 		&pfd.RefreshInterval, &pfd.CreatedAt, &pfd.UpdatedAt,
+	)
+}
+
+func (pinfo *PodcastInfo) DbColumns() []string {
+	return []string{
+		"title", "author", "description", "type",
+		"complete",
+	}
+}
+
+func (pinfo *PodcastInfo) FieldAddrs() []interface{} {
+	var i []interface{}
+	return append(i,
+		&pinfo.Title, &pinfo.Author, &pinfo.Description, &pinfo.Type,
+		&pinfo.Complete,
 	)
 }
 
