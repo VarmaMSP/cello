@@ -1,15 +1,8 @@
 import React from 'react'
+import PodcastDetails from '../../components/podcast_details'
 
 export default class extends React.Component {
   render() {
-    return (
-      <>
-        <h3>Phenopod</h3>
-        <h3>Phenopod</h3>
-        <h3>Phenopod</h3>
-        <h3>Phenopod</h3>
-        <h3>Phenopod</h3>
-      </>
-    )
+    return <PodcastDetails />
   }
 }

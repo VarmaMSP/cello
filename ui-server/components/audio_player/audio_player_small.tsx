@@ -49,7 +49,7 @@ export default class AudioPlayerSmall extends Component<Props, State> {
 
     return (
       <footer
-        className="fixed bottom-0 left-0 flex flex-col justify-between bg-white w-full h-auto border-t"
+        className="fixed bottom-0 left-0 flex flex-col justify-between bg-white w-full h-auto border-t border-gray-400"
         style={{
           willChange: 'height',
           height: expand ? '24rem' : '8rem',
