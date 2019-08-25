@@ -7,6 +7,7 @@ require (
 	github.com/go-http-utils/headers v0.0.0-20161116095340-dd89efed1674
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
+	github.com/julienschmidt/httprouter v1.2.0
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mmcdole/gofeed v0.0.0-20190202050737-d62d841d7427
 	github.com/olivere/elastic v6.2.22+incompatible
