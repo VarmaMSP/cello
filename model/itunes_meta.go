@@ -5,13 +5,14 @@ type ItunesMeta struct {
 	FeedUrl    string
 	ScrappedAt string
 	AddedToDb  string
+	Comment    string
 	UpdatedAt  int64
 }
 
 func (pi *ItunesMeta) DbColumns() []string {
 	return []string{
 		"itunes_id", "feed_url", "scrapped_at",
-		"added_to_db", "updated_at",
+		"added_to_db", "comment", "updated_at",
 	}
 }
 
@@ -19,7 +20,7 @@ func (pi *ItunesMeta) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
 		&pi.ItunesId, &pi.FeedUrl, &pi.ScrappedAt,
-		&pi.AddedToDb, &pi.UpdatedAt,
+		&pi.AddedToDb, &pi.Comment, &pi.UpdatedAt,
 	)
 }
 

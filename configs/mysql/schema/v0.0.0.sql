@@ -29,7 +29,6 @@ CREATE TABLE `podcast` (
     `created_at` BIGINT NOT NULL,
     `updated_at` BIGINT NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`title`),
     UNIQUE KEY (`feed_url`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -62,6 +61,7 @@ CREATE TABLE `itunes_meta` (
     `feed_url` VARCHAR(500),
     `scrapped_at` DATETIME NOT NULL,
     `added_to_db` ENUM('SUCCESS', 'FAILURE', 'PENDING') DEFAULT 'PENDING',
+    `comment` VARCHAR(300) NOT NULL,
     `updated_at` BIGINT NOT NULL,
     PRIMARY KEY (`itunes_id`),
     UNIQUE KEY (`feed_url`)
@@ -93,6 +93,8 @@ CREATE TABLE `job_schedule` (
     `updated_at` BIGINT NOT NULL,
     PRIMARY KEY(`job_name`)
 );
+
+INSERT INTO `job_schedule` (`job_name`, `type`, `run_at`, `run_after`, `is_active`, `created_at`, `updated_at`) VALUES ('scrape_itunes', 'PERIODIC', 0, 10, 1, 0, 0);
 
 INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
 INSERT INTO `category` (`id`, `name`) VALUES (2, 'Business');

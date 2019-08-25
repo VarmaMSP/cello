@@ -16,6 +16,22 @@ func NewSqlPodcastStore(store SqlStore) store.PodcastStore {
 	return &SqlPodcastStore{store}
 }
 
+func (s *SqlPodcastStore) GetInfo(podcastId string) (*model.PodcastInfo, *model.AppError) {
+	info := &model.PodcastInfo{}
+	sql := "SELECT " + strings.Join(info.DbColumns(), ",") + " FROM podcast WHERE id = ?"
+
+	err := s.GetMaster().QueryRow(sql, podcastId).Scan(info.FieldAddrs()...)
+	if err != nil {
+		return nil, model.NewAppError(
+			"store.sqlstore.sql_podcast_store.get_info",
+			err.Error(),
+			http.StatusInternalServerError,
+			map[string]string{"id": podcastId},
+		)
+	}
+	return info, nil
+}
+
 func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 	podcast.PreSave()
 

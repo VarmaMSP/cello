@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/olivere/elastic"
+	"github.com/olivere/elastic/v7"
 	"github.com/varmamsp/cello/model"
 )
 
