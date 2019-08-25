@@ -57,11 +57,13 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 		feed, headers, err := fetchRssFeed(meta.FeedUrl, map[string]string{}, job.httpClient)
 		if err != nil || feed == nil {
 			metaU.AddedToDb = model.StatusFailure
+			metaU.Comment = err.Error()
 			goto update_meta
 		}
 
 		if podcastId, err := job.savePodcast(feed, meta.FeedUrl, headers); err != nil {
 			metaU.AddedToDb = model.StatusFailure
+			metaU.Comment = err.Error()
 			goto update_meta
 		} else {
 			job.indexPodcast(podcastId, feed)
