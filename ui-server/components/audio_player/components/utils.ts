@@ -23,8 +23,8 @@ function formatTimeForDisplay(
   }
 
   return [
-    new Date(0, 0, 0, 0, 0, currentTime).toTimeString().match(regex)[1],
-    new Date(0, 0, 0, 0, 0, duration).toTimeString().match(regex)[1],
+    new Date(0, 0, 0, 0, 0, currentTime).toTimeString().match(regex)![1],
+    new Date(0, 0, 0, 0, 0, duration)!.toTimeString().match(regex)![1],
   ]
 }
 

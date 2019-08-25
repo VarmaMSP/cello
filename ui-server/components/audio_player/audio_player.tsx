@@ -31,7 +31,9 @@ export default class AudioPlayer extends Component<Props, State> {
     expandOnMobile: true,
   }
 
-  audio: HTMLAudioElement = undefined
+  // Avoid creating audio element in the constructor
+  // Because document obect is not available on the server
+  audio: HTMLAudioElement = {} as any
 
   componentDidMount() {
     this.audio = document.createElement('audio')

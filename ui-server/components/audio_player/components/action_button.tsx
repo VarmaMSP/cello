@@ -31,13 +31,12 @@ const ActionButton: React.SFC<Props> = ({
     )
   }
 
-  if (audioState === 'LOADING') {
-    return (
-      <div className="w-16 h-16 flex item-center cursor-wait">
-        <div className="spinner-md mx-auto" />
-      </div>
-    )
-  }
+  // return loader as default
+  return (
+    <div className="w-16 h-16 flex item-center cursor-wait">
+      <div className="spinner-md mx-auto" />
+    </div>
+  )
 }
 
 export default ActionButton

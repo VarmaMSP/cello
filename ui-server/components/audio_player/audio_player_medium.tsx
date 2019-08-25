@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { AudioState } from './components/utils'
 import ButtonWithIcon from '../button_with_icon'
 import ActionButton from './components/action_button'

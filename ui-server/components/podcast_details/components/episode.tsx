@@ -3,11 +3,11 @@ import ButtonWithIcon from '../../button_with_icon'
 
 interface Props {
   title: string
-  pub_date: string
+  pubDate: string
   duration: number
 }
 
-const Episode = ({ title, pubDate, duration }) => {
+const Episode: React.SFC<Props> = ({ title }) => {
   return (
     <>
       <div className="flex justify-between my-2">

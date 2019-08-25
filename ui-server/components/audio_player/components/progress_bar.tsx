@@ -26,7 +26,7 @@ export default class ProgressBar extends Component<Props, State> {
   }
 
   // Used to calculate seekbar clientX and width on each render
-  seekBarRef = React.createRef<HTMLDivElement>()
+  seekBarRef: React.RefObject<HTMLDivElement> = React.createRef()
 
   // Set proper mouse events so that user can hold on to and move
   // the slider from anywhere on the viewport
@@ -47,7 +47,7 @@ export default class ProgressBar extends Component<Props, State> {
 
   // Get seekbar absolute width and clientX
   getSeekBarPosition = (): { clientX: number; width: number } => {
-    const rect = this.seekBarRef.current.getBoundingClientRect()
+    const rect = this.seekBarRef.current!.getBoundingClientRect()
     return { clientX: rect.left, width: rect.width }
   }
 

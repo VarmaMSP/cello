@@ -1,5 +1,5 @@
 import React from 'react'
-import App, { Container } from 'next/app'
+import App, { Container, AppContext } from 'next/app'
 
 import '../styles/index.css'
 import NavBarTop from '../components/navbar_top'
@@ -8,7 +8,7 @@ import NavbarSide from '../components/navbar_side/navbar_side'
 import MainContent from '../components/main_content'
 
 export default class MyApp extends App {
-  static async getInitialProps({ Component, ctx }) {
+  static async getInitialProps({ Component, ctx }: AppContext) {
     let pageProps = {}
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx)
