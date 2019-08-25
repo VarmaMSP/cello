@@ -49,7 +49,9 @@ func (s *SqlEpisodeStore) GetInfo(id string) (*model.EpisodeInfo, *model.AppErro
 
 func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) ([]*model.EpisodeInfo, *model.AppError) {
 	m := &model.EpisodeInfo{}
-	sql := "SELECT " + strings.Join(m.DbColumns(), ",") + " FROM episode WHERE podcast_id = ?"
+	sql := "SELECT " + strings.Join(m.DbColumns(), ",") + ` FROM episode
+		WHERE podcast_id = ?
+		ORDER BY pub_date DESC`
 
 	appErrorC := model.NewAppErrorC(
 		"store.sqlstore.sql_episode_store.get_all_by_podcast",

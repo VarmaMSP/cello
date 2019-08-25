@@ -41,6 +41,8 @@ type EpisodeInfo struct {
 	Description string `json:"description,omitempty"`
 	MediaUrl    string `json:"media_url,omitempty"`
 	MediaType   string `json:"media_type,omitempty"`
+	Episode     int    `json:"episode,omitempty"`
+	Season      int    `json:"season,omitempty"`
 	PubDate     string `json:"pub_date,omitempty"`
 	Duration    int    `json:"duration,omitempty"`
 }
@@ -69,7 +71,7 @@ func (e *Episode) FieldAddrs() []interface{} {
 func (ep *EpisodeInfo) DbColumns() []string {
 	return []string{
 		"id", "title", "description", "media_url",
-		"media_type", "pub_date", "duration",
+		"media_type", "episode", "season", "pub_date", "duration",
 	}
 }
 
@@ -77,7 +79,7 @@ func (einfo *EpisodeInfo) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
 		&einfo.Id, &einfo.Title, &einfo.Description, &einfo.MediaUrl,
-		&einfo.MediaType, &einfo.PubDate, &einfo.Duration,
+		&einfo.MediaType, &einfo.Episode, &einfo.Season, &einfo.PubDate, &einfo.Duration,
 	)
 }
 
@@ -175,6 +177,7 @@ func (e *Episode) LoadDetails(item *rss.Item) *AppError {
 	// } else {
 	// 	e.Type = "FULL"
 	// }
+	e.Type = "FULL"
 
 	// Block
 	if item.ITunesExt != nil && item.ITunesExt.Block == "true" {

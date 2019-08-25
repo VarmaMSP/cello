@@ -18,7 +18,7 @@ func NewSqlPodcastStore(store SqlStore) store.PodcastStore {
 
 func (s *SqlPodcastStore) GetInfo(podcastId string) (*model.PodcastInfo, *model.AppError) {
 	info := &model.PodcastInfo{}
-	sql := "SELECT " + strings.Join(info.DbColumns(), ",") + " FROM podcast WHERE podcast_id = ?"
+	sql := "SELECT " + strings.Join(info.DbColumns(), ",") + " FROM podcast WHERE id = ?"
 
 	err := s.GetMaster().QueryRow(sql, podcastId).Scan(info.FieldAddrs()...)
 	if err != nil {
