@@ -2,6 +2,7 @@ package sqlstore
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
@@ -28,6 +29,52 @@ func (s *SqlEpisodeStore) Save(episode *model.Episode) *model.AppError {
 		)
 	}
 	return nil
+}
+
+func (s *SqlEpisodeStore) GetInfo(id string) (*model.EpisodeInfo, *model.AppError) {
+	info := &model.EpisodeInfo{}
+	sql := "SELECT " + strings.Join(info.DbColumns(), ",") + " FROM episode WHERE id = ?"
+
+	err := s.GetMaster().QueryRow(sql, id).Scan(info.FieldAddrs()...)
+	if err != nil {
+		return nil, model.NewAppError(
+			"store.sqlstore.sql_episode_store.get_info",
+			err.Error(),
+			http.StatusInternalServerError,
+			map[string]string{"id": id},
+		)
+	}
+	return info, nil
+}
+
+func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) ([]*model.EpisodeInfo, *model.AppError) {
+	m := &model.EpisodeInfo{}
+	sql := "SELECT " + strings.Join(m.DbColumns(), ",") + " FROM episode WHERE podcast_id = ?"
+
+	appErrorC := model.NewAppErrorC(
+		"store.sqlstore.sql_episode_store.get_all_by_podcast",
+		http.StatusInternalServerError,
+		map[string]string{"podcast_id": podcastId},
+	)
+
+	rows, err := s.GetMaster().Query(sql, podcastId)
+	if err != nil {
+		return nil, appErrorC((err.Error()))
+	}
+	defer rows.Close()
+
+	var res []*model.EpisodeInfo
+	for rows.Next() {
+		tmp := &model.EpisodeInfo{}
+		if err := rows.Scan(tmp.FieldAddrs()...); err != nil {
+			return nil, appErrorC(err.Error())
+		}
+		res = append(res, tmp)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, appErrorC(err.Error())
+	}
+	return res, nil
 }
 
 func (s *SqlEpisodeStore) GetAllGuidsByPodcast(podcastId string) ([]string, *model.AppError) {
