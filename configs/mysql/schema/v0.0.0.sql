@@ -94,6 +94,24 @@ CREATE TABLE `job_schedule` (
     PRIMARY KEY(`job_name`)
 );
 
+CREATE TABLE `podcast_curation` (
+    `id` VARCHAR(20),
+    `title` VARCHAR(500) NOT NULL,
+    `created_at` BIGINT NOT NULL,
+    `updated_at` BIGINT NOT NULL,
+    PRIMARY KEY(`id`),
+    UNIQUE KEY(`title`)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE `podcast_curation_item` (
+    `curation_id` VARCHAR(20),
+    `podcast_id` VARCHAR(20),
+    `created_at` BIGINT NOT NULL,
+    `updated_at` BIGINT NOT NULL,
+    FOREIGN KEY (`curation_id`) REFERENCES `podcast_curation` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 INSERT INTO `job_schedule` (`job_name`, `type`, `run_at`, `run_after`, `is_active`, `created_at`, `updated_at`) VALUES ('scrape_itunes', 'PERIODIC', 0, 10, 1, 0, 0);
 
 INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
