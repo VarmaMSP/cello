@@ -40,3 +40,10 @@ type JobScheduleStore interface {
 	Disable(jobName string) *model.AppError
 	SetRunAt(jobName string, runAt int64) *model.AppError
 }
+
+type PodcastCurationStore interface {
+	Save(curation *model.PodcastCuration) *model.AppError
+	GetAll() ([]*model.PodcastCuration, *model.AppError)
+	SaveItem(item *model.PodcastCurationItem) *model.AppError
+	GetPodcastsByCuration(curationId string, offset, limit int) ([]*model.PodcastInfo, *model.AppError)
+}

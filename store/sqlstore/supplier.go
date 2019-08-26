@@ -10,12 +10,13 @@ import (
 )
 
 type SqlSupplier struct {
-	db          *sql.DB
-	podcast     store.PodcastStore
-	episode     store.EpisodeStore
-	category    store.CategoryStore
-	itunesMeta  store.ItunesMetaStore
-	jobSchedule store.JobScheduleStore
+	db              *sql.DB
+	podcast         store.PodcastStore
+	episode         store.EpisodeStore
+	category        store.CategoryStore
+	itunesMeta      store.ItunesMetaStore
+	jobSchedule     store.JobScheduleStore
+	podcastCuration store.PodcastCurationStore
 }
 
 func NewSqlStore(mysqlConfig *model.MysqlConfig) SqlStore {
@@ -37,6 +38,7 @@ func NewSqlStore(mysqlConfig *model.MysqlConfig) SqlStore {
 	supplier.category = NewSqlCategoryStore(supplier)
 	supplier.itunesMeta = NewSqlItunesMetaStore(supplier)
 	supplier.jobSchedule = NewSqlJobScheduleStore(supplier)
+	supplier.podcastCuration = NewSqlPodcastCurationStore(supplier)
 
 	return supplier
 }
@@ -80,4 +82,8 @@ func (s *SqlSupplier) ItunesMeta() store.ItunesMetaStore {
 
 func (s *SqlSupplier) JobSchedule() store.JobScheduleStore {
 	return s.jobSchedule
+}
+
+func (s *SqlSupplier) PodcastCuration() store.PodcastCurationStore {
+	return s.podcastCuration
 }
