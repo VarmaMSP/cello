@@ -7,7 +7,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func (api *Api) RegisterDevhandlers() {
+func (api *Api) RegisterStatichandlers() {
 	api.router.HandlerFunc("GET", "/_next/*filepath", api.ServeStatic)
 }
 

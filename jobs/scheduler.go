@@ -16,52 +16,18 @@ import (
 
 type Scheduler struct {
 	store             store.Store
-	refreshPodcastP   *rabbitmq.Producer
 	scheduledJobCallP *rabbitmq.Producer
 }
 
-func NewScheduler(store store.Store, refreshPodcastP, scheduledJobCallP *rabbitmq.Producer) *Scheduler {
+func NewScheduler(store store.Store, scheduledJobCallP *rabbitmq.Producer) *Scheduler {
 	return &Scheduler{
 		store:             store,
-		refreshPodcastP:   refreshPodcastP,
 		scheduledJobCallP: scheduledJobCallP,
 	}
 }
 
 func (s *Scheduler) Start() {
 	go s.scheduleJobRun()
-	go s.schedulePodcastRefresh()
-}
-
-func (s *Scheduler) schedulePodcastRefresh() {
-	limit := 10000
-	ticker := time.NewTicker(time.Minute)
-
-	for _ = range ticker.C {
-		for createdAfter := int64(0); ; {
-			detailsList, err := s.store.Podcast().GetAllToBeRefreshed(createdAfter, limit)
-			if err != nil {
-				break
-			}
-
-			for _, details := range detailsList {
-				detailsU := details
-				detailsU.LastRefreshAt = model.Now()
-				detailsU.LastRefreshStatus = model.StatusPending
-				if err := s.store.Podcast().UpdateFeedDetails(details, detailsU); err != nil {
-					continue
-				}
-
-				fmt.Printf("Scheduled podcast refresh: %s\n", details.Id)
-				s.refreshPodcastP.D <- detailsU
-			}
-
-			if len(detailsList) < limit {
-				break
-			}
-			createdAfter = detailsList[len(detailsList)-1].CreatedAt
-		}
-	}
 }
 
 func (s *Scheduler) scheduleJobRun() {

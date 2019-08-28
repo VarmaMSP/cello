@@ -18,7 +18,7 @@ func NewApi(app *app.App) *Api {
 		router: httprouter.New(),
 	}
 
-	api.RegisterDevhandlers()
+	api.RegisterStatichandlers()
 	api.RegisterPodcastHandlers()
 	api.RegisterCurationHandlers()
 

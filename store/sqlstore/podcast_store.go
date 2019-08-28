@@ -16,6 +16,21 @@ func NewSqlPodcastStore(store SqlStore) store.PodcastStore {
 	return &SqlPodcastStore{store}
 }
 
+func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
+	podcast.PreSave()
+
+	_, err := s.Insert([]DbModel{podcast}, "podcast")
+	if err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_podcast_store.save",
+			err.Error(),
+			http.StatusInternalServerError,
+			map[string]string{"title": podcast.Title, "feed_url": podcast.FeedUrl},
+		)
+	}
+	return nil
+}
+
 func (s *SqlPodcastStore) GetInfo(podcastId string) (*model.PodcastInfo, *model.AppError) {
 	info := &model.PodcastInfo{}
 	sql := "SELECT " + strings.Join(info.DbColumns(), ",") + " FROM podcast WHERE id = ?"
@@ -30,21 +45,6 @@ func (s *SqlPodcastStore) GetInfo(podcastId string) (*model.PodcastInfo, *model.
 		)
 	}
 	return info, nil
-}
-
-func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
-	podcast.PreSave()
-
-	_, err := s.Insert([]DbModel{podcast}, "podcast")
-	if err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_podcast_store.save",
-			err.Error(),
-			http.StatusInternalServerError,
-			map[string]string{"title": podcast.Title, "feed_url": podcast.FeedUrl},
-		)
-	}
-	return nil
 }
 
 func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) ([]*model.PodcastFeedDetails, *model.AppError) {

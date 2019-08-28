@@ -118,7 +118,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		store:        store,
 		producerConn: producerConn,
 		consumerConn: consumerConn,
-		scheduler:    NewScheduler(store, refreshPodcastP, scheduledJobCallP),
+		scheduler:    NewScheduler(store, scheduledJobCallP),
 
 		scheduledJobCallP: scheduledJobCallP,
 		importPodcastP:    importPodcastP,

@@ -112,7 +112,8 @@ CREATE TABLE `podcast_curation_item` (
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-INSERT INTO `job_schedule` (`job_name`, `type`, `run_at`, `run_after`, `is_active`, `created_at`, `updated_at`) VALUES ('scrape_itunes', 'PERIODIC', 0, 10, 1, 0, 0);
+INSERT INTO `job_schedule` (`job_name`, `type`, `run_at`, `run_after`, `is_active`, `created_at`, `updated_at`) VALUES ('scrape_itunes', 'PERIODIC', 0, 600, 1, 0, 0);
+INSERT INTO `job_schedule` (`job_name`, `type`, `run_at`, `run_after`, `is_active`, `created_at`, `updated_at`) VALUES ('schedule_refresh', 'PERIODIC', 0, 300, 1, 0, 0);
 
 INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
 INSERT INTO `category` (`id`, `name`) VALUES (2, 'Business');
