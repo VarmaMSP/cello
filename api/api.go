@@ -18,11 +18,13 @@ func NewApi(app *app.App) *Api {
 		router: httprouter.New(),
 	}
 
+	api.RegisterDevhandlers()
 	api.RegisterPodcastHandlers()
+	api.RegisterCurationHandlers()
 
 	return api
 }
 
 func (api *Api) ListenAndServe() {
-	http.ListenAndServe(":8080", api.router)
+	http.ListenAndServe(":8081", api.router)
 }

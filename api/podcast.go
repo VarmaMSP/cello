@@ -3,13 +3,15 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 func (api *Api) RegisterPodcastHandlers() {
-	api.router.HandlerFunc("GET", "/podcast/:podcastId", api.GetPodcast)
+	api.router.HandlerFunc("GET", "/podcasts/:podcastId", api.GetPodcast)
+	api.router.HandlerFunc("GET", "/fuck", api.ProxyTest)
 }
 
 func (api *Api) GetPodcast(w http.ResponseWriter, req *http.Request) {
@@ -20,7 +22,7 @@ func (api *Api) GetPodcast(w http.ResponseWriter, req *http.Request) {
 		fmt.Print(err)
 	}
 
-	episodes, err := api.app.GetEpisodes(podcastId, 200, 0)
+	episodes, err := api.app.GetEpisodes(podcastId, 1000, 0)
 	if err != nil {
 		fmt.Print(err)
 	}
@@ -39,4 +41,12 @@ func (api *Api) GetPodcast(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
+}
+
+func (api *Api) ProxyTest(w http.ResponseWriter, req *http.Request) {
+	x, err := http.Get("http://localhost:3000")
+	if err != nil {
+		fmt.Println(err)
+	}
+	io.Copy(w, x.Body)
 }
