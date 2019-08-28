@@ -8,7 +8,7 @@ import (
 )
 
 func (api *Api) RegisterDevhandlers() {
-	api.router.HandlerFunc("GET", "/_next/*filepath")
+	api.router.HandlerFunc("GET", "/_next/*filepath", api.ServeStatic)
 }
 
 func (api *Api) ServeStatic(w http.ResponseWriter, req *http.Request) {

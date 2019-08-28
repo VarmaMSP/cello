@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	viper.SetConfigName("cello.config")
+	viper.SetConfigName("cello.conf")
 	viper.AddConfigPath("./configs")
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Println(err.Error())
@@ -28,18 +28,21 @@ func main() {
 	conn1, err := rabbitmq.NewConnection(&config.Rabbitmq)
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 	conn2, err := rabbitmq.NewConnection(&config.Rabbitmq)
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
-	jobRunner, err := jobs.NewJobRunner(store, conn1, conn2, &config.Rabbitmq.Queues)
+	jobRunner, err := jobs.NewJobRunner(store, conn1, conn2, &config.Rabbitmq.Queues, &config.Elasticsearch)
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 	jobRunner.Start()
 
-	var forever chan int
+	var forever chan struct{}
 	<-forever
 }
