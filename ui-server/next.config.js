@@ -1,6 +1,7 @@
 const glob = require('glob')
-const withCss = require('@zeit/next-css')
-const withPurgeCss = require('next-purgecss')
+const css = require('@zeit/next-css')
+const purgeCss = require('next-purgecss')
+const withPlugins = require('next-compose-plugins')
 
 const purgeCssConfig = {
   paths: () => [
@@ -14,14 +15,20 @@ const purgeCssConfig = {
           return content.match(/[\w-/:]+(?<!:)/g) || []
         }
       },
-      extensions: ['ts', 'tsx'],
+      extensions: ['tsx'],
     },
   ],
 }
 
-module.exports = withCss(
-  withPurgeCss({
+const nextConfig = {
+  distDir: 'next',
+  generateEtags: false,
+  poweredByHeader: false,
+}
+
+module.exports = withPlugins([
+  [css, purgeCss({
     purgeCss: purgeCssConfig,
     purgeCssEnabled: ({ dev }) => !dev,
-  }),
-)
+  })]
+], nextConfig)
