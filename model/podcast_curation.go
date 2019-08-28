@@ -1,5 +1,7 @@
 package model
 
+import "github.com/rs/xid"
+
 type PodcastCuration struct {
 	Id        string
 	Title     string
@@ -38,4 +40,20 @@ func (curI *PodcastCurationItem) FieldAddrs() []interface{} {
 	return append(i,
 		&curI.CurationId, &curI.PodcastId, &curI.CreatedAt, &curI.UpdatedAt,
 	)
+}
+
+func (cur *PodcastCuration) PreSave() {
+	if cur.Id == "" {
+		cur.Id = xid.New().String()
+	}
+
+	if cur.CreatedAt == 0 {
+		cur.CreatedAt = Now()
+	}
+}
+
+func (curI *PodcastCurationItem) PreSave() {
+	if curI.CreatedAt == 0 {
+		curI.CreatedAt = Now()
+	}
 }

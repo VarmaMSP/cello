@@ -8,6 +8,7 @@ type Store interface {
 	Category() CategoryStore
 	ItunesMeta() ItunesMetaStore
 	JobSchedule() JobScheduleStore
+	PodcastCuration() PodcastCurationStore
 }
 
 type PodcastStore interface {
