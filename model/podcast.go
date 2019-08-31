@@ -58,6 +58,7 @@ type PodcastFeedDetails struct {
 }
 
 type PodcastInfo struct {
+	Id          string `json:"id"`
 	Title       string `json:"title"`
 	Author      string `json:"author"`
 	Description string `json:"description"`
@@ -109,16 +110,16 @@ func (pfd *PodcastFeedDetails) FieldAddrs() []interface{} {
 
 func (pinfo *PodcastInfo) DbColumns() []string {
 	return []string{
-		"title", "author", "description", "type",
-		"complete",
+		"id", "title", "author", "description",
+		"type", "complete",
 	}
 }
 
 func (pinfo *PodcastInfo) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
-		&pinfo.Title, &pinfo.Author, &pinfo.Description, &pinfo.Type,
-		&pinfo.Complete,
+		&pinfo.Id, &pinfo.Title, &pinfo.Author, &pinfo.Description,
+		&pinfo.Type, &pinfo.Complete,
 	)
 }
 

@@ -2,51 +2,45 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 func (api *Api) RegisterPodcastHandlers() {
-	api.router.HandlerFunc("GET", "/podcasts/:podcastId", api.GetPodcast)
-	api.router.HandlerFunc("GET", "/fuck", api.ProxyTest)
+	api.router.Handler("GET", "/podcasts/:podcastId", api.NewHandler(GetPodcast))
 }
 
-func (api *Api) GetPodcast(w http.ResponseWriter, req *http.Request) {
+func GetPodcast(c *Context, w http.ResponseWriter, req *http.Request) {
 	podcastId := httprouter.ParamsFromContext(req.Context()).ByName("podcastId")
-
-	podcast, err := api.app.GetPodcast(podcastId)
+	podcast, err := c.store.Podcast().GetInfo(podcastId)
 	if err != nil {
-		fmt.Print(err)
+		c.err = err
+		return
 	}
-
-	episodes, err := api.app.GetEpisodes(podcastId, 1000, 0)
+	episodes, err := c.store.Episode().GetAllByPodcast(podcastId, 1000, 0)
 	if err != nil {
-		fmt.Print(err)
-	}
-	for _, episode := range episodes {
-		episode.Description = ""
+		c.err = err
+		return
 	}
 
-	res, err1 := json.Marshal(map[string]interface{}{
+	res, _ := json.Marshal(map[string]interface{}{
 		"podcast":  podcast,
 		"episodes": episodes,
 	})
-	if err != nil {
-		fmt.Print(err1)
-	}
-
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
-}
 
-func (api *Api) ProxyTest(w http.ResponseWriter, req *http.Request) {
-	x, err := http.Get("http://localhost:3000")
-	if err != nil {
-		fmt.Println(err)
-	}
-	io.Copy(w, x.Body)
+	// body, err1 := c.app.UI.RenderPodcastPage(map[string]interface{}{
+	// 	"podcast":  podcast,
+	// 	"episodes": episodes,
+	// })
+	// if err1 != nil {
+	// 	fmt.Println(err1)
+	// }
+
+	// w.Header().Set("Content-Type", "text/html")
+	// w.WriteHeader(http.StatusOK)
+	// io.Copy(w, body)
 }
