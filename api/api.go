@@ -1,7 +1,7 @@
 package api
 
 import (
-	"net"
+	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -11,23 +11,18 @@ import (
 type Api struct {
 	store store.Store
 
-	server     *http.Server
-	router     *httprouter.Router
-	listenAddr *net.TCPAddr
+	server *http.Server
+	router *httprouter.Router
 }
 
 func NewApi(store store.Store) *Api {
 	api := &Api{
 		store:  store,
 		router: httprouter.New(),
-		listenAddr: &net.TCPAddr{
-			IP:   []byte("127.0.0.1"),
-			Port: 8081,
-		},
 	}
 
 	api.server = &http.Server{
-		Addr:    api.listenAddr.String(),
+		Addr:    "127.0.0.1:8080",
 		Handler: api.router,
 	}
 
@@ -38,5 +33,8 @@ func NewApi(store store.Store) *Api {
 }
 
 func (api *Api) ListenAndServe() {
-	api.server.ListenAndServe()
+	err := api.server.ListenAndServe()
+	if err != nil {
+		fmt.Println(err)
+	}
 }

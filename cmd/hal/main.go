@@ -5,7 +5,6 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/varmamsp/cello/api"
-	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store/sqlstore"
 )
@@ -25,7 +24,6 @@ func main() {
 	}
 
 	store := sqlstore.NewSqlStore(&config.Mysql)
-	app := app.NewApp(store)
-	api := api.NewApi(app)
+	api := api.NewApi(store)
 	api.ListenAndServe()
 }
