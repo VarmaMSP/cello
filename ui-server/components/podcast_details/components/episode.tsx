@@ -10,7 +10,7 @@ interface Props {
 const Episode: React.SFC<Props> = ({ title }) => {
   return (
     <>
-      <div className="flex justify-between my-2">
+      <div className="flex justify-between my-2 mx-1 rounded-full hover:bg-gray-100">
         <div className="flex-auto">
           <h4 className="text-sm font-medium">{title}</h4>
           <span className="text-xs">

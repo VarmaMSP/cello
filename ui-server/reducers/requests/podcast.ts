@@ -3,24 +3,17 @@ import {
   GET_PODCAST_REQUEST,
   GET_PODCAST_SUCCESS,
   GET_PODCAST_FAILURE,
-} from 'types/actions'
-import { combineReducers } from 'redux'
+} from '../../types/actions'
+import { combineReducers, Reducer } from 'redux'
+import { RequestState, initalRequestState } from './utils'
 
-interface RequestState {
-  status: string
-  error: Error | null
-}
-
-const getPodcastReducer = (
-  state: RequestState = {
-    status: 'not_started',
-    error: null,
-  },
-  action: AppActions,
-): RequestState => {
+const getPodcast: Reducer<RequestState, AppActions> = (
+  state = initalRequestState(),
+  action,
+) => {
   switch (action.type) {
     case GET_PODCAST_REQUEST:
-      return { status: 'PENDING', error: null }
+      return { status: 'STARTED', error: null }
     case GET_PODCAST_SUCCESS:
       return { status: 'SUCCESS', error: null }
     case GET_PODCAST_FAILURE:
@@ -31,5 +24,5 @@ const getPodcastReducer = (
 }
 
 export default combineReducers({
-  getPodcast: getPodcastReducer,
+  getPodcast,
 })

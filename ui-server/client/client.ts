@@ -1,5 +1,7 @@
+import { Podcast, Episode } from 'types/app'
+
 export default class Client {
-  url: string = ''
+  url: string = 'http://localhost:8080'
 
   getPodcastRoute(): string {
     return `${this.url}/podcasts`
@@ -12,14 +14,14 @@ export default class Client {
       credentials: 'include',
     })
 
-    let response: Response
-    let data: { error: Error; message: any }
+    let response: Response | null = null
+    let data: { error: Error; message: any } | null = null
     try {
       response = await fetch(request)
       data = await response.json()
     } catch (err) {
       console.log(err)
-      throw new Error(err.string())
+      throw new Error(err.toString())
     }
 
     if (data!.error) {
@@ -32,7 +34,17 @@ export default class Client {
     return data
   }
 
-  async getPodcastById(podcastId: string): Promise<any> {
-    return this.doFetch('GET', `${this.getPodcastRoute()}/${podcastId}`)
+  async getPodcastById(
+    podcastId: string,
+  ): Promise<{ podcast: Podcast; episodes: Episode[] }> {
+    const url = `${this.getPodcastRoute()}/${podcastId}`
+    const res = await this.doFetch('GET', url)
+    return {
+      podcast: res.podcast,
+      episodes: res.episodes.map((e: object) => ({
+        ...e,
+        podcastId: res.podcast.id,
+      })),
+    }
   }
 }

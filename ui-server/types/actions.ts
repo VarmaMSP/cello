@@ -5,7 +5,7 @@ export const GET_PODCAST_SUCCESS = 'GET_PODCAST_SUCCESS'
 export const GET_PODCAST_FAILURE = 'GET_PODCAST_FAILURE'
 
 export const RECEIVED_PODCAST = 'RECEIVED_PODCAST'
-export const RECEIVED_EPISODE = 'RECEIVED_EPISODE'
+export const RECEIVED_EPISODES = 'RECEIVED_EPISODES'
 
 export interface GetPodcastRequestAction {
   type: typeof GET_PODCAST_REQUEST
@@ -27,9 +27,10 @@ export interface ReceivedPodcastAction {
   podcast: Podcast
 }
 
-export interface ReceivedEpisodeAction {
-  type: typeof RECEIVED_EPISODE
-  episode: Episode
+export interface ReceivedEpisodesAction {
+  type: typeof RECEIVED_EPISODES
+  podcastId: string
+  episodes: Episode[]
 }
 
 export type PodcastActionTypes =
@@ -38,6 +39,6 @@ export type PodcastActionTypes =
   | GetPodcastFailureAction
   | ReceivedPodcastAction
 
-export type EpisodeActionTypes = ReceivedEpisodeAction
+export type EpisodeActionTypes = ReceivedEpisodesAction
 
 export type AppActions = PodcastActionTypes | EpisodeActionTypes

@@ -1,13 +1,11 @@
-import { Podcast } from 'types/app'
-import { AppActions, RECEIVED_PODCAST } from 'types/actions'
-import { combineReducers } from 'redux'
+import { Podcast } from '../../types/app'
+import { RECEIVED_PODCAST } from '../../types/actions'
+import { combineReducers, Reducer } from 'redux'
 
-type PodcastsState = { [key: string]: Podcast }
-
-const podcasts = (
-  state: PodcastsState = {},
-  action: AppActions,
-): PodcastsState => {
+const podcasts: Reducer<{ [PodcastId: string]: Podcast }> = (
+  state = {},
+  action,
+) => {
   switch (action.type) {
     case RECEIVED_PODCAST:
       return { [action.podcast.id]: action.podcast, ...state }

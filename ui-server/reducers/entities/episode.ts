@@ -1,33 +1,33 @@
-import { Episode } from 'types/app'
-import { AppActions, RECEIVED_EPISODE } from 'types/actions'
-import { combineReducers } from 'redux'
+import { Episode } from '../../types/app'
+import { AppActions, RECEIVED_EPISODES } from '../../types/actions'
+import { combineReducers, Reducer } from 'redux'
 
-type EpisodesState = Readonly<{ [episodeId: string]: Episode }>
-
-export const episodes = (
-  state: EpisodesState = {},
-  action: AppActions,
-): EpisodesState => {
+export const episodes: Reducer<{ [episodeId: string]: Episode }, AppActions> = (
+  state = {},
+  action,
+) => {
   switch (action.type) {
-    case RECEIVED_EPISODE:
-      return { ...state, [action.episode.id]: action.episode }
+    case RECEIVED_EPISODES:
+      const episodes = action.episodes.reduce<{ [id: string]: Episode }>(
+        (acc, e) => ({ ...acc, [e.id]: e }),
+        {},
+      )
+      return { ...state, ...episodes }
     default:
       return state
   }
 }
 
-type EpisodeByPodcastState = Readonly<{ [podcastId: string]: string[] }>
-
-export const episodesByPodcast = (
-  state: EpisodeByPodcastState = {},
-  action: AppActions,
-): EpisodeByPodcastState => {
+export const episodesByPodcast: Reducer<
+  { [podcastId: string]: string[] },
+  AppActions
+> = (state = {}, action) => {
   switch (action.type) {
-    case RECEIVED_EPISODE:
-      let episodeId = action.episode.id
-      let podcastId = action.episode.podcastId
-      let episodes = state[podcastId] || []
-      return { ...state, [podcastId]: [...episodes, episodeId] }
+    case RECEIVED_EPISODES:
+      return {
+        ...state,
+        [action.podcastId]: action.episodes.map((e) => e.id),
+      }
     default:
       return state
   }
