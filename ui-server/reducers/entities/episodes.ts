@@ -18,7 +18,7 @@ export const episodes: Reducer<{ [episodeId: string]: Episode }, AppActions> = (
   }
 }
 
-export const episodesByPodcast: Reducer<
+export const episodesInPodcast: Reducer<
   { [podcastId: string]: string[] },
   AppActions
 > = (state = {}, action) => {
@@ -35,5 +35,5 @@ export const episodesByPodcast: Reducer<
 
 export default combineReducers({
   episodes,
-  episodesByPodcast,
+  episodesInPodcast,
 })

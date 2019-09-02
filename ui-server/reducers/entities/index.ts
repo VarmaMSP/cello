@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
-import podcast from './podcast'
-import episode from './episode'
+import podcasts from './podcasts'
+import episodes from './episodes'
 
 export default combineReducers({
-  podcast,
-  episode,
+  podcasts,
+  episodes,
 })
