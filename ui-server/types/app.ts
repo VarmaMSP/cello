@@ -1,5 +1,8 @@
-export interface Podcast {
+export interface Entity {
   id: string
+}
+
+export interface Podcast extends Entity {
   title: string
   author: string
   description: string
@@ -7,8 +10,7 @@ export interface Podcast {
   complete: number
 }
 
-export interface Episode {
-  id: string
+export interface Episode extends Entity {
   podcastId: string
   title: string
   description: string

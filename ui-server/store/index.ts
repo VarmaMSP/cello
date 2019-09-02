@@ -9,7 +9,9 @@ export const rootReducer = combineReducers({
   requests,
 })
 
-export type AppState = ReturnType<typeof rootReducer>
+// NOTE: Do not export this as type
+// doing so will make the editor to show to entire AppState in suggestions
+export interface AppState extends ReturnType<typeof rootReducer> {}
 
 export const makeStore = () => {
   const composeEnhancers =
