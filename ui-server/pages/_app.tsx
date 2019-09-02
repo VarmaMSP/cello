@@ -4,17 +4,16 @@ import AudioPlayer from '../components/audio_player'
 import NavbarSide from '../components/navbar_side/navbar_side'
 import MainContent from '../components/main_content'
 import { makeStore } from '../store'
-import { PageContext } from 'types/next'
+import { AppContext } from 'types/next'
 
-import React from 'react'
+import React, { Component } from 'react'
 import { Provider } from 'react-redux'
+import { Container, AppProps } from 'next/app'
 import withRedux from 'next-redux-wrapper'
-import App, { Container, AppContext } from 'next/app'
 
 export default withRedux(makeStore)(
-  class MyApp extends App {
+  class MyApp extends Component<AppProps> {
     static async getInitialProps({ Component, ctx }: AppContext) {
-      ctx as PageContext
       let pageProps = {}
       if (Component.getInitialProps) {
         pageProps = await Component.getInitialProps(ctx)
