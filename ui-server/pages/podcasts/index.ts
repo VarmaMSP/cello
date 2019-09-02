@@ -10,6 +10,6 @@ function mapDispatchToProps(dispatch: Dispatch) {
 }
 
 export default connect(
-  null,
+  (state) => state,
   mapDispatchToProps,
 )(PodcastPage)

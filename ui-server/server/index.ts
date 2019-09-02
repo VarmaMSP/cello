@@ -8,9 +8,10 @@ const app = next({ dev: process.env.NODE_ENV !== 'production' })
 const handle = app.getRequestHandler()
 const router = new Router()
 
-router.get('/podcasts', async (ctx) => {
+router.get('/podcasts/:podcastId', async (ctx) => {
+  const podcastId: string = ctx.params['podcastId']
   const body: ParsedUrlQuery = ctx.request.body as any
-  await app.render(ctx.req, ctx.res, '/podcast', body)
+  await app.render(ctx.req, ctx.res, '/podcasts', <any>{ id: podcastId, body })
   ctx.respond = false
 })
 
