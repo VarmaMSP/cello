@@ -2,13 +2,14 @@ import React, { Component } from 'react'
 import AudioPlayerSmall from './audio_player_small'
 import AudioPlayerMedium from './audio_player_medium'
 import AudioPlayerLarge from './audio_player_large'
-import { AudioState, Podcast, Episode } from '../../types/app'
+import { AudioState, Podcast, Episode, ScreenWidth } from '../../types/app'
 
 export interface StateToProps {
   episodeId: string
   episode: Episode
   podcast: Podcast
   audioState: AudioState
+  screenWidth: ScreenWidth
   expandOnMobile: boolean
 }
 
@@ -17,23 +18,17 @@ export interface DispatchToProps {
   toggleExpandOnMobile: () => void
 }
 
-export interface OwnProps {}
-
-interface Props extends StateToProps, DispatchToProps, OwnProps {}
+interface Props extends StateToProps, DispatchToProps {}
 
 interface State {
-  screen: 'none' | 'sm' | 'md' | 'lg'
   duration: number
   currentTime: number
-  expandOnMobile: boolean
 }
 
 export default class AudioPlayer extends Component<Props, State> {
   state = {
-    screen: 'none' as 'none' | 'sm' | 'md' | 'lg',
     duration: 0,
     currentTime: 0,
-    expandOnMobile: true,
   }
 
   // Avoid creating audio element in the constructor
@@ -85,30 +80,6 @@ export default class AudioPlayer extends Component<Props, State> {
     if (this.props.episodeId !== '') {
       this.audio.src = this.props.episode.mediaUrl
     }
-
-    // window resize
-    window.addEventListener('resize', () => {
-      this.handleScreenResize()
-    })
-
-    this.handleScreenResize()
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', () => {})
-  }
-
-  handleScreenResize = () => {
-    const screenWidth = window.innerWidth
-    if (screenWidth >= 1024) {
-      this.setState({ screen: 'lg' })
-      return
-    }
-    if (screenWidth >= 768) {
-      this.setState({ screen: 'md' })
-      return
-    }
-    this.setState({ screen: 'sm' })
   }
 
   handleActionButtonPress = () => {
@@ -136,10 +107,16 @@ export default class AudioPlayer extends Component<Props, State> {
   }
 
   render() {
-    const { screen, currentTime, duration } = this.state
-    const { podcast, episode, audioState, expandOnMobile } = this.props
+    const { currentTime, duration } = this.state
+    const {
+      podcast,
+      episode,
+      audioState,
+      screenWidth,
+      expandOnMobile,
+    } = this.props
 
-    if (screen === 'sm') {
+    if (screenWidth === 'SM') {
       return (
         <AudioPlayerSmall
           podcast={podcast}
@@ -156,7 +133,7 @@ export default class AudioPlayer extends Component<Props, State> {
       )
     }
 
-    if (screen === 'md') {
+    if (screenWidth === 'MD') {
       return (
         <AudioPlayerMedium
           podcast={podcast}
@@ -171,7 +148,7 @@ export default class AudioPlayer extends Component<Props, State> {
       )
     }
 
-    if (screen === 'lg') {
+    if (screenWidth === 'LG') {
       return (
         <AudioPlayerLarge
           podcast={podcast}

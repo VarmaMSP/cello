@@ -1,8 +1,4 @@
-import AudioPlayer, {
-  StateToProps,
-  DispatchToProps,
-  OwnProps,
-} from './audio_player'
+import AudioPlayer, { StateToProps, DispatchToProps } from './audio_player'
 import { AppState } from '../../store'
 import {
   getAudioState,
@@ -19,6 +15,7 @@ import {
   TOGGLE_EXPAND_ON_MOBILE,
 } from '../../types/actions'
 import { AudioState } from '../../types/app'
+import { getScreenWidth } from '../../selectors/ui/screen'
 
 function makeMapStateToProps() {
   const getPlayingEpisode = makeGetPlayingEpisode()
@@ -29,6 +26,7 @@ function makeMapStateToProps() {
     episode: getPlayingEpisode(state),
     podcast: getPlayingPodcast(state),
     audioState: getAudioState(state),
+    screenWidth: getScreenWidth(state),
     expandOnMobile: getExpandOnMobile(state),
   })
 }
@@ -41,7 +39,7 @@ function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   }
 }
 
-export default connect<StateToProps, DispatchToProps, OwnProps, AppState>(
+export default connect<StateToProps, DispatchToProps, {}, AppState>(
   makeMapStateToProps(),
   mapDispatchToProps,
 )(AudioPlayer)

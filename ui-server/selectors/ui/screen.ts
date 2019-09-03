@@ -1,5 +1,5 @@
 import { AppState } from '../../store'
 
 export function getScreenWidth(state: AppState) {
-  state.ui.screenWidth
+  return state.ui.screenWidth || 'LG'
 }
