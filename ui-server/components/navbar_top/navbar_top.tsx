@@ -50,7 +50,7 @@ export default class TopNavbar extends Component<Props, State> {
     }
 
     return (
-      <header className="fixed top-0 left-0 flex justify-between items-center w-full h-12 lg:pl-56 lg:pr-5 md:px-10 px-4 bg-white">
+      <header className="fixed top-0 left-0 flex justify-between items-center w-full lg:h-14 h-12 lg:pl-56 lg:pr-5 md:px-10 px-4 bg-white">
         <div className="lg:hidden w-20">
           <ButtonWithIcon
             className="w-6"
@@ -61,7 +61,7 @@ export default class TopNavbar extends Component<Props, State> {
         <div className="lg:hidden">
           <AppLogo />
         </div>
-        <div className="lg:block hidden mx-3 my-1">
+        <div className="lg:block hidden mx-3 ">
           <SearchBar
             searchText={searchText}
             handleSearchTextChange={this.handleSearchTextChange}
