@@ -1,3 +1,5 @@
+export type AudioState = 'PLAYING' | 'PAUSED' | 'LOADING' | 'ENDED'
+
 export interface Entity {
   id: string
 }

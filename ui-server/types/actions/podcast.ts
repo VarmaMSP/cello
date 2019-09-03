@@ -1,9 +1,8 @@
-import { Podcast, Episode } from './app'
+import { Podcast, Episode } from '../app'
 
 export const GET_PODCAST_REQUEST = 'GET_PODCAST_REQUEST'
 export const GET_PODCAST_SUCCESS = 'GET_PODCAST_SUCCESS'
 export const GET_PODCAST_FAILURE = 'GET_PODCAST_FAILURE'
-
 export const RECEIVED_PODCAST = 'RECEIVED_PODCAST'
 export const RECEIVED_EPISODES = 'RECEIVED_EPISODES'
 
@@ -38,7 +37,4 @@ export type PodcastActionTypes =
   | GetPodcastSuccessAction
   | GetPodcastFailureAction
   | ReceivedPodcastAction
-
-export type EpisodeActionTypes = ReceivedEpisodesAction
-
-export type AppActions = PodcastActionTypes | EpisodeActionTypes
+  | ReceivedEpisodesAction
