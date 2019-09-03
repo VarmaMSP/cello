@@ -31,19 +31,7 @@ export default withRedux(makeStore)(
             <MainContent>
               <Component {...pageProps} />
             </MainContent>
-            <AudioPlayer
-              podcast={'WTF M. Night Shyamalan!?!?!?!'}
-              episode={'Part 3: Critics, Trolls and Narfs'}
-              podcastId={''}
-              episodeId={''}
-              albumArt={
-                'https://is5-ssl.mzstatic.com/image/thumb/Podcasts123/v4/bf/cb/94/bfcb9429-69f8-6b4a-e639-510b4bbe25a5/mza_7508403085647585170.jpg/400x400.jpg'
-              }
-              audioSrc={
-                'https://raw.githubusercontent.com/anars/blank-audio/master/15-minutes-of-silence.mp3'
-              }
-              audioType={''}
-            />
+            <AudioPlayer />
           </Provider>
         </Container>
       )

@@ -1,6 +1,6 @@
 import React from 'react'
 import ButtonWithIcon from '../../button_with_icon'
-import { AudioState } from './utils'
+import { AudioState } from '../../../types/app'
 
 interface Props {
   audioState: AudioState

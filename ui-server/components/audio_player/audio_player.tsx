@@ -1,24 +1,30 @@
 import React, { Component } from 'react'
-import { AudioState } from './components/utils'
 import AudioPlayerSmall from './audio_player_small'
 import AudioPlayerMedium from './audio_player_medium'
 import AudioPlayerLarge from './audio_player_large'
+import { AudioState, Podcast, Episode } from '../../types/app'
 
-interface Props {
-  podcast: string
-  episode: string
-  podcastId: string
+export interface StateToProps {
   episodeId: string
-  albumArt: string
-  audioSrc: string
-  audioType: string
+  episode: Episode
+  podcast: Podcast
+  audioState: AudioState
+  expandOnMobile: boolean
 }
+
+export interface DispatchToProps {
+  setAudioState: (s: AudioState) => void
+  toggleExpandOnMobile: () => void
+}
+
+export interface OwnProps {}
+
+interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
 interface State {
   screen: 'none' | 'sm' | 'md' | 'lg'
   duration: number
   currentTime: number
-  audioState: AudioState
   expandOnMobile: boolean
 }
 
@@ -27,7 +33,6 @@ export default class AudioPlayer extends Component<Props, State> {
     screen: 'none' as 'none' | 'sm' | 'md' | 'lg',
     duration: 0,
     currentTime: 0,
-    audioState: 'LOADING' as AudioState,
     expandOnMobile: true,
   }
 
@@ -35,31 +40,38 @@ export default class AudioPlayer extends Component<Props, State> {
   // Because document obect is not available on the server
   audio: HTMLAudioElement = {} as any
 
+  componentDidUpdate(prevProps: Props) {
+    const { episodeId } = this.props
+    if (episodeId !== '' && episodeId !== prevProps.episodeId) {
+      this.audio.src = this.props.episode.mediaUrl
+    }
+  }
+
   componentDidMount() {
     this.audio = document.createElement('audio')
 
     // Play
     this.audio.addEventListener('canplay', () => {
-      this.setState({ audioState: 'PAUSED' })
+      this.props.setAudioState('PAUSED')
       this.audio.play()
     })
     this.audio.addEventListener('playing', () => {
-      this.setState({ audioState: 'PLAYING' })
+      this.props.setAudioState('PLAYING')
     })
     // Pause
     this.audio.addEventListener('pause', () => {
-      this.setState({ audioState: 'PAUSED' })
+      this.props.setAudioState('PAUSED')
     })
     // Loading
     this.audio.addEventListener('loadstart', () => {
-      this.setState({ audioState: 'LOADING' })
+      this.props.setAudioState('LOADING')
     })
     this.audio.addEventListener('seeking', () => {
-      this.setState({ audioState: 'LOADING' })
+      this.props.setAudioState('LOADING')
     })
     //Ended
     this.audio.addEventListener('ended', () => {
-      this.setState({ audioState: 'ENDED' })
+      this.props.setAudioState('ENDED')
     })
     // Duration
     this.audio.addEventListener('durationchange', () => {
@@ -70,7 +82,9 @@ export default class AudioPlayer extends Component<Props, State> {
       this.setState({ currentTime: this.audio.currentTime })
     })
 
-    this.audio.src = this.props.audioSrc
+    if (this.props.episodeId !== '') {
+      this.audio.src = this.props.episode.mediaUrl
+    }
 
     // window resize
     window.addEventListener('resize', () => {
@@ -98,7 +112,7 @@ export default class AudioPlayer extends Component<Props, State> {
   }
 
   handleActionButtonPress = () => {
-    const { audioState } = this.state
+    const { audioState } = this.props
     if (audioState === 'PLAYING') {
       this.audio.pause()
     }
@@ -122,24 +136,22 @@ export default class AudioPlayer extends Component<Props, State> {
   }
 
   render() {
-    const { screen, audioState, currentTime, duration } = this.state
-
-    const { podcast, episode, podcastId, episodeId, albumArt } = this.props
+    const { screen, currentTime, duration } = this.state
+    const { podcast, episode, audioState, expandOnMobile } = this.props
 
     if (screen === 'sm') {
       return (
         <AudioPlayerSmall
           podcast={podcast}
           episode={episode}
-          podcastId={podcastId}
-          episodeId={episodeId}
-          albumArt={albumArt}
           audioState={audioState}
           duration={duration}
           currentTime={currentTime}
+          expandOnMobile={expandOnMobile}
           handleSeek={this.handleSeek}
           handleFastForward={this.handleFastForward}
           handleActionButtonPress={this.handleActionButtonPress}
+          toggleExpandOnMobile={this.props.toggleExpandOnMobile}
         />
       )
     }
@@ -149,9 +161,6 @@ export default class AudioPlayer extends Component<Props, State> {
         <AudioPlayerMedium
           podcast={podcast}
           episode={episode}
-          podcastId={podcastId}
-          episodeId={episodeId}
-          albumArt={albumArt}
           audioState={audioState}
           duration={duration}
           currentTime={currentTime}
@@ -167,9 +176,6 @@ export default class AudioPlayer extends Component<Props, State> {
         <AudioPlayerLarge
           podcast={podcast}
           episode={episode}
-          podcastId={podcastId}
-          episodeId={episodeId}
-          albumArt={albumArt}
           audioState={audioState}
           duration={duration}
           currentTime={currentTime}

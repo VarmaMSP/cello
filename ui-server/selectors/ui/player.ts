@@ -5,6 +5,10 @@ import { Episode, Podcast } from '../../types/app'
 import { getAllEpisodes } from '../entities/episodes'
 import { getAllPodcasts } from '../entities/podcasts'
 
+export function getPlayingEpisodeId(state: AppState) {
+  return state.ui.player.episode || ''
+}
+
 export function getAudioState(state: AppState) {
   return state.ui.player.audioState || 'LOADING'
 }
@@ -21,18 +25,23 @@ export function getExpandOnMobile(state: AppState) {
   return state.ui.player.expandOnMobile || false
 }
 
-export function makeGetPresentPodcast() {
-  return createSelector<AppState, MapById<Podcast>, $Id<Podcast>, Podcast>(
-    getAllPodcasts,
-    (state) => state.ui.player.present.podcast || '',
-    (podcasts, id) => podcasts[id],
+export function makeGetPlayingEpisode() {
+  return createSelector<AppState, MapById<Episode>, $Id<Episode>, Episode>(
+    getAllEpisodes,
+    getPlayingEpisodeId,
+    (episodes, id) => episodes[id],
   )
 }
 
-export function makeGetPresentEpisode() {
-  return createSelector<AppState, MapById<Episode>, $Id<Episode>, Episode>(
-    getAllEpisodes,
-    (state) => state.ui.player.present.episode || '',
-    (episodes, id) => episodes[id],
+export function makeGetPlayingPodcast() {
+  const getPlayingEpisode = makeGetPlayingEpisode()
+
+  return createSelector<AppState, MapById<Podcast>, $Id<Podcast>, Podcast>(
+    getAllPodcasts,
+    (state) => {
+      const episode = getPlayingEpisode(state)
+      return episode ? episode.podcastId : ''
+    },
+    (podcast, id) => podcast[id],
   )
 }

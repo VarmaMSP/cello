@@ -1,15 +1,12 @@
 import React from 'react'
-import { AudioState } from './components/utils'
 import ButtonWithIcon from '../button_with_icon'
 import ActionButton from './components/action_button'
 import ProgressBar from './components/progress_bar'
+import { AudioState, Podcast, Episode } from '../../types/app'
 
 interface Props {
-  podcast: string
-  episode: string
-  podcastId: string
-  episodeId: string
-  albumArt: string
+  episode: Episode
+  podcast: Podcast
   audioState: AudioState
   duration: number
   currentTime: number
@@ -23,12 +20,16 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
     podcast,
     episode,
     audioState,
-    currentTime,
     duration,
+    currentTime,
     handleSeek,
     handleActionButtonPress,
     handleFastForward,
   } = props
+
+  if (!episode) {
+    return <></>
+  }
 
   return (
     <div className="fixed bottom-0 left-0 flex items-center justify-around w-full h-24 pl-56 bg-white border">
@@ -51,10 +52,10 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
       <div className="flex-auto flex flex-col justify-center mx-4 text-center">
         <div className="-mb-1">
           <div className="text-ms font-semibold text-gray-800 leading-tight tracking-wide truncate">
-            {episode}
+            {episode.title}
           </div>
           <div className="text-sm font-semibold text-gray-700 leading-loose tracking-tigh truncate">
-            {podcast}
+            {podcast.title}
           </div>
         </div>
         <div className="w-full">

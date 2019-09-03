@@ -22,18 +22,6 @@ const episode: Reducer<string | undefined, AppActions> = (
   }
 }
 
-const podcast: Reducer<string | undefined, AppActions> = (
-  state = '',
-  action,
-) => {
-  switch (action.type) {
-    case PLAY_EPISODE:
-      return action.podcastId
-    default:
-      return state
-  }
-}
-
 const audioState: Reducer<AudioState | undefined, AppActions> = (
   state = 'LOADING',
   action,
@@ -83,10 +71,7 @@ const expandOnMobile: Reducer<boolean | undefined, AppActions> = (
 }
 
 export default combineReducers({
-  present: combineReducers({
-    podcast,
-    episode,
-  }),
+  episode,
   audioState,
   audioDuration,
   audioCurrentTime,
