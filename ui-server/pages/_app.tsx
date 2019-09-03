@@ -3,6 +3,7 @@ import NavBarTop from '../components/navbar_top'
 import AudioPlayer from '../components/audio_player'
 import NavbarSide from '../components/navbar_side/navbar_side'
 import MainContent from '../components/main_content'
+import Screen from '../components/screen'
 import { makeStore } from '../store'
 import { AppContext } from 'types/next'
 
@@ -32,6 +33,7 @@ export default withRedux(makeStore)(
               <Component {...pageProps} />
             </MainContent>
             <AudioPlayer />
+            <Screen />
           </Provider>
         </Container>
       )
