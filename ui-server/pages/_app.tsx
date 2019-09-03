@@ -5,7 +5,7 @@ import NavbarSide from '../components/navbar_side/navbar_side'
 import MainContent from '../components/main_content'
 import Screen from '../components/screen'
 import { makeStore } from '../store'
-import { AppContext } from 'types/next'
+import { AppContext, PageContext } from 'types/utilities'
 
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
@@ -13,7 +13,7 @@ import { Container, AppProps } from 'next/app'
 import withRedux from 'next-redux-wrapper'
 
 export default withRedux(makeStore)(
-  class MyApp extends Component<AppProps> {
+  class MyApp extends Component<AppProps & PageContext> {
     static async getInitialProps({ Component, ctx }: AppContext) {
       let pageProps = {}
       if (Component.getInitialProps) {
@@ -23,10 +23,10 @@ export default withRedux(makeStore)(
     }
 
     render() {
-      const { Component, pageProps } = this.props
+      const { Component, pageProps, store } = this.props
       return (
         <Container>
-          <Provider store={(this.props as any).store}>
+          <Provider store={store}>
             <NavBarTop />
             <NavbarSide />
             <MainContent>
