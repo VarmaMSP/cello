@@ -5,9 +5,10 @@ import * as Utils from './utils'
 
 interface Props {
   episodes: Episode[]
+  playEpisode: (episodeId: string) => void
 }
 
-const EpisodeList: React.SFC<Props> = ({ episodes }) => {
+const EpisodeList: React.SFC<Props> = ({ episodes, playEpisode }) => {
   return (
     <>
       {episodes.map(({ id, title, duration }) => (
@@ -20,7 +21,11 @@ const EpisodeList: React.SFC<Props> = ({ episodes }) => {
                 <span className="mx-2 font-extrabold">&middot;</span>2 days ago
               </span>
             </div>
-            <ButtonWithIcon className="w-5" icon="play" />
+            <ButtonWithIcon
+              className="w-5"
+              icon="play"
+              onClick={() => playEpisode(id)}
+            />
           </div>
           <hr className="my-3" />
         </div>

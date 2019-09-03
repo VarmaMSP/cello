@@ -11,6 +11,7 @@ export interface StateToProps {
 
 export interface DispatchToProps {
   getPodcast: (id: string) => void
+  playEpisode: (episodeId: string) => void
 }
 
 export interface OwnProps {
@@ -36,7 +37,7 @@ export default class PodcastPage extends Component<Props> {
   }
 
   render() {
-    const { podcast, episodes } = this.props
+    const { podcast, episodes, playEpisode } = this.props
     if (!podcast) {
       return (
         <>
@@ -53,7 +54,7 @@ export default class PodcastPage extends Component<Props> {
           author={podcast.author}
           description={podcast.description}
         />
-        <EpisodeList episodes={episodes} />
+        <EpisodeList episodes={episodes} playEpisode={playEpisode} />
       </>
     )
   }
