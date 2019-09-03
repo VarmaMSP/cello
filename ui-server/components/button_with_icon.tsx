@@ -15,12 +15,8 @@ interface Props {
 // - takes up the full width of the container while preserving its aspect ratio.
 // - is centered vertically
 // - fill is set to button's text-color
-const ButtonWithIcon: React.SFC<Props> = ({
-  icon,
-  className,
-  type,
-  onClick,
-}) => {
+const ButtonWithIcon: React.SFC<Props> = (props) => {
+  const { icon, className, type, onClick } = props
   const Icon = iconMap[icon]
 
   return (

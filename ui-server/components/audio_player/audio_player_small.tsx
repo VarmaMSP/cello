@@ -18,9 +18,7 @@ interface Props {
   toggleExpandOnMobile: () => void
 }
 
-interface State {}
-
-export default class AudioPlayerSmall extends Component<Props, State> {
+export default class AudioPlayerSmall extends Component<Props> {
   render() {
     const {
       podcast,
@@ -140,10 +138,7 @@ export default class AudioPlayerSmall extends Component<Props, State> {
           transition: '0.4s cubic-bezier(.22,.86,.62,.95)',
         }}
       >
-        {/* Player minimised */}
         {playerMin}
-
-        {/* Player Maximised */}
         {playerMax}
 
         {/* Bottom navbar */}

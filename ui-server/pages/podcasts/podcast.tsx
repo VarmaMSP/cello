@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { PageContext } from 'types/next'
+import { PageContext } from 'types/utilities'
 import { Podcast, Episode } from 'types/app'
 import PodcastDetails from '../../components/podcast_details'
 import EpisodeList from '../../components/episode_list'

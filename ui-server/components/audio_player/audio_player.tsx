@@ -18,14 +18,15 @@ export interface DispatchToProps {
   toggleExpandOnMobile: () => void
 }
 
-interface Props extends StateToProps, DispatchToProps {}
-
 interface State {
   duration: number
   currentTime: number
 }
 
-export default class AudioPlayer extends Component<Props, State> {
+export default class AudioPlayer extends Component<
+  StateToProps & DispatchToProps,
+  State
+> {
   state = {
     duration: 0,
     currentTime: 0,
@@ -35,7 +36,7 @@ export default class AudioPlayer extends Component<Props, State> {
   // Because document obect is not available on the server
   audio: HTMLAudioElement = {} as any
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: StateToProps & DispatchToProps) {
     const { episodeId } = this.props
     if (episodeId !== '' && episodeId !== prevProps.episodeId) {
       this.audio.src = this.props.episode.mediaUrl

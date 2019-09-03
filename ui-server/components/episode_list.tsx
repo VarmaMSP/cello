@@ -10,8 +10,8 @@ interface Props {
 const EpisodeList: React.SFC<Props> = ({ episodes }) => {
   return (
     <>
-      {episodes.map(({ title, duration }) => (
-        <>
+      {episodes.map(({ id, title, duration }) => (
+        <div key={id}>
           <div className="flex justify-between my-2 mx-1 rounded-full hover:bg-gray-100">
             <div className="flex-auto">
               <h4 className="text-sm font-medium">{title}</h4>
@@ -23,7 +23,7 @@ const EpisodeList: React.SFC<Props> = ({ episodes }) => {
             <ButtonWithIcon className="w-5" icon="play" />
           </div>
           <hr className="my-3" />
-        </>
+        </div>
       ))}
     </>
   )
