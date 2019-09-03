@@ -4,14 +4,22 @@ import { Podcast, Episode } from 'types/app'
 import PodcastDetails from '../../components/podcast_details'
 import EpisodeList from '../../components/episode_list'
 
-interface Props {
-  id: string
+export interface StateToProps {
   podcast: Podcast
   episodes: Episode[]
+}
+
+export interface DispatchToProps {
   getPodcast: (id: string) => void
 }
 
-export default class PodcastPage extends Component<Props, {}> {
+export interface OwnProps {
+  id: string
+}
+
+interface Props extends StateToProps, DispatchToProps, OwnProps {}
+
+export default class PodcastPage extends Component<Props> {
   static async getInitialProps({ query }: PageContext) {
     const id = query['id'] as string
     return { id }
