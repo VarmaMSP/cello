@@ -10,13 +10,25 @@ import {
 import { combineReducers } from 'redux'
 import { AudioState } from 'types/app'
 
-const nowPlaying: Reducer<
-  { episodeId: string; podcastId: string } | undefined,
-  AppActions
-> = (state = { episodeId: '', podcastId: '' }, action) => {
+const episode: Reducer<string | undefined, AppActions> = (
+  state = '',
+  action,
+) => {
   switch (action.type) {
     case PLAY_EPISODE:
-      return { episodeId: action.episodeId, podcastId: action.podcastId }
+      return action.episodeId
+    default:
+      return state
+  }
+}
+
+const podcast: Reducer<string | undefined, AppActions> = (
+  state = '',
+  action,
+) => {
+  switch (action.type) {
+    case PLAY_EPISODE:
+      return action.podcastId
     default:
       return state
   }
@@ -71,7 +83,10 @@ const expandOnMobile: Reducer<boolean | undefined, AppActions> = (
 }
 
 export default combineReducers({
-  nowPlaying,
+  present: combineReducers({
+    podcast,
+    episode,
+  }),
   audioState,
   audioDuration,
   audioCurrentTime,

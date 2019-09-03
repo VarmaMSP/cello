@@ -1,7 +1,5 @@
 import React from 'react'
 
-export type AudioState = 'PLAYING' | 'PAUSED' | 'LOADING' | 'ENDED'
-
 export type TouchOrMouseEvent =
   | React.TouchEvent<HTMLElement>
   | React.MouseEvent<HTMLElement, MouseEvent>
