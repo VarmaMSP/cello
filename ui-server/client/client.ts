@@ -15,7 +15,7 @@ export default class Client {
     })
 
     let response: Response | null = null
-    let data: { error: Error; message: any } | null = null
+    let data: object | null = null
     try {
       response = await fetch(request)
       data = await response.json()
@@ -24,13 +24,10 @@ export default class Client {
       throw new Error(err.toString())
     }
 
-    if (data!.error) {
-      if (response!.status === 401) {
-        throw new Error('error')
-      } else {
-        throw new Error('error')
-      }
+    if (response!.status === 401) {
+      throw new Error('error')
     }
+
     return data
   }
 
