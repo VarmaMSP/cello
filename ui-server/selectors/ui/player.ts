@@ -13,14 +13,6 @@ export function getAudioState(state: AppState) {
   return state.ui.player.audioState || 'LOADING'
 }
 
-export function getAudioDuration(state: AppState) {
-  return state.ui.player.audioDuration || 0
-}
-
-export function getAudioCurrentTime(state: AppState) {
-  return state.ui.player.audioCurrentTime || 0
-}
-
 export function getExpandOnMobile(state: AppState) {
   return state.ui.player.expandOnMobile || false
 }

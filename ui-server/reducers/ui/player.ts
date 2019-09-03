@@ -2,8 +2,6 @@ import { Reducer } from 'react'
 import {
   AppActions,
   SET_AUDIO_STATE,
-  SET_AUDIO_DURATION,
-  SET_AUDIO_CURRENT_TIME,
   TOGGLE_EXPAND_ON_MOBILE,
   PLAY_EPISODE,
 } from '../../types/actions'
@@ -34,30 +32,6 @@ const audioState: Reducer<AudioState | undefined, AppActions> = (
   }
 }
 
-const audioDuration: Reducer<number | undefined, AppActions> = (
-  state = 0,
-  action,
-) => {
-  switch (action.type) {
-    case SET_AUDIO_DURATION:
-      return action.duration
-    default:
-      return state
-  }
-}
-
-const audioCurrentTime: Reducer<number | undefined, AppActions> = (
-  state = 0,
-  action,
-) => {
-  switch (action.type) {
-    case SET_AUDIO_CURRENT_TIME:
-      return action.time
-    default:
-      return state
-  }
-}
-
 const expandOnMobile: Reducer<boolean | undefined, AppActions> = (
   state = false,
   action,
@@ -73,7 +47,5 @@ const expandOnMobile: Reducer<boolean | undefined, AppActions> = (
 export default combineReducers({
   episode,
   audioState,
-  audioDuration,
-  audioCurrentTime,
   expandOnMobile,
 })
