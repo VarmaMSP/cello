@@ -2,7 +2,7 @@ import { Episode } from '../../types/app'
 import { AppActions, RECEIVED_EPISODES } from '../../types/actions'
 import { combineReducers, Reducer } from 'redux'
 
-export const episodes: Reducer<{ [episodeId: string]: Episode }, AppActions> = (
+const episodes: Reducer<{ [episodeId: string]: Episode }, AppActions> = (
   state = {},
   action,
 ) => {
@@ -18,7 +18,7 @@ export const episodes: Reducer<{ [episodeId: string]: Episode }, AppActions> = (
   }
 }
 
-export const episodesInPodcast: Reducer<
+const episodesInPodcast: Reducer<
   { [podcastId: string]: string[] },
   AppActions
 > = (state = {}, action) => {

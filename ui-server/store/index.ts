@@ -1,13 +1,7 @@
-import { combineReducers, applyMiddleware, createStore, compose } from 'redux'
+import { applyMiddleware, createStore, compose } from 'redux'
 import thunk, { ThunkMiddleware } from 'redux-thunk'
-import entities from '../reducers/entities'
-import requests from '../reducers/requests'
 import { AppActions } from 'types/actions'
-
-export const rootReducer = combineReducers({
-  entities,
-  requests,
-})
+import rootReducer from '../reducers'
 
 // NOTE: Do not export this as type
 // doing so will make the editor to show to entire AppState in suggestions
