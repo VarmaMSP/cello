@@ -20,6 +20,12 @@ const (
 				},
 				"description": {
 					"type": "text"
+				},
+				"type": {
+					"type": "keyword"
+				},
+				"complete": {
+					"type": "byte"
 				}
 			}
 		}

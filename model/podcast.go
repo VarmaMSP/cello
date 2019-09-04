@@ -61,9 +61,9 @@ type PodcastInfo struct {
 	Id          string `json:"id"`
 	Title       string `json:"title"`
 	Author      string `json:"author"`
-	Description string `json:"description"`
-	Type        string `json:"type"`
-	Complete    int    `json:"complete"`
+	Description string `json:"description,omitempty"`
+	Type        string `json:"type,omitempty"`
+	Complete    int    `json:"complete,omitempty"`
 }
 
 func (p *Podcast) DbColumns() []string {

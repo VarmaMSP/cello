@@ -5,11 +5,13 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/olivere/elastic/v7"
 	"github.com/varmamsp/cello/store"
 )
 
 type Api struct {
-	store store.Store
+	store    store.Store
+	esClient *elastic.Client
 
 	enableCors bool
 
@@ -17,10 +19,11 @@ type Api struct {
 	router *httprouter.Router
 }
 
-func NewApi(store store.Store) *Api {
+func NewApi(store store.Store, client *elastic.Client) *Api {
 	api := &Api{
-		store:  store,
-		router: httprouter.New(),
+		store:    store,
+		esClient: client,
+		router:   httprouter.New(),
 	}
 
 	api.server = &http.Server{

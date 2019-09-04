@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/varmamsp/cello/api"
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/services/elasticsearch"
 	"github.com/varmamsp/cello/store/sqlstore"
 )
 
@@ -24,6 +25,12 @@ func main() {
 	}
 
 	store := sqlstore.NewSqlStore(&config.Mysql)
-	api := api.NewApi(store)
+	esClient, err := elasticsearch.NewClient(&config.Elasticsearch)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	api := api.NewApi(store, esClient)
 	api.ListenAndServe()
 }
