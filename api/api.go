@@ -11,6 +11,8 @@ import (
 type Api struct {
 	store store.Store
 
+	enableCors bool
+
 	server *http.Server
 	router *httprouter.Router
 }

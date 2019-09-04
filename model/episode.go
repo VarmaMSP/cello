@@ -39,11 +39,11 @@ type EpisodeInfo struct {
 	Id          string `json:"id,omitempty"`
 	Title       string `json:"title,omitempty"`
 	Description string `json:"description,omitempty"`
-	MediaUrl    string `json:"media_url,omitempty"`
-	MediaType   string `json:"media_type,omitempty"`
+	MediaUrl    string `json:"mediaUrl,omitempty"`
+	MediaType   string `json:"mediaType,omitempty"`
 	Episode     int    `json:"episode,omitempty"`
 	Season      int    `json:"season,omitempty"`
-	PubDate     string `json:"pub_date,omitempty"`
+	PubDate     string `json:"pubDate,omitempty"`
 	Duration    int    `json:"duration,omitempty"`
 }
 
