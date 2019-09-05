@@ -9,6 +9,7 @@ import (
 
 func (api *Api) RegisterStatichandlers() {
 	api.router.HandlerFunc("GET", "/_next/*filepath", api.ServeStatic)
+	api.router.NotFound = http.FileServer(http.Dir("/var/www/"))
 }
 
 func (api *Api) ServeStatic(w http.ResponseWriter, req *http.Request) {
