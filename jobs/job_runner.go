@@ -23,16 +23,19 @@ type JobRunner struct {
 	scheduledJobCallP *rabbitmq.Producer
 	importPodcastP    *rabbitmq.Producer
 	refreshPodcastP   *rabbitmq.Producer
+	createThumbnailP  *rabbitmq.Producer
 
 	// Message Consumers
 	scheduledJobCallC *rabbitmq.Consumer
 	importPodcastC    *rabbitmq.Consumer
 	refreshPodcastC   *rabbitmq.Consumer
+	createThumbnailC  *rabbitmq.Consumer
 
 	// Jobs
-	scrapeItunesJob   model.Job
-	importPodcastJob  model.Job
-	refreshPodcastJob model.Job
+	scrapeItunesJob    model.Job
+	importPodcastJob   model.Job
+	refreshPodcastJob  model.Job
+	createThumbnailJob model.Job
 }
 
 func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection, qConfig *model.RabbitmqQueuesConfig, esConfig *model.ElasticsearchConfig) (*JobRunner, error) {
@@ -57,6 +60,14 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		ExchangeName: rabbitmq.DefaultExchange,
 		QueueName:    model.QUEUE_NAME_REFRESH_PODCAST,
 		DeliveryMode: qConfig.RefreshPodcastQueue.DeliveryMode,
+	})
+	if err != nil {
+		return nil, err
+	}
+	createThumbnailP, err := rabbitmq.NewProducer(producerConn, &rabbitmq.ProducerOpts{
+		ExchangeName: rabbitmq.DefaultExchange,
+		QueueName:    model.QUEUE_NAME_CREATE_THUMBNAIL,
+		DeliveryMode: 0,
 	})
 	if err != nil {
 		return nil, err
@@ -93,6 +104,16 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 	if err != nil {
 		return nil, err
 	}
+	createThumbnailC, err := rabbitmq.NewConsumer(consumerConn, &rabbitmq.ConsumerOpts{
+		QueueName:     model.QUEUE_NAME_CREATE_THUMBNAIL,
+		ConsumerName:  qConfig.CreateThumbnailQueue.ConsumerName,
+		AutoAck:       qConfig.CreateThumbnailQueue.ConsumerAutoAck,
+		Exclusive:     qConfig.CreateThumbnailQueue.ConsumerExclusive,
+		PreFetchCount: qConfig.CreateThumbnailQueue.ConsumerPreFetchCount,
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	// Elasticsearch
 	esClient, err := elasticsearch.NewClient(esConfig)
@@ -113,6 +134,10 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 	if err != nil {
 		return nil, err
 	}
+	createThumbnailJob, err := job.NewCreateThumbnailJob(10)
+	if err != nil {
+		return nil, err
+	}
 
 	return &JobRunner{
 		store:        store,
@@ -123,14 +148,17 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		scheduledJobCallP: scheduledJobCallP,
 		importPodcastP:    importPodcastP,
 		refreshPodcastP:   refreshPodcastP,
+		createThumbnailP:  createThumbnailP,
 
 		scheduledJobCallC: scheduledJobCallC,
 		importPodcastC:    importPodcastC,
 		refreshPodcastC:   refreshPodcastC,
+		createThumbnailC:  createThumbnailC,
 
-		scrapeItunesJob:   scrapeItunesJob,
-		importPodcastJob:  importPodcastJob,
-		refreshPodcastJob: refreshPodcastJob,
+		scrapeItunesJob:    scrapeItunesJob,
+		importPodcastJob:   importPodcastJob,
+		refreshPodcastJob:  refreshPodcastJob,
+		createThumbnailJob: createThumbnailJob,
 	}, nil
 }
 
@@ -159,6 +187,12 @@ func (r *JobRunner) Start() {
 	go func() {
 		for d := range r.refreshPodcastC.D {
 			r.refreshPodcastJob.Call(d)
+		}
+	}()
+
+	go func() {
+		for d := range r.createThumbnailC.D {
+			r.createThumbnailJob.Call(d)
 		}
 	}()
 }

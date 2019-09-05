@@ -26,6 +26,7 @@ type RabbitmqQueuesConfig struct {
 	ScheduledJobCallQueue RabbitmqQueueConfig `mapstructure:"scheduled_job_call_queue"`
 	ImportPodcastQueue    RabbitmqQueueConfig `mapstructure:"import_podcast_queue"`
 	RefreshPodcastQueue   RabbitmqQueueConfig `mapstructure:"refresh_podcast_queue"`
+	CreateThumbnailQueue  RabbitmqQueueConfig `mapstructure:"create_thumbnail"`
 }
 
 type RabbitmqQueueConfig struct {

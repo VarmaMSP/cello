@@ -33,6 +33,14 @@ rabbitmq:
       consumer_prefetch_count: 100
       consumer_worker_limit: 10
 
+    create_thumbnail_queue:
+      delivery_mode: 2
+      consumer_name: create_thumbnail
+      consumer_auto_ack: false
+      consumer_exclusive: true
+      consumer_prefetch_count: 100
+      consumer_worker_limit: 10
+
 elasticsearch:
   address: localhost:9200
   user: elastic

@@ -30,6 +30,9 @@ func NewConnection(config *model.RabbitmqConfig) (*amqp.Connection, error) {
 	if err := createQueue(model.QUEUE_NAME_REFRESH_PODCAST, channel); err != nil {
 		return nil, err
 	}
+	if err := createQueue(model.QUEUE_NAME_CREATE_THUMBNAIL, channel); err != nil {
+		return nil, err
+	}
 	return connection, nil
 }
 

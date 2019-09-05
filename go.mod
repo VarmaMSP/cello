@@ -10,6 +10,7 @@ require (
 	github.com/julienschmidt/httprouter v1.2.0
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mmcdole/gofeed v0.0.0-20190202050737-d62d841d7427
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/olivere/elastic v6.2.22+incompatible
 	github.com/olivere/elastic/v7 v7.0.5
 	github.com/pelletier/go-toml v1.4.0 // indirect

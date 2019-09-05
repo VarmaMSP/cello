@@ -12,6 +12,7 @@ const (
 	QUEUE_NAME_SCHEDULED_JOB_CALL = "scheduled_work"
 	QUEUE_NAME_IMPORT_PODCAST     = "import_podcast"
 	QUEUE_NAME_REFRESH_PODCAST    = "refresh_podcast"
+	QUEUE_NAME_CREATE_THUMBNAIL   = "create_thumbnail"
 
 	JOB_SCHEDULE_TYPE_PERIODIC  = "PERIODIC"
 	JOB_SCHEDULE_TYPE_ONEOFF    = "ONEOFF"

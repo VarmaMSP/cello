@@ -3,6 +3,10 @@ package job
 import (
 	"encoding/json"
 	"fmt"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
 	"net/http"
 	"strings"
 
@@ -45,6 +49,32 @@ func itunesLookup(podcastIds []string, httpClient *http.Client) ([]ItunesLookupR
 	}
 
 	return lookupResp.Results, nil
+}
+
+// Fetch Image from url
+func fetchImage(imageUrl string, httpClient *http.Client) (image.Image, *model.AppError) {
+	appErrorC := model.NewAppErrorC(
+		"jobs.job.utils.fetch_image",
+		http.StatusInternalServerError,
+		map[string]string{"image_url": imageUrl},
+	)
+
+	req, err := http.NewRequest("GET", imageUrl, nil)
+	if err != nil {
+		return nil, appErrorC(err.Error())
+	}
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return nil, appErrorC(err.Error())
+	}
+
+	img, _, err := image.Decode(resp.Body)
+	if err != nil {
+		return nil, appErrorC(err.Error())
+	}
+
+	return img, nil
 }
 
 // Fetch RSS feed
