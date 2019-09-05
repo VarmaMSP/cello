@@ -13,17 +13,19 @@ import (
 	"github.com/streadway/amqp"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/services/elasticsearch"
+	"github.com/varmamsp/cello/services/rabbitmq"
 	"github.com/varmamsp/cello/store"
 )
 
 type ImportPodcastJob struct {
-	store       store.Store
-	esClient    *elastic.Client
-	httpClient  *http.Client
-	rateLimiter chan struct{}
+	store            store.Store
+	esClient         *elastic.Client
+	httpClient       *http.Client
+	rateLimiter      chan struct{}
+	createThumbnailP *rabbitmq.Producer
 }
 
-func NewImportPodcastJob(store store.Store, esClient *elastic.Client, workerLimit int) (model.Job, error) {
+func NewImportPodcastJob(store store.Store, esClient *elastic.Client, createThumbnailP *rabbitmq.Producer, workerLimit int) (model.Job, error) {
 	return &ImportPodcastJob{
 		store:    store,
 		esClient: esClient,
@@ -34,7 +36,8 @@ func NewImportPodcastJob(store store.Store, esClient *elastic.Client, workerLimi
 				MaxIdleConnsPerHost: int(0.5 * float32(workerLimit)),
 			},
 		},
-		rateLimiter: make(chan struct{}, workerLimit),
+		rateLimiter:      make(chan struct{}, workerLimit),
+		createThumbnailP: createThumbnailP,
 	}, nil
 }
 
@@ -127,6 +130,8 @@ func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers
 		}
 	}
 
+	job.createThumbnail(podcast.Id, podcast.ImagePath)
+
 	return podcast.Id, nil
 }
 
@@ -139,4 +144,12 @@ func (job *ImportPodcastJob) indexPodcast(podcastId string, feed *rss.Feed) {
 		Id(doc.Id).
 		BodyJson(doc).
 		Do(context.TODO())
+}
+
+func (job *ImportPodcastJob) createThumbnail(podcastId, imageSrc string) {
+	job.createThumbnailP.D <- map[string]string{
+		"id":        podcastId,
+		"image_src": imageSrc,
+		"type":      "PODCAST",
+	}
 }

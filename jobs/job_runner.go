@@ -36,6 +36,7 @@ type JobRunner struct {
 	importPodcastJob   model.Job
 	refreshPodcastJob  model.Job
 	createThumbnailJob model.Job
+	scheduleRefreshJob model.Job
 }
 
 func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection, qConfig *model.RabbitmqQueuesConfig, esConfig *model.ElasticsearchConfig) (*JobRunner, error) {
@@ -126,7 +127,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 	if err != nil {
 		return nil, err
 	}
-	importPodcastJob, err := job.NewImportPodcastJob(store, esClient, 10)
+	importPodcastJob, err := job.NewImportPodcastJob(store, esClient, createThumbnailP, 10)
 	if err != nil {
 		return nil, err
 	}
@@ -135,6 +136,10 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		return nil, err
 	}
 	createThumbnailJob, err := job.NewCreateThumbnailJob(10)
+	if err != nil {
+		return nil, err
+	}
+	scheduleRefreshJob, err := job.NewScheduleRefreshJob(store, refreshPodcastP)
 	if err != nil {
 		return nil, err
 	}
@@ -159,6 +164,7 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 		importPodcastJob:   importPodcastJob,
 		refreshPodcastJob:  refreshPodcastJob,
 		createThumbnailJob: createThumbnailJob,
+		scheduleRefreshJob: scheduleRefreshJob,
 	}, nil
 }
 
@@ -174,6 +180,10 @@ func (r *JobRunner) Start() {
 
 			if input["job_name"] == model.JOB_NAME_SCRAPE_ITUNES {
 				r.scrapeItunesJob.Call(d)
+			}
+
+			if input["job_name"] == model.JOB_NAME_SCHEDULE_REFRESH {
+				r.scheduleRefreshJob.Call(d)
 			}
 		}
 	}()

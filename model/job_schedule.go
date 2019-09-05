@@ -5,9 +5,10 @@ import (
 )
 
 const (
-	JOB_NAME_SCRAPE_ITUNES   = "scrape_itunes"
-	JOB_NAME_IMPORT_PODCAST  = "import_podcast"
-	JOB_NAME_REFRESH_PODCAST = "refresh_podcast"
+	JOB_NAME_SCRAPE_ITUNES    = "scrape_itunes"
+	JOB_NAME_IMPORT_PODCAST   = "import_podcast"
+	JOB_NAME_REFRESH_PODCAST  = "refresh_podcast"
+	JOB_NAME_SCHEDULE_REFRESH = "schedule_refresh"
 
 	QUEUE_NAME_SCHEDULED_JOB_CALL = "scheduled_work"
 	QUEUE_NAME_IMPORT_PODCAST     = "import_podcast"

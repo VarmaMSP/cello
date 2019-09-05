@@ -39,6 +39,8 @@ func (s *Scheduler) scheduleJobRun() {
 			continue
 		}
 
+		fmt.Println("scheduling")
+
 		for _, schedule := range schedules {
 			switch schedule.Type {
 			case model.JOB_SCHEDULE_TYPE_PERIODIC:
@@ -63,7 +65,7 @@ func (s *Scheduler) periodic(jobName string, lastRunAt, runAfter int64) {
 		return
 	}
 
-	fmt.Printf("Scheduled Job: %s\n", jobName)
+	fmt.Printf("Scheduled Periodic Job: %s\n", jobName)
 	s.scheduledJobCallP.D <- map[string]string{"job_name": jobName}
 }
 

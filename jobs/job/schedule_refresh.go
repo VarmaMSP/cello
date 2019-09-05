@@ -15,7 +15,7 @@ type ScheduleRefreshJob struct {
 	refreshPodcastP *rabbitmq.Producer
 }
 
-func NewScheduleRefreshJob(store store.Store, refreshPodcastP *rabbitmq.Producer) (model.Job, *model.AppError) {
+func NewScheduleRefreshJob(store store.Store, refreshPodcastP *rabbitmq.Producer) (model.Job, error) {
 	return &ScheduleRefreshJob{store, refreshPodcastP}, nil
 }
 
