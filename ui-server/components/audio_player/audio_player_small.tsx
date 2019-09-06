@@ -88,7 +88,10 @@ export default class AudioPlayerSmall extends Component<Props> {
         }}
       >
         <section className="px-3 flex flex-row">
-          <img className="h-32 w-32 flex-none object-cover object-center rounded" />
+          <img
+            className="h-32 w-32 flex-none object-cover object-center rounded"
+            src={`http://localhost:8080/img/${podcast.id}p-500x500.jpg`}
+          />
           <section className="flex-1 ml-3">
             <h4 className="text-md font-semibold text-green-600 leading-loose">
               Now Playing
