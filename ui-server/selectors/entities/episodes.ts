@@ -7,7 +7,7 @@ export function getAllEpisodes(state: AppState) {
   return state.entities.episodes.episodes
 }
 
-export function getEpisode(state: AppState, id: $Id<Episode>): Episode {
+export function getEpisodeById(state: AppState, id: $Id<Episode>): Episode {
   return getAllEpisodes(state)[id]
 }
 

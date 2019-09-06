@@ -6,15 +6,15 @@ import { getAllEpisodes } from '../entities/episodes'
 import { getAllPodcasts } from '../entities/podcasts'
 
 export function getPlayingEpisodeId(state: AppState) {
-  return state.ui.player.episode || ''
+  return state.ui.player.episode
 }
 
 export function getAudioState(state: AppState) {
-  return state.ui.player.audioState || 'LOADING'
+  return state.ui.player.audioState
 }
 
 export function getExpandOnMobile(state: AppState) {
-  return state.ui.player.expandOnMobile || false
+  return state.ui.player.expandOnMobile
 }
 
 export function makeGetPlayingEpisode() {
@@ -28,12 +28,12 @@ export function makeGetPlayingEpisode() {
 export function makeGetPlayingPodcast() {
   const getPlayingEpisode = makeGetPlayingEpisode()
 
-  return createSelector<AppState, MapById<Podcast>, $Id<Podcast>, Podcast>(
+  return createSelector<AppState, MapById<Podcast>, Episode, Podcast>(
     getAllPodcasts,
-    (state) => {
-      const episode = getPlayingEpisode(state)
-      return episode ? episode.podcastId : ''
+    getPlayingEpisode,
+    (podcasts, episode) => {
+      const podcastId = !!episode ? episode.podcastId : ''
+      return podcasts[podcastId]
     },
-    (podcast, id) => podcast[id],
   )
 }

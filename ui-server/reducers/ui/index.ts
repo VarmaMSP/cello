@@ -3,7 +3,7 @@ import { combineReducers, Reducer } from 'redux'
 import { ScreenWidth } from '../../types/app'
 import { AppActions, SET_SCREEN_WIDTH } from '../../types/actions'
 
-const screenWidth: Reducer<ScreenWidth | undefined, AppActions> = (
+const screenWidth: Reducer<ScreenWidth, AppActions> = (
   state = 'LG',
   action,
 ) => {

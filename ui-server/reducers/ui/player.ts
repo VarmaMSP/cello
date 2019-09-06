@@ -1,17 +1,13 @@
-import { Reducer } from 'react'
 import {
   AppActions,
   SET_AUDIO_STATE,
   TOGGLE_EXPAND_ON_MOBILE,
   PLAY_EPISODE,
 } from '../../types/actions'
-import { combineReducers } from 'redux'
+import { combineReducers, Reducer } from 'redux'
 import { AudioState } from 'types/app'
 
-const episode: Reducer<string | undefined, AppActions> = (
-  state = '',
-  action,
-) => {
+const episode: Reducer<string, AppActions> = (state = '', action) => {
   switch (action.type) {
     case PLAY_EPISODE:
       return action.episodeId
@@ -20,7 +16,7 @@ const episode: Reducer<string | undefined, AppActions> = (
   }
 }
 
-const audioState: Reducer<AudioState | undefined, AppActions> = (
+const audioState: Reducer<AudioState, AppActions> = (
   state = 'LOADING',
   action,
 ) => {
@@ -32,7 +28,7 @@ const audioState: Reducer<AudioState | undefined, AppActions> = (
   }
 }
 
-const expandOnMobile: Reducer<boolean | undefined, AppActions> = (
+const expandOnMobile: Reducer<boolean, AppActions> = (
   state = false,
   action,
 ) => {
