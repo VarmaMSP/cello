@@ -92,8 +92,7 @@ export default class ProgressBar extends Component<Props, State> {
     })
   }
 
-  // Seek completes when user presses up anywhere on viewport
-  // after seeking has begun
+  // Seek completes when user releases press from anywhere on viewport
   handleSeekComplete = (_: TouchOrMouseEvent) => {
     if (!this.state.seeking) return
 

@@ -1,21 +1,20 @@
 import React, { Component } from 'react'
 import { PageContext } from 'types/utilities'
-import { Podcast, Episode } from 'types/app'
 import PodcastDetails from '../../components/podcast_details'
 import EpisodeList from '../../components/episode_list'
+import { RequestState } from 'reducers/requests/utils'
 
 export interface StateToProps {
-  podcast: Podcast
-  episodes: Episode[]
+  reqState: RequestState
 }
 
 export interface DispatchToProps {
-  getPodcast: (id: string) => void
-  playEpisode: (episodeId: string) => void
+  loadPodcast: (id: string) => void
 }
 
 export interface OwnProps {
-  id: string
+  podcastId: string
+  preventInitialLoad: boolean
 }
 
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
@@ -23,22 +22,24 @@ interface Props extends StateToProps, DispatchToProps, OwnProps {}
 export default class PodcastPage extends Component<Props> {
   static async getInitialProps({ query }: PageContext) {
     const id = query['id'] as string
-    return { id }
+    return { podcastId: id, preventInitalLoad: false }
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (this.props.id != prevProps.id) {
-      this.props.getPodcast(this.props.id)
+    if (this.props.podcastId != prevProps.podcastId) {
+      this.props.loadPodcast(this.props.podcastId)
     }
   }
 
   componentDidMount() {
-    this.props.getPodcast(this.props.id)
+    if (!this.props.preventInitialLoad) {
+      this.props.loadPodcast(this.props.podcastId)
+    }
   }
 
   render() {
-    const { podcast, episodes, playEpisode } = this.props
-    if (!podcast) {
+    const { reqState, podcastId } = this.props
+    if (reqState.status == 'STARTED' || reqState.status == 'NOT_STARTED') {
       return (
         <>
           <div>Im Mr MeeSeeks Look at me</div>
@@ -47,15 +48,15 @@ export default class PodcastPage extends Component<Props> {
       )
     }
 
-    return (
-      <>
-        <PodcastDetails
-          title={podcast.title}
-          author={podcast.author}
-          description={podcast.description}
-        />
-        <EpisodeList episodes={episodes} playEpisode={playEpisode} />
-      </>
-    )
+    if (reqState.status == 'SUCCESS') {
+      return (
+        <>
+          <PodcastDetails podcastId={podcastId} />
+          <EpisodeList podcastId={podcastId} />
+        </>
+      )
+    }
+
+    return <></>
   }
 }

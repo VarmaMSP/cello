@@ -1,12 +1,21 @@
 import React from 'react'
-import ButtonWithIcon from './button_with_icon'
-import { Episode } from 'types/app'
-import * as Utils from './utils'
+import ButtonWithIcon from '../button_with_icon'
+import { Episode } from '../../types/app'
+import * as Utils from '../utils'
 
-interface Props {
+export interface StateToProps {
   episodes: Episode[]
+}
+
+export interface DispatchToProps {
   playEpisode: (episodeId: string) => void
 }
+
+export interface OwnProps {
+  podcastId: string
+}
+
+interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
 const EpisodeList: React.SFC<Props> = ({ episodes, playEpisode }) => {
   return (
