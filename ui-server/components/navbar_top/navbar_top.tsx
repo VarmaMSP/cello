@@ -5,16 +5,22 @@ import SearchBar from './components/search_bar'
 import SignInButton from './components/sign_in_button'
 import ButtonWithIcon from '../button_with_icon'
 
-interface Props {}
+export interface StateToProps {
+  searchText: string
+}
+
+export interface DispatchToProps {
+  searchTextChange: (text: string) => void
+}
+
+interface Props extends StateToProps, DispatchToProps {}
 
 interface State {
-  searchText: string
   showFullWidthSearchBar: boolean
 }
 
 export default class TopNavbar extends Component<Props, State> {
   state = {
-    searchText: '',
     showFullWidthSearchBar: false,
   }
 
@@ -25,16 +31,17 @@ export default class TopNavbar extends Component<Props, State> {
 
   handleSearchTextChange = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault()
-    this.setState({ searchText: e.currentTarget.value })
+    this.props.searchTextChange(e.currentTarget.value)
   }
 
   handleSearchTextSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('subbmited: ', this.state.searchText)
+    console.log('subbmited', this.props.searchText)
   }
 
   render() {
-    const { showFullWidthSearchBar, searchText } = this.state
+    const { searchText } = this.props
+    const { showFullWidthSearchBar } = this.state
 
     if (showFullWidthSearchBar) {
       return (
