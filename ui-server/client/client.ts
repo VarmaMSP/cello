@@ -7,6 +7,10 @@ export default class Client {
     return `${this.url}/podcasts`
   }
 
+  getResultsRoute(): string {
+    return `${this.url}/results`
+  }
+
   async doFetch(method: string, url: string, body?: object): Promise<any> {
     const request = new Request(url, {
       method,
@@ -42,6 +46,14 @@ export default class Client {
         ...e,
         podcastId: res.podcast.id,
       })),
+    }
+  }
+
+  async searchPodcasts(searchQuery: string): Promise<{ podcasts: Podcast[] }> {
+    const url = `${this.getResultsRoute()}?search_query=${searchQuery}`
+    const res = await this.doFetch('GET', url)
+    return {
+      podcasts: res.results,
     }
   }
 }

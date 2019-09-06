@@ -4,6 +4,7 @@ import FullWidthSearchBar from './components/search_bar_full_width'
 import SearchBar from './components/search_bar'
 import SignInButton from './components/sign_in_button'
 import ButtonWithIcon from '../button_with_icon'
+import Router from 'next/router'
 
 export interface StateToProps {
   searchText: string
@@ -36,7 +37,14 @@ export default class TopNavbar extends Component<Props, State> {
 
   handleSearchTextSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('subbmited', this.props.searchText)
+
+    const searchText = this.props.searchText.trim()
+    if (searchText.length > 0) {
+      Router.push({
+        pathname: '/results',
+        query: { search_query: searchText },
+      })
+    }
   }
 
   render() {

@@ -2,16 +2,23 @@ import Koa from 'koa'
 import Router from 'koa-router'
 import next from 'next'
 import bodyParser from 'koa-bodyparser'
-import { ParsedUrlQuery } from 'querystring'
 
 const app = next({ dev: process.env.NODE_ENV !== 'production' })
 const handle = app.getRequestHandler()
 const router = new Router()
 
 router.get('/podcasts/:podcastId', async (ctx) => {
-  const podcastId: string = ctx.params['podcastId']
-  const body: ParsedUrlQuery = ctx.request.body as any
-  await app.render(ctx.req, ctx.res, '/podcasts', <any>{ id: podcastId, body })
+  await app.render(ctx.req, ctx.res, '/podcasts', <any>{
+    id: ctx.params['podcastId'],
+    body: ctx.request.body,
+  })
+  ctx.respond = false
+})
+
+router.get('/results', async (ctx) => {
+  await app.render(ctx.req, ctx.res, '/results', <any>{
+    search_query: ctx.request.query['search_query'],
+  })
   ctx.respond = false
 })
 
@@ -22,9 +29,10 @@ router.get('*', async (ctx) => {
 
 const server = new Koa()
 
-server.use(bodyParser())
-server.use(router.routes())
-server.use(router.allowedMethods())
+server
+  .use(bodyParser())
+  .use(router.routes())
+  .use(router.allowedMethods())
 
 app.prepare().then(() => {
   const port = parseInt(process.env.PORT || '8081', 10)
