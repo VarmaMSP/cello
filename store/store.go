@@ -6,9 +6,9 @@ type Store interface {
 	Podcast() PodcastStore
 	Episode() EpisodeStore
 	Category() CategoryStore
+	Curation() CurationStore
 	ItunesMeta() ItunesMetaStore
 	JobSchedule() JobScheduleStore
-	PodcastCuration() PodcastCurationStore
 }
 
 type PodcastStore interface {
@@ -30,6 +30,13 @@ type CategoryStore interface {
 	SavePodcastCategory(category *model.PodcastCategory) *model.AppError
 }
 
+type CurationStore interface {
+	Save(curation *model.Curation) *model.AppError
+	SavePodcastCuration(item *model.PodcastCuration) *model.AppError
+	GetAll() ([]*model.Curation, *model.AppError)
+	GetPodcastsByCuration(curationId string, offset, limit int) ([]*model.PodcastInfo, *model.AppError)
+}
+
 type ItunesMetaStore interface {
 	Save(meta *model.ItunesMeta) *model.AppError
 	Update(old, new *model.ItunesMeta) *model.AppError
@@ -40,11 +47,4 @@ type JobScheduleStore interface {
 	GetAllActive() ([]*model.JobSchedule, *model.AppError)
 	Disable(jobName string) *model.AppError
 	SetRunAt(jobName string, runAt int64) *model.AppError
-}
-
-type PodcastCurationStore interface {
-	Save(curation *model.PodcastCuration) *model.AppError
-	GetAll() ([]*model.PodcastCuration, *model.AppError)
-	SaveItem(item *model.PodcastCurationItem) *model.AppError
-	GetPodcastsByCuration(curationId string, offset, limit int) ([]*model.PodcastInfo, *model.AppError)
 }

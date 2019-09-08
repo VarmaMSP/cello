@@ -21,7 +21,7 @@ type SqlStore interface {
 	Podcast() store.PodcastStore
 	Episode() store.EpisodeStore
 	Category() store.CategoryStore
+	Curation() store.CurationStore
 	ItunesMeta() store.ItunesMetaStore
 	JobSchedule() store.JobScheduleStore
-	PodcastCuration() store.PodcastCurationStore
 }
