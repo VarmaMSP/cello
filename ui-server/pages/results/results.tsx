@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { PageContext } from '../../types/utilities'
 import { RequestState } from '../../reducers/requests/utils'
 import SearchResults from '../../components/search_results'
+import LoadingPage from '../../components/loading_page'
 
 export interface StateToProps {
   reqState: RequestState
@@ -40,8 +41,9 @@ export default class ResultsPage extends Component<Props> {
     const { reqState } = this.props
 
     if (reqState.status == 'STARTED') {
-      return <>Loading</>
+      return <LoadingPage />
     }
+
     return <SearchResults searchQuery={this.props.searchQuery} />
   }
 }

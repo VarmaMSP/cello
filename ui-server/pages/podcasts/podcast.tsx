@@ -3,6 +3,7 @@ import { PageContext } from 'types/utilities'
 import PodcastDetails from '../../components/podcast_details'
 import EpisodeList from '../../components/episode_list'
 import { RequestState } from 'reducers/requests/utils'
+import LoadingPage from '../../components/loading_page'
 
 export interface StateToProps {
   reqState: RequestState
@@ -39,13 +40,9 @@ export default class PodcastPage extends Component<Props> {
 
   render() {
     const { reqState, podcastId } = this.props
+
     if (reqState.status == 'STARTED' || reqState.status == 'NOT_STARTED') {
-      return (
-        <>
-          <div>Im Mr MeeSeeks Look at me</div>
-          <div>Im Loading....</div>
-        </>
-      )
+      return <LoadingPage />
     }
 
     if (reqState.status == 'SUCCESS') {
