@@ -31,12 +31,10 @@ func (s *SqlItunesMetaStore) Save(meta *model.ItunesMeta) *model.AppError {
 }
 
 func (s *SqlItunesMetaStore) Update(old, new *model.ItunesMeta) *model.AppError {
-	sql, values := UpdateQuery("itunes_meta", old, new)
-	if len(values) == 0 {
+	sql, values, noChanges := UpdateQuery("itunes_meta", old, new, " WHERE itunes_id = ?", new.ItunesId)
+	if noChanges {
 		return nil
 	}
-	sql = sql + " WHERE itunes_id = ?"
-	values = append(values, new.ItunesId)
 
 	_, err := s.GetMaster().Exec(sql, values...)
 	if err != nil {

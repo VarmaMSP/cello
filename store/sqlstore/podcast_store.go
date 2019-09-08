@@ -84,12 +84,10 @@ func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) ([]
 }
 
 func (s *SqlPodcastStore) UpdateFeedDetails(old, new *model.PodcastFeedDetails) *model.AppError {
-	sql, values := UpdateQuery("podcast", old, new)
-	if len(values) == 0 {
+	sql, values, noChanges := UpdateQuery("podcast", old, new, " WHERE id = ?", new.Id)
+	if noChanges {
 		return nil
 	}
-	sql = sql + " WHERE id = ?"
-	values = append(values, new.Id)
 
 	_, err := s.GetMaster().Exec(sql, values...)
 	if err != nil {
