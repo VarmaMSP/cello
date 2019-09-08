@@ -64,14 +64,12 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 			goto update_meta
 		}
 
-		if podcastId, err := job.savePodcast(feed, meta.FeedUrl, headers); err != nil {
+		if err := job.savePodcast(feed, meta.FeedUrl, headers); err != nil {
 			metaU.AddedToDb = model.StatusFailure
 			metaU.Comment = err.Error()
 			goto update_meta
-		} else {
-			job.indexPodcast(podcastId, feed)
-			metaU.AddedToDb = model.StatusSuccess
 		}
+		metaU.AddedToDb = model.StatusSuccess
 
 	update_meta:
 		metaU.UpdatedAt = model.Now()
@@ -79,7 +77,7 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 	}()
 }
 
-func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers map[string]string) (string, *model.AppError) {
+func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers map[string]string) *model.AppError {
 	appErrorC := model.NewAppErrorC(
 		"jobs.podcast_import_job.save_podcast",
 		http.StatusInternalServerError,
@@ -93,12 +91,33 @@ func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers
 		FeedLastModified: headers[h.LastModified],
 	}
 	if err := podcast.LoadDetails(feed); err != nil {
-		return "", appErrorC(err.Error())
+		return appErrorC(err.Error())
 	}
 	podcast.SetRefershInterval(feed.Items)
 	if err := job.store.Podcast().Save(podcast); err != nil {
-		return "", appErrorC(err.Error())
+		return appErrorC(err.Error())
 	}
+
+	// Offload creation of podcast thumbnail
+	job.createThumbnailP.D <- map[string]string{
+		"id":        podcast.Id,
+		"image_src": podcast.ImagePath,
+		"type":      "PODCAST",
+	}
+
+	// Index podcast
+	job.esClient.Index().
+		Index(elasticsearch.PodcastIndexName).
+		Id(podcast.Id).
+		BodyJson(&model.PodcastInfo{
+			Id:          podcast.Id,
+			Title:       podcast.Title,
+			Author:      podcast.Author,
+			Description: podcast.Description,
+			Type:        podcast.Type,
+			Complete:    podcast.Complete,
+		}).
+		Do(context.TODO())
 
 	// Save Episodes
 	for _, item := range feed.Items {
@@ -130,26 +149,5 @@ func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers
 		}
 	}
 
-	job.createThumbnail(podcast.Id, podcast.ImagePath)
-
-	return podcast.Id, nil
-}
-
-func (job *ImportPodcastJob) indexPodcast(podcastId string, feed *rss.Feed) {
-	doc := &model.PodcastDocument{Id: podcastId}
-	doc.LoadDetails(feed)
-
-	job.esClient.Index().
-		Index(elasticsearch.PodcastIndexName).
-		Id(doc.Id).
-		BodyJson(doc).
-		Do(context.TODO())
-}
-
-func (job *ImportPodcastJob) createThumbnail(podcastId, imageSrc string) {
-	job.createThumbnailP.D <- map[string]string{
-		"id":        podcastId,
-		"image_src": imageSrc,
-		"type":      "PODCAST",
-	}
+	return nil
 }
