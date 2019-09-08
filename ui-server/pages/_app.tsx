@@ -28,7 +28,7 @@ export default withRedux(makeStore)(
       return (
         <Container>
           <Head>
-            <title>My new cool app</title>
+            <title>phenopod</title>
           </Head>
 
           <Provider store={store}>
