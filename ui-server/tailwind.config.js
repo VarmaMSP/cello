@@ -430,6 +430,12 @@ module.exports = {
         border: '4px',
         speed: '500ms',
       },
+      lg: {
+        color: theme('colors.gray.800', 'gray'),
+        size: '3em',
+        border: '5px',
+        speed: '600ms',
+      },
     }),
   },
   variants: {

@@ -38,12 +38,17 @@ export default class ResultsPage extends Component<Props> {
   }
 
   render() {
-    const { reqState } = this.props
+    const { reqState, searchQuery } = this.props
 
     if (reqState.status == 'STARTED') {
       return <LoadingPage />
     }
 
-    return <SearchResults searchQuery={this.props.searchQuery} />
+    return (
+      <div>
+        <div className="-mt-1 mb-5 text-gray-700 text-lg lg:text-xl">{`Podcasts matching "${searchQuery}"`}</div>
+        <SearchResults searchQuery={this.props.searchQuery} />
+      </div>
+    )
   }
 }
