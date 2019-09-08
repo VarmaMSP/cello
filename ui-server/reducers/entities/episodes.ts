@@ -1,6 +1,6 @@
-import { Episode } from '../../types/app'
-import { AppActions, RECEIVED_EPISODES } from '../../types/actions'
 import { combineReducers, Reducer } from 'redux'
+import { AppActions, RECEIVED_EPISODES } from 'types/actions'
+import { Episode } from 'types/app'
 
 const episodes: Reducer<{ [episodeId: string]: Episode }, AppActions> = (
   state = {},

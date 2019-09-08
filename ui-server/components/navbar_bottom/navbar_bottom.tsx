@@ -1,5 +1,5 @@
+import { iconMap } from 'components/icon'
 import React from 'react'
-import { iconMap } from '../icon'
 
 const NavbarBottom: React.SFC<{}> = () => {
   const IconExplore = iconMap['explore']

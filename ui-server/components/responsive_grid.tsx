@@ -1,8 +1,8 @@
 import React from 'react'
-import { ScreenWidth } from '../types/app'
-import { AppState } from '../store'
-import { getScreenWidth } from '../selectors/ui/screen'
 import { connect } from 'react-redux'
+import { getScreenWidth } from 'selectors/ui/screen'
+import { AppState } from 'store'
+import { ScreenWidth } from 'types/app'
 
 interface StateToProps {
   screenWidth: ScreenWidth

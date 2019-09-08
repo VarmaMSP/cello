@@ -1,11 +1,11 @@
+import { combineReducers, Reducer } from 'redux'
 import {
   AppActions,
+  GET_PODCAST_FAILURE,
   GET_PODCAST_REQUEST,
   GET_PODCAST_SUCCESS,
-  GET_PODCAST_FAILURE,
-} from '../../types/actions'
-import { combineReducers, Reducer } from 'redux'
-import { RequestState, initalRequestState } from './utils'
+} from 'types/actions'
+import { initalRequestState, RequestState } from './utils'
 
 const getPodcast: Reducer<RequestState, AppActions> = (
   state = initalRequestState(),

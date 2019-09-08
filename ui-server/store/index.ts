@@ -1,7 +1,7 @@
-import { applyMiddleware, createStore, compose } from 'redux'
+import rootReducer from 'reducers'
+import { applyMiddleware, compose, createStore } from 'redux'
 import thunk, { ThunkMiddleware } from 'redux-thunk'
 import { AppActions } from 'types/actions'
-import rootReducer from '../reducers'
 
 // NOTE: Do not export this as type
 // doing so will make the editor to show to entire AppState in suggestions

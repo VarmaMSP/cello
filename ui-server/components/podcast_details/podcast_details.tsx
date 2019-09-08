@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Shiitake from 'shiitake'
-import { Podcast } from '../../types/app'
+import { Podcast } from 'types/app'
 
 export interface StateToProps {
   podcast: Podcast

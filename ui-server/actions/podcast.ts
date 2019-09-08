@@ -1,15 +1,15 @@
+import client from 'client'
+import { Dispatch } from 'redux'
 import {
   AppActions,
   GET_PODCAST_REQUEST,
   GET_PODCAST_SUCCESS,
-  RECEIVED_PODCAST,
   RECEIVED_EPISODES,
+  RECEIVED_PODCAST,
+  RECEIVED_SEARCH_PODCASTS,
   SEARCH_PODCASTS_REQUEST,
   SEARCH_PODCASTS_SUCCESS,
-  RECEIVED_SEARCH_PODCASTS,
-} from '../types/actions'
-import { Dispatch } from 'redux'
-import client from '../client'
+} from 'types/actions'
 
 export const getPodcast = (podcastId: string) => {
   return async (dispatch: Dispatch<AppActions>) => {

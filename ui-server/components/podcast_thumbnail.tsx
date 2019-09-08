@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import { Podcast } from '../types/app'
-import Shiitake from 'shiitake'
 import Link from 'next/link'
+import React, { Component } from 'react'
+import Shiitake from 'shiitake'
+import { Podcast } from 'types/app'
 
 interface Props {
   podcast: Podcast

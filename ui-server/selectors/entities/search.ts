@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
-import { AppState } from '../../store'
-import { MapById, $Id } from '../../types/utilities'
-import { Podcast } from '../../types/app'
+import { AppState } from 'store'
+import { Podcast } from 'types/app'
+import { $Id, MapById } from 'types/utilities'
 import { getAllPodcasts } from './podcasts'
 
 export function getSearchResults() {

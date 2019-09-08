@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import AudioPlayerSmall from './audio_player_small'
-import AudioPlayerMedium from './audio_player_medium'
+import { AudioState, Episode, Podcast, ScreenWidth } from 'types/app'
 import AudioPlayerLarge from './audio_player_large'
-import { AudioState, Podcast, Episode, ScreenWidth } from '../../types/app'
+import AudioPlayerMedium from './audio_player_medium'
+import AudioPlayerSmall from './audio_player_small'
 
 export interface StateToProps {
   episodeId: string

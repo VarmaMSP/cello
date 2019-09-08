@@ -1,7 +1,7 @@
+import ButtonWithIcon from 'components/button_with_icon'
 import React from 'react'
 import Shiitake from 'shiitake'
-import ButtonWithIcon from '../button_with_icon'
-import { Episode } from '../../types/app'
+import { Episode } from 'types/app'
 import * as Utils from '../utils'
 
 export interface StateToProps {

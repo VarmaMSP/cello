@@ -1,8 +1,7 @@
+import PodcastThumbnail from 'components/podcast_thumbnail'
+import ResponsiveGrid from 'components/responsive_grid'
 import React, { Component } from 'react'
 import { Podcast } from 'types/app'
-// import Link from 'next/link'
-import ResponsiveGrid from '../responsive_grid'
-import PodcastThumbnail from '../../components/podcast_thumbnail'
 
 export interface StateToProps {
   podcasts: Podcast[]

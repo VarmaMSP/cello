@@ -1,7 +1,7 @@
-import PodcastDetails, { OwnProps, StateToProps } from './podcast_details'
-import { AppState } from '../../store'
-import { getPodcastById } from '../../selectors/entities/podcasts'
 import { connect } from 'react-redux'
+import { getPodcastById } from 'selectors/entities/podcasts'
+import { AppState } from 'store'
+import PodcastDetails, { OwnProps, StateToProps } from './podcast_details'
 
 function mapStateToProps(state: AppState, props: OwnProps) {
   return {

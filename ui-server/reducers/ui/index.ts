@@ -1,11 +1,11 @@
-import player from './player'
 import { combineReducers, Reducer } from 'redux'
-import { ScreenWidth } from '../../types/app'
 import {
   AppActions,
-  SET_SCREEN_WIDTH,
   SEARCH_BAR_TEXT_CHANGE,
-} from '../../types/actions'
+  SET_SCREEN_WIDTH,
+} from 'types/actions'
+import { ScreenWidth } from 'types/app'
+import player from './player'
 
 const screenWidth: Reducer<ScreenWidth, AppActions> = (
   state = 'LG',

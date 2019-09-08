@@ -1,4 +1,4 @@
-import { Podcast, Episode } from '../app'
+import { Episode, Podcast } from 'types/app'
 
 export const GET_PODCAST_REQUEST = 'GET_PODCAST_REQUEST'
 export const GET_PODCAST_SUCCESS = 'GET_PODCAST_SUCCESS'

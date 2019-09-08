@@ -1,8 +1,8 @@
+import LoadingPage from 'components/loading_page'
+import SearchResults from 'components/search_results'
 import React, { Component } from 'react'
-import { PageContext } from '../../types/utilities'
-import { RequestState } from '../../reducers/requests/utils'
-import SearchResults from '../../components/search_results'
-import LoadingPage from '../../components/loading_page'
+import { RequestState } from 'reducers/requests/utils'
+import { PageContext } from 'types/utilities'
 
 export interface StateToProps {
   reqState: RequestState

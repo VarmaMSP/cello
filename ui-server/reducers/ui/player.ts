@@ -1,10 +1,10 @@
+import { combineReducers, Reducer } from 'redux'
 import {
   AppActions,
+  PLAY_EPISODE,
   SET_AUDIO_STATE,
   TOGGLE_EXPAND_ON_MOBILE,
-  PLAY_EPISODE,
-} from '../../types/actions'
-import { combineReducers, Reducer } from 'redux'
+} from 'types/actions'
 import { AudioState } from 'types/app'
 
 const episode: Reducer<string, AppActions> = (state = '', action) => {

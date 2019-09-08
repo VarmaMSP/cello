@@ -1,9 +1,9 @@
-import { AppState } from 'store'
 import { createSelector } from 'reselect'
-import { MapById, $Id } from '../../types/utilities'
-import { Episode, Podcast } from '../../types/app'
-import { getAllEpisodes } from '../entities/episodes'
-import { getAllPodcasts } from '../entities/podcasts'
+import { getAllEpisodes } from 'selectors/entities/episodes'
+import { getAllPodcasts } from 'selectors/entities/podcasts'
+import { AppState } from 'store'
+import { Episode, Podcast } from 'types/app'
+import { $Id, MapById } from 'types/utilities'
 
 export function getPlayingEpisodeId(state: AppState) {
   return state.ui.player.episode

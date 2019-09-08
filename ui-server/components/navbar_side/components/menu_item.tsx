@@ -1,6 +1,6 @@
-import React from 'react'
 import classnames from 'classnames'
-import { Icon, iconMap } from '../../icon'
+import { Icon, iconMap } from 'components/icon'
+import React from 'react'
 
 interface Props {
   icon: Icon

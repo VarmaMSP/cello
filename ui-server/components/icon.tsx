@@ -1,4 +1,5 @@
 import React from 'react'
+
 export type Icon =
   | 'arrow-left'
   | 'cheveron-up'

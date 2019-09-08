@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import AppLogo from './components/app_logo'
-import FullWidthSearchBar from './components/search_bar_full_width'
-import SearchBar from './components/search_bar'
-import SignInButton from './components/sign_in_button'
-import ButtonWithIcon from '../button_with_icon'
 import Router from 'next/router'
+import React, { Component } from 'react'
+import ButtonWithIcon from '../button_with_icon'
+import AppLogo from './components/app_logo'
+import SearchBar from './components/search_bar'
+import FullWidthSearchBar from './components/search_bar_full_width'
+import SignInButton from './components/sign_in_button'
 
 export interface StateToProps {
   searchText: string

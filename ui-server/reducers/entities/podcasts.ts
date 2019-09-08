@@ -1,10 +1,10 @@
-import { Podcast } from '../../types/app'
+import { combineReducers, Reducer } from 'redux'
 import {
+  AppActions,
   RECEIVED_PODCAST,
   RECEIVED_SEARCH_PODCASTS,
-  AppActions,
-} from '../../types/actions'
-import { combineReducers, Reducer } from 'redux'
+} from 'types/actions'
+import { Podcast } from 'types/app'
 
 const podcasts: Reducer<{ [PodcastId: string]: Podcast }, AppActions> = (
   state = {},

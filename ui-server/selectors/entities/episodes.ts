@@ -1,7 +1,7 @@
-import { $Id, MapById } from 'types/utilities'
-import { Podcast, Episode } from 'types/app'
-import { AppState } from 'store'
 import { createSelector } from 'reselect'
+import { AppState } from 'store'
+import { Episode, Podcast } from 'types/app'
+import { $Id, MapById } from 'types/utilities'
 
 export function getAllEpisodes(state: AppState) {
   return state.entities.episodes.episodes

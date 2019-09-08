@@ -1,11 +1,11 @@
+import { combineReducers, Reducer } from 'redux'
 import {
   AppActions,
+  SEARCH_PODCASTS_FAILURE,
   SEARCH_PODCASTS_REQUEST,
   SEARCH_PODCASTS_SUCCESS,
-  SEARCH_PODCASTS_FAILURE,
-} from '../../types/actions'
-import { combineReducers, Reducer } from 'redux'
-import { RequestState, initalRequestState } from './utils'
+} from 'types/actions'
+import { initalRequestState, RequestState } from './utils'
 
 const searchPodcasts: Reducer<RequestState, AppActions> = (
   state = initalRequestState(),

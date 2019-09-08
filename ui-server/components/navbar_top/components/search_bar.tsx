@@ -1,6 +1,6 @@
-import React from 'react'
 import classnames from 'classnames'
-import ButtonWithIcon from '../../button_with_icon'
+import ButtonWithIcon from 'components/button_with_icon'
+import React from 'react'
 
 interface Props {
   searchText: string

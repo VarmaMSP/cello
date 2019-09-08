@@ -1,9 +1,9 @@
-import { AppState } from '../../store'
-import ResultsPage, { StateToProps, DispatchToProps, OwnProps } from './results'
-import { Dispatch, bindActionCreators } from 'redux'
-import { AppActions } from '../../types/actions'
-import { searchPodcasts } from '../../actions/podcast'
+import { searchPodcasts } from 'actions/podcast'
 import { connect } from 'react-redux'
+import { bindActionCreators, Dispatch } from 'redux'
+import { AppState } from 'store'
+import { AppActions } from 'types/actions'
+import ResultsPage, { DispatchToProps, OwnProps, StateToProps } from './results'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {

@@ -1,9 +1,9 @@
-import { AppState } from 'store'
-import EpisodeList, { StateToProps, OwnProps } from './episode_list'
-import { makeGetEpisodesInPodcast } from '../../selectors/entities/episodes'
-import { Dispatch } from 'redux'
-import { PLAY_EPISODE, AppActions } from '../../types/actions'
 import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import { makeGetEpisodesInPodcast } from 'selectors/entities/episodes'
+import { AppState } from 'store'
+import { AppActions, PLAY_EPISODE } from 'types/actions'
+import EpisodeList, { OwnProps, StateToProps } from './episode_list'
 
 function makeMapStateToProps() {
   const getEpisodesInPodcast = makeGetEpisodesInPodcast()

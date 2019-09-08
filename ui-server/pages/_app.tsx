@@ -1,16 +1,15 @@
-import '../styles/index.css'
-import NavBarTop from '../components/navbar_top'
-import AudioPlayer from '../components/audio_player'
-import NavbarSide from '../components/navbar_side/navbar_side'
-import MainContainer from '../components/main_container'
-import { makeStore } from '../store'
-import { AppContext, PageContext } from 'types/utilities'
-
+import AudioPlayer from 'components/audio_player'
+import MainContainer from 'components/main_container'
+import NavbarSide from 'components/navbar_side/navbar_side'
+import NavBarTop from 'components/navbar_top'
+import withRedux from 'next-redux-wrapper'
+import { AppProps, Container } from 'next/app'
+import Head from 'next/head'
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
-import { Container, AppProps } from 'next/app'
-import Head from 'next/head'
-import withRedux from 'next-redux-wrapper'
+import { makeStore } from 'store'
+import { AppContext, PageContext } from 'types/utilities'
+import '../styles/index.css'
 
 export default withRedux(makeStore)(
   class MyApp extends Component<AppProps & PageContext> {

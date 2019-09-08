@@ -1,8 +1,8 @@
-import { Dispatch, bindActionCreators } from 'redux'
-import { getPodcast } from '../../actions/podcast'
-import PodcastPage, { OwnProps, StateToProps, DispatchToProps } from './podcast'
+import { getPodcast } from 'actions/podcast'
 import { connect } from 'react-redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
+import PodcastPage, { DispatchToProps, OwnProps, StateToProps } from './podcast'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {

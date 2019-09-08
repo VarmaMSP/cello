@@ -1,4 +1,4 @@
-import { Podcast, Episode } from 'types/app'
+import { Episode, Podcast } from 'types/app'
 
 export default class Client {
   url: string = 'http://localhost:8080'

@@ -1,8 +1,8 @@
+import ButtonWithIcon from 'components/button_with_icon'
 import React from 'react'
-import ButtonWithIcon from '../button_with_icon'
+import { AudioState, Episode, Podcast } from 'types/app'
 import ActionButton from './components/action_button'
 import SeekBar from './components/seek_bar'
-import { AudioState, Podcast, Episode } from '../../types/app'
 
 interface Props {
   episode: Episode

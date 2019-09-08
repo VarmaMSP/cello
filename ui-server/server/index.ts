@@ -1,7 +1,7 @@
 import Koa from 'koa'
+import bodyParser from 'koa-bodyparser'
 import Router from 'koa-router'
 import next from 'next'
-import bodyParser from 'koa-bodyparser'
 
 const app = next({ dev: process.env.NODE_ENV !== 'production' })
 const handle = app.getRequestHandler()

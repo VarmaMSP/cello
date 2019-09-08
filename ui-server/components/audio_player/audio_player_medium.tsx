@@ -1,9 +1,9 @@
+import ButtonWithIcon from 'components/button_with_icon'
+import NavbarBottom from 'components/navbar_bottom'
 import React from 'react'
-import ButtonWithIcon from '../button_with_icon'
+import { AudioState, Episode, Podcast } from 'types/app'
 import ActionButton from './components/action_button'
-import NavbarBottom from '../navbar_bottom/navbar_bottom'
 import SeekBar from './components/seek_bar'
-import { AudioState, Podcast, Episode } from '../../types/app'
 
 interface Props {
   episode: Episode

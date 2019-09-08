@@ -1,7 +1,7 @@
-import ui from './ui'
+import { combineReducers } from 'redux'
 import entities from './entities'
 import requests from './requests'
-import { combineReducers } from 'redux'
+import ui from './ui'
 
 export default combineReducers({
   ui,

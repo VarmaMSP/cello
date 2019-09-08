@@ -1,6 +1,6 @@
+import classnames from 'classnames'
 import React from 'react'
 import { Icon, iconMap } from './icon'
-import classnames from 'classnames'
 
 interface Props {
   icon: Icon

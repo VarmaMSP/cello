@@ -1,5 +1,5 @@
-import { AppActions, RECEIVED_SEARCH_PODCASTS } from '../../types/actions'
-import { Reducer, combineReducers } from 'redux'
+import { combineReducers, Reducer } from 'redux'
+import { AppActions, RECEIVED_SEARCH_PODCASTS } from 'types/actions'
 
 const podcasts: Reducer<string[], AppActions> = (state = [], action) => {
   switch (action.type) {

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { ScreenWidth } from '../types/app'
-import { Dispatch } from 'redux'
-import { AppActions, SET_SCREEN_WIDTH } from '../types/actions'
 import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 import { AppState } from 'store'
+import { AppActions, SET_SCREEN_WIDTH } from 'types/actions'
+import { ScreenWidth } from 'types/app'
 
 interface DispatchToProps {
   setScreenWidth: (s: ScreenWidth) => void

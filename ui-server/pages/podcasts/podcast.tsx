@@ -1,9 +1,9 @@
+import EpisodeList from 'components/episode_list'
+import LoadingPage from 'components/loading_page'
+import PodcastDetails from 'components/podcast_details'
 import React, { Component } from 'react'
-import { PageContext } from 'types/utilities'
-import PodcastDetails from '../../components/podcast_details'
-import EpisodeList from '../../components/episode_list'
 import { RequestState } from 'reducers/requests/utils'
-import LoadingPage from '../../components/loading_page'
+import { PageContext } from 'types/utilities'
 
 export interface StateToProps {
   reqState: RequestState
