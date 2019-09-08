@@ -38,6 +38,11 @@ export default class TopNavbar extends Component<Props, State> {
   handleSearchTextSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
+    const { showFullWidthSearchBar } = this.state
+    if (showFullWidthSearchBar) {
+      this.setState({ showFullWidthSearchBar: false })
+    }
+
     const searchText = this.props.searchText.trim()
     if (searchText.length > 0) {
       Router.push({

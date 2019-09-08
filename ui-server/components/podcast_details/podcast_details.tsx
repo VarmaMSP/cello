@@ -13,7 +13,9 @@ export interface OwnProps {
 interface Props extends StateToProps, OwnProps {}
 
 const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
-  const [descLines, setDescLines] = useState(2)
+  const [descLineCount, setDescLineCount] = useState(2)
+  const toggleDescLineCount = () =>
+    setDescLineCount(descLineCount == 2 ? 100 : 2)
 
   return (
     <div className="flex mb-8">
@@ -22,17 +24,17 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
         src={`http://localhost:8080/img/${podcast.id}p-500x500.jpg`}
       />
       <div className="flex flex-col lg:px-5 px-3">
-        <h2 className="text-2xl text-gray-900">{podcast.title}</h2>
+        <h2 className="sm:text-xl text-2xl text-gray-900">{podcast.title}</h2>
         <h3 className="text-lg text-gray-800 leading-relaxed">
           {podcast.author}
         </h3>
         <Shiitake
-          lines={descLines}
+          lines={descLineCount}
           throttleRate={200}
           className="lg:block hidden mt-1 text-sm text-gray-800 "
           overflowNode={
             <span
-              onClick={() => setDescLines(descLines == 2 ? 1000 : 2)}
+              onClick={toggleDescLineCount}
               className="text-blue-700 cursor-pointer"
             >
               {` ...read more`}
