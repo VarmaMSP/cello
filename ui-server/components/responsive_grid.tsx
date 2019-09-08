@@ -16,7 +16,7 @@ interface OwnProps {
 interface Props extends StateToProps, OwnProps {}
 
 const ResponsiveGrid: React.SFC<Props> = (props) => {
-  const { children, screenWidth } = props
+  const { rows, children, screenWidth } = props
 
   let itemsPerRow = 2
   if (screenWidth === 'LG') {
@@ -27,9 +27,14 @@ const ResponsiveGrid: React.SFC<Props> = (props) => {
     itemsPerRow = 3
   }
 
-  let x: any[] = []
+  let placeholderCount = children.length % itemsPerRow
+  while (placeholderCount--) {
+    children.push(<div />)
+  }
+
+  let rowsJsx: JSX.Element[] = []
   for (let i = 0; i < children.length; i += itemsPerRow) {
-    x.push(
+    rowsJsx.push(
       <div className="flex justify-between mb-6">
         {children.slice(i, i + itemsPerRow).map((item) => (
           <div style={{ width: `${88 / itemsPerRow}%` }}>{item}</div>
@@ -38,7 +43,7 @@ const ResponsiveGrid: React.SFC<Props> = (props) => {
     )
   }
 
-  return <div>{x}</div>
+  return <div>{rowsJsx.slice(0, rows)}</div>
 }
 
 function mapStateToProps(state: AppState): StateToProps {
