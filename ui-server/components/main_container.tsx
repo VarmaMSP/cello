@@ -9,7 +9,13 @@ interface DispatchToProps {
   setScreenWidth: (s: ScreenWidth) => void
 }
 
-class Screen extends Component<DispatchToProps> {
+interface OwnProps {
+  children: JSX.Element | JSX.Element[]
+}
+
+interface Props extends DispatchToProps, OwnProps {}
+
+class Screen extends Component<Props> {
   componentDidMount() {
     window.addEventListener('resize', this.handleScreenResize)
     this.handleScreenResize()
@@ -27,7 +33,13 @@ class Screen extends Component<DispatchToProps> {
   }
 
   render() {
-    return <></>
+    const { children } = this.props
+
+    return (
+      <div className="lg:pl-56 pl-4 lg:pr-5 pr-4 pt-20 pb-64 z-0">
+        <div className="lg:pl-5 lg:pb-36">{children}</div>
+      </div>
+    )
   }
 }
 
