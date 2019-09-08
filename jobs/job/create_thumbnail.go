@@ -35,7 +35,7 @@ func NewCreateThumbnailJob(workerLimit int) (model.Job, error) {
 	return &CreateThumbnailJob{
 		storagePath: IMAGE_STORAGE_PATH,
 		httpClient: &http.Client{
-			Timeout: 90 * time.Second,
+			Timeout: 600 * time.Second,
 			Transport: &http.Transport{
 				MaxIdleConns:        workerLimit,
 				MaxIdleConnsPerHost: int(0.5 * float32(workerLimit)),
@@ -82,7 +82,7 @@ func (job *CreateThumbnailJob) saveThumbnailsForPodcast(id string, img image.Ima
 	if err != nil {
 		return err
 	}
-	if err := jpeg.Encode(imageMd, resize.Thumbnail(IMAGE_SIZE_MEDIUM, IMAGE_SIZE_MEDIUM, img, resize.Lanczos3), nil); err != nil {
+	if err := jpeg.Encode(imageMd, resize.Resize(IMAGE_SIZE_MEDIUM, IMAGE_SIZE_MEDIUM, img, resize.Lanczos3), nil); err != nil {
 		return err
 	}
 
