@@ -52,7 +52,7 @@ func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) ([]
 	sql := "SELECT " + strings.Join(m.DbColumns(), ",") + ` FROM podcast
 		WHERE refresh_enabled = 1 AND
 		      last_refresh_status <> 'PENDING' AND 
-			  next_refresh_at > ? AND
+			  next_refresh_at < ? AND
 			  created_at > ?
 		ORDER BY created_at LIMIT ?`
 

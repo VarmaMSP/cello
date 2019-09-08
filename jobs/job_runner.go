@@ -127,15 +127,15 @@ func NewJobRunner(store store.Store, producerConn, consumerConn *amqp.Connection
 	if err != nil {
 		return nil, err
 	}
-	importPodcastJob, err := job.NewImportPodcastJob(store, esClient, createThumbnailP, 10)
+	importPodcastJob, err := job.NewImportPodcastJob(store, esClient, createThumbnailP, qConfig.ImportPodcastQueue.WorkerLimit)
 	if err != nil {
 		return nil, err
 	}
-	refreshPodcastJob, err := job.NewRefreshPodcastJob(store, 10)
+	refreshPodcastJob, err := job.NewRefreshPodcastJob(store, qConfig.RefreshPodcastQueue.WorkerLimit)
 	if err != nil {
 		return nil, err
 	}
-	createThumbnailJob, err := job.NewCreateThumbnailJob(10)
+	createThumbnailJob, err := job.NewCreateThumbnailJob(qConfig.CreateThumbnailQueue.WorkerLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -175,6 +175,7 @@ func (r *JobRunner) Start() {
 		for d := range r.scheduledJobCallC.D {
 			var input map[string]string
 			if err := json.Unmarshal(d.Body, &input); err != nil {
+				d.Ack(false)
 				continue
 			}
 
