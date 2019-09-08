@@ -15,6 +15,7 @@ type SqlStore interface {
 	GetMaster() *sql.DB
 
 	Insert(tableName string, models []DbModel) (sql.Result, error)
+	UpdateChanges(tableName string, old, new DbModel, where string, values ...interface{}) (sql.Result, error)
 
 	Podcast() store.PodcastStore
 	Episode() store.EpisodeStore

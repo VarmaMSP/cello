@@ -8,13 +8,31 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func InsertQuery(tableName string, model DbModel, count int) string {
-	cols := model.DbColumns()
-	cols_ := "(" + strings.Join(cols, ",") + ")"
-	placeholder_ := "(" + strings.Join(Replicate("?", len(cols)), ",") + ")"
-	placeholders_ := strings.Join(Replicate(placeholder_, count), ",")
+func InsertQuery(
+	tableName string,
+	models []DbModel,
+) (sql string, insertValues []interface{}, noValues bool) {
+	if len(models) == 0 {
+		noValues = true
+		return
+	}
 
-	return "INSERT INTO " + tableName + cols_ + " VALUES " + placeholders_
+	// (col1, col2, col3)
+	cols := "(" + strings.Join(models[0].DbColumns(), ",") + ")"
+	// (?, ?, ?), (?, ?, ?)...
+	placeholders := strings.Join(
+		Replicate(
+			"("+strings.Join(Replicate("?", len(cols)), ",")+")",
+			len(models),
+		),
+		",",
+	)
+
+	sql = "INSERT INTO " + tableName + cols + " VALUES " + placeholders
+	for i := range models {
+		insertValues = append(insertValues, ValuesFromAddrs(models[i].FieldAddrs())...)
+	}
+	return
 }
 
 func UpdateQuery(
@@ -40,7 +58,7 @@ func UpdateQuery(
 		return
 	}
 
-	sql = "UPDATE " + tableName + " SET " + strings.Join(updates, ",") + " " + whereClause
+	sql = "UPDATE " + tableName + " SET " + strings.Join(updates, ",") + " WHERE " + whereClause
 	updateValues = append(updateValues, values...)
 	return
 }

@@ -84,12 +84,7 @@ func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) ([]
 }
 
 func (s *SqlPodcastStore) UpdateFeedDetails(old, new *model.PodcastFeedDetails) *model.AppError {
-	sql, values, noChanges := UpdateQuery("podcast", old, new, " WHERE id = ?", new.Id)
-	if noChanges {
-		return nil
-	}
-
-	_, err := s.GetMaster().Exec(sql, values...)
+	_, err := s.UpdateChanges("podcast", old, new, "id = ?", new.Id)
 	if err != nil {
 		return model.NewAppError(
 			"sqlstore.sql_podcast_store.update_feed_details",

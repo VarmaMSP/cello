@@ -48,19 +48,21 @@ func (s *SqlSupplier) GetMaster() *sql.DB {
 }
 
 func (s *SqlSupplier) Insert(tableName string, models []DbModel) (sql.Result, error) {
-	if len(models) == 0 {
+	query, insertValues, noValues := InsertQuery(tableName, models)
+	if noValues {
 		return nil, nil
 	}
 
-	query := InsertQuery(tableName, models[0], len(models))
-	values := make([]interface{}, 0)
-	for i := range models {
-		values = append(
-			values,
-			ValuesFromAddrs(models[i].FieldAddrs())...,
-		)
+	return s.db.Exec(query, insertValues...)
+}
+
+func (s *SqlSupplier) UpdateChanges(tableName string, old, new DbModel, where string, values ...interface{}) (sql.Result, error) {
+	query, updateValues, noChanges := UpdateQuery("itunes_meta", old, new, " WHERE itunes_id = ?", values)
+	if noChanges {
+		return nil, nil
 	}
-	return s.db.Exec(query, values...)
+
+	return s.db.Exec(query, updateValues...)
 }
 
 func (s *SqlSupplier) Podcast() store.PodcastStore {
