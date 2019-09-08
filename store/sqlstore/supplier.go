@@ -47,9 +47,8 @@ func (s *SqlSupplier) GetMaster() *sql.DB {
 	return s.db
 }
 
-func (s *SqlSupplier) Insert(models []DbModel, tableName string) (sql.Result, error) {
-	l := len(models)
-	if l == 0 {
+func (s *SqlSupplier) Insert(tableName string, models []DbModel) (sql.Result, error) {
+	if len(models) == 0 {
 		return nil, nil
 	}
 

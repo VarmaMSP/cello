@@ -19,7 +19,7 @@ func NewSqlCategoryStore(store SqlStore) store.CategoryStore {
 func (s *SqlCategoryStore) SavePodcastCategory(category *model.PodcastCategory) *model.AppError {
 	category.PreSave()
 
-	_, err := s.Insert([]DbModel{category}, "podcast_category")
+	_, err := s.Insert("podcast_category", []DbModel{category})
 	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_podcast_category_store.save",

@@ -14,7 +14,7 @@ type DbModel interface {
 type SqlStore interface {
 	GetMaster() *sql.DB
 
-	Insert(models []DbModel, tableName string) (sql.Result, error)
+	Insert(tableName string, models []DbModel) (sql.Result, error)
 
 	Podcast() store.PodcastStore
 	Episode() store.EpisodeStore

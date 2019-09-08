@@ -18,7 +18,7 @@ func NewSqlItunesMetaStore(store SqlStore) *SqlItunesMetaStore {
 func (s *SqlItunesMetaStore) Save(meta *model.ItunesMeta) *model.AppError {
 	meta.PreSave()
 
-	_, err := s.Insert([]DbModel{meta}, "itunes_meta")
+	_, err := s.Insert("itunes_meta", []DbModel{meta})
 	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_itunes_meta_store.save",

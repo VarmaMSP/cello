@@ -36,7 +36,7 @@ func TestUpdateQuery(t *testing.T) {
 	y := *x
 	y.x = "varma"
 	y.y = "pavan"
-	actual, values := UpdateQuery("test", x, &y)
+	actual, values, _ := UpdateQuery("test", x, &y, "")
 	expected := "UPDATE test SET x = ?,y = ?"
 
 	p, _ := values[0].(string)

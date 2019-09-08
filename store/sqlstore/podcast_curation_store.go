@@ -18,7 +18,7 @@ func NewSqlPodcastCurationStore(store SqlStore) *SqlPodcastCurationStore {
 func (s *SqlPodcastCurationStore) Save(curation *model.PodcastCuration) *model.AppError {
 	curation.PreSave()
 
-	_, err := s.Insert([]DbModel{curation}, "podcast_curation")
+	_, err := s.Insert("podcast_curation", []DbModel{curation})
 	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_podcast_curation_store.save",
@@ -33,7 +33,7 @@ func (s *SqlPodcastCurationStore) Save(curation *model.PodcastCuration) *model.A
 func (s *SqlPodcastCurationStore) SaveItem(item *model.PodcastCurationItem) *model.AppError {
 	item.PreSave()
 
-	_, err := s.Insert([]DbModel{item}, "podcast_curation_item")
+	_, err := s.Insert("podcast_curation_item", []DbModel{item})
 	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_podcast_curation_store.save_item",

@@ -32,6 +32,12 @@ func (s *SqlJobScheduleStore) GetAllActive() ([]*model.JobSchedule, *model.AppEr
 	defer rows.Close()
 
 	var res []*model.JobSchedule
+	// newItem := func() []interface{} {
+	// 	tmp := &model.JobSchedule{}
+	// 	res = append(res, tmp)
+	// 	return tmp.FieldAddrs()
+	// }
+
 	for rows.Next() {
 		tmp := &model.JobSchedule{}
 		if err := rows.Scan(tmp.FieldAddrs()...); err != nil {
