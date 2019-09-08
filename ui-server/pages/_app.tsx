@@ -10,6 +10,7 @@ import { AppContext, PageContext } from 'types/utilities'
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import { Container, AppProps } from 'next/app'
+import Head from 'next/head'
 import withRedux from 'next-redux-wrapper'
 
 export default withRedux(makeStore)(
@@ -26,6 +27,10 @@ export default withRedux(makeStore)(
       const { Component, pageProps, store } = this.props
       return (
         <Container>
+          <Head>
+            <title>My new cool app</title>
+          </Head>
+
           <Provider store={store}>
             <NavBarTop />
             <NavbarSide />
