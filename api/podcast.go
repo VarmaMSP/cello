@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/olivere/elastic"
 	"github.com/varmamsp/cello/model"
 )
@@ -17,8 +16,8 @@ func (api *Api) RegisterPodcastHandlers() {
 	api.router.Handler("GET", "/podcasts/:podcastId", api.NewHandler(GetPodcast))
 }
 
-func GetPodcast(c *Context, w http.ResponseWriter, req *http.Request) {
-	podcastId := httprouter.ParamsFromContext(req.Context()).ByName("podcastId")
+func GetPodcast(c *Context, w http.ResponseWriter) {
+	podcastId := c.Param("podcastId")
 	podcast, err := c.store.Podcast().GetInfo(podcastId)
 	if err != nil {
 		c.err = err
@@ -51,8 +50,8 @@ func GetPodcast(c *Context, w http.ResponseWriter, req *http.Request) {
 	// io.Copy(w, body)
 }
 
-func SearchPodcasts(c *Context, w http.ResponseWriter, req *http.Request) {
-	searchQuery := req.URL.Query().Get("search_query")
+func SearchPodcasts(c *Context, w http.ResponseWriter) {
+	searchQuery := c.Query("search_query")
 	searchResult, err := c.esClient.Search().
 		Index("podcast").
 		Query(elastic.NewMultiMatchQuery(searchQuery, "title", "author", "description")).
