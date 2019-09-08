@@ -24,12 +24,6 @@ const nextConfig = {
   distDir: 'next',
   generateEtags: false,
   poweredByHeader: false,
-  webpack: (config) => {
-    // Resolve imports from project root
-    config.resolve.modules.push(path.resolve('./'))
-
-    return config
-  },
 }
 
 module.exports = withPlugins(
