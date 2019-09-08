@@ -2,7 +2,7 @@ import React from 'react'
 import ButtonWithIcon from '../button_with_icon'
 import ActionButton from './components/action_button'
 import NavbarBottom from '../navbar_bottom/navbar_bottom'
-import ProgressBar from './components/progress_bar'
+import SeekBar from './components/seek_bar'
 import { AudioState, Podcast, Episode } from '../../types/app'
 
 interface Props {
@@ -56,7 +56,7 @@ const AudioPlayerMedium: React.SFC<Props> = (props) => {
           </div>
         </div>
         <div className="w-full">
-          <ProgressBar
+          <SeekBar
             currentTime={currentTime}
             duration={duration}
             handleSeek={handleSeek}

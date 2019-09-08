@@ -18,7 +18,7 @@ interface State {
   sliderPosition: number
 }
 
-export default class ProgressBar extends Component<Props, State> {
+export default class SeekBar extends Component<Props, State> {
   state = {
     seeking: false,
     firstRender: true,

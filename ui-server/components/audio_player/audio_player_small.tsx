@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ButtonWithIcon from '../button_with_icon'
 import ActionButton from './components/action_button'
 import NavbarBottom from '../navbar_bottom/navbar_bottom'
-import ProgressBar from './components/progress_bar'
+import SeekBar from './components/seek_bar'
 import { AudioState, Podcast, Episode } from '../../types/app'
 
 interface Props {
@@ -121,7 +121,7 @@ export default class AudioPlayerSmall extends Component<Props> {
           />
         </section>
         <section className="px-4">
-          <ProgressBar
+          <SeekBar
             currentTime={currentTime}
             duration={duration}
             handleSeek={handleSeek}

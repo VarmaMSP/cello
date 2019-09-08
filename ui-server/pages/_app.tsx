@@ -2,7 +2,7 @@ import '../styles/index.css'
 import NavBarTop from '../components/navbar_top'
 import AudioPlayer from '../components/audio_player'
 import NavbarSide from '../components/navbar_side/navbar_side'
-import MainContainer from 'components/main_container'
+import MainContainer from '../components/main_container'
 import { makeStore } from '../store'
 import { AppContext, PageContext } from 'types/utilities'
 
