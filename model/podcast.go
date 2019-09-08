@@ -5,6 +5,7 @@ import (
 	"sort"
 	"time"
 
+	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/rs/xid"
 )
@@ -311,6 +312,7 @@ func (p *Podcast) PreSave() {
 	if len(p.Description) > MYSQL_BLOB_MAX_SIZE {
 		p.Description = p.Description[0:MYSQL_BLOB_MAX_SIZE]
 	}
+	p.Description = strip.StripTags(p.Description)
 
 	if !IsValidHttpUrl(p.ImagePath) {
 		p.ImagePath = ""
