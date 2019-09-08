@@ -9,6 +9,7 @@ export type Icon =
   | 'heart'
   | 'pause'
   | 'play'
+  | 'play-outline'
   | 'search'
   | 'user-solid-circle'
 
@@ -64,6 +65,12 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
   play: (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M4 4l12 6-12 6z" />
+    </svg>
+  ),
+
+  'play-outline': (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M2.93 17.07A10 10 0 1117.07 2.93 10 10 0 012.93 17.07zm12.73-1.41A8 8 0 104.34 4.34a8 8 0 0011.32 11.32zM7 6l8 4-8 4V6z" />
     </svg>
   ),
 

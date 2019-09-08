@@ -39,8 +39,8 @@ const EpisodeList: React.SFC<Props> = ({ episodes, playEpisode }) => {
               </span>
             </div>
             <ButtonWithIcon
-              className="w-5"
-              icon="play"
+              className="w-6 ml-2 text-gray-700"
+              icon="play-outline"
               onClick={() => playEpisode(id)}
             />
           </div>

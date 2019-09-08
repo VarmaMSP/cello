@@ -24,8 +24,8 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
         src={`http://localhost:8080/img/${podcast.id}p-500x500.jpg`}
       />
       <div className="flex flex-col lg:px-5 px-3">
-        <h2 className="sm:text-xl text-2xl text-gray-900">{podcast.title}</h2>
-        <h3 className="text-lg text-gray-800 leading-relaxed">
+        <h2 className="md:text-2xl text-lg text-gray-900">{podcast.title}</h2>
+        <h3 className="md:text-lg text-base text-gray-800 leading-relaxed">
           {podcast.author}
         </h3>
         <Shiitake
