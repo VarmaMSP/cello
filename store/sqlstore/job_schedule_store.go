@@ -16,37 +16,20 @@ func NewSqlJobScheduleStore(store SqlStore) *SqlJobScheduleStore {
 }
 
 func (s *SqlJobScheduleStore) GetAllActive() ([]*model.JobSchedule, *model.AppError) {
-	m := &model.JobSchedule{}
-	sql := "SELECT " + strings.Join(m.DbColumns(), ",") + " FROM job_schedule WHERE is_active = 1"
-
-	appErrorC := model.NewAppErrorC(
-		"sqlstore.sql_job_spec_store.get_all_active",
-		http.StatusInternalServerError,
-		nil,
-	)
-
-	rows, err := s.GetMaster().Query(sql)
-	if err != nil {
-		return nil, appErrorC(err.Error())
-	}
-	defer rows.Close()
+	sql := "SELECT " + strings.Join((&model.JobSchedule{}).DbColumns(), ",") + " FROM job_schedule WHERE is_active = 1"
 
 	var res []*model.JobSchedule
-	// newItem := func() []interface{} {
-	// 	tmp := &model.JobSchedule{}
-	// 	res = append(res, tmp)
-	// 	return tmp.FieldAddrs()
-	// }
-
-	for rows.Next() {
+	newItemFields := func() []interface{} {
 		tmp := &model.JobSchedule{}
-		if err := rows.Scan(tmp.FieldAddrs()...); err != nil {
-			return nil, appErrorC(err.Error())
-		}
 		res = append(res, tmp)
+		return tmp.FieldAddrs()
 	}
-	if err := rows.Err(); err != nil {
-		return nil, appErrorC(err.Error())
+
+	if err := s.QueryRows(newItemFields, sql); err != nil {
+		return nil, model.NewAppError(
+			"sqlstore.sql_job_spec_store.get_all_active", err.Error(), http.StatusInternalServerError,
+			nil,
+		)
 	}
 	return res, nil
 }
@@ -54,12 +37,9 @@ func (s *SqlJobScheduleStore) GetAllActive() ([]*model.JobSchedule, *model.AppEr
 func (s *SqlJobScheduleStore) Disable(jobName string) *model.AppError {
 	sql := `UPDATE job_schedule SET is_active = 0, updated_at = ? WHERE job_name = ?`
 
-	_, err := s.GetMaster().Exec(sql, model.Now(), jobName)
-	if err != nil {
+	if _, err := s.GetMaster().Exec(sql, model.Now(), jobName); err != nil {
 		return model.NewAppError(
-			"sqlstore.sql_job_schedule_store.disable",
-			err.Error(),
-			http.StatusInternalServerError,
+			"sqlstore.sql_job_schedule_store.disable", err.Error(), http.StatusInternalServerError,
 			map[string]string{"job_name": jobName},
 		)
 	}
@@ -69,12 +49,9 @@ func (s *SqlJobScheduleStore) Disable(jobName string) *model.AppError {
 func (s *SqlJobScheduleStore) SetRunAt(jobName string, runAt int64) *model.AppError {
 	sql := `UPDATE job_schedule SET run_at = ?, updated_at = ? WHERE job_name = ?`
 
-	_, err := s.GetMaster().Exec(sql, runAt, model.Now(), jobName)
-	if err != nil {
+	if _, err := s.GetMaster().Exec(sql, runAt, model.Now(), jobName); err != nil {
 		return model.NewAppError(
-			"sqlstore.sql_job_schedule_store.set_run_at",
-			err.Error(),
-			http.StatusInternalServerError,
+			"sqlstore.sql_job_schedule_store.set_run_at", err.Error(), http.StatusInternalServerError,
 			map[string]string{"job_name": jobName},
 		)
 	}

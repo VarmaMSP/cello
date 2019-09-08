@@ -19,12 +19,9 @@ func NewSqlPodcastStore(store SqlStore) store.PodcastStore {
 func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 	podcast.PreSave()
 
-	_, err := s.Insert("podcast", []DbModel{podcast})
-	if err != nil {
+	if _, err := s.Insert("podcast", []DbModel{podcast}); err != nil {
 		return model.NewAppError(
-			"store.sqlstore.sql_podcast_store.save",
-			err.Error(),
-			http.StatusInternalServerError,
+			"store.sqlstore.sql_podcast_store.save", err.Error(), http.StatusInternalServerError,
 			map[string]string{"title": podcast.Title, "feed_url": podcast.FeedUrl},
 		)
 	}
@@ -35,12 +32,9 @@ func (s *SqlPodcastStore) GetInfo(podcastId string) (*model.PodcastInfo, *model.
 	info := &model.PodcastInfo{}
 	sql := "SELECT " + strings.Join(info.DbColumns(), ",") + " FROM podcast WHERE id = ?"
 
-	err := s.GetMaster().QueryRow(sql, podcastId).Scan(info.FieldAddrs()...)
-	if err != nil {
+	if err := s.GetMaster().QueryRow(sql, podcastId).Scan(info.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
-			"store.sqlstore.sql_podcast_store.get_info",
-			err.Error(),
-			http.StatusInternalServerError,
+			"store.sqlstore.sql_podcast_store.get_info", err.Error(), http.StatusInternalServerError,
 			map[string]string{"id": podcastId},
 		)
 	}
@@ -48,48 +42,34 @@ func (s *SqlPodcastStore) GetInfo(podcastId string) (*model.PodcastInfo, *model.
 }
 
 func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) ([]*model.PodcastFeedDetails, *model.AppError) {
-	m := &model.PodcastFeedDetails{}
-	sql := "SELECT " + strings.Join(m.DbColumns(), ",") + ` FROM podcast
+	sql := "SELECT " + strings.Join((&model.PodcastFeedDetails{}).DbColumns(), ",") + ` FROM podcast
 		WHERE refresh_enabled = 1 AND
 		      last_refresh_status <> 'PENDING' AND 
 			  next_refresh_at < ? AND
 			  created_at > ?
 		ORDER BY created_at LIMIT ?`
 
-	appErrorC := model.NewAppErrorC(
-		"sqlstore.sql_podcast_store.get_all_to_be_refreshed",
-		http.StatusInternalServerError,
-		nil,
-	)
-
-	rows, err := s.GetMaster().Query(sql, model.Now(), createdAfter, limit)
-	if err != nil {
-		return nil, appErrorC(err.Error())
-	}
-	defer rows.Close()
-
 	var res []*model.PodcastFeedDetails
-	for rows.Next() {
+	newItemFields := func() []interface{} {
 		tmp := &model.PodcastFeedDetails{}
-		if err := rows.Scan(tmp.FieldAddrs()...); err != nil {
-			return nil, appErrorC(err.Error())
-		}
 		res = append(res, tmp)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, appErrorC(err.Error())
+		return tmp.FieldAddrs()
 	}
 
+	if err := s.QueryRows(newItemFields, sql, model.Now(), createdAfter, limit); err != nil {
+		return nil, model.NewAppError(
+			"sqlstore.sql_podcast_store.get_all_to_be_refreshed", err.Error(), http.StatusInternalServerError,
+			nil,
+		)
+	}
 	return res, nil
 }
 
 func (s *SqlPodcastStore) UpdateFeedDetails(old, new *model.PodcastFeedDetails) *model.AppError {
-	_, err := s.UpdateChanges("podcast", old, new, "id = ?", new.Id)
-	if err != nil {
+
+	if _, err := s.UpdateChanges("podcast", old, new, "id = ?", new.Id); err != nil {
 		return model.NewAppError(
-			"sqlstore.sql_podcast_store.update_feed_details",
-			err.Error(),
-			http.StatusInternalServerError,
+			"sqlstore.sql_podcast_store.update_feed_details", err.Error(), http.StatusInternalServerError,
 			nil,
 		)
 	}

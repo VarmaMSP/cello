@@ -16,6 +16,7 @@ type SqlStore interface {
 
 	Insert(tableName string, models []DbModel) (sql.Result, error)
 	UpdateChanges(tableName string, old, new DbModel, where string, values ...interface{}) (sql.Result, error)
+	QueryRows(newItemFields func() []interface{}, sql string, values ...interface{}) error
 
 	Podcast() store.PodcastStore
 	Episode() store.EpisodeStore

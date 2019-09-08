@@ -65,6 +65,23 @@ func (s *SqlSupplier) UpdateChanges(tableName string, old, new DbModel, where st
 	return s.db.Exec(query, updateValues...)
 }
 
+func (s *SqlSupplier) QueryRows(newItemFields func() []interface{}, sql string, values ...interface{}) error {
+	rows, err := s.db.Query(sql, values...)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		if err := rows.Scan(newItemFields()...); err != nil {
+			return err
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s *SqlSupplier) Podcast() store.PodcastStore {
 	return s.podcast
 }
