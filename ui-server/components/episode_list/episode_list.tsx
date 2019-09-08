@@ -28,7 +28,7 @@ const EpisodeList: React.SFC<Props> = ({ episodes, playEpisode }) => {
               <Shiitake
                 lines={2}
                 throttleRate={200}
-                className="sm:text-sm text-base tracking-wide leading-relaxed"
+                className="md:text-base text-sm tracking-wide leading-relaxed"
               >
                 {title}
               </Shiitake>
