@@ -35,9 +35,11 @@ const ResponsiveGrid: React.SFC<Props> = (props) => {
   let rowsJsx: JSX.Element[] = []
   for (let i = 0; i < children.length; i += itemsPerRow) {
     rowsJsx.push(
-      <div className="flex justify-between mb-6">
-        {children.slice(i, i + itemsPerRow).map((item) => (
-          <div style={{ width: `${88 / itemsPerRow}%` }}>{item}</div>
+      <div key={i + itemsPerRow} className="flex justify-between mb-6">
+        {children.slice(i, i + itemsPerRow).map((item, j) => (
+          <div key={j} style={{ width: `${88 / itemsPerRow}%` }}>
+            {item}
+          </div>
         ))}
       </div>,
     )

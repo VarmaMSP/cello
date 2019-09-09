@@ -19,7 +19,7 @@ export default class SearchResults extends Component<Props> {
     return (
       <ResponsiveGrid rows={-1}>
         {podcasts.map((podcast) => (
-          <PodcastThumbnail podcast={podcast} />
+          <PodcastThumbnail key={podcast.id} podcast={podcast} />
         ))}
       </ResponsiveGrid>
     )

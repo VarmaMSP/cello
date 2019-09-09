@@ -39,7 +39,7 @@ const EpisodeList: React.SFC<Props> = ({ episodes, playEpisode }) => {
               </span>
             </div>
             <ButtonWithIcon
-              className="flex-none w-6 ml-2 text-gray-700"
+              className="flex-none w-8 ml-2 text-gray-700"
               icon="play-outline"
               onClick={() => playEpisode(id)}
             />
