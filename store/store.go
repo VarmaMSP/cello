@@ -33,8 +33,10 @@ type CategoryStore interface {
 type CurationStore interface {
 	Save(curation *model.Curation) *model.AppError
 	SavePodcastCuration(item *model.PodcastCuration) *model.AppError
+	Get(curationId string) (*model.Curation, *model.AppError)
 	GetAll() ([]*model.Curation, *model.AppError)
 	GetPodcastsByCuration(curationId string, offset, limit int) ([]*model.PodcastInfo, *model.AppError)
+	Delete(curationId string) *model.AppError
 }
 
 type ItunesMetaStore interface {

@@ -33,6 +33,7 @@ func NewApi(store store.Store, client *elastic.Client) *Api {
 
 	api.RegisterStatichandlers()
 	api.RegisterPodcastHandlers()
+	api.RegisterCurationRoutes()
 
 	return api
 }

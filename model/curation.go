@@ -9,8 +9,9 @@ type Curation struct {
 }
 
 type PodcastCuration struct {
-	CurationId string
+	Id         string
 	PodcastId  string
+	CurationId string
 	CreatedAt  int64
 }
 
@@ -29,14 +30,14 @@ func (cur *Curation) FieldAddrs() []interface{} {
 
 func (pCur *PodcastCuration) DbColumns() []string {
 	return []string{
-		"curation_id", "podcast_id", "created_at", "updated_at",
+		"id", "podcast_id", "curation_id", "created_at",
 	}
 }
 
 func (pCur *PodcastCuration) FieldAddrs() []interface{} {
 	var i []interface{}
 	return append(i,
-		&pCur.CurationId, &pCur.PodcastId, &pCur.CreatedAt,
+		&pCur.Id, &pCur.PodcastId, &pCur.CurationId, &pCur.CreatedAt,
 	)
 }
 
@@ -51,6 +52,10 @@ func (cur *Curation) PreSave() {
 }
 
 func (pCur *PodcastCuration) PreSave() {
+	if pCur.Id == "" {
+		pCur.Id = xid.New().String()
+	}
+
 	if pCur.CreatedAt == 0 {
 		pCur.CreatedAt = Now()
 	}

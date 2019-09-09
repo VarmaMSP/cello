@@ -41,25 +41,24 @@ func (s *SqlEpisodeStore) GetInfo(id string) (*model.EpisodeInfo, *model.AppErro
 	return info, nil
 }
 
-func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) ([]*model.EpisodeInfo, *model.AppError) {
+func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) (res []*model.EpisodeInfo, appE *model.AppError) {
 	sql := "SELECT " + strings.Join((&model.EpisodeInfo{}).DbColumns(), ",") + ` FROM episode
 		WHERE podcast_id = ?
 		ORDER BY pub_date DESC`
 
-	var res []*model.EpisodeInfo
-	newItemFields := func() []interface{} {
+	copyTo := func() []interface{} {
 		tmp := &model.EpisodeInfo{}
 		res = append(res, tmp)
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.QueryRows(newItemFields, sql, podcastId); err != nil {
-		return nil, model.NewAppError(
+	if err := s.QueryRows(copyTo, sql, podcastId); err != nil {
+		appE = model.NewAppError(
 			"store.sqlstore.sql_episode_store.get_all_by_podcast", err.Error(), http.StatusInternalServerError,
 			map[string]string{"podcast_id": podcastId},
 		)
 	}
-	return res, nil
+	return
 }
 
 func (s *SqlEpisodeStore) GetAllGuidsByPodcast(podcastId string) ([]string, *model.AppError) {

@@ -41,6 +41,19 @@ func (s *SqlCurationStore) SavePodcastCuration(item *model.PodcastCuration) *mod
 	return nil
 }
 
+func (s *SqlCurationStore) Get(curationId string) (*model.Curation, *model.AppError) {
+	curation := &model.Curation{}
+	sql := "SELECT " + strings.Join((&model.Curation{}).DbColumns(), ",") + " FROM curation WHERE id = ?"
+
+	if err := s.GetMaster().QueryRow(sql, curationId).Scan(curation.FieldAddrs()...); err != nil {
+		return nil, model.NewAppError(
+			"store.sqlstore.sql_curation_store.get", err.Error(), http.StatusInternalServerError,
+			map[string]string{"curation_id": curationId},
+		)
+	}
+	return curation, nil
+}
+
 func (s *SqlCurationStore) GetAll() ([]*model.Curation, *model.AppError) {
 	cols := strings.Join((&model.Curation{}).DbColumns(), ",")
 	sql := "SELECT " + cols + " FROM curation ORDER BY created_at DESC"
@@ -61,14 +74,13 @@ func (s *SqlCurationStore) GetAll() ([]*model.Curation, *model.AppError) {
 	return res, nil
 }
 
-func (s *SqlCurationStore) GetPodcastsByCuration(curationId string, offset, limit int) ([]*model.PodcastInfo, *model.AppError) {
+func (s *SqlCurationStore) GetPodcastsByCuration(curationId string, offset, limit int) (res []*model.PodcastInfo, appE *model.AppError) {
 	cols := strings.Join(DbColumnsWithPrefix(&model.PodcastInfo{}, "podcast"), ",")
-	sql := "SELECT " + cols + ` FROM podcast_curation
-		INNER JOIN podcast ON podcast.id = podcast_curation.podcast_id
+	sql := "SELECT " + cols + ` FROM podcast
+		INNER JOIN podcast_curation ON podcast_curation.podcast_id = podcast.id
 		WHERE podcast_curation.curation_id = ? 
 		LIMIT ?, ?`
 
-	var res []*model.PodcastInfo
 	newItemFields := func() []interface{} {
 		tmp := &model.PodcastInfo{}
 		res = append(res, tmp)
@@ -76,10 +88,22 @@ func (s *SqlCurationStore) GetPodcastsByCuration(curationId string, offset, limi
 	}
 
 	if err := s.QueryRows(newItemFields, sql, curationId, offset, limit); err != nil {
-		return nil, model.NewAppError(
+		appE = model.NewAppError(
 			"sqlstore.sql_curation_store.get_podcast_by_curation", err.Error(), http.StatusInternalServerError,
 			map[string]string{"curation_id": curationId},
 		)
 	}
-	return res, nil
+	return
+}
+
+func (s *SqlCurationStore) Delete(curationId string) *model.AppError {
+	sql := "DELETE FROM curation WHERE id = ?"
+
+	if _, err := s.GetMaster().Exec(sql, curationId); err != nil {
+		return model.NewAppError(
+			"sqlstore.sql_curation_store.delete", err.Error(), http.StatusInternalServerError,
+			map[string]string{"curation_id": curationId},
+		)
+	}
+	return nil
 }

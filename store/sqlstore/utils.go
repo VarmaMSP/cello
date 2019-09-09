@@ -22,7 +22,7 @@ func InsertQuery(
 	// (?, ?, ?), (?, ?, ?)...
 	placeholders := strings.Join(
 		Replicate(
-			"("+strings.Join(Replicate("?", len(cols)), ",")+")",
+			"("+strings.Join(Replicate("?", len(models[0].DbColumns())), ",")+")",
 			len(models),
 		),
 		",",

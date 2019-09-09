@@ -1,6 +1,7 @@
 package api
 
 import (
+	"io/ioutil"
 	"net/http"
 
 	"github.com/go-http-utils/headers"
@@ -27,6 +28,15 @@ func (c *Context) Param(key string) string {
 	return httprouter.ParamsFromContext(c.req.Context()).ByName(key)
 }
 
+func (c *Context) Body() (m map[string]string) {
+	b, err := ioutil.ReadAll(c.req.Body)
+	if err == nil {
+		c.req.Body.Close()
+		m = model.MapFromJson(b)
+	}
+	return
+}
+
 type Handler struct {
 	store    store.Store
 	esClient *elastic.Client
@@ -50,6 +60,11 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	h.handleFunc(c, w)
+
+	if c.err != nil {
+		w.WriteHeader(c.err.StatusCode)
+		w.Write([]byte(c.err.Error()))
+	}
 }
 
 func (api *Api) NewHandler(h func(*Context, http.ResponseWriter)) http.Handler {
