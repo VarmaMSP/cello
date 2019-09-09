@@ -41,7 +41,7 @@ func (s *SqlPodcastStore) GetInfo(podcastId string) (*model.PodcastInfo, *model.
 	return info, nil
 }
 
-func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) ([]*model.PodcastFeedDetails, *model.AppError) {
+func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) (res []*model.PodcastFeedDetails, appE *model.AppError) {
 	sql := "SELECT " + strings.Join((&model.PodcastFeedDetails{}).DbColumns(), ",") + ` FROM podcast
 		WHERE refresh_enabled = 1 AND
 		      last_refresh_status <> 'PENDING' AND 
@@ -49,20 +49,19 @@ func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) ([]
 			  created_at > ?
 		ORDER BY created_at LIMIT ?`
 
-	var res []*model.PodcastFeedDetails
-	newItemFields := func() []interface{} {
+	copyTo := func() []interface{} {
 		tmp := &model.PodcastFeedDetails{}
 		res = append(res, tmp)
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.QueryRows(newItemFields, sql, model.Now(), createdAfter, limit); err != nil {
-		return nil, model.NewAppError(
+	if err := s.Query(copyTo, sql, model.Now(), createdAfter, limit); err != nil {
+		appE = model.NewAppError(
 			"sqlstore.sql_podcast_store.get_all_to_be_refreshed", err.Error(), http.StatusInternalServerError,
 			nil,
 		)
 	}
-	return res, nil
+	return
 }
 
 func (s *SqlPodcastStore) UpdateFeedDetails(old, new *model.PodcastFeedDetails) *model.AppError {

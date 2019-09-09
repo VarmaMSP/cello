@@ -54,24 +54,23 @@ func (s *SqlCurationStore) Get(curationId string) (*model.Curation, *model.AppEr
 	return curation, nil
 }
 
-func (s *SqlCurationStore) GetAll() ([]*model.Curation, *model.AppError) {
+func (s *SqlCurationStore) GetAll() (res []*model.Curation, appE *model.AppError) {
 	cols := strings.Join((&model.Curation{}).DbColumns(), ",")
 	sql := "SELECT " + cols + " FROM curation ORDER BY created_at DESC"
 
-	var res []*model.Curation
-	newItemFields := func() []interface{} {
+	copyTo := func() []interface{} {
 		tmp := &model.Curation{}
 		res = append(res, tmp)
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.QueryRows(newItemFields, sql); err != nil {
-		return nil, model.NewAppError(
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
 			"sqlstore.sql_curation_store.get_all", err.Error(), http.StatusInternalServerError,
 			nil,
 		)
 	}
-	return res, nil
+	return
 }
 
 func (s *SqlCurationStore) GetPodcastsByCuration(curationId string, offset, limit int) (res []*model.PodcastInfo, appE *model.AppError) {
@@ -81,13 +80,13 @@ func (s *SqlCurationStore) GetPodcastsByCuration(curationId string, offset, limi
 		WHERE podcast_curation.curation_id = ? 
 		LIMIT ?, ?`
 
-	newItemFields := func() []interface{} {
+	copyTo := func() []interface{} {
 		tmp := &model.PodcastInfo{}
 		res = append(res, tmp)
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.QueryRows(newItemFields, sql, curationId, offset, limit); err != nil {
+	if err := s.Query(copyTo, sql, curationId, offset, limit); err != nil {
 		appE = model.NewAppError(
 			"sqlstore.sql_curation_store.get_podcast_by_curation", err.Error(), http.StatusInternalServerError,
 			map[string]string{"curation_id": curationId},

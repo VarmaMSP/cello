@@ -52,7 +52,7 @@ func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) (
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.QueryRows(copyTo, sql, podcastId); err != nil {
+	if err := s.Query(copyTo, sql, podcastId); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_episode_store.get_all_by_podcast", err.Error(), http.StatusInternalServerError,
 			map[string]string{"podcast_id": podcastId},
@@ -61,23 +61,22 @@ func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) (
 	return
 }
 
-func (s *SqlEpisodeStore) GetAllGuidsByPodcast(podcastId string) ([]string, *model.AppError) {
+func (s *SqlEpisodeStore) GetAllGuidsByPodcast(podcastId string) (res []string, appE *model.AppError) {
 	sql := `SELECT guid FROM episode WHERE podcast_id = ?`
 
-	var res []string
-	newItemFields := func() []interface{} {
+	copyTo := func() []interface{} {
 		tmp := ""
 		res = append(res, tmp)
 		return []interface{}{&tmp}
 	}
 
-	if err := s.QueryRows(newItemFields, sql); err != nil {
-		return nil, model.NewAppError(
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
 			"store.sqlstore.sql_episode_store.get_all_guids_by_podcast", err.Error(), http.StatusInternalServerError,
 			map[string]string{"podcast_id": podcastId},
 		)
 	}
-	return res, nil
+	return
 }
 
 func (s *SqlEpisodeStore) Block(podcastId, episodeGuid string) *model.AppError {

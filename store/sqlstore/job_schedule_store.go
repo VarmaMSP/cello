@@ -15,23 +15,22 @@ func NewSqlJobScheduleStore(store SqlStore) *SqlJobScheduleStore {
 	return &SqlJobScheduleStore{store}
 }
 
-func (s *SqlJobScheduleStore) GetAllActive() ([]*model.JobSchedule, *model.AppError) {
+func (s *SqlJobScheduleStore) GetAllActive() (res []*model.JobSchedule, appE *model.AppError) {
 	sql := "SELECT " + strings.Join((&model.JobSchedule{}).DbColumns(), ",") + " FROM job_schedule WHERE is_active = 1"
 
-	var res []*model.JobSchedule
-	newItemFields := func() []interface{} {
+	copyTo := func() []interface{} {
 		tmp := &model.JobSchedule{}
 		res = append(res, tmp)
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.QueryRows(newItemFields, sql); err != nil {
-		return nil, model.NewAppError(
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
 			"sqlstore.sql_job_spec_store.get_all_active", err.Error(), http.StatusInternalServerError,
 			nil,
 		)
 	}
-	return res, nil
+	return
 }
 
 func (s *SqlJobScheduleStore) Disable(jobName string) *model.AppError {

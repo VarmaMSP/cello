@@ -37,21 +37,20 @@ func (s *SqlItunesMetaStore) Update(old, new *model.ItunesMeta) *model.AppError 
 	return nil
 }
 
-func (s *SqlItunesMetaStore) GetItunesIdList(offset, limit int) ([]string, *model.AppError) {
+func (s *SqlItunesMetaStore) GetItunesIdList(offset, limit int) (res []string, appE *model.AppError) {
 	sql := `SELECT itunes_id FROM itunes_meta LIMIT ?, ?`
 
-	var res []string
-	newItemFields := func() []interface{} {
+	copyTo := func() []interface{} {
 		tmp := ""
 		res = append(res, tmp)
 		return []interface{}{tmp}
 	}
 
-	if err := s.QueryRows(newItemFields, sql); err != nil {
-		return nil, model.NewAppError(
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
 			"store.sqlstore.sql_itunes_meta_store.get_itunes_id_list", err.Error(), http.StatusInternalServerError,
 			map[string]string{"offset": strconv.Itoa(offset), "limit": strconv.Itoa(limit)},
 		)
 	}
-	return res, nil
+	return
 }

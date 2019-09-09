@@ -65,14 +65,14 @@ func (s *SqlSupplier) UpdateChanges(tableName string, old, new DbModel, where st
 	return s.db.Exec(query, updateValues...)
 }
 
-func (s *SqlSupplier) QueryRows(newItemFields func() []interface{}, sql string, values ...interface{}) error {
+func (s *SqlSupplier) Query(copyTo func() []interface{}, sql string, values ...interface{}) error {
 	rows, err := s.db.Query(sql, values...)
 	if err != nil {
 		return err
 	}
 	defer rows.Close()
 	for rows.Next() {
-		if err := rows.Scan(newItemFields()...); err != nil {
+		if err := rows.Scan(copyTo()...); err != nil {
 			return err
 		}
 	}
