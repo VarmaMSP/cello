@@ -87,16 +87,16 @@ CREATE TABLE `curation` (
     `id` VARCHAR(20),
     `title` VARCHAR(500) NOT NULL,
     `created_at` BIGINT NOT NULL,
-    PRIMARY KEY(`id`),
-    UNIQUE KEY(`title`)
+    PRIMARY KEY(`id`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `podcast_curation` (
-    `curation_id` VARCHAR(20),
+    `id` VARCHAR(20),
     `podcast_id` VARCHAR(20),
+    `curation_id` VARCHAR(20),
     `created_at` BIGINT NOT NULL,
-    FOREIGN KEY (`curation_id`) REFERENCES `curation` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (`curation_id`) REFERENCES `curation` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `job_schedule` (
