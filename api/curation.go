@@ -42,13 +42,13 @@ func GetCurationsWithPodcasts(c *Context, w http.ResponseWriter) {
 		if err != nil {
 			continue
 		}
+		curation.CreatedAt = 0
 		for _, podcast := range podcasts {
 			podcast.Description = ""
 		}
 		res = append(res, map[string]interface{}{
-			"curationId":    curation.Id,
-			"curationTitle": curation.Title,
-			"podcasts":      podcasts,
+			"curation": curation,
+			"podcasts": podcasts,
 		})
 	}
 
@@ -81,20 +81,20 @@ func GetPodcastsByCuration(c *Context, w http.ResponseWriter) {
 		c.err = err
 		return
 	}
-
 	podcasts, err := c.store.Curation().GetPodcastsByCuration(curationId, 0, 100)
 	if err != nil {
 		c.err = err
 		return
 	}
+
+	curation.CreatedAt = 0
 	for _, podcast := range podcasts {
 		podcast.Description = ""
 	}
 
 	r, _ := json.Marshal(map[string]interface{}{
-		"curationId":    curation.Id,
-		"curationTitle": curation.Title,
-		"podcasts":      podcasts,
+		"curation": curation,
+		"podcasts": podcasts,
 	})
 
 	w.Header().Set("Content-Type", "application/json")

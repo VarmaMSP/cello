@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"reflect"
 
@@ -33,7 +32,7 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 		"podcast":  podcast,
 		"episodes": episodes,
 	})
-	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 
@@ -54,15 +53,14 @@ func SearchPodcasts(c *Context, w http.ResponseWriter) {
 	searchQuery := c.Query("search_query")
 	searchResult, err := c.esClient.Search().
 		Index("podcast").
-		Query(elastic.NewMultiMatchQuery(searchQuery, "title", "author", "description")).
-		Size(50).
+		Query(elastic.NewMultiMatchQuery(searchQuery, "title", "author")).
+		Size(100).
 		Do(context.TODO())
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 
-	var podcasts []*model.PodcastInfo
+	podcasts := []*model.PodcastInfo{}
 	for _, item := range searchResult.Each(reflect.TypeOf(model.PodcastInfo{})) {
 		tmp, _ := item.(model.PodcastInfo)
 		tmp.Description = ""

@@ -3,9 +3,9 @@ package model
 import "github.com/rs/xid"
 
 type Curation struct {
-	Id        string
-	Title     string
-	CreatedAt int64
+	Id        string `json:"id,omitempty"`
+	Title     string `json:"title,omitempty"`
+	CreatedAt int64  `json:"created_at,omitempty"`
 }
 
 type PodcastCuration struct {
