@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+	"io"
 	"net/mail"
 	"net/url"
 	"regexp"
@@ -135,14 +136,15 @@ func IsValidMediaType(mediaType string) bool {
 	return true
 }
 
-// MapFromJson will decode the map with values of type string
-func MapFromJson(data []byte) map[string]string {
-	var res map[string]string
-	if err := json.Unmarshal(data, &res); err != nil {
-		return make(map[string]string)
-	} else {
-		return res
+// MapFromJson will decode a map
+func MapFromJson(data io.Reader) map[string]string {
+	decoder := json.NewDecoder(data)
+
+	var m map[string]string
+	if err := decoder.Decode(&m); err == nil {
+		return m
 	}
+	return map[string]string{}
 }
 
 // MinInt returns minimum of two integers

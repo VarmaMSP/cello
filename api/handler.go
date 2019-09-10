@@ -1,7 +1,6 @@
 package api
 
 import (
-	"io/ioutil"
 	"net/http"
 
 	"github.com/go-http-utils/headers"
@@ -29,12 +28,7 @@ func (c *Context) Param(key string) string {
 }
 
 func (c *Context) Body() (m map[string]string) {
-	b, err := ioutil.ReadAll(c.req.Body)
-	if err == nil {
-		c.req.Body.Close()
-		m = model.MapFromJson(b)
-	}
-	return
+	return model.MapFromJson(c.req.Body)
 }
 
 type Handler struct {
