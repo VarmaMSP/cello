@@ -6,6 +6,10 @@ export interface Entity {
   id: string
 }
 
+export interface Curation extends Entity {
+  title: string
+}
+
 export interface Podcast extends Entity {
   title: string
   author: string

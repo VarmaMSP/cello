@@ -5,10 +5,10 @@ import {
   GET_PODCAST_REQUEST,
   GET_PODCAST_SUCCESS,
 } from 'types/actions'
-import { initalRequestState, RequestState } from './utils'
+import { initialRequestState, RequestState } from './utils'
 
 const getPodcast: Reducer<RequestState, AppActions> = (
-  state = initalRequestState(),
+  state = initialRequestState(),
   action,
 ) => {
   switch (action.type) {

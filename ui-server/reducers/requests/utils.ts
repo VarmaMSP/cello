@@ -5,7 +5,7 @@ export interface RequestState {
   error: Error | null
 }
 
-export function initalRequestState(): RequestState {
+export function initialRequestState(): RequestState {
   return {
     status: 'NOT_STARTED',
     error: null,

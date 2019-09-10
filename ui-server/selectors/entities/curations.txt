@@ -1,0 +1,6 @@
+import { AppState } from 'store'
+import { Curation } from 'types/app'
+import { MapById } from 'types/utilities'
+
+export function getAllCurations(state: AppState): MapById<Curation> {
+  return state.entities.curations.curation

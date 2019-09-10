@@ -1,4 +1,4 @@
-import { Episode, Podcast } from 'types/app'
+import { Curation, Episode, Podcast } from 'types/app'
 
 export default class Client {
   url: string = 'http://localhost:8080'
@@ -9,6 +9,10 @@ export default class Client {
 
   getResultsRoute(): string {
     return `${this.url}/results`
+  }
+
+  getCurationsRoute(): string {
+    return `${this.url}/curations`
   }
 
   async doFetch(method: string, url: string, body?: object): Promise<any> {
@@ -54,6 +58,16 @@ export default class Client {
     const res = await this.doFetch('GET', url)
     return {
       podcasts: res.results,
+    }
+  }
+
+  async getPodcastCurations(): Promise<{
+    podcastCurations: { curation: Curation; podcasts: Podcast[] }[]
+  }> {
+    const url = `${this.getCurationsRoute()}`
+    const res = await this.doFetch('GET', url)
+    return {
+      podcastCurations: res.results,
     }
   }
 }
