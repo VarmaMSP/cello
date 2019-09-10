@@ -1,4 +1,3 @@
-import ButtonWithIcon from 'components/button_with_icon'
 import PodcastThumbnail from 'components/podcast_thumbnail'
 import ResponsiveGrid from 'components/responsive_grid'
 import React from 'react'
@@ -20,11 +19,15 @@ const CurationView: React.SFC<Props> = (props) => {
 
   return (
     <div>
-      <div className="flex justify-between py-6">
-        <h3 className="block text-xl text-gray-800">{curation.title}</h3>
-        <ButtonWithIcon icon="arrow-right" className="w-5 text-green-600" />
+      <div className="py-5">
+        <h3 className="text-xl text-gray-800">{curation.title}</h3>
       </div>
-      <ResponsiveGrid rows={1}>
+      <ResponsiveGrid
+        rows={1}
+        cols={7}
+        className="md:w-36 w-32 md:mx-0 mx-2"
+        rowSpacing={4}
+      >
         {podcasts.map((p) => (
           <PodcastThumbnail podcast={p} key={p.id} />
         ))}

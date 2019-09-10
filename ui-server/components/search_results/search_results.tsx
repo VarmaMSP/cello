@@ -17,7 +17,7 @@ export default class SearchResults extends Component<Props> {
   render() {
     const { podcasts } = this.props
     return (
-      <ResponsiveGrid>
+      <ResponsiveGrid rowSpacing={12}>
         {podcasts.map((podcast) => (
           <PodcastThumbnail key={podcast.id} podcast={podcast} />
         ))}
