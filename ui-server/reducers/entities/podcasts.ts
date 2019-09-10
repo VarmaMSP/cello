@@ -26,7 +26,7 @@ const podcasts: Reducer<{ [PodcastId: string]: Podcast }, AppActions> = (
   }
 }
 
-const podcastsInCurations: Reducer<
+const podcastsInCuration: Reducer<
   { [curationId: string]: string[] },
   AppActions
 > = (state = {}, action) => {
@@ -43,5 +43,5 @@ const podcastsInCurations: Reducer<
 
 export default combineReducers({
   podcasts,
-  podcastsInCurations,
+  podcastsInCuration,
 })

@@ -1,3 +1,4 @@
+import Discover from 'components/discover'
 import LoadingPage from 'components/loading_page'
 import React from 'react'
 import { RequestState } from 'reducers/requests/utils'
@@ -36,7 +37,7 @@ export default class extends React.Component<Props> {
     }
 
     if (reqState.status == 'SUCCESS') {
-      return <>{'curations loaded'}</>
+      return <Discover />
     }
     return <>Hey Morty</>
   }
