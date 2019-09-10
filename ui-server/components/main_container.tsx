@@ -36,8 +36,13 @@ class Screen extends Component<Props> {
     const { children } = this.props
 
     return (
-      <div className="lg:pl-56 pl-4 lg:pr-5 pr-4 pt-20 pb-64 z-0">
-        <div className="lg:pl-5 lg:pb-36">{children}</div>
+      // base padding
+      <div className="pl-4 pr-4 pt-20 pb-64 z-0">
+        {/* additonal padding for large screens */}
+        <div className="lg:pl-60 lg:pr-1 lg:pb-36">
+          {/* additonal padding for extra large screens */}
+          <div className="xl:pl-20 xl:pr-40">{children}</div>
+        </div>
       </div>
     )
   }
