@@ -9,7 +9,7 @@ interface StateToProps {
 }
 
 interface OwnProps {
-  rows: number
+  rows?: number
   children: JSX.Element[]
 }
 
@@ -27,9 +27,11 @@ const ResponsiveGrid: React.SFC<Props> = (props) => {
     itemsPerRow = 3
   }
 
-  let placeholderCount = children.length % itemsPerRow
-  while (placeholderCount--) {
-    children.push(<div />)
+  if (children.length % itemsPerRow > 0) {
+    let placeholderCount = itemsPerRow - (children.length % itemsPerRow)
+    while (placeholderCount--) {
+      children.push(<div />)
+    }
   }
 
   let rowsJsx: JSX.Element[] = []
@@ -45,7 +47,7 @@ const ResponsiveGrid: React.SFC<Props> = (props) => {
     )
   }
 
-  return <div>{rowsJsx.slice(0, rows)}</div>
+  return <div>{rows ? rowsJsx.slice(0, rows) : rowsJsx}</div>
 }
 
 function mapStateToProps(state: AppState): StateToProps {
