@@ -7,6 +7,11 @@ const app = next({ dev: process.env.NODE_ENV !== 'production' })
 const handle = app.getRequestHandler()
 const router = new Router()
 
+router.get('/', async (ctx) => {
+  await app.render(ctx.req, ctx.res, '/')
+  ctx.respond = false
+})
+
 router.get('/podcasts/:podcastId', async (ctx) => {
   await app.render(ctx.req, ctx.res, '/podcasts', <any>{
     id: ctx.params['podcastId'],
