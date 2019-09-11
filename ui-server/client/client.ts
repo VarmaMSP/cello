@@ -1,7 +1,12 @@
+import fetch from 'isomorphic-unfetch'
 import { Curation, Episode, Podcast } from 'types/app'
 
 export default class Client {
-  url: string = 'http://localhost:8080'
+  url: string
+
+  constructor(url: string) {
+    this.url = url
+  }
 
   getPodcastRoute(): string {
     return `${this.url}/podcasts`
@@ -16,19 +21,17 @@ export default class Client {
   }
 
   async doFetch(method: string, url: string, body?: object): Promise<any> {
-    const request = new Request(url, {
-      method,
-      body: body ? JSON.stringify(body) : undefined,
-      credentials: 'include',
-    })
+    let data: object
+    let response: Response
 
-    let response: Response | null = null
-    let data: object | null = null
     try {
-      response = await fetch(request)
+      response = await fetch(url, {
+        method,
+        body: body ? JSON.stringify(body) : undefined,
+        credentials: 'include',
+      })
       data = await response.json()
     } catch (err) {
-      console.log(err)
       throw new Error(err.toString())
     }
 

@@ -10,6 +10,7 @@
     "make-icons": "npx svgr --ext tsx --out-dir ./components/icons ./static/icons"
   },
   "dependencies": {
+    "isomorphic-unfetch": "^3.0.0",
     "koa": "^2.8.1",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
