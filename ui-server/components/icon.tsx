@@ -4,6 +4,7 @@ export type Icon =
   | 'arrow-left'
   | 'arrow-right'
   | 'cheveron-up'
+  | 'close'
   | 'explore'
   | 'fast-forward'
   | 'fast-rewind'
@@ -31,6 +32,12 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
   'cheveron-up': (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M10.707 7.05L10 6.343 4.343 12l1.414 1.414L10 9.172l4.243 4.242L15.657 12z" />
+    </svg>
+  ),
+
+  close: (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z" />
     </svg>
   ),
 
