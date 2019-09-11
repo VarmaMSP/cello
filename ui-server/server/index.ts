@@ -1,5 +1,4 @@
 import Koa from 'koa'
-import bodyParser from 'koa-bodyparser'
 import Router from 'koa-router'
 import next from 'next'
 
@@ -15,13 +14,12 @@ router.get('/', async (ctx) => {
 router.get('/podcasts/:podcastId', async (ctx) => {
   await app.render(ctx.req, ctx.res, '/podcasts', <any>{
     id: ctx.params['podcastId'],
-    body: ctx.request.body,
   })
   ctx.respond = false
 })
 
 router.get('/results', async (ctx) => {
-  await app.render(ctx.req, ctx.res, '/results', <any>{
+  await app.render(ctx.req, ctx.res, '/results', {
     search_query: ctx.request.query['search_query'],
   })
   ctx.respond = false
@@ -35,7 +33,10 @@ router.get('*', async (ctx) => {
 const server = new Koa()
 
 server
-  .use(bodyParser())
+  .use(async (ctx, next) => {
+    ctx.res.statusCode = 200
+    await next()
+  })
   .use(router.routes())
   .use(router.allowedMethods())
 
