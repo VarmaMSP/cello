@@ -1,5 +1,5 @@
+import Grid from 'components/grid'
 import PodcastThumbnail from 'components/podcast_thumbnail'
-import ResponsiveGrid from 'components/responsive_grid'
 import React from 'react'
 import { Curation, Podcast } from 'types/app'
 
@@ -22,16 +22,16 @@ const CurationView: React.SFC<Props> = (props) => {
       <div className="py-5">
         <h3 className="text-xl text-gray-800">{curation.title}</h3>
       </div>
-      <ResponsiveGrid
+      <Grid
         rows={1}
         cols={7}
-        className="md:w-36 w-32 md:mx-0 mx-2"
+        wrapperClass="md:w-36 w-32 md:mx-0 mx-2"
         rowSpacing={4}
       >
         {podcasts.map((p) => (
           <PodcastThumbnail podcast={p} key={p.id} />
         ))}
-      </ResponsiveGrid>
+      </Grid>
     </div>
   )
 }

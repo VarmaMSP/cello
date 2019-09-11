@@ -25,20 +25,18 @@ interface OwnProps {
   //  - Defaults to { LG: 7 , MD: 6, SM: 3 }
   cols?: { [key in ScreenWidth]: number } | number
 
-  // classNames assigned to the child wrapper
-  className?: string
+  // Optional css class assigned to the child wrapper
+  wrapperClass?: string
 
   // Children
   children: JSX.Element[]
 }
 
-interface Props extends StateToProps, OwnProps {}
-
-const ResponsiveGrid: React.SFC<Props> = ({
+const Grid: React.SFC<StateToProps & OwnProps> = ({
   rows,
   rowSpacing = 6,
   cols = { LG: 7, MD: 6, SM: 3 },
-  className = '',
+  wrapperClass = '',
   children,
   screenWidth,
 }) => {
@@ -66,7 +64,7 @@ const ResponsiveGrid: React.SFC<Props> = ({
         {children.slice(i, i + itemsPerRow).map((item, j) => (
           <div
             key={j}
-            className={classNames('flex-none', className)}
+            className={classNames('flex-none', wrapperClass)}
             style={{ width: !overflowRow ? `${88 / itemsPerRow}%` : undefined }}
           >
             {item}
@@ -84,5 +82,5 @@ function mapStateToProps(state: AppState): StateToProps {
 }
 
 export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
-  ResponsiveGrid,
+  Grid,
 )

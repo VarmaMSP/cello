@@ -1,5 +1,5 @@
+import Grid from 'components/grid'
 import PodcastThumbnail from 'components/podcast_thumbnail'
-import ResponsiveGrid from 'components/responsive_grid'
 import React, { Component } from 'react'
 import { Podcast } from 'types/app'
 
@@ -17,11 +17,11 @@ export default class SearchResults extends Component<Props> {
   render() {
     const { podcasts } = this.props
     return (
-      <ResponsiveGrid rowSpacing={12}>
+      <Grid rowSpacing={12}>
         {podcasts.map((podcast) => (
           <PodcastThumbnail key={podcast.id} podcast={podcast} />
         ))}
-      </ResponsiveGrid>
+      </Grid>
     )
   }
 }
