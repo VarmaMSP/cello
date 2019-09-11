@@ -15,18 +15,17 @@ interface OwnProps {
   // - Defaults to undefined
   rows?: number
 
-  // Spacing added to bottom of each row
-  // default to 6
-  rowSpacing?: number
-
   // No of Columns
   //  - If a object is provided grid will be responsive otherwise rows
   //    will overflow in x-axis with each childs width set to provided width
   //  - Defaults to { LG: 7 , MD: 6, SM: 3 }
   cols?: { [key in ScreenWidth]: number } | number
 
-  // Optional css class assigned to the child wrapper
-  wrapperClass?: string
+  // Optional css class assigned to each row
+  className?: string
+
+  // Optional css class assigned to each child wrapper
+  classNameChild?: string
 
   // Children
   children: JSX.Element[]
@@ -34,9 +33,9 @@ interface OwnProps {
 
 const Grid: React.SFC<StateToProps & OwnProps> = ({
   rows,
-  rowSpacing = 6,
   cols = { LG: 7, MD: 6, SM: 3 },
-  wrapperClass = '',
+  className = '',
+  classNameChild = '',
   children,
   screenWidth,
 }) => {
@@ -56,7 +55,7 @@ const Grid: React.SFC<StateToProps & OwnProps> = ({
     rowsJsx.push(
       <div
         key={i + itemsPerRow}
-        className={classNames('flex justify-between', `mb-${rowSpacing}`, {
+        className={classNames('flex justify-between', className, {
           'flex-wrap-none': overflowRow,
           'overflow-x-auto': overflowRow,
         })}
@@ -64,7 +63,7 @@ const Grid: React.SFC<StateToProps & OwnProps> = ({
         {children.slice(i, i + itemsPerRow).map((item, j) => (
           <div
             key={j}
-            className={classNames('flex-none', wrapperClass)}
+            className={classNames('flex-none', classNameChild)}
             style={{ width: !overflowRow ? `${88 / itemsPerRow}%` : undefined }}
           >
             {item}

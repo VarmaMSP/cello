@@ -19,14 +19,14 @@ const CurationView: React.SFC<Props> = (props) => {
 
   return (
     <div>
-      <div className="py-5">
+      <div className="pb-5">
         <h3 className="text-xl text-gray-800">{curation.title}</h3>
       </div>
       <Grid
         rows={1}
         cols={7}
-        wrapperClass="md:w-36 w-32 md:mx-0 mx-2"
-        rowSpacing={4}
+        className="mb-4 pb-3"
+        classNameChild="md:w-36 w-32 md:mx-0 mx-2"
       >
         {podcasts.map((p) => (
           <PodcastThumbnail podcast={p} key={p.id} />
