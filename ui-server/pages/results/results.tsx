@@ -1,7 +1,9 @@
+import { searchPodcasts } from 'actions/podcast'
 import LoadingPage from 'components/loading_page'
 import SearchResults from 'components/search_results'
 import React, { Component } from 'react'
 import { RequestState } from 'reducers/requests/utils'
+import { bindActionCreators } from 'redux'
 import { PageContext } from 'types/utilities'
 
 export interface StateToProps {
@@ -14,15 +16,22 @@ export interface DispatchToProps {
 
 export interface OwnProps {
   searchQuery: string
-  preventIntialLoad: boolean
+  preventInitialLoad: boolean
 }
 
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
 export default class ResultsPage extends Component<Props> {
-  static async getInitialProps({ query }: PageContext) {
+  static async getInitialProps({
+    query,
+    isServer,
+    store,
+  }: PageContext): Promise<OwnProps> {
+    const loadResults = bindActionCreators(searchPodcasts, store.dispatch)
     const searchQuery = query['search_query'] as string
-    return { searchQuery, preventInitalLoad: false }
+
+    await loadResults(searchQuery)
+    return { searchQuery, preventInitialLoad: isServer }
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -32,7 +41,7 @@ export default class ResultsPage extends Component<Props> {
   }
 
   componentDidMount() {
-    if (!this.props.preventIntialLoad) {
+    if (!this.props.preventInitialLoad) {
       this.props.loadSearchResults(this.props.searchQuery)
     }
   }
