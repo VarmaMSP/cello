@@ -22,10 +22,9 @@ func (cur *Curation) DbColumns() []string {
 }
 
 func (cur *Curation) FieldAddrs() []interface{} {
-	var i []interface{}
-	return append(i,
+	return []interface{}{
 		&cur.Id, &cur.Title, &cur.CreatedAt,
-	)
+	}
 }
 
 func (pCur *PodcastCuration) DbColumns() []string {
@@ -35,10 +34,9 @@ func (pCur *PodcastCuration) DbColumns() []string {
 }
 
 func (pCur *PodcastCuration) FieldAddrs() []interface{} {
-	var i []interface{}
-	return append(i,
+	return []interface{}{
 		&pCur.Id, &pCur.PodcastId, &pCur.CurationId, &pCur.CreatedAt,
-	)
+	}
 }
 
 func (cur *Curation) PreSave() {

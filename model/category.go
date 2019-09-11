@@ -18,10 +18,9 @@ func (pc *PodcastCategory) DbColumns() []string {
 }
 
 func (pc *PodcastCategory) FieldAddrs() []interface{} {
-	var i []interface{}
-	return append(i,
+	return []interface{}{
 		&pc.PodcastId, &pc.CategoryId,
-	)
+	}
 }
 
 func (pc *PodcastCategory) PreSave() {}

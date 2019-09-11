@@ -43,9 +43,8 @@ func (j *JobSchedule) DbColumns() []string {
 }
 
 func (j *JobSchedule) FieldAddrs() []interface{} {
-	var i []interface{}
-	return append(i,
+	return []interface{}{
 		&j.JobName, &j.Type, &j.RunAt, &j.RunAfter,
 		&j.IsActive, &j.CreatedAt, &j.UpdatedAt,
-	)
+	}
 }

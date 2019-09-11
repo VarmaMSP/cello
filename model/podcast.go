@@ -80,8 +80,7 @@ func (p *Podcast) DbColumns() []string {
 }
 
 func (p *Podcast) FieldAddrs() []interface{} {
-	var i []interface{}
-	return append(i,
+	return []interface{}{
 		&p.Id, &p.Title, &p.Description, &p.ImagePath,
 		&p.Language, &p.Explicit, &p.Author, &p.Type,
 		&p.Block, &p.Complete, &p.Link, &p.OwnerName,
@@ -89,7 +88,7 @@ func (p *Podcast) FieldAddrs() []interface{} {
 		&p.FeedETag, &p.FeedLastModified, &p.RefreshEnabled, &p.LastRefreshAt,
 		&p.NextRefreshAt, &p.LastRefreshStatus, &p.RefreshInterval, &p.CreatedAt,
 		&p.UpdatedAt,
-	)
+	}
 }
 
 func (pfd *PodcastFeedDetails) DbColumns() []string {
@@ -101,12 +100,11 @@ func (pfd *PodcastFeedDetails) DbColumns() []string {
 }
 
 func (pfd *PodcastFeedDetails) FieldAddrs() []interface{} {
-	var i []interface{}
-	return append(i,
+	return []interface{}{
 		&pfd.Id, &pfd.FeedUrl, &pfd.FeedETag, &pfd.FeedLastModified,
 		&pfd.RefreshEnabled, &pfd.LastRefreshAt, &pfd.NextRefreshAt, &pfd.LastRefreshStatus,
 		&pfd.RefreshInterval, &pfd.CreatedAt, &pfd.UpdatedAt,
-	)
+	}
 }
 
 func (pinfo *PodcastInfo) DbColumns() []string {
@@ -117,11 +115,10 @@ func (pinfo *PodcastInfo) DbColumns() []string {
 }
 
 func (pinfo *PodcastInfo) FieldAddrs() []interface{} {
-	var i []interface{}
-	return append(i,
+	return []interface{}{
 		&pinfo.Id, &pinfo.Title, &pinfo.Author, &pinfo.Description,
 		&pinfo.Type, &pinfo.Complete,
-	)
+	}
 }
 
 func (p *Podcast) LoadDetails(feed *rss.Feed) *AppError {

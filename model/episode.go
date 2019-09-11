@@ -58,14 +58,13 @@ func (e *Episode) DbColumns() []string {
 }
 
 func (e *Episode) FieldAddrs() []interface{} {
-	var i []interface{}
-	return append(i,
+	return []interface{}{
 		&e.Id, &e.PodcastId, &e.Guid, &e.Title,
 		&e.MediaUrl, &e.MediaType, &e.MediaSize, &e.PubDate,
 		&e.Description, &e.Duration, &e.Link, &e.ImageLink,
 		&e.Explicit, &e.Episode, &e.Season, &e.Type,
 		&e.Block, &e.CreatedAt, &e.UpdatedAt,
-	)
+	}
 }
 
 func (ep *EpisodeInfo) DbColumns() []string {
@@ -76,11 +75,10 @@ func (ep *EpisodeInfo) DbColumns() []string {
 }
 
 func (einfo *EpisodeInfo) FieldAddrs() []interface{} {
-	var i []interface{}
-	return append(i,
+	return []interface{}{
 		&einfo.Id, &einfo.Title, &einfo.Description, &einfo.MediaUrl,
 		&einfo.MediaType, &einfo.Episode, &einfo.Season, &einfo.PubDate, &einfo.Duration,
-	)
+	}
 }
 
 func (e *Episode) LoadDetails(item *rss.Item) *AppError {

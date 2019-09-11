@@ -17,11 +17,10 @@ func (pi *ItunesMeta) DbColumns() []string {
 }
 
 func (pi *ItunesMeta) FieldAddrs() []interface{} {
-	var i []interface{}
-	return append(i,
+	return []interface{}{
 		&pi.ItunesId, &pi.FeedUrl, &pi.ScrappedAt,
 		&pi.AddedToDb, &pi.Comment, &pi.UpdatedAt,
-	)
+	}
 }
 
 func (pi *ItunesMeta) PreSave() *AppError {
