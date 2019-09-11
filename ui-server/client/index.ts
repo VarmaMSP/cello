@@ -1,7 +1,5 @@
 import Client from './client'
 
-const client = new Client(
-  !!process.browser ? 'http://localhost:8080' : 'http://localhost:8080',
-)
+const client = new Client(process.env.API_BASE_URL as string)
 
 export default client

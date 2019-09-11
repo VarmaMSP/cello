@@ -21,6 +21,9 @@ const purgeCssConfig = {
 }
 
 const nextConfig = {
+  env: {
+    API_BASE_URL: 'http://location:8080/api',
+  },
   distDir: 'next',
   generateEtags: false,
   poweredByHeader: false,
