@@ -14,27 +14,14 @@ export interface DispatchToProps {
   loadCurations: () => void
 }
 
-export interface OwnProps {
-  preventInitialLoad: boolean
-}
-
-interface Props extends StateToProps, DispatchToProps, OwnProps {}
+interface Props extends StateToProps, DispatchToProps {}
 
 export default class extends React.Component<Props> {
-  static async getInitialProps({
-    isServer,
-    store,
-  }: PageContext): Promise<OwnProps> {
+  static async getInitialProps({ store }: PageContext): Promise<{}> {
     const loadCurations = bindActionCreators(getCurations, store.dispatch)
 
     await loadCurations()
-    return { preventInitialLoad: isServer }
-  }
-
-  componentDidMount() {
-    if (!this.props.preventInitialLoad) {
-      this.props.loadCurations()
-    }
+    return {}
   }
 
   render() {

@@ -2,11 +2,7 @@ import { getCurations } from 'actions/curations'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
-import CurationsPage, {
-  DispatchToProps,
-  OwnProps,
-  StateToProps,
-} from './curations'
+import CurationsPage, { DispatchToProps, StateToProps } from './curations'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {
@@ -20,7 +16,7 @@ function mapDispatchToProps(dispatch: Dispatch): DispatchToProps {
   }
 }
 
-export default connect<StateToProps, DispatchToProps, OwnProps, AppState>(
+export default connect<StateToProps, DispatchToProps, {}, AppState>(
   mapStateToProps,
   mapDispatchToProps,
 )(CurationsPage)

@@ -16,7 +16,6 @@ export interface DispatchToProps {
 
 export interface OwnProps {
   searchQuery: string
-  preventInitialLoad: boolean
 }
 
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
@@ -24,24 +23,17 @@ interface Props extends StateToProps, DispatchToProps, OwnProps {}
 export default class ResultsPage extends Component<Props> {
   static async getInitialProps({
     query,
-    isServer,
     store,
   }: PageContext): Promise<OwnProps> {
     const loadResults = bindActionCreators(searchPodcasts, store.dispatch)
     const searchQuery = query['search_query'] as string
 
     await loadResults(searchQuery)
-    return { searchQuery, preventInitialLoad: isServer }
+    return { searchQuery }
   }
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.searchQuery != this.props.searchQuery) {
-      this.props.loadSearchResults(this.props.searchQuery)
-    }
-  }
-
-  componentDidMount() {
-    if (!this.props.preventInitialLoad) {
       this.props.loadSearchResults(this.props.searchQuery)
     }
   }

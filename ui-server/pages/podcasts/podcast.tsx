@@ -17,7 +17,6 @@ export interface DispatchToProps {
 
 export interface OwnProps {
   podcastId: string
-  preventInitialLoad: boolean
 }
 
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
@@ -26,7 +25,6 @@ export default class PodcastPage extends Component<Props> {
   static async getInitialProps({
     query,
     store,
-    isServer,
   }: PageContext): Promise<OwnProps> {
     const loadPodcast = bindActionCreators(getPodcast, store.dispatch)
     const podcastId = query['id'] as string
@@ -36,20 +34,11 @@ export default class PodcastPage extends Component<Props> {
     // - https://github.com/piotrwitek/react-redux-typescript-guide/issues/6
     // - https://github.com/piotrwitek/react-redux-typescript-guide/pull/157
     await loadPodcast(podcastId)
-    return {
-      podcastId,
-      preventInitialLoad: isServer,
-    }
+    return { podcastId }
   }
 
   componentDidUpdate(prevProps: Props) {
     if (this.props.podcastId != prevProps.podcastId) {
-      this.props.loadPodcast(this.props.podcastId)
-    }
-  }
-
-  componentDidMount() {
-    if (!this.props.preventInitialLoad) {
       this.props.loadPodcast(this.props.podcastId)
     }
   }
