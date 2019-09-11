@@ -1,4 +1,5 @@
 import Koa from 'koa'
+import proxy from 'koa-proxy'
 import Router from 'koa-router'
 import next from 'next'
 
@@ -37,6 +38,14 @@ server
     ctx.res.statusCode = 200
     await next()
   })
+  // Proxy api calls and images in dev,
+  // use Nginx in production
+  .use(
+    proxy({
+      host: 'http://localhost:8080',
+      match: /^\/(?:api|img)\//,
+    }),
+  )
   .use(router.routes())
   .use(router.allowedMethods())
 

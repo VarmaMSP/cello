@@ -19,7 +19,7 @@ export default class PodcastThumbnail extends Component<Props> {
         <div className="w-full cursor-pointer">
           <img
             className="w-full h-auto flex-none object-contain rounded-lg border"
-            src={`http://localhost:8080/img/${podcast.id}p-500x500.jpg`}
+            src={`${process.env.IMAGE_BASE_URL}/${podcast.id}p-500x500.jpg`}
           />
           <Shiitake
             lines={2}
