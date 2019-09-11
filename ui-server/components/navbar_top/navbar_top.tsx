@@ -58,7 +58,7 @@ export default class TopNavbar extends Component<Props, State> {
 
     if (showFullWidthSearchBar) {
       return (
-        <header className="fixed top-0 left-0 h-12 w-full bg-white z-50">
+        <header className="fixed top-0 left-0 h-12 w-full bg-white">
           <FullWidthSearchBar
             searchText={searchText}
             handleCollapse={this.handleSearchBarCollapse}
@@ -70,7 +70,7 @@ export default class TopNavbar extends Component<Props, State> {
     }
 
     return (
-      <header className="fixed top-0 left-0 flex justify-between items-center w-full lg:h-14 h-12 lg:pl-56 lg:pr-5 md:px-10 px-4 bg-white z-50">
+      <header className="fixed top-0 left-0 flex justify-between items-center w-full lg:h-14 h-12 lg:pl-56 lg:pr-5 md:px-10 px-4 bg-white">
         <div className="lg:hidden w-20">
           <ButtonWithIcon
             className="w-6"

@@ -8,8 +8,7 @@ const NavbarSide: React.SFC<WithRouterProps> = ({ router }) => {
   let pathname = !!router ? router.pathname : ''
 
   return (
-    <div className="fixed left-0 top-0 lg:flex flex-col hidden h-screen w-56 px-3 bg-white shadow z-50">
-      <h3 className="w-full mt-1 mb-8 text-3xl font-bold text-indigo-700 leading-relaxed text-center select-none">
+    <div className="fixed left-0 top-0 lg:flex flex-col hidden h-screen w-56 px-3 bg-white shadow">
         phenopod
       </h3>
       <ul>

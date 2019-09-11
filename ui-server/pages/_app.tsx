@@ -30,11 +30,12 @@ export default withRedux(makeStore)(
           </Head>
 
           <Provider store={store}>
-            <NavBarTop />
-            <NavbarSide />
+            {/* Order components based on z-axis */}
             <MainContainer>
               <Component {...pageProps} />
             </MainContainer>
+            <NavBarTop />
+            <NavbarSide />
             <AudioPlayer />
           </Provider>
         </Container>
