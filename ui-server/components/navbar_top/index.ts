@@ -18,7 +18,7 @@ function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   }
 }
 
-export default connect(
+export default connect<StateToProps, DispatchToProps, {}, AppState>(
   mapStateToProps,
   mapDispatchToProps,
 )(NavbarTop)

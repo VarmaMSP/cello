@@ -3,7 +3,11 @@ import { Dispatch } from 'redux'
 import { makeGetEpisodesInPodcast } from 'selectors/entities/episodes'
 import { AppState } from 'store'
 import { AppActions, PLAY_EPISODE } from 'types/actions'
-import EpisodeList, { OwnProps, StateToProps } from './episode_list'
+import EpisodeList, {
+  DispatchToProps,
+  OwnProps,
+  StateToProps,
+} from './episode_list'
 
 function makeMapStateToProps() {
   const getEpisodesInPodcast = makeGetEpisodesInPodcast()
@@ -24,7 +28,7 @@ function dispatchToProps(dispatch: Dispatch<AppActions>) {
   }
 }
 
-export default connect(
+export default connect<StateToProps, DispatchToProps, OwnProps, AppState>(
   makeMapStateToProps(),
   dispatchToProps,
 )(EpisodeList)

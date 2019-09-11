@@ -10,12 +10,13 @@ interface Props {
 export default class PodcastThumbnail extends Component<Props> {
   render() {
     const { podcast } = this.props
+
     return (
       <Link
         href={{ pathname: '/podcasts', query: { id: podcast.id } }}
         as={`/podcasts/${podcast.id}`}
       >
-        <div className="w-full">
+        <div className="w-full cursor-pointer">
           <img
             className="w-full h-auto flex-none object-contain rounded-lg border"
             src={`http://localhost:8080/img/${podcast.id}p-500x500.jpg`}

@@ -13,9 +13,7 @@ export interface OwnProps {
 interface Props extends StateToProps, OwnProps {}
 
 const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
-  const [descLineCount, setDescLineCount] = useState(2)
-  const toggleDescLineCount = () =>
-    setDescLineCount(descLineCount == 2 ? 100 : 2)
+  const [lineCountDesc, setLineCountDesc] = useState(2)
 
   return (
     <div className="flex mb-8">
@@ -29,15 +27,16 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
           {podcast.author}
         </h3>
         <Shiitake
-          lines={descLineCount}
+          lines={lineCountDesc}
           throttleRate={200}
-          className="lg:block hidden mt-1 text-sm text-gray-800 "
+          renderFullOnServer
+          className="lg:block hidden mt-1 text-sm text-gray-800"
           overflowNode={
             <span
-              onClick={toggleDescLineCount}
+              onClick={() => setLineCountDesc(lineCountDesc == 2 ? 100 : 2)}
               className="text-blue-700 cursor-pointer"
             >
-              {` ...read more`}
+              {' ...read more'}
             </span>
           }
         >

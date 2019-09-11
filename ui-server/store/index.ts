@@ -7,7 +7,7 @@ import { AppActions } from 'types/actions'
 // doing so will make the editor to show to entire AppState in suggestions
 export interface AppState extends ReturnType<typeof rootReducer> {}
 
-export const makeStore = () => {
+export const makeStore = (initalState?: object) => {
   const composeEnhancers =
     typeof window != 'undefined' &&
     (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
@@ -16,6 +16,7 @@ export const makeStore = () => {
 
   return createStore(
     rootReducer,
+    initalState,
     composeEnhancers(
       applyMiddleware(thunk as ThunkMiddleware<AppState, AppActions>),
     ),
