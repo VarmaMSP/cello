@@ -1,15 +1,12 @@
-import { AppActionTypes } from './app'
 import { CurationActionTypes } from './curation'
-import { PlayerActionTypes } from './player'
 import { PodcastActionTypes } from './podcast'
+import { UiActionTypes } from './ui'
 
 export type AppActions =
+  | UiActionTypes
   | PodcastActionTypes
   | CurationActionTypes
-  | PlayerActionTypes
-  | AppActionTypes
 
-export * from './app'
 export * from './curation'
-export * from './player'
 export * from './podcast'
+export * from './ui'
