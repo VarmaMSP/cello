@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import ButtonWithIcon from './button_with_icon'
+import ButtonWithIcon from '../../button_with_icon'
 
-interface Props {
+export interface Props {
+  handleClose: () => void
   children: JSX.Element | JSX.Element[]
 }
 
@@ -24,7 +25,7 @@ export default class Modal extends Component<Props> {
   }
 
   render() {
-    const { children } = this.props
+    const { children, handleClose } = this.props
 
     return (
       <>
@@ -37,6 +38,7 @@ export default class Modal extends Component<Props> {
             <ButtonWithIcon
               className="absolute right-0 w-4 text-gray-600"
               icon="close"
+              onClick={handleClose}
             />
           </div>
           <div className="h-full">{children}</div>

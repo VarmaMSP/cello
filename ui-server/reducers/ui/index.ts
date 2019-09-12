@@ -1,8 +1,10 @@
 import { combineReducers, Reducer } from 'redux'
 import {
   AppActions,
+  CLOSE_SIGN_IN_MODAL,
   SEARCH_BAR_TEXT_CHANGE,
   SET_SCREEN_WIDTH,
+  SHOW_SIGN_IN_MODAL,
 } from 'types/actions'
 import { ScreenWidth } from 'types/app'
 import player from './player'
@@ -28,8 +30,23 @@ const searchText: Reducer<string, AppActions> = (state = '', action) => {
   }
 }
 
+const showSignInModal: Reducer<boolean, AppActions> = (
+  state = false,
+  action,
+) => {
+  switch (action.type) {
+    case SHOW_SIGN_IN_MODAL:
+      return true
+    case CLOSE_SIGN_IN_MODAL:
+      return false
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   screenWidth,
   searchText,
+  showSignInModal,
   player,
 })

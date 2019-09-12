@@ -36,8 +36,8 @@ export default withRedux(makeStore)(
               <Component {...pageProps} />
             </MainContainer>
             <NavbarTop />
-            <NavbarSide />
             <AudioPlayer />
+            <NavbarSide />
             <LoginModal />
           </Provider>
         </Container>
