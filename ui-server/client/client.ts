@@ -45,24 +45,6 @@ export default class Client {
       }
     }
 
-    // Check for 3** {redirections}
-    if (response!.status.toString()[0] === '3') {
-      throw <RequestException>{
-        url: url,
-        statusCode: response!.status,
-        responseHeaders: { location: response!.headers.get('Location') },
-      }
-    }
-
-    // Check for 4xx {user errors}
-    if (response!.status.toString()[0] === '4') {
-      throw <RequestException>{
-        url: url,
-        statusCode: response!.status,
-        responseHeaders: {},
-      }
-    }
-
     // check for non 2xx { not OK }
     if (response!.status.toString()[0] !== '2') {
       throw <RequestException>{
@@ -72,7 +54,7 @@ export default class Client {
       }
     }
 
-    // Parse body is content-type is json
+    // Parse json body
     let data: object = {}
     try {
       if (response!.headers.get('Content-Type') === 'application/json') {

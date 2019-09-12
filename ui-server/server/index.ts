@@ -26,6 +26,8 @@ router.get('/results', async (ctx) => {
   ctx.respond = false
 })
 
+router.get('/results/api/goo')
+
 router.get('*', async (ctx) => {
   await handle(ctx.req, ctx.res)
   ctx.respond = false
@@ -44,6 +46,7 @@ server
     proxy({
       host: 'http://localhost:8080',
       match: /^\/(?:api|img)\//,
+      followRedirect: false,
     }),
   )
   .use(router.routes())

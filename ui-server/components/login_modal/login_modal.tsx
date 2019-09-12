@@ -28,12 +28,23 @@ const LoginModal: React.SFC<Props> = (props) => {
         <div className="text-center mt-3 mb-10">
           The Best web plodcast player
         </div>
-        <SocialSignInButton icon="google-color" text="Sign in with Google" />
+        <SocialSignInButton
+          icon="google-color"
+          text="Sign in with Google"
+          onClick={() => {
+            window.location.href = `${process.env.API_BASE_URL}/google/login`
+          }}
+        />
         <SocialSignInButton
           icon="facebook-color"
           text="Sign in with Faceebook"
+          onClick={() => {}}
         />
-        <SocialSignInButton icon="twitter-color" text="Sign in with Twitter" />
+        <SocialSignInButton
+          icon="twitter-color"
+          text="Sign in with Twitter"
+          onClick={() => {}}
+        />
       </div>
     </Modal>
   )
