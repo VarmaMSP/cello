@@ -1,0 +1,36 @@
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 18rem;
+    height: 30rem;
+    margin-left: -9rem;
+    margin-top: -15rem;
+    background-color: white;
+    border-radius: 0.5rem;
+}
+
+@media (min-width: 375px) {
+    .modal {
+        width: 22rem;
+        height: 34rem;
+        margin-left: -11rem;
+        margin-top: -18rem;
+    }
+}
+
+@media (min-width: 414px) {
+    .modal {
+        width: 24rem;
+        margin-left: -12rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .modal {
+        width: 40rem;
+        margin-left: -20rem;
+        height: 34rem;
+        margin-top: -18rem;
+    }
+}
