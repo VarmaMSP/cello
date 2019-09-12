@@ -24,11 +24,16 @@ export default class ResultsPage extends Component<Props> {
   static async getInitialProps({
     query,
     store,
+    isServer,
   }: PageContext): Promise<OwnProps> {
-    const loadResults = bindActionCreators(searchPodcasts, store.dispatch)
     const searchQuery = query['search_query'] as string
+    const loadResults = bindActionCreators(searchPodcasts, store.dispatch)(
+      searchQuery,
+    )
+    if (isServer) {
+      await loadResults
+    }
 
-    await loadResults(searchQuery)
     return { searchQuery }
   }
 

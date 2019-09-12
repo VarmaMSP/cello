@@ -26,7 +26,7 @@ const CurationView: React.SFC<Props> = (props) => {
         rows={1}
         cols={7}
         className="mb-4 pb-3"
-        classNameChild="md:w-36 w-32 md:mx-0 mx-2"
+        classNameChild="md:w-40 w-32 mx-2"
       >
         {podcasts.map((p) => (
           <PodcastThumbnail podcast={p} key={p.id} />

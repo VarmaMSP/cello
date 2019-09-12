@@ -17,10 +17,12 @@ export interface DispatchToProps {
 interface Props extends StateToProps, DispatchToProps {}
 
 export default class extends React.Component<Props> {
-  static async getInitialProps({ store }: PageContext): Promise<{}> {
-    const loadCurations = bindActionCreators(getCurations, store.dispatch)
+  static async getInitialProps({ store, isServer }: PageContext): Promise<{}> {
+    const loadCurations = bindActionCreators(getCurations, store.dispatch)()
+    if (isServer) {
+      await loadCurations
+    }
 
-    await loadCurations()
     return {}
   }
 

@@ -25,15 +25,20 @@ export default class PodcastPage extends Component<Props> {
   static async getInitialProps({
     query,
     store,
+    isServer,
   }: PageContext): Promise<OwnProps> {
-    const loadPodcast = bindActionCreators(getPodcast, store.dispatch)
     const podcastId = query['id'] as string
+    const loadPodcast = bindActionCreators(getPodcast, store.dispatch)(
+      podcastId,
+    )
+    if (isServer) {
+      // Type definitions for bindActionCreators is not overloaded for thunks
+      // - https://github.com/piotrwitek/react-redux-typescript-guide/issues/110
+      // - https://github.com/piotrwitek/react-redux-typescript-guide/issues/6
+      // - https://github.com/piotrwitek/react-redux-typescript-guide/pull/157
+      await loadPodcast
+    }
 
-    // Type definitions for bindActionCreators is not overloaded for thunks, use with caution
-    // - https://github.com/piotrwitek/react-redux-typescript-guide/issues/110
-    // - https://github.com/piotrwitek/react-redux-typescript-guide/issues/6
-    // - https://github.com/piotrwitek/react-redux-typescript-guide/pull/157
-    await loadPodcast(podcastId)
     return { podcastId }
   }
 
@@ -46,7 +51,7 @@ export default class PodcastPage extends Component<Props> {
   render() {
     const { reqState, podcastId } = this.props
 
-    if (reqState.status == 'STARTED' || reqState.status == 'NOT_STARTED') {
+    if (reqState.status == 'STARTED') {
       return <LoadingPage />
     }
 
