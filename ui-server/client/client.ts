@@ -1,6 +1,13 @@
 import fetch from 'isomorphic-unfetch'
 import { Curation, Episode, Podcast } from 'types/app'
 
+export interface RequestException {
+  url: string
+  statusCode: number
+  responseHeaders: { [key: string]: string }
+  err?: string
+}
+
 export default class Client {
   url: string
 
@@ -21,22 +28,63 @@ export default class Client {
   }
 
   async doFetch(method: string, url: string, body?: object): Promise<any> {
-    let data: object
+    // Make Request
     let response: Response
-
     try {
       response = await fetch(url, {
         method,
         body: body ? JSON.stringify(body) : undefined,
         credentials: 'include',
       })
-      data = await response.json()
     } catch (err) {
-      throw new Error(err.toString())
+      throw <RequestException>{
+        url: url,
+        statusCode: 500,
+        responseHeaders: {},
+        err: err.toString(),
+      }
     }
 
-    if (response!.status === 401) {
-      throw new Error('error')
+    // Check for 3** {redirections}
+    if (response!.statusText[0] === '3') {
+      throw <RequestException>{
+        url: url,
+        statusCode: response!.status,
+        responseHeaders: { location: response!.headers.get('Location') },
+      }
+    }
+
+    // Check for 4xx {user errors}
+    if (response!.statusText[0] === '4') {
+      throw <RequestException>{
+        url: url,
+        statusCode: response!.status,
+        responseHeaders: {},
+      }
+    }
+
+    // check for non 2xx { not OK }
+    if (response!.statusText[0] !== '2') {
+      throw <RequestException>{
+        url: url,
+        statusCode: response!.status,
+        responseHeaders: {},
+      }
+    }
+
+    // Parse body is content-type is json
+    let data: object = {}
+    try {
+      if (response!.headers.get('Content-Type') === 'application/json') {
+        data = await response.json()
+      }
+    } catch (err) {
+      throw <RequestException>{
+        url: url,
+        statusCode: response!.status,
+        responseHeaders: {},
+        err: 'Error Parsing JSON response',
+      }
     }
 
     return data
@@ -49,8 +97,8 @@ export default class Client {
     const res = await this.doFetch('GET', url)
     return {
       podcast: res.podcast,
-      episodes: res.episodes.map((e: object) => ({
-        ...e,
+      episodes: (res.episodes || []).map((episode: object) => ({
+        ...episode,
         podcastId: res.podcast.id,
       })),
     }
