@@ -22,7 +22,7 @@ const purgeCssConfig = {
 
 const nextConfig = {
   env: {
-    API_BASE_URL: 'http://localhost:8081/api',
+    API_BASE_URL: 'http://localhost:8080/api',
     IMAGE_BASE_URL: '/img',
   },
   distDir: 'next',
