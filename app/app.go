@@ -1,9 +1,10 @@
 package app
 
 import (
-	"fmt"
+	"os"
 
 	"github.com/olivere/elastic/v7"
+	"github.com/rs/zerolog"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/services/elasticsearch"
 	"github.com/varmamsp/cello/store"
@@ -17,21 +18,30 @@ type App struct {
 	ElasticSearch *elastic.Client
 
 	GoogleOAuthConfig *oauth2.Config
+
+	Log zerolog.Logger
 }
 
 func NewApp(config model.Config) (*App, error) {
+	dev := true
+	var log zerolog.Logger
+	if dev {
+		log = log.Output(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
+	} else {
+		log = zerolog.New(os.Stdout).With().Timestamp().Logger()
+
+	}
+
+	log.Info().Msg("Connecting to Mysql ...")
 	store, err := sqlstore.NewSqlStore(&config.Mysql)
 	if err != nil {
 		return nil, err
-	} else {
-		fmt.Println("Connecting to Mysql ...")
 	}
 
+	log.Info().Msg("Connecting to ElasticSearch ...")
 	elasticSearch, err := elasticsearch.NewClient(&config.Elasticsearch)
 	if err != nil {
 		return nil, err
-	} else {
-		fmt.Println("Connecting to Elasticsearch ...")
 	}
 
 	googleOAuthConfig := &oauth2.Config{
@@ -46,5 +56,6 @@ func NewApp(config model.Config) (*App, error) {
 		Store:             store,
 		ElasticSearch:     elasticSearch,
 		GoogleOAuthConfig: googleOAuthConfig,
+		Log:               log,
 	}, nil
 }

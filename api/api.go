@@ -34,7 +34,7 @@ func NewApi(config model.Config) *Api {
 }
 
 func (api *Api) ListenAndServe() {
-	fmt.Println("Server listening on port: 8081")
+	api.app.Log.Info().Msg("Server listening on port: 8081")
 	err := api.server.ListenAndServe()
 	if err != nil {
 		fmt.Println(err)

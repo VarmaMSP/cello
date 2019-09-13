@@ -40,6 +40,12 @@ type Handler struct {
 func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c := &Context{app: h.app, req: req}
 
+	c.app.Log.Info().
+		Str("method", req.Method).
+		Str("path", req.URL.String()).
+		Str("user_agent", req.Header.Get(headers.UserAgent)).
+		Msg("")
+
 	if h.enableCors {
 		w.Header().Set(headers.AccessControlAllowOrigin, req.Header.Get(headers.Origin))
 		w.Header().Set(headers.AccessControlAllowCredentials, "true")
@@ -48,6 +54,11 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	h.handleFunc(c, w)
 
 	if c.err != nil {
+		c.app.Log.Error().
+			Str("from", c.err.Id).
+			Str("error", c.err.DetailedError).
+			Msg("")
+
 		w.WriteHeader(c.err.StatusCode)
 		w.Write([]byte(c.err.Error()))
 	}
