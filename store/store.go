@@ -15,6 +15,7 @@ type PodcastStore interface {
 	Save(podcast *model.Podcast) *model.AppError
 	GetInfo(podcastId string) (*model.PodcastInfo, *model.AppError)
 	GetAllToBeRefreshed(createdAfter int64, limit int) ([]*model.PodcastFeedDetails, *model.AppError)
+	GetFeedDetails(podcastId string) (*model.PodcastFeedDetails, *model.AppError)
 	UpdateFeedDetails(old, new *model.PodcastFeedDetails) *model.AppError
 }
 

@@ -64,6 +64,19 @@ func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) (re
 	return
 }
 
+func (s *SqlPodcastStore) GetFeedDetails(podcastId string) (*model.PodcastFeedDetails, *model.AppError) {
+	details := &model.PodcastFeedDetails{}
+	sql := "SELECT " + strings.Join(details.DbColumns(), ",") + " From podcast WHERE id = ?"
+
+	if err := s.GetMaster().QueryRow(sql, podcastId).Scan(details.FieldAddrs()...); err != nil {
+		return nil, model.NewAppError(
+			"store.sqlstore.sql_podcast_store.get_info", err.Error(), http.StatusInternalServerError,
+			map[string]string{"id": podcastId},
+		)
+	}
+	return details, nil
+}
+
 func (s *SqlPodcastStore) UpdateFeedDetails(old, new *model.PodcastFeedDetails) *model.AppError {
 
 	if _, err := s.UpdateChanges("podcast", old, new, "id = ?", new.Id); err != nil {

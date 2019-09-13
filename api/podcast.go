@@ -1,13 +1,8 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
-	"reflect"
-
-	"github.com/olivere/elastic"
-	"github.com/varmamsp/cello/model"
 )
 
 func (api *Api) RegisterPodcastHandlers() {
@@ -17,12 +12,12 @@ func (api *Api) RegisterPodcastHandlers() {
 
 func GetPodcast(c *Context, w http.ResponseWriter) {
 	podcastId := c.Param("podcastId")
-	podcast, err := c.store.Podcast().GetInfo(podcastId)
+	podcast, err := c.app.GetPodcastInfo(podcastId)
 	if err != nil {
 		c.err = err
 		return
 	}
-	episodes, err := c.store.Episode().GetAllByPodcast(podcastId, 1000, 0)
+	episodes, err := c.app.GetEpisodes(podcastId, 1000, 0)
 	if err != nil {
 		c.err = err
 		return
@@ -39,20 +34,9 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 
 func SearchPodcasts(c *Context, w http.ResponseWriter) {
 	searchQuery := c.Query("search_query")
-	searchResult, err := c.esClient.Search().
-		Index("podcast").
-		Query(elastic.NewMultiMatchQuery(searchQuery, "title", "author")).
-		Size(100).
-		Do(context.TODO())
+	podcasts, err := c.app.SearchPodcasts(searchQuery)
 	if err != nil {
 		return
-	}
-
-	podcasts := []*model.PodcastInfo{}
-	for _, item := range searchResult.Each(reflect.TypeOf(model.PodcastInfo{})) {
-		tmp, _ := item.(model.PodcastInfo)
-		tmp.Description = ""
-		podcasts = append(podcasts, &tmp)
 	}
 
 	res, _ := json.Marshal(map[string]interface{}{

@@ -4,6 +4,7 @@ type Config struct {
 	Mysql         MysqlConfig         `mapstructure:"mysql"`
 	Rabbitmq      RabbitmqConfig      `mapstructure:"rabbitmq"`
 	Elasticsearch ElasticsearchConfig `mapstrucure:"elasticsearch"`
+	OAuth         OAuth               `mapstructure:"oauth"`
 }
 
 // MYSQL CONFIGURATION
@@ -43,4 +44,17 @@ type ElasticsearchConfig struct {
 	Address  string `mapstructure:"address"`
 	User     string `mapstructure:"user"`
 	Password string `mapstructure:"password"`
+}
+
+// OAuth
+type OAuth struct {
+	Google   OAuth_ `mapstructure:"google"`
+	Facebook OAuth_ `mapstructure:"facebook"`
+}
+
+type OAuth_ struct {
+	ClientId     string   `mapstructure:"client_id"`
+	ClientSecret string   `mapstructure:"client_secret"`
+	RedirectUrl  string   `mapstructure:"redirect_url"`
+	Scopes       []string `mapstructure:"scopes"`
 }

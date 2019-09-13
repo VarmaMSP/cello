@@ -5,16 +5,13 @@ import (
 
 	"github.com/go-http-utils/headers"
 	"github.com/julienschmidt/httprouter"
-	"github.com/olivere/elastic/v7"
+	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/store"
 )
 
 type Context struct {
 	req *http.Request
-
-	store    store.Store
-	esClient *elastic.Client
+	app *app.App
 
 	err *model.AppError
 }
@@ -32,8 +29,7 @@ func (c *Context) Body() (m map[string]string) {
 }
 
 type Handler struct {
-	store    store.Store
-	esClient *elastic.Client
+	app *app.App
 
 	handleFunc     func(*Context, http.ResponseWriter)
 	enableCors     bool
@@ -42,11 +38,7 @@ type Handler struct {
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	c := &Context{
-		req:      req,
-		store:    h.store,
-		esClient: h.esClient,
-	}
+	c := &Context{app: h.app, req: req}
 
 	if h.enableCors {
 		w.Header().Set(headers.AccessControlAllowOrigin, req.Header.Get(headers.Origin))
@@ -63,8 +55,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 func (api *Api) NewHandler(h func(*Context, http.ResponseWriter)) http.Handler {
 	return &Handler{
-		store:          api.store,
-		esClient:       api.esClient,
+		app:            api.app,
 		handleFunc:     h,
 		enableCors:     true,
 		requireSession: false,

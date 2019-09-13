@@ -3,8 +3,6 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-
-	"github.com/varmamsp/cello/model"
 )
 
 func (api *Api) RegisterCurationRoutes() {
@@ -19,18 +17,15 @@ func (api *Api) RegisterCurationRoutes() {
 func AddCuration(c *Context, w http.ResponseWriter) {
 	curationTitle := c.Body()["curation_title"]
 
-	m := &model.Curation{Title: curationTitle}
-	if err := c.store.Curation().Save(m); err != nil {
+	if err := c.app.SaveCuration(curationTitle); err != nil {
 		c.err = err
 		return
 	}
-
-	w.Header().Set("Location", "/curations/"+m.Id)
 	w.WriteHeader(http.StatusCreated)
 }
 
 func GetCurationsWithPodcasts(c *Context, w http.ResponseWriter) {
-	curations, err := c.store.Curation().GetAll()
+	curations, err := c.app.GetCurations()
 	if err != nil {
 		c.err = err
 		return
@@ -38,7 +33,7 @@ func GetCurationsWithPodcasts(c *Context, w http.ResponseWriter) {
 
 	var res []map[string]interface{}
 	for _, curation := range curations {
-		podcasts, err := c.store.Curation().GetPodcastsByCuration(curation.Id, 0, 10)
+		podcasts, err := c.app.GetPodcastsInCuration(curation.Id)
 		if err != nil {
 			continue
 		}
@@ -65,7 +60,7 @@ func GetCurationsWithPodcasts(c *Context, w http.ResponseWriter) {
 func DeleteCuration(c *Context, w http.ResponseWriter) {
 	curationId := c.Param("curationId")
 
-	if err := c.store.Curation().Delete(curationId); err != nil {
+	if err := c.app.DeleteCuration(curationId); err != nil {
 		c.err = err
 		return
 	}
@@ -76,12 +71,12 @@ func DeleteCuration(c *Context, w http.ResponseWriter) {
 func GetPodcastsByCuration(c *Context, w http.ResponseWriter) {
 	curationId := c.Param("curationId")
 
-	curation, err := c.store.Curation().Get(curationId)
+	curation, err := c.app.GetCuration(curationId)
 	if err != nil {
 		c.err = err
 		return
 	}
-	podcasts, err := c.store.Curation().GetPodcastsByCuration(curationId, 0, 100)
+	podcasts, err := c.app.GetPodcastsInCuration(curationId)
 	if err != nil {
 		c.err = err
 		return
@@ -105,8 +100,7 @@ func GetPodcastsByCuration(c *Context, w http.ResponseWriter) {
 func AddPodcastToCuration(c *Context, w http.ResponseWriter) {
 	podcastId, curationId := c.Param("podcastId"), c.Param("curationId")
 
-	m := &model.PodcastCuration{PodcastId: podcastId, CurationId: curationId}
-	if err := c.store.Curation().SavePodcastCuration(m); err != nil {
+	if err := c.app.SavePodcastToCuration(curationId, podcastId); err != nil {
 		c.err = err
 		return
 	}

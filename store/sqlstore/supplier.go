@@ -2,8 +2,6 @@ package sqlstore
 
 import (
 	"database/sql"
-	"log"
-	"os"
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
@@ -19,15 +17,13 @@ type SqlSupplier struct {
 	jobSchedule store.JobScheduleStore
 }
 
-func NewSqlStore(mysqlConfig *model.MysqlConfig) SqlStore {
+func NewSqlStore(mysqlConfig *model.MysqlConfig) (SqlStore, error) {
 	db, err := sql.Open("mysql", MakeMysqlDSN(mysqlConfig))
 	if err != nil {
-		log.Printf(err.Error())
-		os.Exit(1)
+		return nil, err
 	}
 	if err := db.Ping(); err != nil {
-		log.Printf(err.Error())
-		os.Exit(1)
+		return nil, err
 	}
 
 	supplier := &SqlSupplier{}
@@ -40,7 +36,7 @@ func NewSqlStore(mysqlConfig *model.MysqlConfig) SqlStore {
 	supplier.itunesMeta = NewSqlItunesMetaStore(supplier)
 	supplier.jobSchedule = NewSqlJobScheduleStore(supplier)
 
-	return supplier
+	return supplier, nil
 }
 
 func (s *SqlSupplier) GetMaster() *sql.DB {
