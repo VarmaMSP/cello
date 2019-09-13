@@ -35,18 +35,6 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
-
-	// body, err1 := c.app.UI.RenderPodcastPage(map[string]interface{}{
-	// 	"podcast":  podcast,
-	// 	"episodes": episodes,
-	// })
-	// if err1 != nil {
-	// 	fmt.Println(err1)
-	// }
-
-	// w.Header().Set("Content-Type", "text/html")
-	// w.WriteHeader(http.StatusOK)
-	// io.Copy(w, body)
 }
 
 func SearchPodcasts(c *Context, w http.ResponseWriter) {
