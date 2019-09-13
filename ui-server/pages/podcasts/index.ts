@@ -1,8 +1,6 @@
-import { getPodcast } from 'actions/podcast'
 import { connect } from 'react-redux'
-import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
-import PodcastPage, { DispatchToProps, OwnProps, StateToProps } from './podcast'
+import PodcastPage, { OwnProps, StateToProps } from './podcast'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {
@@ -10,13 +8,6 @@ function mapStateToProps(state: AppState): StateToProps {
   }
 }
 
-function mapDispatchToProps(dispatch: Dispatch): DispatchToProps {
-  return {
-    loadPodcast: bindActionCreators(getPodcast, dispatch),
-  }
-}
-
-export default connect<StateToProps, DispatchToProps, OwnProps, AppState>(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PodcastPage)
+export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
+  PodcastPage,
+)

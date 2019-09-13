@@ -10,26 +10,21 @@ export interface StateToProps {
   reqState: RequestState
 }
 
-export interface DispatchToProps {
-  loadCurations: () => void
-}
-
-interface Props extends StateToProps, DispatchToProps {}
-
-export default class extends React.Component<Props> {
-  static async getInitialProps({ store, isServer }: PageContext): Promise<{}> {
+export default class extends React.Component<StateToProps> {
+  static async getInitialProps(ctx: PageContext): Promise<{}> {
+    const { store, isServer } = ctx
     const loadCurations = bindActionCreators(getCurations, store.dispatch)()
+
     if (isServer) {
       await loadCurations
     }
-
     return {}
   }
 
   render() {
     const { reqState } = this.props
 
-    if (reqState.status == 'STARTED' || reqState.status == 'NOT_STARTED') {
+    if (reqState.status == 'STARTED') {
       return <LoadingPage />
     }
 
