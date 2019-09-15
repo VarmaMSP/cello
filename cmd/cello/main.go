@@ -10,7 +10,7 @@ import (
 
 func main() {
 	viper.SetConfigName("cello.conf")
-	viper.AddConfigPath("./configs")
+	viper.AddConfigPath("./config")
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Println(err.Error())
 		return
@@ -22,6 +22,10 @@ func main() {
 		return
 	}
 
-	api := api.NewApi(config)
+	api, err := api.NewApi(config)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 	api.ListenAndServe()
 }

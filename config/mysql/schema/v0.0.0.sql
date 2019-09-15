@@ -17,7 +17,7 @@ CREATE TABLE `feed` (
     `created_at` BIGINT NOT NULL,
     `updated_at` BIGINT NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`feed_url`)
+    UNIQUE KEY (`url`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `podcast` (
@@ -92,6 +92,7 @@ CREATE TABLE `podcast_curation` (
     `id` VARCHAR(20),
     `podcast_id` VARCHAR(20),
     `curation_id` VARCHAR(20),
+    `rank` INT,
     `created_at` BIGINT NOT NULL,
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (`curation_id`) REFERENCES `curation` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
@@ -101,24 +102,25 @@ CREATE TABLE `episode_curation` (
     `id` VARCHAR(20),
     `episode_id` VARCHAR(20),
     `curation_id` VARCHAR(20),
+    `rank` INT,
     `created_at` BIGINT NOT NULL,
     FOREIGN KEY (`episode_id`) REFERENCES `episode` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (`curation_id`) REFERENCES `curation` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE `job_schedule` (
-    `job_name` VARCHAR(100), 
-    `type` ENUM('PERIODIC', 'ONEOFF', 'IMMEDIATE'),
-    `run_at` BIGINT NOT NULL, 
-    `run_after` BIGINT NOT NULL,
-    `is_active` TINYINT DEFAULT 1,
-    `created_at` BIGINT NOT NULL,
-    `updated_at` BIGINT NOT NULL,
-    PRIMARY KEY(`job_name`)
+CREATE TABLE `task` (
+    `name` VARCHAR(30),
+    `type` VARCHAR(10),
+    `interval` INT,
+    `next_run_at` BIGINT,
+    `active` TINYINT,
+    `created_at` BIGINT,
+    `updated_at` BIGINT,
+    PRIMARY KEY (`name`)
 );
 
-INSERT INTO `job_schedule` (`job_name`, `type`, `run_at`, `run_after`, `is_active`, `created_at`, `updated_at`) VALUES ('scrape_itunes', 'PERIODIC', 0, 3600, 1, 0, 0);
-INSERT INTO `job_schedule` (`job_name`, `type`, `run_at`, `run_after`, `is_active`, `created_at`, `updated_at`) VALUES ('schedule_refresh', 'PERIODIC', 0, 300, 1, 0, 0);
+INSERT INTO `task` (`name`, `type`, `interval`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES ('scrape_itunes', 'PERIODIC', 3600, 0, 1, 0, 0);
+INSERT INTO `task` (`name`, `type`, `interval`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES ('schedule_refresh', 'PERIODIC', 300, 0, 1, 0, 0);
 
 INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
 INSERT INTO `category` (`id`, `name`) VALUES (2, 'Business');

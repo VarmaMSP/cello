@@ -14,14 +14,7 @@ elasticsearch:
   user: elastic
   password: changeme
 
-queues: 
-  scheduled_job_call: 
-    delivery_mode: 2
-    consumer_name: scheduled_job_run
-    consumer_auto_ack: false
-    consumer_exclusive: true
-    consumer_prefetch_count: 100
-
+queues:
   import_podcast: 
     delivery_mode: 2
     consumer_name: import_podcast
@@ -45,19 +38,19 @@ queues:
 
 jobs:
   import_podcast: 
-    enable: false
+    enable: true
     worker_limit: 10
 
   refresh_podcast: 
-    enable: false
+    enable: true
     worker_limit: 10
 
   create_thumbnail:
-    enable: false
+    enable: true
     worker_limit: 10
-  
-  scrape_itunes:
-    enable: false
+
+  scheduler:
+    enable: true
     worker_limit: 10
 
 oauth:

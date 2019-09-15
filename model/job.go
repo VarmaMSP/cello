@@ -33,7 +33,7 @@ type Task struct {
 
 func (t *Task) DbColumns() []string {
 	return []string{
-		"name", "type", "interval", "next_run_at",
+		"name", "type", "task.interval", "next_run_at",
 		"active", "created_at", "updated_at",
 	}
 }

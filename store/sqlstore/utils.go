@@ -39,7 +39,7 @@ func UpdateQuery(
 	tableName string,
 	old, new DbModel,
 	whereClause string,
-	values ...interface{},
+	values []interface{},
 ) (sql string, updateValues []interface{}, noChanges bool) {
 	cols := old.DbColumns()
 	oldValues := ValuesFromAddrs(old.FieldAddrs())

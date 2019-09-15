@@ -1,6 +1,7 @@
 package job
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/varmamsp/cello/app"
@@ -14,13 +15,13 @@ type SchedulerJob struct {
 	schedulePodcastrefresh *task.SchedulePodcastRefresh
 }
 
-func NewSchedulerJob(app *app.App) (model.Job, error) {
-	scrapeItunes, err := task.NewScrapeItunes(app)
+func NewSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
+	scrapeItunes, err := task.NewScrapeItunes(app, config)
 	if err != nil {
 		return nil, err
 	}
 
-	schedulePodcastRefresh, err := task.NewSchedulePodcastRefresh(app)
+	schedulePodcastRefresh, err := task.NewSchedulePodcastRefresh(app, config)
 	if err != nil {
 		return nil, err
 	}
@@ -38,6 +39,10 @@ func (job *SchedulerJob) Run() {
 	for _ = range ticker.C {
 		tasks, err := job.Store.Task().GetAllActive()
 		if err != nil {
+			job.Log.Error().
+				Str("at", "Scheduler Job").
+				Str("from", err.Id).
+				Msg(err.DetailedError)
 			continue
 		}
 
@@ -66,8 +71,10 @@ func (job *SchedulerJob) periodic(task *model.Task) {
 	taskU.NextRunAt = now + int64(task.Interval)
 	taskU.UpdatedAt = now
 	if err := job.Store.Task().Update(task, &taskU); err != nil {
+		fmt.Println(err)
 		return
 	}
+	job.callTask(task)
 }
 
 func (job *SchedulerJob) oneoff(task *model.Task) {
@@ -82,6 +89,7 @@ func (job *SchedulerJob) oneoff(task *model.Task) {
 	if err := job.Store.Task().Update(task, &taskU); err != nil {
 		return
 	}
+	job.callTask(task)
 }
 
 func (job *SchedulerJob) immediate(task *model.Task) {
@@ -92,6 +100,7 @@ func (job *SchedulerJob) immediate(task *model.Task) {
 	if err := job.Store.Task().Update(task, &taskU); err != nil {
 		return
 	}
+	job.callTask(task)
 }
 
 func (job *SchedulerJob) callTask(task *model.Task) {

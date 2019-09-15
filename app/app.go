@@ -7,7 +7,6 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/streadway/amqp"
-	"github.com/varmamsp/cello/job"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/elasticsearch"
 	"github.com/varmamsp/cello/service/rabbitmq"
@@ -25,12 +24,6 @@ type App struct {
 
 	GoogleOAuthConfig *oauth2.Config
 
-	SchedulerJob       model.Job
-	ImportPodcastJob   model.Job
-	RefreshPodcastJob  model.Job
-	CreateThumbnailJob model.Job
-	
-
 	Log zerolog.Logger
 }
 
@@ -45,68 +38,32 @@ func NewApp(config model.Config) (*App, error) {
 
 	}
 
-	log.Info().Msg("Connecting to Mysql ...")
-	store, err := sqlstore.NewSqlStore(&config.Mysql)
+	app.Log.Info().Msg("Connecting to Mysql ...")
+	store, err := sqlstore.NewSqlStore(&config)
 	if err != nil {
 		return nil, err
 	}
 	app.Store = store
 
-	log.Info().Msg("Connecting to ElasticSearch ...")
-	elasticSearch, err := elasticsearch.NewClient(&config.Elasticsearch)
+	app.Log.Info().Msg("Connecting to ElasticSearch ...")
+	elasticSearch, err := elasticsearch.NewClient(&config)
 	if err != nil {
 		return nil, err
 	}
 	app.ElasticSearch = elasticSearch
 
-	log.Info().Msg("Connecting to Rabbitmq ...")
-	rabbitmqProducerConn, err := rabbitmq.NewConnection(&config.Rabbitmq)
+	app.Log.Info().Msg("Connecting to Rabbitmq ...")
+	rabbitmqProducerConn, err := rabbitmq.NewConnection(&config)
 	if err != nil {
 		return nil, err
 	}
 	app.RabbitmqProducerConn = rabbitmqProducerConn
 
-	rabbitmqConsumerConn, err := rabbitmq.NewConnection(&config.Rabbitmq)
+	rabbitmqConsumerConn, err := rabbitmq.NewConnection(&config)
 	if err != nil {
 		return nil, err
 	}
 	app.RabbitmqConsumerConn = rabbitmqConsumerConn
-
-	if config.Jobs.Scheduler.Enable {
-		job, err := job.NewSchedulerJob(app, &config)
-		if err != nil {
-			return nil, err
-		}
-		app.SchedulerJob = job
-		go app.SchedulerJob.Run()
-	}
-
-	if config.Jobs.ImportPodcast.Enable {
-		job, err := job.NewImportPodcastJob(app, &config)
-		if err != nil {
-			return nil, err
-		}
-		app.ImportPodcastJob = job
-		go app.ImportPodcastJob.Run()
-	}
-
-	if config.Jobs.RefreshPodcast.Enable {
-		job, err := job.NewRefreshPodcastJob(app, &config)
-		if err != nil {
-			return nil, err
-		}
-		app.RefreshPodcastJob = job
-		go app.RefreshPodcastJob.Run()
-	}
-
-	if config.Jobs.CreateThumbnail.Enable {
-		job, err := job.NewCreateThumbnailJob(app, &config)
-		if err != nil {
-			return nil, err
-		}
-		app.CreateThumbnailJob = job
-		go app.CreateThumbnailJob.Run()
-	}
 
 	app.GoogleOAuthConfig = &oauth2.Config{
 		ClientID:     config.OAuth.Google.ClientId,

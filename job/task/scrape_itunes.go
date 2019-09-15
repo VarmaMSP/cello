@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/varmamsp/cello/app"
-	"github.com/varmamsp/cello/service/rabbitmq"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/rabbitmq"
 )
 
 const (
@@ -42,8 +42,6 @@ type ScrapeItunes struct {
 }
 
 func NewScrapeItunes(app *app.App, config *model.Config) (*ScrapeItunes, error) {
-	workerLimit := config.Jobs.ScrapeItunes.WorkerLimit
-
 	importPodcastP, err := rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
 		ExchangeName: rabbitmq.DefaultExchange,
 		QueueName:    model.QUEUE_NAME_IMPORT_PODCAST,
@@ -52,6 +50,8 @@ func NewScrapeItunes(app *app.App, config *model.Config) (*ScrapeItunes, error) 
 	if err != nil {
 		return nil, err
 	}
+
+	workerLimit := 10
 
 	scrapeItunes := &ScrapeItunes{
 		App:            app,
@@ -90,6 +90,7 @@ func NewScrapeItunes(app *app.App, config *model.Config) (*ScrapeItunes, error) 
 }
 
 func (s *ScrapeItunes) Call() {
+	s.Log.Info().Msg("Scrape Itunes started")
 	s.urlF.Clear()
 	s.urlF.I <- ITUNES_SEED_URL
 }

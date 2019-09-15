@@ -32,6 +32,7 @@ func NewSchedulePodcastRefresh(app *app.App, config *model.Config) (*SchedulePod
 }
 
 func (s *SchedulePodcastRefresh) Call() {
+	s.Log.Info().Msg("Schedule podcast refresh started")
 	limit := 10000
 	ticker := time.NewTicker(time.Minute)
 
