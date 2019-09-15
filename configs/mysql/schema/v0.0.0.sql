@@ -2,6 +2,24 @@ DROP DATABASE IF EXISTS `phenopod`;
 CREATE DATABASE `phenopod`;
 USE `phenopod`;
 
+CREATE TABLE `feed` (
+    `id` VARCHAR(20),
+    `source` VARCHAR(20),
+    `source_id` VARCHAR(20),
+    `url` VARCHAR(500) NOT NULL,
+    `etag` VARCHAR(255) NOT NULL,
+    `last_modified` VARCHAR(255) NOT NULL,
+    `refresh_enabled` TINYINT,
+    `refresh_interval` INT NOT NULL,
+    `last_refresh_at` BIGINT NOT NULL,
+    `last_refresh_comment` VARCHAR(500),
+    `next_refresh_at` BIGINT NOT NULL,
+    `created_at` BIGINT NOT NULL,
+    `updated_at` BIGINT NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`feed_url`)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 CREATE TABLE `podcast` (
     `id` VARCHAR(20),
     `title` VARCHAR(500) NOT NULL,
@@ -17,19 +35,10 @@ CREATE TABLE `podcast` (
     `owner_name` VARCHAR(500) NOT NULL,
     `owner_email` VARCHAR(500) NOT NULL,
     `copyright` VARCHAR(500) NOT NULL,
-    `feed_url` VARCHAR(500) NOT NULL,
-    `feed_etag` VARCHAR(255) NOT NULL,
-    `feed_last_modified` VARCHAR(255) NOT NULL,
-    `new_feed_url` VARCHAR(500) NOT NULL,
-    `refresh_enabled` TINYINT DEFAULT 1,
-    `last_refresh_at` BIGINT NOT NULL,
-    `next_refresh_at` BIGINT NOT NULL,
-    `last_refresh_status` ENUM('PENDING', 'SUCCESS', 'FAILURE') DEFAULT 'PENDING',
-    `refresh_interval` INT NOT NULL,
     `created_at` BIGINT NOT NULL,
     `updated_at` BIGINT NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`feed_url`)
+    FOREIGN KEY (`id`) REFERENCES `feed` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `episode` (
@@ -56,21 +65,10 @@ CREATE TABLE `episode` (
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE `itunes_meta` (
-    `itunes_id` VARCHAR(15),
-    `feed_url` VARCHAR(500),
-    `scrapped_at` DATETIME NOT NULL,
-    `added_to_db` ENUM('SUCCESS', 'FAILURE', 'PENDING') DEFAULT 'PENDING',
-    `comment` VARCHAR(300) NOT NULL,
-    `updated_at` BIGINT NOT NULL,
-    PRIMARY KEY (`itunes_id`),
-    UNIQUE KEY (`feed_url`)
-);
-
 CREATE TABLE `category` (
     `id` INT,
-    `name` VARCHAR(100) NOT NULL,
     `parent_id` INT, 
+    `name` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`parent_id`) REFERENCES `category` (`id`)
         ON UPDATE CASCADE ON DELETE NO ACTION
@@ -96,6 +94,15 @@ CREATE TABLE `podcast_curation` (
     `curation_id` VARCHAR(20),
     `created_at` BIGINT NOT NULL,
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (`curation_id`) REFERENCES `curation` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE `episode_curation` (
+    `id` VARCHAR(20),
+    `episode_id` VARCHAR(20),
+    `curation_id` VARCHAR(20),
+    `created_at` BIGINT NOT NULL,
+    FOREIGN KEY (`episode_id`) REFERENCES `episode` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (`curation_id`) REFERENCES `curation` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

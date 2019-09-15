@@ -8,19 +8,15 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (app *App) GetPodcastInfo(podcastId string) (*model.PodcastInfo, *model.AppError) {
-	return app.Store.Podcast().GetInfo(podcastId)
+func (app *App) GetPodcastInfo(podcastId string) (*model.Podcast, *model.AppError) {
+	return app.Store.Podcast().Get(podcastId)
 }
 
-func (app *App) GetPodcastFeedDetails(podcastId string) (*model.PodcastFeedDetails, *model.AppError) {
-	return app.Store.Podcast().GetFeedDetails(podcastId)
+func (app *App) GetPodcastsInCuration(curationId string) ([]*model.Podcast, *model.AppError) {
+	return app.Store.Podcast().GetAllByCuration(curationId, 0, 7)
 }
 
-func (app *App) GetPodcastsInCuration(curationId string) ([]*model.PodcastInfo, *model.AppError) {
-	return app.Store.Curation().GetPodcastsByCuration(curationId, 0, 7)
-}
-
-func (app *App) SearchPodcasts(searchQuery string) ([]*model.PodcastInfo, *model.AppError) {
+func (app *App) SearchPodcasts(searchQuery string) ([]*model.PodcastIndex, *model.AppError) {
 	results, err := app.ElasticSearch.Search().
 		Index("podcast").
 		Query(elastic.NewMultiMatchQuery(searchQuery, "title", "author")).
@@ -30,9 +26,9 @@ func (app *App) SearchPodcasts(searchQuery string) ([]*model.PodcastInfo, *model
 		return nil, nil
 	}
 
-	podcasts := []*model.PodcastInfo{}
-	for _, item := range results.Each(reflect.TypeOf(model.PodcastInfo{})) {
-		tmp, _ := item.(model.PodcastInfo)
+	podcasts := []*model.PodcastIndex{}
+	for _, item := range results.Each(reflect.TypeOf(model.PodcastIndex{})) {
+		tmp, _ := item.(model.PodcastIndex)
 		tmp.Description = ""
 		podcasts = append(podcasts, &tmp)
 	}

@@ -15,7 +15,6 @@ type Feed struct {
 	SourceId string `json:"source_id,omitempty"`
 	// Feed details
 	Url          string `json:"feed,omitempty"`
-	NewUrl       string `json:"new_feed_url,omitempty"`
 	ETag         string `json:"etag,omitempty"`
 	LastModified string `json:"last_modified,omitempty"`
 	// Refresh details
@@ -31,18 +30,18 @@ type Feed struct {
 func (f *Feed) DbColumns() []string {
 	return []string{
 		"id", "source", "source_id", "url",
-		"new_url", "etag", "last_modified", "refresh_enabled",
-		"refresh_interval", "last_refresh_at", "last_refresh_comment", "next_refresh_at",
-		"created_at", "updated_at",
+		"etag", "last_modified", "refresh_enabled", "refresh_interval",
+		"last_refresh_at", "last_refresh_comment", "next_refresh_at", "created_at",
+		"updated_at",
 	}
 }
 
 func (f *Feed) FieldAddrs() []interface{} {
 	return []interface{}{
 		&f.Id, &f.Source, &f.SourceId, &f.Url,
-		&f.NewUrl, &f.ETag, &f.LastModified, &f.RefreshEnabled,
-		&f.RefreshInterval, &f.LastRefreshAt, &f.LastRefreshComment, &f.NextRefreshAt,
-		&f.CreatedAt, &f.UpdatedAt,
+		&f.ETag, &f.LastModified, &f.RefreshEnabled, &f.RefreshInterval,
+		&f.LastRefreshAt, &f.LastRefreshComment, &f.NextRefreshAt, &f.CreatedAt,
+		&f.UpdatedAt,
 	}
 }
 
