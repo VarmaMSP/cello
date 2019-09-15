@@ -16,11 +16,13 @@ type FeedStore interface {
 	Save(feed *model.Feed) *model.AppError
 	Get(id string) (*model.Feed, *model.AppError)
 	GetAllBySource(source string, offset, limit int) ([]*model.Feed, *model.AppError)
+	GetAllToBeRefreshed(createdAfter int64, limit int) ([]*model.Feed, *model.AppError)
 	Update(old, new *model.Feed) *model.AppError
 }
 
 type PodcastStore interface {
 	Save(podcast *model.Podcast) *model.AppError
+	Get(podcastId string) (*model.Podcast, *model.AppError)
 	GetInfo(podcastId string) (*model.PodcastInfo, *model.AppError)
 	GetAllToBeRefreshed(createdAfter int64, limit int) ([]*model.PodcastFeedDetails, *model.AppError)
 	GetFeedDetails(podcastId string) (*model.PodcastFeedDetails, *model.AppError)

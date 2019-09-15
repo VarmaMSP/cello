@@ -2,8 +2,6 @@ package model
 
 import (
 	"net/http"
-	"sort"
-	"time"
 
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/mmcdole/gofeed/rss"
@@ -219,81 +217,6 @@ func (p *Podcast) LoadDetails(feed *rss.Feed) *AppError {
 	}
 
 	return nil
-}
-
-var (
-	secondsInHour  = 60 * 60
-	secondsInDay   = 60 * 60 * 24
-	secondsInWeek  = 60 * 60 * 24 * 7
-	secondsInMonth = 60 * 60 * 24 * 30
-	secondsInYear  = 60 * 60 * 24 * 365
-)
-
-func (p *Podcast) SetRefershInterval(items []*rss.Item) {
-	if p.Complete == 1 || p.Block == 1 {
-		p.RefreshEnabled = 0
-		return
-	}
-
-	// Pub dates ordered from most recent to old
-	var itemPubDates []*time.Time
-	for _, item := range items {
-		if item.PubDateParsed != nil {
-			itemPubDates = append(itemPubDates, item.PubDateParsed)
-		}
-	}
-	sort.SliceStable(itemPubDates, func(i, j int) bool { return itemPubDates[i].After(*itemPubDates[j]) })
-
-	// disable refresh for podcasts with no episodes
-	if len(itemPubDates) == 0 {
-		p.RefreshEnabled = 0
-		return
-	}
-
-	if len(itemPubDates) == 1 {
-		p.RefreshEnabled = 1
-		p.RefreshInterval = 4 * secondsInHour
-		if SecondsSince(itemPubDates[0]) > 3*secondsInMonth {
-			p.RefreshEnabled = 0
-		}
-		return
-	}
-
-	// disable refresh for podcasts that havent published an episode in more than 1 years
-	if SecondsSince(itemPubDates[0]) > secondsInYear {
-		p.RefreshEnabled = 0
-		return
-	}
-	p.RefreshEnabled = 1
-
-	// Calculate average duration between maximum of last 5  episodes
-	l, s := MinInt(len(itemPubDates), 5), 0
-	for i := 0; i < l-1; i++ {
-		s += int(itemPubDates[i].Sub(*itemPubDates[i+1]).Seconds())
-	}
-	s /= l - 1
-
-	if s < 2*secondsInDay {
-		p.RefreshInterval = secondsInHour
-		return
-	}
-	if s < 4*secondsInDay {
-		p.RefreshInterval = 2 * secondsInHour
-		return
-	}
-	if s < secondsInWeek {
-		p.RefreshInterval = 3 * secondsInHour
-		return
-	}
-	if s < 2*secondsInWeek {
-		p.RefreshInterval = 5 * secondsInHour
-		return
-	}
-	if s < secondsInMonth {
-		p.RefreshInterval = 6 * secondsInHour
-		return
-	}
-	p.RefreshInterval = secondsInDay
 }
 
 func (p *Podcast) PreSave() {

@@ -28,6 +28,19 @@ func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 	return nil
 }
 
+func (s *SqlPodcastStore) Get(podcastId string) (*model.Podcast, *model.AppError) {
+	podcast := &model.Podcast{}
+	sql := "SELECT " + strings.Join(podcast.DbColumns(), ",") + " FROM podcast WHERE id = ?"
+
+	if err := s.GetMaster().QueryRow(sql, podcastId).Scan(podcast.FieldAddrs()...); err != nil {
+		return nil, model.NewAppError(
+			"store.sqlstore.sql_podcast_store.get_podcast", err.Error(), http.StatusInternalServerError,
+			map[string]string{"id": podcastId},
+		)
+	}
+	return podcast, nil
+}
+
 func (s *SqlPodcastStore) GetInfo(podcastId string) (*model.PodcastInfo, *model.AppError) {
 	info := &model.PodcastInfo{}
 	sql := "SELECT " + strings.Join(info.DbColumns(), ",") + " FROM podcast WHERE id = ?"

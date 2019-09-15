@@ -42,8 +42,8 @@ func NewImportPodcastJob(store store.Store, esClient *elastic.Client, createThum
 }
 
 func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
-	var meta model.ItunesMeta
-	if err := json.Unmarshal(delivery.Body, &meta); err != nil {
+	var feed model.Feed
+	if err := json.Unmarshal(delivery.Body, &feed); err != nil {
 		delivery.Ack(false)
 		return
 	}
@@ -55,33 +55,37 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 		defer func() { <-job.rateLimiter }()
 
 		// updated meta
-		metaU := meta
+		feedU := feed
+		feedU.LastRefreshAt = model.Now()
+		feedU.LastRefreshComment = "SUCCESS"
 
-		feed, headers, err := fetchRssFeed(meta.FeedUrl, map[string]string{}, job.httpClient)
-		if err != nil || feed == nil {
-			metaU.AddedToDb = model.StatusFailure
-			metaU.Comment = err.Error()
-			goto update_meta
+		rssFeed, headers, err := fetchRssFeed(feed.Url, map[string]string{}, job.httpClient)
+		if err != nil || rssFeed == nil {
+			feedU.LastRefreshComment = err.Error()
+			goto update_feed
 		}
 
-		if err := job.savePodcast(feed, meta.FeedUrl, headers); err != nil {
-			metaU.AddedToDb = model.StatusFailure
-			metaU.Comment = err.Error()
-			goto update_meta
+		if err := job.savePodcast(rssFeed, feed.Url, headers); err != nil {
+			feedU.LastRefreshComment = err.Error()
+			goto update_feed
 		}
-		metaU.AddedToDb = model.StatusSuccess
 
-	update_meta:
-		metaU.UpdatedAt = model.Now()
-		job.store.ItunesMeta().Update(&meta, &metaU)
+		feedU.SetRefershInterval(rssFeed)
+		if feedU.RefreshEnabled == 1 {
+			feedU.NextRefreshAt = int64(feedU.RefreshInterval) + model.Now()
+		}
+
+	update_feed:
+		feedU.UpdatedAt = model.Now()
+		job.store.Feed().Update(&feed, &feedU)
 	}()
 }
 
-func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers map[string]string) *model.AppError {
+func (job *ImportPodcastJob) savePodcast(rssFeed *rss.Feed, feedUrl string, headers map[string]string) *model.AppError {
 	appErrorC := model.NewAppErrorC(
 		"jobs.podcast_import_job.save_podcast",
 		http.StatusInternalServerError,
-		map[string]string{"title": feed.Title},
+		map[string]string{"title": rssFeed.Title},
 	)
 
 	// Save podcast
@@ -90,10 +94,9 @@ func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers
 		FeedETag:         headers[h.ETag],
 		FeedLastModified: headers[h.LastModified],
 	}
-	if err := podcast.LoadDetails(feed); err != nil {
+	if err := podcast.LoadDetails(rssFeed); err != nil {
 		return appErrorC(err.Error())
 	}
-	podcast.SetRefershInterval(feed.Items)
 	if err := job.store.Podcast().Save(podcast); err != nil {
 		return appErrorC(err.Error())
 	}
@@ -120,7 +123,7 @@ func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers
 		Do(context.TODO())
 
 	// Save Episodes
-	for _, item := range feed.Items {
+	for _, item := range rssFeed.Items {
 		episode := &model.Episode{PodcastId: podcast.Id}
 		if err := episode.LoadDetails(item); err != nil {
 			continue
@@ -132,8 +135,8 @@ func (job *ImportPodcastJob) savePodcast(feed *rss.Feed, feedUrl string, headers
 
 	// Save Categories
 	var categoryIds []int
-	if feed.ITunesExt != nil {
-		for _, c := range feed.ITunesExt.Categories {
+	if rssFeed.ITunesExt != nil {
+		for _, c := range rssFeed.ITunesExt.Categories {
 			if c.Subcategory != nil {
 				categoryIds = append(categoryIds, model.CategoryId(c.Subcategory.Text))
 			}

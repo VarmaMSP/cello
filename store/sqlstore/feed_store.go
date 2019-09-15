@@ -42,6 +42,7 @@ func (s *SqlFeedStore) Get(id string) (*model.Feed, *model.AppError) {
 
 func (s *SqlFeedStore) GetAllBySource(source string, offset, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := "SELECT " + strings.Join((&model.Feed{}).DbColumns(), ",") + " FROM itunes_meta WHERE source = ? LIMIT ?, ?"
+
 	copyTo := func() []interface{} {
 		tmp := &model.Feed{}
 		res = append(res, tmp)
@@ -53,6 +54,25 @@ func (s *SqlFeedStore) GetAllBySource(source string, offset, limit int) (res []*
 			"store.sqlstore.sql_feed_store.get", err.Error(), http.StatusInternalServerError,
 			map[string]string{"source": source},
 		)
+	}
+	return
+}
+
+func (s *SqlFeedStore) GetAllToBeRefreshed(createdAfter int64, limit int) (res []*model.Feed, appE *model.AppError) {
+	sql := "SELECT " + strings.Join((&model.Feed{}).DbColumns(), ",") + ` FROM feed
+		WHERE refresh_enabled = 1 AND
+			  next_refresh_at > ? AND
+			  created_at > ?
+		ORDER BY created_at LIMIT ?`
+
+	copyTo := func() []interface{} {
+		tmp := &model.Feed{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql, model.Now(), createdAfter, limit); err != nil {
+		appE = model.NewAppError("store.sqlstore.sql_feed_store.get_all_to_be_refreshed", err.Error(), http.StatusInternalServerError, nil)
 	}
 	return
 }

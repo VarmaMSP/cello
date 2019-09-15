@@ -169,16 +169,16 @@ func (job *ScrapeItunesJob) pollAndSaveItunesMeta() {
 				continue
 			}
 
-			meta := &model.ItunesMeta{
-				ItunesId:  strconv.Itoa(result.Id),
-				FeedUrl:   result.FeedUrl,
-				AddedToDb: model.StatusPending,
+			feed := &model.Feed{
+				Source:   "ITUNES_SCRAPER",
+				SourceId: strconv.Itoa(result.Id),
+				Url:      result.FeedUrl,
 			}
-			if err := job.store.ItunesMeta().Save(meta); err != nil {
+			if err := job.store.Feed().Save(feed); err != nil {
 				continue
 			}
 
-			job.importPodcastP.D <- meta
+			job.importPodcastP.D <- feed
 		}
 	}
 }

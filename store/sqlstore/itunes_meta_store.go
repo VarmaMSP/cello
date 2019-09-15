@@ -46,7 +46,7 @@ func (s *SqlItunesMetaStore) GetItunesIdList(offset, limit int) (res []string, a
 		return []interface{}{tmp}
 	}
 
-	if err := s.Query(copyTo, sql); err != nil {
+	if err := s.Query(copyTo, sql, offset, limit); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_itunes_meta_store.get_itunes_id_list", err.Error(), http.StatusInternalServerError,
 			map[string]string{"offset": strconv.Itoa(offset), "limit": strconv.Itoa(limit)},

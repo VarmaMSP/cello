@@ -1,6 +1,12 @@
 package model
 
-import "github.com/rs/xid"
+import (
+	"sort"
+	"time"
+
+	"github.com/mmcdole/gofeed/rss"
+	"github.com/rs/xid"
+)
 
 type Feed struct {
 	// Ids
@@ -52,4 +58,85 @@ func (f *Feed) PreSave() {
 	if f.UpdatedAt == 0 {
 		f.UpdatedAt = Now()
 	}
+}
+
+var (
+	secondsInHour  = 60 * 60
+	secondsInDay   = 60 * 60 * 24
+	secondsInWeek  = 60 * 60 * 24 * 7
+	secondsInMonth = 60 * 60 * 24 * 30
+	secondsInYear  = 60 * 60 * 24 * 365
+)
+
+func (f *Feed) SetRefershInterval(rssFeed *rss.Feed) {
+	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Complete == "true" {
+		f.RefreshEnabled = 0
+		return
+	}
+	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Block == "true" {
+		f.RefreshEnabled = 0
+		return
+	}
+
+	items := rssFeed.Items
+
+	// disable refresh for podcasts with no episodes
+	if len(items) == 0 {
+		f.RefreshEnabled = 0
+		return
+	}
+
+	if len(items) == 1 {
+		f.RefreshEnabled = 1
+		f.RefreshInterval = 4 * secondsInHour
+		if items[0].PubDateParsed != nil && SecondsSince(items[0].PubDateParsed) > 3*secondsInMonth {
+			f.RefreshEnabled = 0
+		}
+		return
+	}
+
+	// Pub dates ordered from most recent to old
+	var itemPubDates []*time.Time
+	for _, item := range items {
+		if item.PubDateParsed != nil {
+			itemPubDates = append(itemPubDates, item.PubDateParsed)
+		}
+	}
+	sort.SliceStable(itemPubDates, func(i, j int) bool { return itemPubDates[i].After(*itemPubDates[j]) })
+
+	// disable refresh for podcasts that havent published an episode in more than 1 years
+	if SecondsSince(itemPubDates[0]) > secondsInYear {
+		f.RefreshEnabled = 0
+		return
+	}
+	f.RefreshEnabled = 1
+
+	// Calculate average duration between maximum of last 5  episodes
+	l, s := MinInt(len(itemPubDates), 5), 0
+	for i := 0; i < l-1; i++ {
+		s += int(itemPubDates[i].Sub(*itemPubDates[i+1]).Seconds())
+	}
+	s /= l - 1
+
+	if s < 2*secondsInDay {
+		f.RefreshInterval = secondsInHour
+		return
+	}
+	if s < 4*secondsInDay {
+		f.RefreshInterval = 2 * secondsInHour
+		return
+	}
+	if s < secondsInWeek {
+		f.RefreshInterval = 3 * secondsInHour
+		return
+	}
+	if s < 2*secondsInWeek {
+		f.RefreshInterval = 5 * secondsInHour
+		return
+	}
+	if s < secondsInMonth {
+		f.RefreshInterval = 6 * secondsInHour
+		return
+	}
+	f.RefreshInterval = secondsInDay
 }
