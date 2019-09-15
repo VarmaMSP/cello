@@ -70,8 +70,9 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 			goto update_feed
 		}
 
-		feedU.SetRefershInterval(rssFeed)
-		if feedU.RefreshEnabled == 1 {
+		feedU.ETag = headers[h.ETag]
+		feedU.LastModified = headers[h.LastModified]
+		if feedU.SetRefershInterval(rssFeed); feedU.RefreshEnabled == 1 {
 			feedU.NextRefreshAt = int64(feedU.RefreshInterval) + model.Now()
 		}
 
@@ -89,11 +90,7 @@ func (job *ImportPodcastJob) savePodcast(rssFeed *rss.Feed, feedUrl string, head
 	)
 
 	// Save podcast
-	podcast := &model.Podcast{
-		FeedUrl:          feedUrl,
-		FeedETag:         headers[h.ETag],
-		FeedLastModified: headers[h.LastModified],
-	}
+	podcast := &model.Podcast{}
 	if err := podcast.LoadDetails(rssFeed); err != nil {
 		return appErrorC(err.Error())
 	}
@@ -112,7 +109,7 @@ func (job *ImportPodcastJob) savePodcast(rssFeed *rss.Feed, feedUrl string, head
 	job.esClient.Index().
 		Index(elasticsearch.PodcastIndexName).
 		Id(podcast.Id).
-		BodyJson(&model.PodcastInfo{
+		BodyJson(&model.PodcastIndex{
 			Id:          podcast.Id,
 			Title:       podcast.Title,
 			Author:      podcast.Author,

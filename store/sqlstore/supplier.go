@@ -53,7 +53,7 @@ func (s *SqlSupplier) Insert(tableName string, models []DbModel) (sql.Result, er
 }
 
 func (s *SqlSupplier) UpdateChanges(tableName string, old, new DbModel, where string, values ...interface{}) (sql.Result, error) {
-	query, updateValues, noChanges := UpdateQuery("itunes_meta", old, new, " WHERE itunes_id = ?", values)
+	query, updateValues, noChanges := UpdateQuery(tableName, old, new, where, values)
 	if noChanges {
 		return nil, nil
 	}

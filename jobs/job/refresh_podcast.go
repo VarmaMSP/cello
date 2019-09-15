@@ -34,8 +34,8 @@ func NewRefreshPodcastJob(store store.Store, workerLimit int) (model.Job, error)
 }
 
 func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
-	var details model.PodcastFeedDetails
-	if err := json.Unmarshal(delivery.Body, &details); err != nil {
+	var feed model.Feed
+	if err := json.Unmarshal(delivery.Body, &feed); err != nil {
 		delivery.Ack(false)
 		return
 	}
@@ -47,80 +47,79 @@ func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 		defer func() { <-job.rateLimiter }()
 
 		// updated details
-		detailsU := details
+		feedU := feed
 
-		feed, headers, err := fetchRssFeed(
-			details.FeedUrl,
-			map[string]string{h.ETag: details.FeedETag, h.LastModified: details.FeedLastModified},
+		rssFeed, headers, err := fetchRssFeed(
+			feed.Url,
+			map[string]string{h.ETag: feed.ETag, h.LastModified: feed.LastModified},
 			job.httpClient,
 		)
 		if err != nil {
-			detailsU.LastRefreshStatus = model.StatusFailure
-			goto update_details
+			feedU.LastRefreshComment = err.Error()
+			goto update_feed
 		}
 
-		detailsU.FeedETag = headers[h.ETag]
-		detailsU.FeedLastModified = headers[h.LastModified]
-
-		if feed == nil {
-			detailsU.LastRefreshStatus = model.StatusSuccess
-			goto update_details
+		feedU.ETag = headers[h.ETag]
+		feedU.LastModified = headers[h.LastModified]
+		if rssFeed == nil {
+			feedU.LastRefreshComment = "SUCCESS"
+			goto update_feed
 		}
 
-		if err := job.updateEpisodes(details.Id, feed); err != nil {
-			detailsU.LastRefreshStatus = model.StatusFailure
-			goto update_details
+		if err := job.updateEpisodes(feed.Id, rssFeed); err != nil {
+			feedU.LastRefreshComment = model.StatusFailure
+			goto update_feed
 		}
 
-		detailsU.LastRefreshStatus = model.StatusSuccess
+		feedU.LastRefreshComment = model.StatusSuccess
 
-	update_details:
-		detailsU.UpdatedAt = model.Now()
-		job.store.Podcast().UpdateFeedDetails(&details, &detailsU)
+	update_feed:
+		feedU.UpdatedAt = model.Now()
+		job.store.Feed().Update(&feed, &feedU)
 	}()
 }
 
-func (job *RefreshPodcastJob) updateEpisodes(podcastId string, feed *rss.Feed) *model.AppError {
+func (job *RefreshPodcastJob) updateEpisodes(podcastId string, rssFeed *rss.Feed) *model.AppError {
 	appErrorC := model.NewAppErrorC(
-		"job.refresh_podcast.fetch_raw_feed",
+		"job.refresh_podcast.update_episodes",
 		http.StatusInternalServerError,
 		map[string]string{"podcast_id": podcastId},
 	)
 
-	episodeGuidList, err := job.store.Episode().GetAllGuidsByPodcast(podcastId)
+	episodes, err := job.store.Episode().GetAllByPodcast(podcastId, 0, 5000)
 	if err != nil {
 		return appErrorC(err.Error())
 	}
 
-	// Use map to emulate set
-	episodes := map[string]interface{}{}
-	for _, g := range episodeGuidList {
-		episodes[g] = nil
+	// Index episodes by their guids
+	episodeMap := map[string]*model.Episode{}
+	for _, episode := range episodes {
+		episodeMap[episode.Guid] = episode
 	}
 
 	// Index rss items by their guid
-	items := map[string]*rss.Item{}
-	for _, i := range feed.Items {
-		if i.ITunesExt != nil && i.ITunesExt.Block == "true" {
+	rssItemMap := map[string]*rss.Item{}
+	for _, item := range rssFeed.Items {
+		if item.ITunesExt != nil && item.ITunesExt.Block == "true" {
 			continue
 		}
-		if guid := model.RssItemGuid(i); guid != "" {
-			items[guid] = i
+		if guid := model.RssItemGuid(item); guid != "" {
+			rssItemMap[guid] = item
 		}
 	}
 
 	// Block episodes
-	for episodeGuid, _ := range episodes {
-		if _, ok := items[episodeGuid]; !ok {
+	for episodeGuid, _ := range episodeMap {
+		if _, ok := rssItemMap[episodeGuid]; !ok {
 			job.store.Episode().Block(podcastId, episodeGuid)
 		}
 	}
 
 	// Add New Episodes
-	for itemGuid, item := range items {
-		if _, ok := episodes[itemGuid]; ok {
+	for rssItemGuid, rssItem := range rssItemMap {
+		if _, ok := episodeMap[rssItemGuid]; ok {
 			episode := &model.Episode{PodcastId: podcastId}
-			if err := episode.LoadDetails(item); err != nil {
+			if err := episode.LoadDetails(rssItem); err != nil {
 				continue
 			}
 			job.store.Episode().Save(episode)

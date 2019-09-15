@@ -33,6 +33,16 @@ type Podcast struct {
 	UpdatedAt   int64  `json:"updated_at,omitempty"`
 }
 
+// Elasticsearch podcast index type
+type PodcastIndex struct {
+	Id          string `json:"id,omitempty"`
+	Title       string `json:"title,omitempty"`
+	Author      string `json:"author,omitempty"`
+	Description string `json:"description,omitempty"`
+	Type        string `json:"type,omitempty"`
+	Complete    int    `json:"complete,omitempty"`
+}
+
 func (p *Podcast) DbColumns() []string {
 	return []string{
 		"id", "title", "description", "image_path",

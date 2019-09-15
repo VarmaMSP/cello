@@ -27,27 +27,27 @@ func (job *ScheduleRefreshJob) Call(delivery amqp.Delivery) {
 
 	for _ = range ticker.C {
 		for createdAfter := int64(0); ; {
-			detailsList, err := job.store.Podcast().GetAllToBeRefreshed(createdAfter, limit)
+			feeds, err := job.store.Feed().GetAllToBeRefreshed(createdAfter, limit)
 			if err != nil {
 				break
 			}
 
-			for _, details := range detailsList {
-				detailsU := details
-				detailsU.LastRefreshAt = model.Now()
-				detailsU.LastRefreshStatus = model.StatusPending
-				if err := job.store.Podcast().UpdateFeedDetails(details, detailsU); err != nil {
+			for _, feed := range feeds {
+				feedU := feed
+				feedU.LastRefreshAt = model.Now()
+				feedU.LastRefreshComment = "PENDING"
+				if err := job.store.Feed().Update(feed, feedU); err != nil {
 					continue
 				}
 
-				fmt.Printf("Scheduled podcast refresh: %s\n", details.Id)
-				job.refreshPodcastP.D <- detailsU
+				fmt.Printf("Scheduled podcast refresh: %s\n", feed.Id)
+				job.refreshPodcastP.D <- feedU
 			}
 
-			if len(detailsList) < limit {
+			if len(feeds) < limit {
 				break
 			}
-			createdAfter = detailsList[len(detailsList)-1].CreatedAt
+			createdAfter = feeds[len(feeds)-1].CreatedAt
 		}
 	}
 }
