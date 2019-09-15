@@ -8,17 +8,17 @@ import (
 )
 
 type SqlSupplier struct {
-	db          *sql.DB
-	feed        store.FeedStore
-	podcast     store.PodcastStore
-	episode     store.EpisodeStore
-	category    store.CategoryStore
-	curation    store.CurationStore
-	jobSchedule store.JobScheduleStore
+	db       *sql.DB
+	feed     store.FeedStore
+	podcast  store.PodcastStore
+	episode  store.EpisodeStore
+	category store.CategoryStore
+	curation store.CurationStore
+	task     store.TaskStore
 }
 
-func NewSqlStore(mysqlConfig *model.MysqlConfig) (SqlStore, error) {
-	db, err := sql.Open("mysql", MakeMysqlDSN(mysqlConfig))
+func NewSqlStore(config *model.Config) (SqlStore, error) {
+	db, err := sql.Open("mysql", MakeMysqlDSN(config))
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func NewSqlStore(mysqlConfig *model.MysqlConfig) (SqlStore, error) {
 	supplier.episode = NewSqlEpisodeStore(supplier)
 	supplier.category = NewSqlCategoryStore(supplier)
 	supplier.curation = NewSqlCurationStore(supplier)
-	supplier.jobSchedule = NewSqlJobScheduleStore(supplier)
+	supplier.task = NewSqlTaskStore(supplier)
 
 	return supplier, nil
 }
@@ -98,6 +98,6 @@ func (s *SqlSupplier) Curation() store.CurationStore {
 	return s.curation
 }
 
-func (s *SqlSupplier) JobSchedule() store.JobScheduleStore {
-	return s.jobSchedule
+func (s *SqlSupplier) Task() store.TaskStore {
+	return s.task
 }

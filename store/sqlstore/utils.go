@@ -88,12 +88,12 @@ func ValuesFromAddrs(addrs []interface{}) []interface{} {
 	return values
 }
 
-func MakeMysqlDSN(config *model.MysqlConfig) string {
+func MakeMysqlDSN(config *model.Config) string {
 	c := mysql.Config{
-		Addr:                 config.Address,
-		DBName:               config.Database,
-		User:                 config.User,
-		Passwd:               config.Password,
+		Addr:                 config.Mysql.Address,
+		DBName:               config.Mysql.Database,
+		User:                 config.Mysql.User,
+		Passwd:               config.Mysql.Password,
 		AllowNativePasswords: true,
 		Params:               map[string]string{"collation": "utf8mb4_unicode_ci"},
 	}

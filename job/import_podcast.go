@@ -12,8 +12,8 @@ import (
 	"github.com/streadway/amqp"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/services/elasticsearch"
-	"github.com/varmamsp/cello/services/rabbitmq"
+	"github.com/varmamsp/cello/service/elasticsearch"
+	"github.com/varmamsp/cello/service/rabbitmq"
 )
 
 type ImportPodcastJob struct {

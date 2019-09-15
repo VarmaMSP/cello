@@ -24,6 +24,7 @@ export default class PodcastThumbnail extends Component<Props> {
           <Shiitake
             lines={2}
             throttleRate={200}
+            renderFullOnServer
             className="text-sm tracking-tight text-gray-800 mt-3 mb-1"
           >
             {podcast.title}
@@ -31,6 +32,7 @@ export default class PodcastThumbnail extends Component<Props> {
           <Shiitake
             lines={1}
             throttleRate={200}
+            renderFullOnServer
             className="text-sm tracking-tigher text-gray-600"
           >
             {`by ${podcast.author}`}

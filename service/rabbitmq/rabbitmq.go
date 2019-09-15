@@ -9,7 +9,7 @@ const (
 	DefaultExchange = ""
 )
 
-func NewConnection(config *model.RabbitmqConfig) (*amqp.Connection, error) {
+func NewConnection(config *model.Config) (*amqp.Connection, error) {
 	connection, err := amqp.Dial(makeAmqpUrl(config))
 	if err != nil {
 		return nil, err
@@ -22,9 +22,6 @@ func NewConnection(config *model.RabbitmqConfig) (*amqp.Connection, error) {
 	defer channel.Close()
 
 	if err := createQueue(model.QUEUE_NAME_IMPORT_PODCAST, channel); err != nil {
-		return nil, err
-	}
-	if err := createQueue(model.QUEUE_NAME_SCHEDULED_JOB_CALL, channel); err != nil {
 		return nil, err
 	}
 	if err := createQueue(model.QUEUE_NAME_REFRESH_PODCAST, channel); err != nil {
@@ -48,6 +45,6 @@ func createQueue(name string, channel *amqp.Channel) error {
 	return err
 }
 
-func makeAmqpUrl(config *model.RabbitmqConfig) string {
-	return "amqp://" + config.User + ":" + config.Password + "@" + config.Address + "/"
+func makeAmqpUrl(config *model.Config) string {
+	return "amqp://" + config.Rabbitmq.User + ":" + config.Rabbitmq.Password + "@" + config.Rabbitmq.Address + "/"
 }

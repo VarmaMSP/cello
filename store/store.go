@@ -8,7 +8,7 @@ type Store interface {
 	Episode() EpisodeStore
 	Category() CategoryStore
 	Curation() CurationStore
-	JobSchedule() JobScheduleStore
+	Task() TaskStore
 }
 
 type FeedStore interface {
@@ -44,8 +44,7 @@ type CurationStore interface {
 	Delete(curationId string) *model.AppError
 }
 
-type JobScheduleStore interface {
-	GetAllActive() ([]*model.JobSchedule, *model.AppError)
-	Disable(jobName string) *model.AppError
-	SetRunAt(jobName string, runAt int64) *model.AppError
+type TaskStore interface {
+	GetAllActive() ([]*model.Task, *model.AppError)
+	Update(old, new *model.Task) *model.AppError
 }

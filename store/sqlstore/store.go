@@ -23,5 +23,5 @@ type SqlStore interface {
 	Episode() store.EpisodeStore
 	Category() store.CategoryStore
 	Curation() store.CurationStore
-	JobSchedule() store.JobScheduleStore
+	Task() store.TaskStore
 }

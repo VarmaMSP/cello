@@ -9,8 +9,8 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func NewClient(config *model.ElasticsearchConfig) (*elastic.Client, error) {
-	dsn := fmt.Sprintf("http://%s:%s@%s", config.User, config.Password, config.Address)
+func NewClient(config *model.Config) (*elastic.Client, error) {
+	dsn := fmt.Sprintf("http://%s:%s@%s", config.Elasticsearch.User, config.Elasticsearch.Password, config.Elasticsearch.Address)
 	client, err := elastic.NewClient(elastic.SetURL(dsn))
 	if err != nil {
 		return nil, err

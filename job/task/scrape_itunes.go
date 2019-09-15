@@ -8,8 +8,7 @@ import (
 	"time"
 
 	"github.com/varmamsp/cello/app"
-	"github.com/varmamsp/cello/services/rabbitmq"
-
+	"github.com/varmamsp/cello/service/rabbitmq"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/varmamsp/cello/model"
 )

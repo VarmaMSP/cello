@@ -11,7 +11,7 @@ import (
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/services/rabbitmq"
+	"github.com/varmamsp/cello/service/rabbitmq"
 )
 
 type RefreshPodcastJob struct {

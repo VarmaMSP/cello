@@ -7,10 +7,10 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/streadway/amqp"
-	"github.com/varmamsp/cello/jobs/job"
+	"github.com/varmamsp/cello/job"
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/services/elasticsearch"
-	"github.com/varmamsp/cello/services/rabbitmq"
+	"github.com/varmamsp/cello/service/elasticsearch"
+	"github.com/varmamsp/cello/service/rabbitmq"
 	"github.com/varmamsp/cello/store"
 	"github.com/varmamsp/cello/store/sqlstore"
 	"golang.org/x/oauth2"
@@ -25,10 +25,11 @@ type App struct {
 
 	GoogleOAuthConfig *oauth2.Config
 
-	ScrapeItunesJob    model.Job
+	SchedulerJob       model.Job
 	ImportPodcastJob   model.Job
 	RefreshPodcastJob  model.Job
 	CreateThumbnailJob model.Job
+	
 
 	Log zerolog.Logger
 }
@@ -71,12 +72,13 @@ func NewApp(config model.Config) (*App, error) {
 	}
 	app.RabbitmqConsumerConn = rabbitmqConsumerConn
 
-	if config.Jobs.ScrapeItunes.Enable {
-		job, err := job.NewScrapeItunesJob(app, &config)
+	if config.Jobs.Scheduler.Enable {
+		job, err := job.NewSchedulerJob(app, &config)
 		if err != nil {
 			return nil, err
 		}
-		app.ScrapeItunesJob = job
+		app.SchedulerJob = job
+		go app.SchedulerJob.Run()
 	}
 
 	if config.Jobs.ImportPodcast.Enable {
@@ -85,6 +87,7 @@ func NewApp(config model.Config) (*App, error) {
 			return nil, err
 		}
 		app.ImportPodcastJob = job
+		go app.ImportPodcastJob.Run()
 	}
 
 	if config.Jobs.RefreshPodcast.Enable {
@@ -93,6 +96,7 @@ func NewApp(config model.Config) (*App, error) {
 			return nil, err
 		}
 		app.RefreshPodcastJob = job
+		go app.RefreshPodcastJob.Run()
 	}
 
 	if config.Jobs.CreateThumbnail.Enable {
@@ -101,6 +105,7 @@ func NewApp(config model.Config) (*App, error) {
 			return nil, err
 		}
 		app.CreateThumbnailJob = job
+		go app.CreateThumbnailJob.Run()
 	}
 
 	app.GoogleOAuthConfig = &oauth2.Config{
