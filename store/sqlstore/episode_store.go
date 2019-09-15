@@ -28,26 +28,26 @@ func (s *SqlEpisodeStore) Save(episode *model.Episode) *model.AppError {
 	return nil
 }
 
-func (s *SqlEpisodeStore) GetInfo(id string) (*model.EpisodeInfo, *model.AppError) {
-	info := &model.EpisodeInfo{}
-	sql := "SELECT " + strings.Join(info.DbColumns(), ",") + " FROM episode WHERE id = ?"
+func (s *SqlEpisodeStore) Get(id string) (*model.Episode, *model.AppError) {
+	episode := &model.Episode{}
+	sql := "SELECT " + strings.Join(episode.DbColumns(), ",") + " FROM episode WHERE id = ?"
 
-	if err := s.GetMaster().QueryRow(sql, id).Scan(info.FieldAddrs()...); err != nil {
+	if err := s.GetMaster().QueryRow(sql, id).Scan(episode.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_info", err.Error(), http.StatusInternalServerError,
+			"store.sqlstore.sql_episode_store.get", err.Error(), http.StatusInternalServerError,
 			map[string]string{"id": id},
 		)
 	}
-	return info, nil
+	return episode, nil
 }
 
-func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) (res []*model.EpisodeInfo, appE *model.AppError) {
-	sql := "SELECT " + strings.Join((&model.EpisodeInfo{}).DbColumns(), ",") + ` FROM episode
+func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) (res []*model.Episode, appE *model.AppError) {
+	sql := "SELECT " + strings.Join((&model.Episode{}).DbColumns(), ",") + ` FROM episode
 		WHERE podcast_id = ?
 		ORDER BY pub_date DESC`
 
 	copyTo := func() []interface{} {
-		tmp := &model.EpisodeInfo{}
+		tmp := &model.Episode{}
 		res = append(res, tmp)
 		return tmp.FieldAddrs()
 	}
@@ -55,24 +55,6 @@ func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) (
 	if err := s.Query(copyTo, sql, podcastId); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_episode_store.get_all_by_podcast", err.Error(), http.StatusInternalServerError,
-			map[string]string{"podcast_id": podcastId},
-		)
-	}
-	return
-}
-
-func (s *SqlEpisodeStore) GetAllGuidsByPodcast(podcastId string) (res []string, appE *model.AppError) {
-	sql := `SELECT guid FROM episode WHERE podcast_id = ?`
-
-	copyTo := func() []interface{} {
-		tmp := ""
-		res = append(res, tmp)
-		return []interface{}{&tmp}
-	}
-
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_all_guids_by_podcast", err.Error(), http.StatusInternalServerError,
 			map[string]string{"podcast_id": podcastId},
 		)
 	}

@@ -22,7 +22,7 @@ func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 	if _, err := s.Insert("podcast", []DbModel{podcast}); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_podcast_store.save", err.Error(), http.StatusInternalServerError,
-			map[string]string{"title": podcast.Title, "feed_url": podcast.FeedUrl},
+			map[string]string{"title": podcast.Title},
 		)
 	}
 	return nil
@@ -41,62 +41,23 @@ func (s *SqlPodcastStore) Get(podcastId string) (*model.Podcast, *model.AppError
 	return podcast, nil
 }
 
-func (s *SqlPodcastStore) GetInfo(podcastId string) (*model.PodcastInfo, *model.AppError) {
-	info := &model.PodcastInfo{}
-	sql := "SELECT " + strings.Join(info.DbColumns(), ",") + " FROM podcast WHERE id = ?"
-
-	if err := s.GetMaster().QueryRow(sql, podcastId).Scan(info.FieldAddrs()...); err != nil {
-		return nil, model.NewAppError(
-			"store.sqlstore.sql_podcast_store.get_info", err.Error(), http.StatusInternalServerError,
-			map[string]string{"id": podcastId},
-		)
-	}
-	return info, nil
-}
-
-func (s *SqlPodcastStore) GetAllToBeRefreshed(createdAfter int64, limit int) (res []*model.PodcastFeedDetails, appE *model.AppError) {
-	sql := "SELECT " + strings.Join((&model.PodcastFeedDetails{}).DbColumns(), ",") + ` FROM podcast
-		WHERE refresh_enabled = 1 AND
-		      last_refresh_status <> 'PENDING' AND 
-			  next_refresh_at < ? AND
-			  created_at > ?
-		ORDER BY created_at LIMIT ?`
+func (s *SqlPodcastStore) GetAllByCuration(curationId string, offset, limit int) (res []*model.Podcast, appE *model.AppError) {
+	sql := "SELECT " + strings.Join(DbColumnsWithPrefix(&model.Podcast{}, "podcast"), ",") + ` FROM podcast
+		INNER JOIN podcast_curation ON podcast_curation.podcast_id = podcast.id
+		WHERE podcast_curation.curation_id = ? 
+		LIMIT ?, ?`
 
 	copyTo := func() []interface{} {
-		tmp := &model.PodcastFeedDetails{}
+		tmp := &model.Podcast{}
 		res = append(res, tmp)
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.Query(copyTo, sql, model.Now(), createdAfter, limit); err != nil {
+	if err := s.Query(copyTo, sql, curationId, offset, limit); err != nil {
 		appE = model.NewAppError(
-			"sqlstore.sql_podcast_store.get_all_to_be_refreshed", err.Error(), http.StatusInternalServerError,
-			nil,
+			"sqlstore.sql_curation_store.get_podcast_by_curation", err.Error(), http.StatusInternalServerError,
+			map[string]string{"curation_id": curationId},
 		)
 	}
 	return
-}
-
-func (s *SqlPodcastStore) GetFeedDetails(podcastId string) (*model.PodcastFeedDetails, *model.AppError) {
-	details := &model.PodcastFeedDetails{}
-	sql := "SELECT " + strings.Join(details.DbColumns(), ",") + " From podcast WHERE id = ?"
-
-	if err := s.GetMaster().QueryRow(sql, podcastId).Scan(details.FieldAddrs()...); err != nil {
-		return nil, model.NewAppError(
-			"store.sqlstore.sql_podcast_store.get_info", err.Error(), http.StatusInternalServerError,
-			map[string]string{"id": podcastId},
-		)
-	}
-	return details, nil
-}
-
-func (s *SqlPodcastStore) UpdateFeedDetails(old, new *model.PodcastFeedDetails) *model.AppError {
-
-	if _, err := s.UpdateChanges("podcast", old, new, "id = ?", new.Id); err != nil {
-		return model.NewAppError(
-			"sqlstore.sql_podcast_store.update_feed_details", err.Error(), http.StatusInternalServerError,
-			nil,
-		)
-	}
-	return nil
 }

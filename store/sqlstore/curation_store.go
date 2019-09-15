@@ -73,28 +73,6 @@ func (s *SqlCurationStore) GetAll() (res []*model.Curation, appE *model.AppError
 	return
 }
 
-func (s *SqlCurationStore) GetPodcastsByCuration(curationId string, offset, limit int) (res []*model.PodcastInfo, appE *model.AppError) {
-	cols := strings.Join(DbColumnsWithPrefix(&model.PodcastInfo{}, "podcast"), ",")
-	sql := "SELECT " + cols + ` FROM podcast
-		INNER JOIN podcast_curation ON podcast_curation.podcast_id = podcast.id
-		WHERE podcast_curation.curation_id = ? 
-		LIMIT ?, ?`
-
-	copyTo := func() []interface{} {
-		tmp := &model.PodcastInfo{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
-
-	if err := s.Query(copyTo, sql, curationId, offset, limit); err != nil {
-		appE = model.NewAppError(
-			"sqlstore.sql_curation_store.get_podcast_by_curation", err.Error(), http.StatusInternalServerError,
-			map[string]string{"curation_id": curationId},
-		)
-	}
-	return
-}
-
 func (s *SqlCurationStore) Delete(curationId string) *model.AppError {
 	sql := "DELETE FROM curation WHERE id = ?"
 

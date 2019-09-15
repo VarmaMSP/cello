@@ -23,17 +23,13 @@ type FeedStore interface {
 type PodcastStore interface {
 	Save(podcast *model.Podcast) *model.AppError
 	Get(podcastId string) (*model.Podcast, *model.AppError)
-	GetInfo(podcastId string) (*model.PodcastInfo, *model.AppError)
-	GetAllToBeRefreshed(createdAfter int64, limit int) ([]*model.PodcastFeedDetails, *model.AppError)
-	GetFeedDetails(podcastId string) (*model.PodcastFeedDetails, *model.AppError)
-	UpdateFeedDetails(old, new *model.PodcastFeedDetails) *model.AppError
+	GetAllByCuration(curationId string, offset, limit int) ([]*model.Podcast, *model.AppError)
 }
 
 type EpisodeStore interface {
 	Save(episode *model.Episode) *model.AppError
-	GetInfo(id string) (*model.EpisodeInfo, *model.AppError)
-	GetAllByPodcast(podcastId string, limit, offset int) ([]*model.EpisodeInfo, *model.AppError)
-	GetAllGuidsByPodcast(podcastId string) ([]string, *model.AppError)
+	Get(episodeId string) (*model.Episode, *model.AppError)
+	GetAllByPodcast(podcastId string, limit, offset int) ([]*model.Episode, *model.AppError)
 	Block(podcastId, episodeGuid string) *model.AppError
 }
 
@@ -46,7 +42,6 @@ type CurationStore interface {
 	SavePodcastCuration(item *model.PodcastCuration) *model.AppError
 	Get(curationId string) (*model.Curation, *model.AppError)
 	GetAll() ([]*model.Curation, *model.AppError)
-	GetPodcastsByCuration(curationId string, offset, limit int) ([]*model.PodcastInfo, *model.AppError)
 	Delete(curationId string) *model.AppError
 }
 

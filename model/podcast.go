@@ -15,54 +15,22 @@ const (
 // https://help.apple.com/itc/podcasts_connect/#/itcb54353390
 
 type Podcast struct {
-	Id                string
-	Title             string
-	Description       string
-	ImagePath         string
-	Language          string
-	Explicit          int
-	Author            string
-	Type              string
-	Block             int
-	Complete          int
-	Link              string
-	OwnerName         string
-	OwnerEmail        string
-	Copyright         string
-	NewFeedUrl        string
-	FeedUrl           string
-	FeedETag          string
-	FeedLastModified  string
-	RefreshEnabled    int
-	LastRefreshAt     int64
-	NextRefreshAt     int64
-	LastRefreshStatus string
-	RefreshInterval   int
-	CreatedAt         int64
-	UpdatedAt         int64
-}
-
-type PodcastFeedDetails struct {
-	Id                string `json:"id"`
-	FeedUrl           string `json:"feed_url"`
-	FeedETag          string `json:"feed_etag"`
-	FeedLastModified  string `json:"feed_last_modified"`
-	RefreshEnabled    int    `json:"refresh_enabled"`
-	LastRefreshAt     int64  `json:"last_refresh_at"`
-	NextRefreshAt     int64  `json:"next_refresh_at"`
-	LastRefreshStatus string `json:"last_refresh_status"`
-	RefreshInterval   int    `json:"refresh_interval"`
-	CreatedAt         int64  `json:"created_at"`
-	UpdatedAt         int64  `json:"updated_at"`
-}
-
-type PodcastInfo struct {
-	Id          string `json:"id"`
-	Title       string `json:"title"`
-	Author      string `json:"author"`
+	Id          string `json:"id,omitempty"`
+	Title       string `json:"title,omitempty"`
 	Description string `json:"description,omitempty"`
+	ImagePath   string `json:"image_path,omitempty"`
+	Language    string `json:"language,omitempty"`
+	Explicit    int    `json:"explicit,omitempty"`
+	Author      string `json:"author,omitempty"`
 	Type        string `json:"type,omitempty"`
+	Block       int    `json:"block,omitempty"`
 	Complete    int    `json:"complete,omitempty"`
+	Link        string `json:"link,omitempty"`
+	OwnerName   string `json:"owner_name,omitempty"`
+	OwnerEmail  string `json:"owner_email,omitempty"`
+	Copyright   string `json:"copyright,omitempty"`
+	CreatedAt   int64  `json:"created_at,omitempty"`
+	UpdatedAt   int64  `json:"updated_at,omitempty"`
 }
 
 func (p *Podcast) DbColumns() []string {
@@ -70,10 +38,7 @@ func (p *Podcast) DbColumns() []string {
 		"id", "title", "description", "image_path",
 		"language", "explicit", "author", "type",
 		"block", "complete", "link", "owner_name",
-		"owner_email", "copyright", "new_feed_url", "feed_url",
-		"feed_etag", "feed_last_modified", "refresh_enabled", "last_refresh_at",
-		"next_refresh_at", "last_refresh_status", "refresh_interval", "created_at",
-		"updated_at",
+		"owner_email", "copyright", "created_at", "updated_at",
 	}
 }
 
@@ -82,138 +47,100 @@ func (p *Podcast) FieldAddrs() []interface{} {
 		&p.Id, &p.Title, &p.Description, &p.ImagePath,
 		&p.Language, &p.Explicit, &p.Author, &p.Type,
 		&p.Block, &p.Complete, &p.Link, &p.OwnerName,
-		&p.OwnerEmail, &p.Copyright, &p.NewFeedUrl, &p.FeedUrl,
-		&p.FeedETag, &p.FeedLastModified, &p.RefreshEnabled, &p.LastRefreshAt,
-		&p.NextRefreshAt, &p.LastRefreshStatus, &p.RefreshInterval, &p.CreatedAt,
-		&p.UpdatedAt,
+		&p.OwnerEmail, &p.Copyright, &p.CreatedAt, &p.UpdatedAt,
 	}
 }
 
-func (pfd *PodcastFeedDetails) DbColumns() []string {
-	return []string{
-		"id", "feed_url", "feed_etag", "feed_last_modified",
-		"refresh_enabled", "last_refresh_at", "next_refresh_at", "last_refresh_status",
-		"refresh_interval", "created_at", "updated_at",
-	}
-}
-
-func (pfd *PodcastFeedDetails) FieldAddrs() []interface{} {
-	return []interface{}{
-		&pfd.Id, &pfd.FeedUrl, &pfd.FeedETag, &pfd.FeedLastModified,
-		&pfd.RefreshEnabled, &pfd.LastRefreshAt, &pfd.NextRefreshAt, &pfd.LastRefreshStatus,
-		&pfd.RefreshInterval, &pfd.CreatedAt, &pfd.UpdatedAt,
-	}
-}
-
-func (pinfo *PodcastInfo) DbColumns() []string {
-	return []string{
-		"id", "title", "author", "description",
-		"type", "complete",
-	}
-}
-
-func (pinfo *PodcastInfo) FieldAddrs() []interface{} {
-	return []interface{}{
-		&pinfo.Id, &pinfo.Title, &pinfo.Author, &pinfo.Description,
-		&pinfo.Type, &pinfo.Complete,
-	}
-}
-
-func (p *Podcast) LoadDetails(feed *rss.Feed) *AppError {
+func (p *Podcast) LoadDetails(rssFeed *rss.Feed) *AppError {
 	appErrorC := NewAppErrorC(
-		"model.podcast.load_data_from_feed",
+		"model.podcast.load_details",
 		http.StatusBadRequest,
-		map[string]string{"title": p.Title, "feed_url": p.FeedUrl},
+		map[string]string{"title": p.Title},
 	)
 
 	// Title
-	if feed.Title != "" {
-		p.Title = feed.Title
+	if rssFeed.Title != "" {
+		p.Title = rssFeed.Title
 	} else {
 		return appErrorC("No title found")
 	}
 
 	// Description
-	if feed.Description != "" {
-		p.Description = feed.Description
-	} else if feed.ITunesExt != nil && feed.ITunesExt.Summary != "" {
-		p.Description = feed.ITunesExt.Summary
+	if rssFeed.Description != "" {
+		p.Description = rssFeed.Description
+	} else if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Summary != "" {
+		p.Description = rssFeed.ITunesExt.Summary
 	} else {
 		return appErrorC("No Description found")
 	}
 
 	// Image path
-	if feed.ITunesExt != nil && feed.ITunesExt.Image != "" {
-		p.ImagePath = feed.ITunesExt.Image
+	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Image != "" {
+		p.ImagePath = rssFeed.ITunesExt.Image
 	} else {
 		return appErrorC("Image not found")
 	}
 
 	// Language
-	if feed.Language != "" {
-		p.Language = feed.Language
+	if rssFeed.Language != "" {
+		p.Language = rssFeed.Language
 	} else {
 		p.Language = "en"
 	}
 
 	// Explicit
-	if feed.ITunesExt != nil && feed.ITunesExt.Explicit == "true" {
+	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Explicit == "true" {
 		p.Explicit = 1
 	} else {
 		p.Explicit = 0
 	}
 
 	// Author
-	if feed.ITunesExt != nil && feed.ITunesExt.Author != "" {
-		p.Author = feed.ITunesExt.Author
+	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Author != "" {
+		p.Author = rssFeed.ITunesExt.Author
 	} else {
 		p.Author = ""
 	}
 
 	// Type
-	if feed.ITunesExt != nil && feed.ITunesExt.Type == "serial" {
+	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Type == "serial" {
 		p.Type = "SERIAL"
 	} else {
 		p.Type = "EPISODIC"
 	}
 
 	// Block
-	if feed.ITunesExt != nil && feed.ITunesExt.Block == "true" {
+	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Block == "true" {
 		p.Block = 1
 	} else {
 		p.Block = 0
 	}
 
 	// Complete
-	if feed.ITunesExt != nil && feed.ITunesExt.Complete == "true" {
+	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Complete == "true" {
 		p.Complete = 1
 	} else {
 		p.Complete = 0
 	}
 
 	// Link
-	if feed.Link != "" {
-		p.Link = RemoveQueryFromUrl(feed.Link)
+	if rssFeed.Link != "" {
+		p.Link = RemoveQueryFromUrl(rssFeed.Link)
 	} else {
 		p.Link = ""
 	}
 
 	// Owner
-	if feed.ITunesExt != nil && feed.ITunesExt.Owner != nil {
-		p.OwnerName = feed.ITunesExt.Owner.Name
-		p.OwnerEmail = feed.ITunesExt.Owner.Email
+	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Owner != nil {
+		p.OwnerName = rssFeed.ITunesExt.Owner.Name
+		p.OwnerEmail = rssFeed.ITunesExt.Owner.Email
 	}
 
 	// Copyright
-	if feed.Copyright != "" {
-		p.Copyright = feed.Copyright
+	if rssFeed.Copyright != "" {
+		p.Copyright = rssFeed.Copyright
 	} else {
 		p.Copyright = ""
-	}
-
-	// New Feed Url
-	if feed.ITunesExt != nil && feed.ITunesExt.NewFeedURL != "" {
-		p.NewFeedUrl = feed.ITunesExt.NewFeedURL
 	}
 
 	return nil
@@ -229,10 +156,10 @@ func (p *Podcast) PreSave() {
 		p.Title = string(title[0:PODCAST_TITLE_MAX_LENGTH-10]) + "..."
 	}
 
+	p.Description = strip.StripTags(p.Description)
 	if len(p.Description) > MYSQL_BLOB_MAX_SIZE {
 		p.Description = p.Description[0:MYSQL_BLOB_MAX_SIZE]
 	}
-	p.Description = strip.StripTags(p.Description)
 
 	if !IsValidHttpUrl(p.ImagePath) {
 		p.ImagePath = ""
@@ -244,22 +171,6 @@ func (p *Podcast) PreSave() {
 
 	if !IsValidEmail(p.OwnerEmail) {
 		p.OwnerEmail = ""
-	}
-
-	if p.NewFeedUrl != "" && !IsValidHttpUrl(p.NewFeedUrl) {
-		p.NewFeedUrl = ""
-	}
-
-	if p.LastRefreshAt == 0 {
-		p.LastRefreshAt = Now()
-	}
-
-	if p.LastRefreshStatus == "" {
-		p.LastRefreshStatus = StatusSuccess
-	}
-
-	if p.RefreshEnabled == 1 && p.NextRefreshAt == 0 {
-		p.NextRefreshAt = p.LastRefreshAt + int64(p.RefreshInterval)
 	}
 
 	if p.CreatedAt == 0 {

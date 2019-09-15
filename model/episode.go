@@ -14,37 +14,25 @@ const (
 )
 
 type Episode struct {
-	Id          string
-	PodcastId   string
-	Guid        string
-	Title       string
-	MediaUrl    string
-	MediaType   string
-	MediaSize   int64
-	PubDate     string
-	Description string
-	Duration    int
-	Link        string
-	ImageLink   string
-	Explicit    int
-	Episode     int
-	Season      int
-	Type        string
-	Block       int
-	CreatedAt   int64
-	UpdatedAt   int64
-}
-
-type EpisodeInfo struct {
 	Id          string `json:"id,omitempty"`
+	PodcastId   string `json:"podcast_id,omitempty"`
+	Guid        string `json:"guid,omitempty"`
 	Title       string `json:"title,omitempty"`
+	MediaUrl    string `json:"media_url,omitempty"`
+	MediaType   string `json:"media_type,omitempty"`
+	MediaSize   int64  `json:"media_size,omitempty"`
+	PubDate     string `json:"pub_date,omitempty"`
 	Description string `json:"description,omitempty"`
-	MediaUrl    string `json:"mediaUrl,omitempty"`
-	MediaType   string `json:"mediaType,omitempty"`
+	Duration    int    `json:"duration,omitempty"`
+	Link        string `json:"link,omitempty"`
+	ImageLink   string `json:"image_link,omitempty"`
+	Explicit    int    `json:"explicit,omitempty"`
 	Episode     int    `json:"episode,omitempty"`
 	Season      int    `json:"season,omitempty"`
-	PubDate     string `json:"pubDate,omitempty"`
-	Duration    int    `json:"duration,omitempty"`
+	Type        string `json:"type,omitempty"`
+	Block       int    `json:"block,omitempty"`
+	CreatedAt   int64  `json:"created_at,omitempty"`
+	UpdatedAt   int64  `json:"updated_at,omitempty"`
 }
 
 func (e *Episode) DbColumns() []string {
@@ -67,110 +55,96 @@ func (e *Episode) FieldAddrs() []interface{} {
 	}
 }
 
-func (ep *EpisodeInfo) DbColumns() []string {
-	return []string{
-		"id", "title", "description", "media_url",
-		"media_type", "episode", "season", "pub_date", "duration",
-	}
-}
-
-func (einfo *EpisodeInfo) FieldAddrs() []interface{} {
-	return []interface{}{
-		&einfo.Id, &einfo.Title, &einfo.Description, &einfo.MediaUrl,
-		&einfo.MediaType, &einfo.Episode, &einfo.Season, &einfo.PubDate, &einfo.Duration,
-	}
-}
-
-func (e *Episode) LoadDetails(item *rss.Item) *AppError {
+func (e *Episode) LoadDetails(rssItem *rss.Item) *AppError {
 	appErrorC := NewAppErrorC(
 		"model.epsiode.load_details",
 		http.StatusBadRequest,
-		map[string]string{"title": item.Title},
+		map[string]string{"title": rssItem.Title},
 	)
 
 	// Title
-	if item.Title != "" {
-		e.Title = item.Title
+	if rssItem.Title != "" {
+		e.Title = rssItem.Title
 	} else {
 		return appErrorC("No title found")
 	}
 
 	// Media
-	if item.Enclosure != nil && item.Enclosure.URL != "" {
-		e.MediaUrl = item.Enclosure.URL
-		e.MediaType = item.Enclosure.Type
-		e.MediaSize, _ = strconv.ParseInt(item.Enclosure.Length, 10, 64)
+	if rssItem.Enclosure != nil && rssItem.Enclosure.URL != "" {
+		e.MediaUrl = rssItem.Enclosure.URL
+		e.MediaType = rssItem.Enclosure.Type
+		e.MediaSize, _ = strconv.ParseInt(rssItem.Enclosure.Length, 10, 64)
 	} else {
 		return appErrorC("No Media file found")
 	}
 
 	// Guid
-	if item.GUID != nil && item.GUID.Value != "" {
-		e.Guid = item.GUID.Value
+	if rssItem.GUID != nil && rssItem.GUID.Value != "" {
+		e.Guid = rssItem.GUID.Value
 	} else {
 		e.Guid = RemoveQueryFromUrl(e.MediaUrl)
 	}
 
 	// Pub Date
-	if item.PubDateParsed != nil {
-		e.PubDate = item.PubDateParsed.UTC().Format(MYSQL_DATETIME)
+	if rssItem.PubDateParsed != nil {
+		e.PubDate = rssItem.PubDateParsed.UTC().Format(MYSQL_DATETIME)
 	} else {
 		return appErrorC("No pubdate found")
 	}
 
 	// Description
-	if item.Description != "" {
-		e.Description = item.Description
+	if rssItem.Description != "" {
+		e.Description = rssItem.Description
 	} else {
 		e.Description = ""
 	}
 
 	// Duration
-	if item.ITunesExt != nil && item.ITunesExt.Duration != "" {
-		e.Duration = ParseTime(item.ITunesExt.Duration)
+	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Duration != "" {
+		e.Duration = ParseTime(rssItem.ITunesExt.Duration)
 	} else {
 		e.Duration = 0
 	}
 
 	// Link
-	if item.Link != "" {
-		e.Link = RemoveQueryFromUrl(item.Link)
+	if rssItem.Link != "" {
+		e.Link = RemoveQueryFromUrl(rssItem.Link)
 	} else {
 		e.Link = ""
 	}
 
 	// Image link
-	if item.ITunesExt != nil && item.ITunesExt.Image != "" {
-		e.ImageLink = RemoveQueryFromUrl(item.ITunesExt.Image)
+	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Image != "" {
+		e.ImageLink = RemoveQueryFromUrl(rssItem.ITunesExt.Image)
 	} else {
 		e.ImageLink = ""
 	}
 
 	// Explicit
-	if item.ITunesExt != nil && item.ITunesExt.Explicit == "true" {
+	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Explicit == "true" {
 		e.Explicit = 1
 	} else {
 		e.Explicit = 0
 	}
 
 	// Episode
-	// if item.ITunesExt != nil && item.ITunesExt.Episode != "" {
-	// 	e.Episode, _ = strconv.Atoi(item.ITunesExt.Episode)
+	// if rssItem.ITunesExt != nil && rssItem.ITunesExt.Episode != "" {
+	// 	e.Episode, _ = strconv.Atoi(rssItem.ITunesExt.Episode)
 	// } else {
 	// 	e.Episode = 0
 	// }
 
 	// Season
-	// if item.ITunesExt != nil && item.ITunesExt.Season != "" {
-	// 	e.Season, _ = strconv.Atoi(item.ITunesExt.Season)
+	// if rssItem.ITunesExt != nil && rssItem.ITunesExt.Season != "" {
+	// 	e.Season, _ = strconv.Atoi(rssItem.ITunesExt.Season)
 	// } else {
 	// 	e.Season = 0
 	// }
 
 	// Type
-	// if item.ITunesExt != nil && item.ITunesExt.EpisodeType == "trailer" {
+	// if rssItem.ITunesExt != nil && rssItem.ITunesExt.EpisodeType == "trailer" {
 	// 	e.Type = "TRAILER"
-	// } else if item.ITunesExt != nil && item.ITunesExt.EpisodeType == "bonus" {
+	// } else if rssItem.ITunesExt != nil && rssItem.ITunesExt.EpisodeType == "bonus" {
 	// 	e.Type = "BONUS"
 	// } else {
 	// 	e.Type = "FULL"
@@ -178,7 +152,7 @@ func (e *Episode) LoadDetails(item *rss.Item) *AppError {
 	e.Type = "FULL"
 
 	// Block
-	if item.ITunesExt != nil && item.ITunesExt.Block == "true" {
+	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Block == "true" {
 		e.Block = 1
 	} else {
 		e.Block = 0
