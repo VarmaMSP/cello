@@ -70,7 +70,15 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 }
 
 func (job *CreateThumbnailJob) saveThumbnailsForPodcast(id string, img image.Image) error {
-	imageLg, err := os.Create(job.storagePath + "/" + id + "p-500x500.jpg")
+	imageLg, err := os.Create(job.storagePath + "/" + id + "-original.jpg")
+	if err != nil {
+		return err
+	}
+	if err := jpeg.Encode(imageLg, img, nil); err != nil {
+		return err
+	}
+
+	imageLg, err := os.Create(job.storagePath + "/" + id + "-500x500.jpg")
 	if err != nil {
 		return err
 	}
@@ -78,7 +86,7 @@ func (job *CreateThumbnailJob) saveThumbnailsForPodcast(id string, img image.Ima
 		return err
 	}
 
-	imageMd, err := os.Create(job.storagePath + "/" + id + "p-250x250.jpg")
+	imageMd, err := os.Create(job.storagePath + "/" + id + "-250x250.jpg")
 	if err != nil {
 		return err
 	}
