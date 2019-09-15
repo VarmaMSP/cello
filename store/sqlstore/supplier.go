@@ -14,7 +14,6 @@ type SqlSupplier struct {
 	episode     store.EpisodeStore
 	category    store.CategoryStore
 	curation    store.CurationStore
-	itunesMeta  store.ItunesMetaStore
 	jobSchedule store.JobScheduleStore
 }
 
@@ -35,7 +34,6 @@ func NewSqlStore(mysqlConfig *model.MysqlConfig) (SqlStore, error) {
 	supplier.episode = NewSqlEpisodeStore(supplier)
 	supplier.category = NewSqlCategoryStore(supplier)
 	supplier.curation = NewSqlCurationStore(supplier)
-	supplier.itunesMeta = NewSqlItunesMetaStore(supplier)
 	supplier.jobSchedule = NewSqlJobScheduleStore(supplier)
 
 	return supplier, nil
@@ -98,10 +96,6 @@ func (s *SqlSupplier) Category() store.CategoryStore {
 
 func (s *SqlSupplier) Curation() store.CurationStore {
 	return s.curation
-}
-
-func (s *SqlSupplier) ItunesMeta() store.ItunesMetaStore {
-	return s.itunesMeta
 }
 
 func (s *SqlSupplier) JobSchedule() store.JobScheduleStore {

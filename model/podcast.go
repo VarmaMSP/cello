@@ -181,3 +181,11 @@ func (p *Podcast) PreSave() {
 		p.UpdatedAt = Now()
 	}
 }
+
+func (p *Podcast) Sanitize() {
+	p.ImagePath = ""
+	p.OwnerName = ""
+	p.OwnerEmail = ""
+	p.CreatedAt = 0
+	p.UpdatedAt = 0
+}

@@ -8,7 +8,6 @@ type Store interface {
 	Episode() EpisodeStore
 	Category() CategoryStore
 	Curation() CurationStore
-	ItunesMeta() ItunesMetaStore
 	JobSchedule() JobScheduleStore
 }
 
@@ -43,12 +42,6 @@ type CurationStore interface {
 	Get(curationId string) (*model.Curation, *model.AppError)
 	GetAll() ([]*model.Curation, *model.AppError)
 	Delete(curationId string) *model.AppError
-}
-
-type ItunesMetaStore interface {
-	Save(meta *model.ItunesMeta) *model.AppError
-	Update(old, new *model.ItunesMeta) *model.AppError
-	GetItunesIdList(offset, limit int) ([]string, *model.AppError)
 }
 
 type JobScheduleStore interface {

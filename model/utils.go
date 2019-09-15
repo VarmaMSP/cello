@@ -23,6 +23,12 @@ const (
 
 	MYSQL_DATETIME      = "2006-01-02 15:04:05"
 	MYSQL_BLOB_MAX_SIZE = 65535
+
+	secondsInHour  = 60 * 60
+	secondsInDay   = 60 * 60 * 24
+	secondsInWeek  = 60 * 60 * 24 * 7
+	secondsInMonth = 60 * 60 * 24 * 30
+	secondsInYear  = 60 * 60 * 24 * 365
 )
 
 type AppError struct {

@@ -200,3 +200,13 @@ func (e *Episode) PreSave() {
 		e.UpdatedAt = Now()
 	}
 }
+
+func (e *Episode) Sanitize() {
+	e.Guid = ""
+	e.MediaType = ""
+	e.MediaSize = 0
+	e.Link = ""
+	e.ImageLink = ""
+	e.CreatedAt = 0
+	e.UpdatedAt = 0
+}

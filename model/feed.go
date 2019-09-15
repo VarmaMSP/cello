@@ -60,14 +60,6 @@ func (f *Feed) PreSave() {
 	}
 }
 
-var (
-	secondsInHour  = 60 * 60
-	secondsInDay   = 60 * 60 * 24
-	secondsInWeek  = 60 * 60 * 24 * 7
-	secondsInMonth = 60 * 60 * 24 * 30
-	secondsInYear  = 60 * 60 * 24 * 365
-)
-
 func (f *Feed) SetRefershInterval(rssFeed *rss.Feed) {
 	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Complete == "true" {
 		f.RefreshEnabled = 0
