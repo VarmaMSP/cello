@@ -18,6 +18,7 @@ import (
 
 type ImportPodcastJob struct {
 	*app.App
+	input            <-chan amqp.Delivery
 	httpClient       *http.Client
 	rateLimiter      chan struct{}
 	createThumbnailP *rabbitmq.Producer
@@ -25,6 +26,17 @@ type ImportPodcastJob struct {
 
 func NewImportPodcastJob(app *app.App, config *model.Config) (model.Job, error) {
 	workerLimit := config.Jobs.ImportPodcast.WorkerLimit
+
+	importPodcastC, err := rabbitmq.NewConsumer(app.RabbitmqConsumerConn, &rabbitmq.ConsumerOpts{
+		QueueName:     model.QUEUE_NAME_IMPORT_PODCAST,
+		ConsumerName:  config.Queues.ImportPodcast.ConsumerName,
+		AutoAck:       config.Queues.ImportPodcast.ConsumerAutoAck,
+		Exclusive:     config.Queues.ImportPodcast.ConsumerExclusive,
+		PreFetchCount: config.Queues.ImportPodcast.ConsumerPreFetchCount,
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	createThumbnailP, err := rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
 		ExchangeName: rabbitmq.DefaultExchange,
@@ -36,7 +48,8 @@ func NewImportPodcastJob(app *app.App, config *model.Config) (model.Job, error) 
 	}
 
 	return &ImportPodcastJob{
-		App: app,
+		App:   app,
+		input: importPodcastC.D,
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
 			Transport: &http.Transport{
@@ -47,6 +60,12 @@ func NewImportPodcastJob(app *app.App, config *model.Config) (model.Job, error) 
 		rateLimiter:      make(chan struct{}, workerLimit),
 		createThumbnailP: createThumbnailP,
 	}, nil
+}
+
+func (job *ImportPodcastJob) Run() {
+	for d := range job.input {
+		job.Call(d)
+	}
 }
 
 func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {

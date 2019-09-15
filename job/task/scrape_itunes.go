@@ -1,4 +1,4 @@
-package job
+package task
 
 import (
 	"fmt"
@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/streadway/amqp"
 
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/services/rabbitmq"
@@ -28,7 +26,7 @@ const (
 // 2 - Use Itunes lookup API to fetch feed urls for above ids.
 // 3 - Push this data into rabbitmq queue to process later.
 
-type ScrapeItunesJob struct {
+type ScrapeItunes struct {
 	*app.App
 	// url frontier
 	urlF *Frontier
@@ -44,7 +42,7 @@ type ScrapeItunesJob struct {
 	rateLimiter chan struct{}
 }
 
-func NewScrapeItunesJob(app *app.App, config *model.Config) (model.Job, error) {
+func NewScrapeItunes(app *app.App, config *model.Config) (*ScrapeItunes, error) {
 	workerLimit := config.Jobs.ScrapeItunes.WorkerLimit
 
 	importPodcastP, err := rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
@@ -56,7 +54,7 @@ func NewScrapeItunesJob(app *app.App, config *model.Config) (model.Job, error) {
 		return nil, err
 	}
 
-	job := &ScrapeItunesJob{
+	scrapeItunes := &ScrapeItunes{
 		App:            app,
 		urlF:           NewFrontier(10000),
 		itunesIdF:      NewFrontier(10000),
@@ -73,53 +71,51 @@ func NewScrapeItunesJob(app *app.App, config *model.Config) (model.Job, error) {
 	}
 
 	for off, lim := 0, 10000; ; off += lim {
-		feeds, err := job.Store.Feed().GetAllBySource("ITUNES_SCRAPER", off, lim)
+		feeds, err := scrapeItunes.Store.Feed().GetAllBySource("ITUNES_SCRAPER", off, lim)
 		if err != nil {
 			return nil, err
 		}
 		for _, feed := range feeds {
-			job.itunesIdF.Ignore(feed.SourceId)
+			scrapeItunes.itunesIdF.Ignore(feed.SourceId)
 		}
 		if len(feeds) < lim {
 			break
 		}
 	}
 
-	go job.pollAndFetchPages()
-	go job.pollAndProcessPages()
-	go job.pollAndSaveItunesMeta()
+	go scrapeItunes.pollAndFetchPages()
+	go scrapeItunes.pollAndProcessPages()
+	go scrapeItunes.pollAndSaveFeedDetails()
 
-	return job, nil
+	return scrapeItunes, nil
 }
 
-func (job *ScrapeItunesJob) Call(delivery amqp.Delivery) {
-	defer delivery.Ack(false)
-
-	job.urlF.Clear()
-	job.urlF.I <- ITUNES_SEED_URL
+func (s *ScrapeItunes) Call() {
+	s.urlF.Clear()
+	s.urlF.I <- ITUNES_SEED_URL
 }
 
-func (job *ScrapeItunesJob) pollAndFetchPages() {
+func (s *ScrapeItunes) pollAndFetchPages() {
 	for {
-		job.rateLimiter <- struct{}{}
+		s.rateLimiter <- struct{}{}
 		go func(url string) {
-			defer func() { <-job.rateLimiter }()
+			defer func() { <-s.rateLimiter }()
 
 			req, _ := http.NewRequest("GET", url, nil)
-			resp, err := job.httpClient.Do(req)
+			resp, err := s.httpClient.Do(req)
 			if err != nil {
 				fmt.Printf("GET %s: %s\n\n", url, err.Error())
 				return
 			}
 
 			if resp.StatusCode == 200 {
-				job.pageQ <- resp.Body
+				s.pageQ <- resp.Body
 			}
-		}(<-job.urlF.O)
+		}(<-s.urlF.O)
 	}
 }
 
-func (job *ScrapeItunesJob) pollAndProcessPages() {
+func (s *ScrapeItunes) pollAndProcessPages() {
 	for {
 		go func(page io.ReadCloser) {
 			doc, err := goquery.NewDocumentFromReader(page)
@@ -135,19 +131,19 @@ func (job *ScrapeItunesJob) pollAndProcessPages() {
 					continue
 				}
 				if ok, itunesId := isPodcastPage(link); ok {
-					job.itunesIdF.I <- itunesId
+					s.itunesIdF.I <- itunesId
 					continue
 				}
 				if ok, link := isGenrePage(link); ok {
-					job.urlF.I <- link
+					s.urlF.I <- link
 					continue
 				}
 			}
-		}(<-job.pageQ)
+		}(<-s.pageQ)
 	}
 }
 
-func (job *ScrapeItunesJob) pollAndSaveItunesMeta() {
+func (s *ScrapeItunes) pollAndSaveFeedDetails() {
 	timeout := time.NewTimer(time.Minute)
 	batchSize := 190
 
@@ -156,7 +152,7 @@ func (job *ScrapeItunesJob) pollAndSaveItunesMeta() {
 	BATCH_LOOP:
 		for i, _ := 0, timeout.Reset(30*time.Second); i < batchSize; i++ {
 			select {
-			case itunesId := <-job.itunesIdF.O:
+			case itunesId := <-s.itunesIdF.O:
 				batch = append(batch, itunesId)
 				if len(batch) == batchSize && !timeout.Stop() {
 					<-timeout.C
@@ -169,7 +165,7 @@ func (job *ScrapeItunesJob) pollAndSaveItunesMeta() {
 			continue
 		}
 
-		results, err := itunesLookup(batch, job.httpClient)
+		results, err := itunesLookup(batch, s.httpClient)
 		if err != nil {
 			continue
 		}
@@ -184,11 +180,11 @@ func (job *ScrapeItunesJob) pollAndSaveItunesMeta() {
 				SourceId: strconv.Itoa(result.Id),
 				Url:      result.FeedUrl,
 			}
-			if err := job.Store.Feed().Save(feed); err != nil {
+			if err := s.Store.Feed().Save(feed); err != nil {
 				continue
 			}
 
-			job.importPodcastP.D <- feed
+			s.importPodcastP.D <- feed
 		}
 	}
 }

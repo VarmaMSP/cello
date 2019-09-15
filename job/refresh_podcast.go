@@ -11,10 +11,12 @@ import (
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/services/rabbitmq"
 )
 
 type RefreshPodcastJob struct {
 	*app.App
+	input       <-chan amqp.Delivery
 	httpClient  *http.Client
 	rateLimiter chan struct{}
 }
@@ -22,8 +24,20 @@ type RefreshPodcastJob struct {
 func NewRefreshPodcastJob(app *app.App, config *model.Config) (model.Job, error) {
 	workerLimit := config.Jobs.RefreshPodcast.WorkerLimit
 
+	refreshPodcastC, err := rabbitmq.NewConsumer(app.RabbitmqConsumerConn, &rabbitmq.ConsumerOpts{
+		QueueName:     model.QUEUE_NAME_REFRESH_PODCAST,
+		ConsumerName:  config.Queues.RefreshPodcast.ConsumerName,
+		AutoAck:       config.Queues.RefreshPodcast.ConsumerAutoAck,
+		Exclusive:     config.Queues.RefreshPodcast.ConsumerExclusive,
+		PreFetchCount: config.Queues.RefreshPodcast.ConsumerPreFetchCount,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	return &RefreshPodcastJob{
-		App: app,
+		App:   app,
+		input: refreshPodcastC.D,
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
 			Transport: &http.Transport{
@@ -33,6 +47,12 @@ func NewRefreshPodcastJob(app *app.App, config *model.Config) (model.Job, error)
 		},
 		rateLimiter: make(chan struct{}, workerLimit),
 	}, nil
+}
+
+func (job *RefreshPodcastJob) Run() {
+	for d := range job.input {
+		job.Call(d)
+	}
 }
 
 func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {

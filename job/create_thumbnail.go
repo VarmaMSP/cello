@@ -10,7 +10,9 @@ import (
 
 	"github.com/nfnt/resize"
 	"github.com/streadway/amqp"
+	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/services/rabbitmq"
 )
 
 const (
@@ -20,6 +22,8 @@ const (
 )
 
 type CreateThumbnailJob struct {
+	*app.App
+	input       <-chan amqp.Delivery
 	storagePath string
 	httpClient  *http.Client
 	rateLimiter chan struct{}
@@ -31,8 +35,23 @@ type CreateThumbnailJobInput struct {
 	Type     string `json:"type"`
 }
 
-func NewCreateThumbnailJob(workerLimit int) (model.Job, error) {
+func NewCreateThumbnailJob(app *app.App, config *model.Config) (model.Job, error) {
+	workerLimit := config.Jobs.CreateThumbnail.WorkerLimit
+
+	createThumbnailC, err := rabbitmq.NewConsumer(app.RabbitmqConsumerConn, &rabbitmq.ConsumerOpts{
+		QueueName:     model.QUEUE_NAME_CREATE_THUMBNAIL,
+		ConsumerName:  config.Queues.CreateThumbnail.ConsumerName,
+		AutoAck:       config.Queues.CreateThumbnail.ConsumerAutoAck,
+		Exclusive:     config.Queues.CreateThumbnail.ConsumerExclusive,
+		PreFetchCount: config.Queues.CreateThumbnail.ConsumerPreFetchCount,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	return &CreateThumbnailJob{
+		App:         app,
+		input:       createThumbnailC.D,
 		storagePath: IMAGE_STORAGE_PATH,
 		httpClient: &http.Client{
 			Timeout: 600 * time.Second,
@@ -43,6 +62,12 @@ func NewCreateThumbnailJob(workerLimit int) (model.Job, error) {
 		},
 		rateLimiter: make(chan struct{}, workerLimit),
 	}, nil
+}
+
+func (job *CreateThumbnailJob) Run() {
+	for d := range job.input {
+		job.Call(d)
+	}
 }
 
 func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {

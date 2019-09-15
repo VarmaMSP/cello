@@ -1,55 +1,17 @@
 package job
 
 import (
-	"encoding/json"
 	"fmt"
 	"image"
 	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
 	"net/http"
-	"strings"
 
 	h "github.com/go-http-utils/headers"
 	"github.com/mmcdole/gofeed/rss"
 	"github.com/varmamsp/cello/model"
 )
-
-var (
-	itunesLookupUrl = "https://itunes.apple.com/lookup?id="
-)
-
-type ItunesLookupResp struct {
-	Count   int                  `json:"resultCount"`
-	Results []ItunesLookupResult `json:"results"`
-}
-
-type ItunesLookupResult struct {
-	Kind    string `json:"kind"`
-	Id      int    `json:"collectionId"`
-	FeedUrl string `json:"feedUrl"`
-}
-
-// Fetch podcast details from itunes lookup API
-func itunesLookup(podcastIds []string, httpClient *http.Client) ([]ItunesLookupResult, error) {
-	url := itunesLookupUrl + strings.Join(podcastIds, ",")
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	lookupResp := &ItunesLookupResp{}
-	if err := json.NewDecoder(resp.Body).Decode(lookupResp); err != nil {
-		return nil, err
-	}
-
-	return lookupResp.Results, nil
-}
 
 // Fetch Image from url
 func fetchImage(imageUrl string, httpClient *http.Client) (image.Image, *model.AppError) {
