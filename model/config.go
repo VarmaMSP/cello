@@ -1,14 +1,16 @@
 package model
 
 type Config struct {
-	Mysql         MysqlConfig         `mapstructure:"mysql"`
-	Rabbitmq      RabbitmqConfig      `mapstructure:"rabbitmq"`
-	Elasticsearch ElasticsearchConfig `mapstrucure:"elasticsearch"`
-	OAuth         OAuth               `mapstructure:"oauth"`
+	Mysql         Mysql         `mapstructure:"mysql"`
+	Rabbitmq      Rabbitmq      `mapstructure:"rabbitmq"`
+	Elasticsearch Elasticsearch `mapstructure:"elasticsearch"`
+	Queues        Queues        `mapstructure:"queues"`
+	Jobs          Jobs          `mapstructure:"jobs"`
+	OAuth         OAuth         `mapstructure:"oauth"`
 }
 
 // MYSQL CONFIGURATION
-type MysqlConfig struct {
+type Mysql struct {
 	Address  string `mapstructure:"address"`
 	Database string `mapstructure:"database"`
 	User     string `mapstructure:"user"`
@@ -16,34 +18,46 @@ type MysqlConfig struct {
 }
 
 // RABBITMQ CONFIGURATION
-type RabbitmqConfig struct {
-	Address  string               `mapstructure:"address"`
-	User     string               `mapstructure:"user"`
-	Password string               `mapstructure:"password"`
-	Queues   RabbitmqQueuesConfig `mapstructure:"queues"`
+type Rabbitmq struct {
+	Address  string `mapstructure:"address"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
 }
 
-type RabbitmqQueuesConfig struct {
-	ScheduledJobCallQueue RabbitmqQueueConfig `mapstructure:"scheduled_job_call_queue"`
-	ImportPodcastQueue    RabbitmqQueueConfig `mapstructure:"import_podcast_queue"`
-	RefreshPodcastQueue   RabbitmqQueueConfig `mapstructure:"refresh_podcast_queue"`
-	CreateThumbnailQueue  RabbitmqQueueConfig `mapstructure:"create_thumbnail"`
+// ELASTICSEARCH CONFIGURATION
+type Elasticsearch struct {
+	Address  string `mapstructure:"address"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
 }
 
-type RabbitmqQueueConfig struct {
+// Queue
+type Queues struct {
+	ScheduledJobCall Queue_ `mapstructure:"scheduled_job_call"`
+	ImportPodcast    Queue_ `mapstructure:"import_podcast"`
+	RefreshPodcast   Queue_ `mapstructure:"refresh_podcast"`
+	CreateThumbnail  Queue_ `mapstructure:"create_thumbnail"`
+}
+
+type Queue_ struct {
 	DeliveryMode          uint8  `mapstructure:"delivery_mode"`
 	ConsumerName          string `mapstructure:"consumer_name"`
 	ConsumerAutoAck       bool   `mapstructure:"consumer_auto_ack"`
 	ConsumerExclusive     bool   `mapstructure:"consumer_exclusive"`
 	ConsumerPreFetchCount int    `mapstructure:"consumer_prefetch_count"`
-	ConsumerWorkerLimit   int    `mspstructure:"consumer_worker_limit"`
 }
 
-// ELASTICSEARCH CONFIGURATION
-type ElasticsearchConfig struct {
-	Address  string `mapstructure:"address"`
-	User     string `mapstructure:"user"`
-	Password string `mapstructure:"password"`
+// Job
+type Jobs struct {
+	CreateThumbnail Job_ `mapstructure:"create_thumbnail"`
+	ImportPodcast   Job_ `mapstructure:"import_podcast"`
+	RefreshPodcast  Job_ `mapstructure:"refresh_podcast"`
+	ScrapeItunes    Job_ `mapstructure:"scrape_itunes"`
+}
+
+type Job_ struct {
+	Enable      bool `mapstructure:"enable"`
+	WorkerLimit int  `mapstructure:"worker_limit"`
 }
 
 // OAuth

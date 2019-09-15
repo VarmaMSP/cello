@@ -2,46 +2,67 @@ mysql:
   address: localhost:3306
   database: phenopod
   user: root
-  password: tiracapeta
+  password: birds
 
 rabbitmq:
   address: localhost:5672
   user: guest
   password: guest
-  queues: 
-    scheduled_job_call_queue: 
-      delivery_mode: 2
-      consumer_name: scheduled_job_run
-      consumer_auto_ack: false
-      consumer_exclusive: true
-      consumer_prefetch_count: 100
-      consumer_worker_limit: 10
-
-    import_podcast_queue: 
-      delivery_mode: 2
-      consumer_name: import_podcast
-      consumer_auto_ack: false
-      consumer_exclusive: true
-      consumer_prefetch_count: 100 
-      consumer_worker_limit: 10
-
-    refresh_podcast_queue: 
-      delivery_mode: 2
-      consumer_name: refresh_podcast
-      consumer_auto_ack: false
-      consumer_exclusive: true
-      consumer_prefetch_count: 100
-      consumer_worker_limit: 10
-
-    create_thumbnail_queue:
-      delivery_mode: 2
-      consumer_name: create_thumbnail
-      consumer_auto_ack: false
-      consumer_exclusive: true
-      consumer_prefetch_count: 100
-      consumer_worker_limit: 10
 
 elasticsearch:
   address: localhost:9200
   user: elastic
   password: changeme
+
+queues: 
+  scheduled_job_call: 
+    delivery_mode: 2
+    consumer_name: scheduled_job_run
+    consumer_auto_ack: false
+    consumer_exclusive: true
+    consumer_prefetch_count: 100
+
+  import_podcast: 
+    delivery_mode: 2
+    consumer_name: import_podcast
+    consumer_auto_ack: false
+    consumer_exclusive: true
+    consumer_prefetch_count: 100
+
+  refresh_podcast: 
+    delivery_mode: 2
+    consumer_name: refresh_podcast
+    consumer_auto_ack: false
+    consumer_exclusive: true
+    consumer_prefetch_count: 100
+
+  create_thumbnail:
+    delivery_mode: 2
+    consumer_name: create_thumbnail
+    consumer_auto_ack: false
+    consumer_exclusive: true
+    consumer_prefetch_count: 100
+
+jobs:
+  import_podcast: 
+    enable: false
+    worker_limit: 10
+
+  refresh_podcast: 
+    enable: false
+    worker_limit: 10
+
+  create_thumbnail:
+    enable: false
+    worker_limit: 10
+  
+  scrape_itunes:
+    enable: false
+    worker_limit: 10
+
+oauth:
+  google:
+    client_id: 844087729764-4kof4gr262r2u0lhtb5d2a3viqr1p08a.apps.googleusercontent.com
+    client_secret:
+    redirect_url: http://localhost:8080/google/callback
+    scopes: ['profile', 'email']
