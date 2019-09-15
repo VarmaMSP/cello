@@ -63,14 +63,14 @@ func NewScrapeItunesJob(store store.Store, importPodcastP *rabbitmq.Producer, wo
 	}
 
 	for off, lim := 0, 10000; ; off += lim {
-		itunesIds, err := job.store.ItunesMeta().GetItunesIdList(off, lim)
+		feeds, err := job.store.Feed().GetAllBySource("ITUNES_SCRAPER", off, lim)
 		if err != nil {
 			return nil, err
 		}
-		for _, itunesId := range itunesIds {
-			job.itunesIdF.Ignore(itunesId)
+		for _, feed := range feeds {
+			job.itunesIdF.Ignore(feed.SourceId)
 		}
-		if len(itunesIds) < lim {
+		if len(feeds) < lim {
 			break
 		}
 	}

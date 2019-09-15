@@ -40,7 +40,7 @@ func (s *SqlFeedStore) Get(id string) (*model.Feed, *model.AppError) {
 	return feed, nil
 }
 
-func (s *SqlFeedStore) GetAllbySource(source string, offset, limit int) (res []*model.Feed, appE *model.AppError) {
+func (s *SqlFeedStore) GetAllBySource(source string, offset, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := "SELECT " + strings.Join((&model.Feed{}).DbColumns(), ",") + " FROM itunes_meta WHERE source = ? LIMIT ?, ?"
 	copyTo := func() []interface{} {
 		tmp := &model.Feed{}

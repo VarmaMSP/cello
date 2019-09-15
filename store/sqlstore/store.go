@@ -18,6 +18,7 @@ type SqlStore interface {
 	UpdateChanges(tableName string, old, new DbModel, where string, values ...interface{}) (sql.Result, error)
 	Query(copyTo func() []interface{}, sql string, values ...interface{}) error
 
+	Feed() store.FeedStore
 	Podcast() store.PodcastStore
 	Episode() store.EpisodeStore
 	Category() store.CategoryStore
