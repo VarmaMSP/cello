@@ -7,28 +7,36 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed/rss"
-	"github.com/olivere/elastic/v7"
 
 	h "github.com/go-http-utils/headers"
 	"github.com/streadway/amqp"
+	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/services/elasticsearch"
 	"github.com/varmamsp/cello/services/rabbitmq"
-	"github.com/varmamsp/cello/store"
 )
 
 type ImportPodcastJob struct {
-	store            store.Store
-	esClient         *elastic.Client
+	*app.App
 	httpClient       *http.Client
 	rateLimiter      chan struct{}
 	createThumbnailP *rabbitmq.Producer
 }
 
-func NewImportPodcastJob(store store.Store, esClient *elastic.Client, createThumbnailP *rabbitmq.Producer, workerLimit int) (model.Job, error) {
+func NewImportPodcastJob(app *app.App, config *model.Config) (model.Job, error) {
+	workerLimit := config.Jobs.ImportPodcast.WorkerLimit
+
+	createThumbnailP, err := rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
+		ExchangeName: rabbitmq.DefaultExchange,
+		QueueName:    model.QUEUE_NAME_CREATE_THUMBNAIL,
+		DeliveryMode: config.Queues.CreateThumbnail.DeliveryMode,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	return &ImportPodcastJob{
-		store:    store,
-		esClient: esClient,
+		App: app,
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
 			Transport: &http.Transport{
@@ -78,7 +86,7 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 
 	update_feed:
 		feedU.UpdatedAt = model.Now()
-		job.store.Feed().Update(&feed, &feedU)
+		job.Store.Feed().Update(&feed, &feedU)
 	}()
 }
 
@@ -94,7 +102,7 @@ func (job *ImportPodcastJob) savePodcast(rssFeed *rss.Feed, feedUrl string, head
 	if err := podcast.LoadDetails(rssFeed); err != nil {
 		return appErrorC(err.Error())
 	}
-	if err := job.store.Podcast().Save(podcast); err != nil {
+	if err := job.Store.Podcast().Save(podcast); err != nil {
 		return appErrorC(err.Error())
 	}
 
@@ -106,7 +114,7 @@ func (job *ImportPodcastJob) savePodcast(rssFeed *rss.Feed, feedUrl string, head
 	}
 
 	// Index podcast
-	job.esClient.Index().
+	job.ElasticSearch.Index().
 		Index(elasticsearch.PodcastIndexName).
 		Id(podcast.Id).
 		BodyJson(&model.PodcastIndex{
@@ -125,7 +133,7 @@ func (job *ImportPodcastJob) savePodcast(rssFeed *rss.Feed, feedUrl string, head
 		if err := episode.LoadDetails(item); err != nil {
 			continue
 		}
-		if err := job.store.Episode().Save(episode); err != nil {
+		if err := job.Store.Episode().Save(episode); err != nil {
 			continue
 		}
 	}
@@ -143,7 +151,7 @@ func (job *ImportPodcastJob) savePodcast(rssFeed *rss.Feed, feedUrl string, head
 	for _, categoryId := range categoryIds {
 		if categoryId != -1 {
 			category := &model.PodcastCategory{PodcastId: podcast.Id, CategoryId: categoryId}
-			if err := job.store.Category().SavePodcastCategory(category); err != nil {
+			if err := job.Store.Category().SavePodcastCategory(category); err != nil {
 				continue
 			}
 		}

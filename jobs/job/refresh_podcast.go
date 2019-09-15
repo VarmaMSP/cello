@@ -9,19 +9,21 @@ import (
 
 	h "github.com/go-http-utils/headers"
 	"github.com/mmcdole/gofeed/rss"
+	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/store"
 )
 
 type RefreshPodcastJob struct {
-	store       store.Store
+	*app.App
 	httpClient  *http.Client
 	rateLimiter chan struct{}
 }
 
-func NewRefreshPodcastJob(store store.Store, workerLimit int) (model.Job, error) {
+func NewRefreshPodcastJob(app *app.App, config *model.Config) (model.Job, error) {
+	workerLimit := config.Jobs.RefreshPodcast.WorkerLimit
+
 	return &RefreshPodcastJob{
-		store: store,
+		App: app,
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
 			Transport: &http.Transport{
@@ -75,7 +77,7 @@ func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 
 	update_feed:
 		feedU.UpdatedAt = model.Now()
-		job.store.Feed().Update(&feed, &feedU)
+		job.Store.Feed().Update(&feed, &feedU)
 	}()
 }
 
@@ -86,7 +88,7 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId string, rssFeed *rss.Feed
 		map[string]string{"podcast_id": podcastId},
 	)
 
-	episodes, err := job.store.Episode().GetAllByPodcast(podcastId, 0, 5000)
+	episodes, err := job.Store.Episode().GetAllByPodcast(podcastId, 0, 5000)
 	if err != nil {
 		return appErrorC(err.Error())
 	}
@@ -111,7 +113,7 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId string, rssFeed *rss.Feed
 	// Block episodes
 	for episodeGuid, _ := range episodeMap {
 		if _, ok := rssItemMap[episodeGuid]; !ok {
-			job.store.Episode().Block(podcastId, episodeGuid)
+			job.Store.Episode().Block(podcastId, episodeGuid)
 		}
 	}
 
@@ -122,7 +124,7 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId string, rssFeed *rss.Feed
 			if err := episode.LoadDetails(rssItem); err != nil {
 				continue
 			}
-			job.store.Episode().Save(episode)
+			job.Store.Episode().Save(episode)
 		}
 	}
 

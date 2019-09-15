@@ -9,11 +9,11 @@ import (
 
 	"github.com/streadway/amqp"
 
+	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/services/rabbitmq"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/store"
 )
 
 const (
@@ -29,14 +29,13 @@ const (
 // 3 - Push this data into rabbitmq queue to process later.
 
 type ScrapeItunesJob struct {
+	*app.App
 	// url frontier
 	urlF *Frontier
 	// itunes Id frontier
 	itunesIdF *Frontier
 	// chan to hold pages till processed
 	pageQ chan io.ReadCloser
-	// store
-	store store.Store
 	// rabbitmq producer
 	importPodcastP *rabbitmq.Producer
 	// http client
@@ -45,12 +44,23 @@ type ScrapeItunesJob struct {
 	rateLimiter chan struct{}
 }
 
-func NewScrapeItunesJob(store store.Store, importPodcastP *rabbitmq.Producer, workerLimit int) (model.Job, error) {
+func NewScrapeItunesJob(app *app.App, config *model.Config) (model.Job, error) {
+	workerLimit := config.Jobs.ScrapeItunes.WorkerLimit
+
+	importPodcastP, err := rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
+		ExchangeName: rabbitmq.DefaultExchange,
+		QueueName:    model.QUEUE_NAME_IMPORT_PODCAST,
+		DeliveryMode: config.Queues.ImportPodcast.DeliveryMode,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	job := &ScrapeItunesJob{
+		App:            app,
 		urlF:           NewFrontier(10000),
 		itunesIdF:      NewFrontier(10000),
 		pageQ:          make(chan io.ReadCloser, workerLimit),
-		store:          store,
 		importPodcastP: importPodcastP,
 		httpClient: &http.Client{
 			Timeout: 40 * time.Second,
@@ -63,7 +73,7 @@ func NewScrapeItunesJob(store store.Store, importPodcastP *rabbitmq.Producer, wo
 	}
 
 	for off, lim := 0, 10000; ; off += lim {
-		feeds, err := job.store.Feed().GetAllBySource("ITUNES_SCRAPER", off, lim)
+		feeds, err := job.Store.Feed().GetAllBySource("ITUNES_SCRAPER", off, lim)
 		if err != nil {
 			return nil, err
 		}
@@ -174,7 +184,7 @@ func (job *ScrapeItunesJob) pollAndSaveItunesMeta() {
 				SourceId: strconv.Itoa(result.Id),
 				Url:      result.FeedUrl,
 			}
-			if err := job.store.Feed().Save(feed); err != nil {
+			if err := job.Store.Feed().Save(feed); err != nil {
 				continue
 			}
 
