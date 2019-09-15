@@ -3,12 +3,20 @@ package store
 import "github.com/varmamsp/cello/model"
 
 type Store interface {
+	Feed() FeedStore
 	Podcast() PodcastStore
 	Episode() EpisodeStore
 	Category() CategoryStore
 	Curation() CurationStore
 	ItunesMeta() ItunesMetaStore
 	JobSchedule() JobScheduleStore
+}
+
+type FeedStore interface {
+	Save(feed *model.Feed) *model.AppError
+	Get(id string) (*model.Feed, *model.AppError)
+	GetAllBySource(source string, offset, limit int) ([]*model.Feed, *model.AppError)
+	Update(old, new *model.Feed) *model.AppError
 }
 
 type PodcastStore interface {
