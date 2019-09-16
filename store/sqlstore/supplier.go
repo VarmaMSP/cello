@@ -9,6 +9,7 @@ import (
 
 type SqlSupplier struct {
 	db       *sql.DB
+	user     store.UserStore
 	feed     store.FeedStore
 	podcast  store.PodcastStore
 	episode  store.EpisodeStore
@@ -29,6 +30,7 @@ func NewSqlStore(config *model.Config) (SqlStore, error) {
 	supplier := &SqlSupplier{}
 
 	supplier.db = db
+	supplier.user = NewSqlUserStore(supplier)
 	supplier.feed = NewSqlFeedStore(supplier)
 	supplier.podcast = NewSqlPodcastStore(supplier)
 	supplier.episode = NewSqlEpisodeStore(supplier)
@@ -76,6 +78,10 @@ func (s *SqlSupplier) Query(copyTo func() []interface{}, sql string, values ...i
 		return err
 	}
 	return nil
+}
+
+func (s *SqlSupplier) User() store.UserStore {
+	return s.user
 }
 
 func (s *SqlSupplier) Feed() store.FeedStore {

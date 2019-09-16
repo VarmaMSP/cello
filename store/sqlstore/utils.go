@@ -71,6 +71,16 @@ func Replicate(s string, n int) []string {
 	return x
 }
 
+func Cols(m DbModel, prefix ...string) string {
+	cols := m.DbColumns()
+	if len(prefix) > 0 {
+		for i, col := range cols {
+			cols[i] = prefix[0] + "." + col
+		}
+	}
+	return strings.Join(cols, ",")
+}
+
 func DbColumnsWithPrefix(m DbModel, prefix string) []string {
 	cols := m.DbColumns()
 	prefixedCols := make([]string, len(cols))

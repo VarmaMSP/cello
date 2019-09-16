@@ -3,12 +3,20 @@ package store
 import "github.com/varmamsp/cello/model"
 
 type Store interface {
+	User() UserStore
 	Feed() FeedStore
 	Podcast() PodcastStore
 	Episode() EpisodeStore
 	Category() CategoryStore
 	Curation() CurationStore
 	Task() TaskStore
+}
+
+type UserStore interface {
+	Save(user *model.User) *model.AppError
+	SaveGoogleAccount(account *model.GoogleAccount) *model.AppError
+	Get(userId string) (*model.User, *model.AppError)
+	GetGoogleAccount(userId string) (*model.GoogleAccount, *model.AppError)
 }
 
 type FeedStore interface {
