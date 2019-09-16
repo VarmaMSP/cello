@@ -2,65 +2,93 @@ DROP DATABASE IF EXISTS `phenopod`;
 CREATE DATABASE `phenopod`;
 USE `phenopod`;
 
+CREATE TABLE `user` (
+    `id` VARCHAR(20),
+    `name` VARCHAR(100),
+    `email` VARCHAR(255),
+    `gender` VARCHAR(20),
+    `is_admin` TINYINT DEFAULT 0,
+    `created_at` BIGINT,
+    `updated_at` BIGINT,
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE `google_account` (
+    `id` VARCHAR(50),
+    `user_id` VARCHAR(20),
+    `email` VARCHAR(255),
+    `family_name` VARCHAR(100),
+    `gender` VARCHAR(20),
+    `given_name` VARCHAR(100),
+    `link` VARCHAR(500),
+    `locale` VARCHAR(50),
+    `name` VARCHAR(200),
+    `picture` VARCHAR(500),
+    `created_at` BIGINT,
+    `updated_at` BIGINT,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 CREATE TABLE `feed` (
     `id` VARCHAR(20),
     `source` VARCHAR(20),
     `source_id` VARCHAR(20),
-    `url` VARCHAR(500) NOT NULL,
-    `etag` VARCHAR(255) NOT NULL,
-    `last_modified` VARCHAR(255) NOT NULL,
+    `url` VARCHAR(500),
+    `etag` VARCHAR(255),
+    `last_modified` VARCHAR(255),
     `refresh_enabled` TINYINT,
-    `refresh_interval` INT NOT NULL,
-    `last_refresh_at` BIGINT NOT NULL,
+    `refresh_interval` INT,
+    `last_refresh_at` BIGINT,
     `last_refresh_comment` VARCHAR(500),
-    `next_refresh_at` BIGINT NOT NULL,
-    `created_at` BIGINT NOT NULL,
-    `updated_at` BIGINT NOT NULL,
+    `next_refresh_at` BIGINT,
+    `created_at` BIGINT,
+    `updated_at` BIGINT,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`url`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `podcast` (
     `id` VARCHAR(20),
-    `title` VARCHAR(500) NOT NULL,
-    `description` BLOB NOT NULL,
-    `image_path` VARCHAR(500) NOT NULL,
-    `language` VARCHAR(10) NOT NULL,
+    `title` VARCHAR(500),
+    `description` BLOB,
+    `image_path` VARCHAR(500),
+    `language` VARCHAR(10),
     `explicit` TINYINT DEFAULT 0,
-    `author` VARCHAR(255) NOT NULL,
+    `author` VARCHAR(255),
     `type` ENUM('EPISODIC', 'SERIAL') DEFAULT 'EPISODIC',
     `block` TINYINT DEFAULT 0,
     `complete` TINYINT DEFAULT 0,
-    `link` VARCHAR(500) NOT NULL,
-    `owner_name` VARCHAR(500) NOT NULL,
-    `owner_email` VARCHAR(500) NOT NULL,
-    `copyright` VARCHAR(500) NOT NULL,
-    `created_at` BIGINT NOT NULL,
-    `updated_at` BIGINT NOT NULL,
+    `link` VARCHAR(500),
+    `owner_name` VARCHAR(500),
+    `owner_email` VARCHAR(500),
+    `copyright` VARCHAR(500),
+    `created_at` BIGINT,
+    `updated_at` BIGINT,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`id`) REFERENCES `feed` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `episode` (
     `id` VARCHAR(20),
-    `podcast_id` VARCHAR(20) NOT NULL,
-    `guid` VARCHAR(500) NOT NULL,
-    `title` VARCHAR(500) NOT NULL,
-    `media_url` VARCHAR(700) NOT NULL,
-    `media_type` VARCHAR(50) NOT NULL,
-    `media_size` BIGINT NOT NULL,
-    `pub_date` DATETIME NOT NULL,
-    `description` BLOB NOT NULL,
-    `duration` INT NOT NULL,
-    `link` VARCHAR(500) NOT NULL,
-    `image_link` VARCHAR(500) NOT NULL,
+    `podcast_id` VARCHAR(20),
+    `guid` VARCHAR(500),
+    `title` VARCHAR(500),
+    `media_url` VARCHAR(700),
+    `media_type` VARCHAR(50),
+    `media_size` BIGINT,
+    `pub_date` DATETIME,
+    `description` BLOB,
+    `duration` INT,
+    `link` VARCHAR(500),
+    `image_link` VARCHAR(500),
     `explicit` TINYINT DEFAULT 0,
-    `episode` INT NOT NULL,
-    `season` INT NOT NULL,
+    `episode` INT,
+    `season` INT,
     `type` ENUM('FULL', 'TRAILER', 'BONUS') DEFAULT 'FULL',
     `block` TINYINT DEFAULT 0,
-    `created_at` BIGINT NOT NULL,
-    `updated_at` BIGINT NOT NULL,
+    `created_at` BIGINT,
+    `updated_at` BIGINT,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -68,23 +96,23 @@ CREATE TABLE `episode` (
 CREATE TABLE `category` (
     `id` INT,
     `parent_id` INT, 
-    `name` VARCHAR(100) NOT NULL,
+    `name` VARCHAR(100),
     PRIMARY KEY (`id`),
     FOREIGN KEY (`parent_id`) REFERENCES `category` (`id`)
         ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
 CREATE TABLE `podcast_category` (
-    `podcast_id` VARCHAR(20) NOT NULL,
-    `category_id` INT NOT NULL,
+    `podcast_id` VARCHAR(20),
+    `category_id` INT,
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON UPDATE CASCADE ON DELETE NO ACTION
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `curation` (
     `id` VARCHAR(20),
-    `title` VARCHAR(500) NOT NULL,
-    `created_at` BIGINT NOT NULL,
+    `title` VARCHAR(500),
+    `created_at` BIGINT,
     PRIMARY KEY(`id`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -93,7 +121,7 @@ CREATE TABLE `podcast_curation` (
     `podcast_id` VARCHAR(20),
     `curation_id` VARCHAR(20),
     `rank` INT,
-    `created_at` BIGINT NOT NULL,
+    `created_at` BIGINT,
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (`curation_id`) REFERENCES `curation` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -103,7 +131,7 @@ CREATE TABLE `episode_curation` (
     `episode_id` VARCHAR(20),
     `curation_id` VARCHAR(20),
     `rank` INT,
-    `created_at` BIGINT NOT NULL,
+    `created_at` BIGINT,
     FOREIGN KEY (`episode_id`) REFERENCES `episode` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (`curation_id`) REFERENCES `curation` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -119,8 +147,8 @@ CREATE TABLE `task` (
     PRIMARY KEY (`name`)
 );
 
-INSERT INTO `task` (`name`, `type`, `interval`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES ('scrape_itunes', 'PERIODIC', 3600, 0, 1, 0, 0);
-INSERT INTO `task` (`name`, `type`, `interval`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES ('schedule_refresh', 'PERIODIC', 300, 0, 1, 0, 0);
+INSERT INTO `task` (`name`, `type`, `interval`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES ('scrape_itunes', 'IMMEDIATE', 3600, 0, 1, 0, 0);
+INSERT INTO `task` (`name`, `type`, `interval`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES ('schedule_podcast_refresh', 'IMMEDIATE', 300, 0, 1, 0, 0);
 
 INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
 INSERT INTO `category` (`id`, `name`) VALUES (2, 'Business');
