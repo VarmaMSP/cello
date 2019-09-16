@@ -61,7 +61,7 @@ func (s *SqlFeedStore) GetAllBySource(source string, offset, limit int) (res []*
 func (s *SqlFeedStore) GetAllToBeRefreshed(createdAfter int64, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := "SELECT " + strings.Join((&model.Feed{}).DbColumns(), ",") + ` FROM feed
 		WHERE refresh_enabled = 1 AND
-			  next_refresh_at > ? AND
+			  next_refresh_at < ? AND
 			  created_at > ?
 		ORDER BY created_at LIMIT ?`
 

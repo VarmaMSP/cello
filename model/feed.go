@@ -93,6 +93,11 @@ func (f *Feed) SetRefershInterval(rssFeed *rss.Feed) {
 			itemPubDates = append(itemPubDates, item.PubDateParsed)
 		}
 	}
+	if len(itemPubDates) == 0 {
+		f.RefreshEnabled = 0
+		return
+	}
+
 	sort.SliceStable(itemPubDates, func(i, j int) bool { return itemPubDates[i].After(*itemPubDates[j]) })
 
 	// disable refresh for podcasts that havent published an episode in more than 1 years

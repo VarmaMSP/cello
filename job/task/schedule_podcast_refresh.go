@@ -1,17 +1,13 @@
 package task
 
 import (
-	"time"
-
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/rabbitmq"
-	"github.com/varmamsp/cello/store"
 )
 
 type SchedulePodcastRefresh struct {
 	*app.App
-	store           store.Store
 	refreshPodcastP *rabbitmq.Producer
 }
 
@@ -32,32 +28,30 @@ func NewSchedulePodcastRefresh(app *app.App, config *model.Config) (*SchedulePod
 }
 
 func (s *SchedulePodcastRefresh) Call() {
-	s.Log.Info().Msg("Schedule podcast refresh started")
+	s.Log.Info().Msg("Schedule podcast refresh task started")
 	limit := 10000
-	ticker := time.NewTicker(time.Minute)
+	createdAfter := int64(0)
 
-	for _ = range ticker.C {
-		for createdAfter := int64(0); ; {
-			feeds, err := s.store.Feed().GetAllToBeRefreshed(createdAfter, limit)
-			if err != nil {
-				break
-			}
-
-			for _, feed := range feeds {
-				feedU := feed
-				feedU.LastRefreshAt = model.Now()
-				feedU.LastRefreshComment = "PENDING"
-				if err := s.store.Feed().Update(feed, feedU); err != nil {
-					continue
-				}
-
-				s.refreshPodcastP.D <- feedU
-			}
-
-			if len(feeds) < limit {
-				break
-			}
-			createdAfter = feeds[len(feeds)-1].CreatedAt
+	for {
+		feeds, err := s.Store.Feed().GetAllToBeRefreshed(createdAfter, limit)
+		if err != nil {
+			break
 		}
+
+		for _, feed := range feeds {
+			feedU := feed
+			feedU.LastRefreshAt = model.Now()
+			feedU.LastRefreshComment = "PENDING"
+			if err := s.Store.Feed().Update(feed, feedU); err != nil {
+				continue
+			}
+
+			s.refreshPodcastP.D <- feedU
+		}
+
+		if len(feeds) < limit {
+			break
+		}
+		createdAfter = feeds[len(feeds)-1].CreatedAt
 	}
 }

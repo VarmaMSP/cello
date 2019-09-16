@@ -92,7 +92,7 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 			goto update_feed
 		}
 
-		if err := job.savePodcast(rssFeed, feed.Url, headers); err != nil {
+		if err := job.savePodcast(feed.Id, rssFeed); err != nil {
 			feedU.LastRefreshComment = err.Error()
 			goto update_feed
 		}
@@ -109,7 +109,7 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 	}()
 }
 
-func (job *ImportPodcastJob) savePodcast(rssFeed *rss.Feed, feedUrl string, headers map[string]string) *model.AppError {
+func (job *ImportPodcastJob) savePodcast(podcastId string, rssFeed *rss.Feed) *model.AppError {
 	appErrorC := model.NewAppErrorC(
 		"jobs.podcast_import_job.save_podcast",
 		http.StatusInternalServerError,
@@ -117,7 +117,7 @@ func (job *ImportPodcastJob) savePodcast(rssFeed *rss.Feed, feedUrl string, head
 	)
 
 	// Save podcast
-	podcast := &model.Podcast{}
+	podcast := &model.Podcast{Id: podcastId}
 	if err := podcast.LoadDetails(rssFeed); err != nil {
 		return appErrorC(err.Error())
 	}
