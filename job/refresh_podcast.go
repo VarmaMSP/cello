@@ -84,16 +84,16 @@ func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 		feedU.ETag = headers[h.ETag]
 		feedU.LastModified = headers[h.LastModified]
 		if rssFeed == nil {
-			feedU.LastRefreshComment = "SUCCESS"
+			feedU.LastRefreshComment = "NOT MODIFIED"
 			goto update_feed
 		}
 
 		if err := job.updateEpisodes(feed.Id, rssFeed); err != nil {
-			feedU.LastRefreshComment = model.StatusFailure
+			feedU.LastRefreshComment = err.Error()
 			goto update_feed
 		}
 
-		feedU.LastRefreshComment = model.StatusSuccess
+		feedU.LastRefreshComment = "MODIFIED"
 
 	update_feed:
 		feedU.UpdatedAt = model.Now()
@@ -139,7 +139,7 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId string, rssFeed *rss.Feed
 
 	// Add New Episodes
 	for rssItemGuid, rssItem := range rssItemMap {
-		if _, ok := episodeMap[rssItemGuid]; ok {
+		if _, ok := episodeMap[rssItemGuid]; !ok {
 			episode := &model.Episode{PodcastId: podcastId}
 			if err := episode.LoadDetails(rssItem); err != nil {
 				continue

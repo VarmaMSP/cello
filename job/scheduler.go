@@ -12,7 +12,7 @@ import (
 type SchedulerJob struct {
 	*app.App
 	scrapeItunes           *task.ScrapeItunes
-	schedulePodcastrefresh *task.SchedulePodcastRefresh
+	schedulePodcastRefresh *task.SchedulePodcastRefresh
 }
 
 func NewSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
@@ -29,7 +29,7 @@ func NewSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
 	return &SchedulerJob{
 		App:                    app,
 		scrapeItunes:           scrapeItunes,
-		schedulePodcastrefresh: schedulePodcastRefresh,
+		schedulePodcastRefresh: schedulePodcastRefresh,
 	}, nil
 }
 
@@ -108,6 +108,6 @@ func (job *SchedulerJob) callTask(task *model.Task) {
 	case model.TASK_NAME_SCRAPE_ITUNES:
 		job.scrapeItunes.Call()
 	case model.TASK_NAME_SCHEDULE_PODCAST_REFRESH:
-		job.schedulePodcastrefresh.Call()
+		job.schedulePodcastRefresh.Call()
 	}
 }
