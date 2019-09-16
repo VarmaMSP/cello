@@ -2,7 +2,6 @@ package sqlstore
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/varmamsp/cello/model"
 )
@@ -43,7 +42,7 @@ func (s *SqlCurationStore) SavePodcastCuration(item *model.PodcastCuration) *mod
 
 func (s *SqlCurationStore) Get(curationId string) (*model.Curation, *model.AppError) {
 	curation := &model.Curation{}
-	sql := "SELECT " + strings.Join((&model.Curation{}).DbColumns(), ",") + " FROM curation WHERE id = ?"
+	sql := "SELECT " + Cols(curation) + " FROM curation WHERE id = ?"
 
 	if err := s.GetMaster().QueryRow(sql, curationId).Scan(curation.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
@@ -55,8 +54,7 @@ func (s *SqlCurationStore) Get(curationId string) (*model.Curation, *model.AppEr
 }
 
 func (s *SqlCurationStore) GetAll() (res []*model.Curation, appE *model.AppError) {
-	cols := strings.Join((&model.Curation{}).DbColumns(), ",")
-	sql := "SELECT " + cols + " FROM curation ORDER BY created_at DESC"
+	sql := "SELECT " + Cols(&model.Curation{}) + " FROM curation ORDER BY created_at DESC"
 
 	copyTo := func() []interface{} {
 		tmp := &model.Curation{}

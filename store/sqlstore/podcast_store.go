@@ -2,7 +2,6 @@ package sqlstore
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
@@ -30,7 +29,7 @@ func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 
 func (s *SqlPodcastStore) Get(podcastId string) (*model.Podcast, *model.AppError) {
 	podcast := &model.Podcast{}
-	sql := "SELECT " + strings.Join(podcast.DbColumns(), ",") + " FROM podcast WHERE id = ?"
+	sql := "SELECT " + Cols(podcast) + " FROM podcast WHERE id = ?"
 
 	if err := s.GetMaster().QueryRow(sql, podcastId).Scan(podcast.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
@@ -42,7 +41,7 @@ func (s *SqlPodcastStore) Get(podcastId string) (*model.Podcast, *model.AppError
 }
 
 func (s *SqlPodcastStore) GetAllByCuration(curationId string, offset, limit int) (res []*model.Podcast, appE *model.AppError) {
-	sql := "SELECT " + strings.Join(DbColumnsWithPrefix(&model.Podcast{}, "podcast"), ",") + ` FROM podcast
+	sql := "SELECT " + Cols(&model.Podcast{}, "podcast") + ` FROM podcast
 		INNER JOIN podcast_curation ON podcast_curation.podcast_id = podcast.id
 		WHERE podcast_curation.curation_id = ? 
 		LIMIT ?, ?`

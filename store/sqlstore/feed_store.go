@@ -2,7 +2,6 @@ package sqlstore
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/varmamsp/cello/model"
 )
@@ -29,7 +28,7 @@ func (s *SqlFeedStore) Save(feed *model.Feed) *model.AppError {
 
 func (s *SqlFeedStore) Get(id string) (*model.Feed, *model.AppError) {
 	feed := &model.Feed{}
-	sql := "SELECT " + strings.Join(feed.DbColumns(), ",") + " FROM feed WHERE id = ?"
+	sql := "SELECT " + Cols(feed) + " FROM feed WHERE id = ?"
 
 	if err := s.GetMaster().QueryRow(sql, id).Scan(feed.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
@@ -41,7 +40,7 @@ func (s *SqlFeedStore) Get(id string) (*model.Feed, *model.AppError) {
 }
 
 func (s *SqlFeedStore) GetAllBySource(source string, offset, limit int) (res []*model.Feed, appE *model.AppError) {
-	sql := "SELECT " + strings.Join((&model.Feed{}).DbColumns(), ",") + " FROM feed WHERE source = ? LIMIT ?, ?"
+	sql := "SELECT " + Cols(&model.Feed{}) + " FROM feed WHERE source = ? LIMIT ?, ?"
 
 	copyTo := func() []interface{} {
 		tmp := &model.Feed{}
@@ -59,7 +58,7 @@ func (s *SqlFeedStore) GetAllBySource(source string, offset, limit int) (res []*
 }
 
 func (s *SqlFeedStore) GetAllToBeRefreshed(createdAfter int64, limit int) (res []*model.Feed, appE *model.AppError) {
-	sql := "SELECT " + strings.Join((&model.Feed{}).DbColumns(), ",") + ` FROM feed
+	sql := "SELECT " + Cols(&model.Feed{}) + ` FROM feed
 		WHERE refresh_enabled = 1 AND
 			  next_refresh_at < ? AND
 			  created_at > ?

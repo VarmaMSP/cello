@@ -71,6 +71,14 @@ func Replicate(s string, n int) []string {
 	return x
 }
 
+func ValuesFromAddrs(addrs []interface{}) []interface{} {
+	values := make([]interface{}, len(addrs))
+	for i := range values {
+		values[i] = reflect.ValueOf(addrs[i]).Elem().Interface()
+	}
+	return values
+}
+
 func Cols(m DbModel, prefix ...string) string {
 	cols := m.DbColumns()
 	if len(prefix) > 0 {
@@ -79,23 +87,6 @@ func Cols(m DbModel, prefix ...string) string {
 		}
 	}
 	return strings.Join(cols, ",")
-}
-
-func DbColumnsWithPrefix(m DbModel, prefix string) []string {
-	cols := m.DbColumns()
-	prefixedCols := make([]string, len(cols))
-	for i := 0; i < len(cols); i++ {
-		prefixedCols[i] = prefix + "." + cols[i]
-	}
-	return prefixedCols
-}
-
-func ValuesFromAddrs(addrs []interface{}) []interface{} {
-	values := make([]interface{}, len(addrs))
-	for i := range values {
-		values[i] = reflect.ValueOf(addrs[i]).Elem().Interface()
-	}
-	return values
 }
 
 func MakeMysqlDSN(config *model.Config) string {

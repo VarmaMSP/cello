@@ -2,7 +2,6 @@ package sqlstore
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
@@ -30,7 +29,7 @@ func (s *SqlEpisodeStore) Save(episode *model.Episode) *model.AppError {
 
 func (s *SqlEpisodeStore) Get(id string) (*model.Episode, *model.AppError) {
 	episode := &model.Episode{}
-	sql := "SELECT " + strings.Join(episode.DbColumns(), ",") + " FROM episode WHERE id = ?"
+	sql := "SELECT " + Cols(episode) + " FROM episode WHERE id = ?"
 
 	if err := s.GetMaster().QueryRow(sql, id).Scan(episode.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
@@ -42,7 +41,7 @@ func (s *SqlEpisodeStore) Get(id string) (*model.Episode, *model.AppError) {
 }
 
 func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) (res []*model.Episode, appE *model.AppError) {
-	sql := "SELECT " + strings.Join((&model.Episode{}).DbColumns(), ",") + ` FROM episode
+	sql := "SELECT " + Cols(&model.Episode{}) + ` FROM episode
 		WHERE podcast_id = ?
 		ORDER BY pub_date DESC`
 

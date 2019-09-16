@@ -2,7 +2,6 @@ package sqlstore
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
@@ -17,7 +16,7 @@ func NewSqlTaskStore(store SqlStore) store.TaskStore {
 }
 
 func (s *SqlTaskStore) GetAllActive() (res []*model.Task, appE *model.AppError) {
-	sql := "SELECT " + strings.Join((&model.Task{}).DbColumns(), ",") + " FROM task WHERE active = 1"
+	sql := "SELECT " + Cols(&model.Task{}) + " FROM task WHERE active = 1"
 
 	copyTo := func() []interface{} {
 		tmp := &model.Task{}
