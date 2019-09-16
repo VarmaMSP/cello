@@ -62,4 +62,5 @@ oauth:
     client_id: 844087729764-4kof4gr262r2u0lhtb5d2a3viqr1p08a.apps.googleusercontent.com
     client_secret:
     redirect_url: http://localhost:8080/google/callback
+    redirect_url: http://localhost:8080/api/google/callback
     scopes: ['profile', 'email']

@@ -1,5 +1,5 @@
 run-cello:
-	sudo go run ./cmd/cello/main.go
+	go run ./cmd/cello/main.go
 
 run-ui-server:
 	cd ./ui-server && npm run dev

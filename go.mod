@@ -29,5 +29,6 @@ require (
 	github.com/stretchr/testify v1.3.0
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	golang.org/x/sys v0.0.0-20190812172437-4e8604ab3aff // indirect
+	google.golang.org/api v0.7.0
 	google.golang.org/appengine v1.6.0 // indirect
 )

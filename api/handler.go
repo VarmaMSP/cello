@@ -10,10 +10,10 @@ import (
 )
 
 type Context struct {
-	req *http.Request
-	app *app.App
-
-	err *model.AppError
+	req     *http.Request
+	app     *app.App
+	session *model.Session
+	err     *model.AppError
 }
 
 func (c *Context) Query(key string) string {
@@ -29,12 +29,9 @@ func (c *Context) Body() (m map[string]string) {
 }
 
 type Handler struct {
-	app *app.App
-
+	app            *app.App
 	handleFunc     func(*Context, http.ResponseWriter)
-	enableCors     bool
 	requireSession bool
-	isStatic       bool
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
@@ -45,11 +42,6 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		Str("path", req.URL.String()).
 		Str("user_agent", req.Header.Get(headers.UserAgent)).
 		Msg("")
-
-	if h.enableCors {
-		w.Header().Set(headers.AccessControlAllowOrigin, req.Header.Get(headers.Origin))
-		w.Header().Set(headers.AccessControlAllowCredentials, "true")
-	}
 
 	h.handleFunc(c, w)
 
@@ -65,11 +57,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 func (api *Api) NewHandler(h func(*Context, http.ResponseWriter)) http.Handler {
-	return &Handler{
+	return api.app.SessionManager.LoadAndSave(&Handler{
 		app:            api.app,
 		handleFunc:     h,
-		enableCors:     true,
 		requireSession: false,
-		isStatic:       false,
-	}
+	})
 }
