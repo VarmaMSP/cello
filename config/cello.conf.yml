@@ -14,6 +14,10 @@ elasticsearch:
   user: elastic
   password: changeme
 
+redis:
+  address: localhost:6379
+  max_idle_conn: 10
+
 queues:
   import_podcast: 
     delivery_mode: 2
@@ -38,19 +42,19 @@ queues:
 
 jobs:
   import_podcast: 
-    enable: true
-    worker_limit: 10
+    enable: false
+    worker_limit: 50
 
-  refresh_podcast: 
+  refresh_podcast:
     enable: true
     worker_limit: 10
 
   create_thumbnail:
-    enable: true
-    worker_limit: 10
+    enable: false
+    worker_limit: 100
 
   scheduler:
-    enable: true
+    enable: false
     worker_limit: 10
 
 oauth:

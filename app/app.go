@@ -3,6 +3,9 @@ package app
 import (
 	"os"
 
+	"github.com/alexedwards/scs/redisstore"
+	"github.com/alexedwards/scs/v2"
+	"github.com/gomodule/redigo/redis"
 	"github.com/olivere/elastic/v7"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -18,10 +21,12 @@ import (
 
 type App struct {
 	Store                store.Store
+	Redis                *redis.Pool
 	ElasticSearch        *elastic.Client
 	RabbitmqProducerConn *amqp.Connection
 	RabbitmqConsumerConn *amqp.Connection
 
+	SessionManager    *scs.SessionManager
 	GoogleOAuthConfig *oauth2.Config
 
 	Log zerolog.Logger
@@ -45,6 +50,13 @@ func NewApp(config model.Config) (*App, error) {
 	}
 	app.Store = store
 
+	app.Log.Info().Msg("Connecting to redis ...")
+	redisConnPool, err := NewRedisConnPool(&config)
+	if err != nil {
+		return nil, err
+	}
+	app.Redis = redisConnPool
+
 	app.Log.Info().Msg("Connecting to ElasticSearch ...")
 	elasticSearch, err := elasticsearch.NewClient(&config)
 	if err != nil {
@@ -57,13 +69,15 @@ func NewApp(config model.Config) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	app.RabbitmqProducerConn = rabbitmqProducerConn
-
 	rabbitmqConsumerConn, err := rabbitmq.NewConnection(&config)
 	if err != nil {
 		return nil, err
 	}
+	app.RabbitmqProducerConn = rabbitmqProducerConn
 	app.RabbitmqConsumerConn = rabbitmqConsumerConn
+
+	app.SessionManager = scs.New()
+	app.SessionManager.Store = redisstore.New(app.Redis)
 
 	app.GoogleOAuthConfig = &oauth2.Config{
 		ClientID:     config.OAuth.Google.ClientId,
@@ -74,4 +88,21 @@ func NewApp(config model.Config) (*App, error) {
 	}
 
 	return app, nil
+}
+
+func NewRedisConnPool(config *model.Config) (*redis.Pool, error) {
+	pool := &redis.Pool{
+		MaxIdle: config.Redis.MaxIdleConn,
+		Dial: func() (redis.Conn, error) {
+			return redis.Dial("tcp", config.Redis.Address)
+		},
+	}
+
+	conn := pool.Get()
+	defer conn.Close()
+
+	if _, err := conn.Do("PING"); err != nil {
+		return nil, err
+	}
+	return pool, nil
 }

@@ -4,6 +4,7 @@ type Config struct {
 	Mysql         Mysql         `mapstructure:"mysql"`
 	Rabbitmq      Rabbitmq      `mapstructure:"rabbitmq"`
 	Elasticsearch Elasticsearch `mapstructure:"elasticsearch"`
+	Redis         Redis         `mapstructure:"redis"`
 	Queues        Queues        `mapstructure:"queues"`
 	Jobs          Jobs          `mapstructure:"jobs"`
 	OAuth         OAuth         `mapstructure:"oauth"`
@@ -29,6 +30,12 @@ type Elasticsearch struct {
 	Address  string `mapstructure:"address"`
 	User     string `mapstructure:"user"`
 	Password string `mapstructure:"password"`
+}
+
+// REDIS CONFIGURATION
+type Redis struct {
+	Address     string `mapstructure:"address"`
+	MaxIdleConn int    `mapstructure:"max_idle_conn"`
 }
 
 // Queue
