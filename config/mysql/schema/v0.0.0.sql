@@ -30,6 +30,17 @@ CREATE TABLE `google_account` (
     FOREIGN KEY(`user_id`) REFERENCES `user` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE `facebook_account` (
+    `id` VARCHAR(50),
+    `user_id` VARCHAR(20),
+    `name` VARCHAR(200),
+    `email` VARCHAR(255),
+    `created_at` BIGINT,
+    `updated_at` BIGINT,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 CREATE TABLE `feed` (
     `id` VARCHAR(20),
     `source` VARCHAR(20),

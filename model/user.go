@@ -33,6 +33,15 @@ type GoogleAccount struct {
 	UpdatedAt  int64
 }
 
+type FacebookAccount struct {
+	Id        string
+	UserId    string
+	Name      string
+	Email     string
+	CreatedAt int64
+	UpdatedAt int64
+}
+
 func (u *User) DbColumns() []string {
 	return []string{
 		"id", "name", "email", "gender",
@@ -63,6 +72,20 @@ func (g *GoogleAccount) FieldAddrs() []interface{} {
 	}
 }
 
+func (f *FacebookAccount) DbColumns() []string {
+	return []string{
+		"id", "user_id", "name", "email",
+		"created_at", "updated_at",
+	}
+}
+
+func (f *FacebookAccount) FieldAddrs() []interface{} {
+	return []interface{}{
+		&f.Id, &f.UserId, &f.Name, &f.Email,
+		&f.CreatedAt, &f.UpdatedAt,
+	}
+}
+
 func (u *User) PreSave() {
 	if u.Id == "" {
 		u.Id = xid.New().String()
@@ -84,5 +107,15 @@ func (g *GoogleAccount) PreSave() {
 
 	if g.UpdatedAt == 0 {
 		g.UpdatedAt = Now()
+	}
+}
+
+func (f *FacebookAccount) PreSave() {
+	if f.CreatedAt == 0 {
+		f.CreatedAt = Now()
+	}
+
+	if f.UpdatedAt == 0 {
+		f.UpdatedAt = Now()
 	}
 }

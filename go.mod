@@ -6,7 +6,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/alexedwards/scs/redisstore v0.0.0-20190903163413-4cd374bf181e
 	github.com/alexedwards/scs/v2 v2.2.0
-	github.com/dghubble/gologin v2.1.0+incompatible // indirect
+	github.com/dghubble/gologin v2.1.0+incompatible
 	github.com/dghubble/gologin/v2 v2.2.0
 	github.com/go-http-utils/headers v0.0.0-20161116095340-dd89efed1674
 	github.com/go-sql-driver/mysql v1.4.1

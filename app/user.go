@@ -5,7 +5,8 @@ import (
 	"net/http"
 
 	"github.com/dghubble/gologin/v2"
-	"github.com/dghubble/gologin/v2/google"
+	facebookLogin "github.com/dghubble/gologin/v2/facebook"
+	googleLogin "github.com/dghubble/gologin/v2/google"
 	"github.com/varmamsp/cello/model"
 	googleOAuth "google.golang.org/api/oauth2/v2"
 )
@@ -39,6 +40,28 @@ func (app *App) CreateUserWithGoogle(googleUser *googleOAuth.Userinfoplus) (*mod
 	return user, nil
 }
 
+func (app *App) CreateUserWithFacebook(facebookUser *facebookLogin.User) (*model.User, *model.AppError) {
+	user := &model.User{
+		Name:  facebookUser.Name,
+		Email: facebookUser.Email,
+	}
+	if err := app.Store.User().Save(user); err != nil {
+		return nil, err
+	}
+
+	facebookAccount := &model.FacebookAccount{
+		Id:     facebookUser.ID,
+		UserId: user.Id,
+		Name:   facebookUser.Name,
+		Email:  facebookUser.Email,
+	}
+	if err := app.Store.User().SaveFacebookAccount(facebookAccount); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
 func (app *App) CreateSession(ctx context.Context, user *model.User) *model.Session {
 	session := &model.Session{UserId: user.Id, IsAdmin: user.IsAdmin}
 	app.SessionManager.Put(ctx, "user_id", session.UserId)
@@ -56,9 +79,17 @@ func (app *App) GetSession(ctx context.Context) *model.Session {
 }
 
 func (app *App) GoogleSignIn() http.Handler {
-	return google.StateHandler(gologin.DebugOnlyCookieConfig, google.LoginHandler(app.GoogleOAuthConfig, nil))
+	return googleLogin.StateHandler(gologin.DebugOnlyCookieConfig, googleLogin.LoginHandler(app.GoogleOAuthConfig, nil))
 }
 
 func (app *App) GoogleCallback(onSuccess http.Handler) http.Handler {
-	return google.StateHandler(gologin.DebugOnlyCookieConfig, google.CallbackHandler(app.GoogleOAuthConfig, onSuccess, nil))
+	return googleLogin.StateHandler(gologin.DebugOnlyCookieConfig, googleLogin.CallbackHandler(app.GoogleOAuthConfig, onSuccess, nil))
+}
+
+func (app *App) FacebookSignIn() http.Handler {
+	return facebookLogin.StateHandler(gologin.DebugOnlyCookieConfig, facebookLogin.LoginHandler(app.FacebookOAuthConfig, nil))
+}
+
+func (app *App) FacebookCallback(onSuccess http.Handler) http.Handler {
+	return facebookLogin.StateHandler(gologin.DebugOnlyCookieConfig, facebookLogin.CallbackHandler(app.FacebookOAuthConfig, onSuccess, nil))
 }

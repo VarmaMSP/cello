@@ -16,7 +16,8 @@ import (
 	"github.com/varmamsp/cello/store"
 	"github.com/varmamsp/cello/store/sqlstore"
 	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
+	facebookOAuth "golang.org/x/oauth2/facebook"
+	googleOAuth "golang.org/x/oauth2/google"
 )
 
 type App struct {
@@ -26,8 +27,9 @@ type App struct {
 	RabbitmqProducerConn *amqp.Connection
 	RabbitmqConsumerConn *amqp.Connection
 
-	SessionManager    *scs.SessionManager
-	GoogleOAuthConfig *oauth2.Config
+	SessionManager      *scs.SessionManager
+	GoogleOAuthConfig   *oauth2.Config
+	FacebookOAuthConfig *oauth2.Config
 
 	Log zerolog.Logger
 }
@@ -83,8 +85,16 @@ func NewApp(config model.Config) (*App, error) {
 		ClientID:     config.OAuth.Google.ClientId,
 		ClientSecret: config.OAuth.Google.ClientSecret,
 		RedirectURL:  config.OAuth.Google.RedirectUrl,
-		Endpoint:     google.Endpoint,
+		Endpoint:     googleOAuth.Endpoint,
 		Scopes:       config.OAuth.Google.Scopes,
+	}
+
+	app.FacebookOAuthConfig = &oauth2.Config{
+		ClientID:     config.OAuth.Facebook.ClientId,
+		ClientSecret: config.OAuth.Facebook.ClientSecret,
+		RedirectURL:  config.OAuth.Facebook.RedirectUrl,
+		Endpoint:     facebookOAuth.Endpoint,
+		Scopes:       config.OAuth.Facebook.Scopes,
 	}
 
 	return app, nil

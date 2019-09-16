@@ -39,6 +39,18 @@ func (s *SqlUserStore) SaveGoogleAccount(account *model.GoogleAccount) *model.Ap
 	return nil
 }
 
+func (s *SqlUserStore) SaveFacebookAccount(account *model.FacebookAccount) *model.AppError {
+	account.PreSave()
+
+	if _, err := s.Insert("facebook_account", []DbModel{account}); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_user_store.save_facebook_account", err.Error(), http.StatusInternalServerError,
+			map[string]string{"user_id": account.UserId},
+		)
+	}
+	return nil
+}
+
 func (s *SqlUserStore) Get(userId string) (*model.User, *model.AppError) {
 	user := &model.User{}
 	sql := "SELECT " + Cols(user) + " FROM user WHERE id = ?"
@@ -59,6 +71,19 @@ func (s *SqlUserStore) GetGoogleAccount(userId string) (*model.GoogleAccount, *m
 	if err := s.GetMaster().QueryRow(sql, userId).Scan(account.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
 			"store.sqlstore.sql_user_store.get_google_account", err.Error(), http.StatusInternalServerError,
+			map[string]string{"user_id": userId},
+		)
+	}
+	return account, nil
+}
+
+func (s *SqlUserStore) GetFacebookAccount(userId string) (*model.FacebookAccount, *model.AppError) {
+	account := &model.FacebookAccount{}
+	sql := "SELECT " + Cols(account) + " FROM facebook_account WHERE user_id = ?"
+
+	if err := s.GetMaster().QueryRow(sql, userId).Scan(account.FieldAddrs()...); err != nil {
+		return nil, model.NewAppError(
+			"store.sqlstore.sql_user_store.get_facebook_account", err.Error(), http.StatusInternalServerError,
 			map[string]string{"user_id": userId},
 		)
 	}

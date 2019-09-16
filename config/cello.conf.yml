@@ -64,3 +64,9 @@ oauth:
     redirect_url: http://localhost:8080/google/callback
     redirect_url: http://localhost:8080/api/google/callback
     scopes: ['profile', 'email']
+
+  facebook:
+    client_id: 1461695093970060
+    client_secret:
+    redirect_url: http://localhost:8080/api/facebook/callback
+    scopes: ['email']
