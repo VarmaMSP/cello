@@ -16,15 +16,16 @@ func (api *Api) RegisterUserHandlers() {
 	api.router.Handler("GET", "/twitter/callback", api.app.TwitterCallback(api.NewHandler(LoginWithSocial("twitter"))))
 }
 
-func LoginWithSocial(name string) func(c *Context, res http.ResponseWriter) {
+func LoginWithSocial(accountType string) func(c *Context, res http.ResponseWriter) {
 	return func(c *Context, res http.ResponseWriter) {
 		var user *model.User
 		var err *model.AppError
-		if name == "google" {
+
+		if accountType == "google" {
 			user, err = c.app.CreateUserWithGoogle(c.req.Context())
-		} else if name == "facebook" {
+		} else if accountType == "facebook" {
 			user, err = c.app.CreateUserWithFacebook(c.req.Context())
-		} else if name == "twitter" {
+		} else if accountType == "twitter" {
 			user, err = c.app.CreateUserWithTwitter(c.req.Context())
 		}
 
