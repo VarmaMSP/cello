@@ -70,3 +70,9 @@ oauth:
     client_secret:
     redirect_url: http://localhost:8080/api/facebook/callback
     scopes: ['email']
+
+  twitter:
+    client_id: cmn3dPHdbvuIwh03R1Cy1ajYr
+    client_secret:
+    redirect_url: http://localhost:8080/api/twitter/callback
+    scopes: []

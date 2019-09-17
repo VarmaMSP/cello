@@ -11,7 +11,7 @@ CREATE TABLE `user` (
     `created_at` BIGINT,
     `updated_at` BIGINT,
     PRIMARY KEY(`id`)
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `google_account` (
     `id` VARCHAR(50),
@@ -28,7 +28,7 @@ CREATE TABLE `google_account` (
     `updated_at` BIGINT,
     PRIMARY KEY(`id`),
     FOREIGN KEY(`user_id`) REFERENCES `user` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `facebook_account` (
     `id` VARCHAR(50),
@@ -39,7 +39,25 @@ CREATE TABLE `facebook_account` (
     `updated_at` BIGINT,
     PRIMARY KEY(`id`),
     FOREIGN KEY(`user_id`) REFERENCES `user` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE `twitter_account` (
+    `id` VARCHAR(50), 
+    `user_id` VARCHAR(20),
+    `name` VARCHAR(60),
+    `screen_name` VARCHAR(60),
+    `location` VARCHAR(100),
+    `url` VARCHAR(255),
+    `description` MEDIUMBLOB,
+    `verified` TINYINT,
+    `followers_count` INT,
+    `friends_count` INT,
+    `profile_image` VARCHAR(255),
+    `created_at` BIGINT,
+    `updated_at` BIGINT,
+     PRIMARY KEY(`id`),
+    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `feed` (
     `id` VARCHAR(20),

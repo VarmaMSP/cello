@@ -5,6 +5,8 @@ import (
 
 	"github.com/alexedwards/scs/redisstore"
 	"github.com/alexedwards/scs/v2"
+	"github.com/dghubble/oauth1"
+	twitterOAuth "github.com/dghubble/oauth1/twitter"
 	"github.com/gomodule/redigo/redis"
 	"github.com/olivere/elastic/v7"
 	"github.com/rs/zerolog"
@@ -30,6 +32,7 @@ type App struct {
 	SessionManager      *scs.SessionManager
 	GoogleOAuthConfig   *oauth2.Config
 	FacebookOAuthConfig *oauth2.Config
+	TwitterOAuthConfig  *oauth1.Config
 
 	Log zerolog.Logger
 }
@@ -95,6 +98,13 @@ func NewApp(config model.Config) (*App, error) {
 		RedirectURL:  config.OAuth.Facebook.RedirectUrl,
 		Endpoint:     facebookOAuth.Endpoint,
 		Scopes:       config.OAuth.Facebook.Scopes,
+	}
+
+	app.TwitterOAuthConfig = &oauth1.Config{
+		ConsumerKey:    config.OAuth.Twitter.ClientId,
+		ConsumerSecret: config.OAuth.Twitter.ClientSecret,
+		CallbackURL:    config.OAuth.Twitter.RedirectUrl,
+		Endpoint:       twitterOAuth.AuthorizeEndpoint,
 	}
 
 	return app, nil

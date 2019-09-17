@@ -51,6 +51,18 @@ func (s *SqlUserStore) SaveFacebookAccount(account *model.FacebookAccount) *mode
 	return nil
 }
 
+func (s *SqlUserStore) SaveTwitterAccount(account *model.TwitterAccount) *model.AppError {
+	account.PreSave()
+
+	if _, err := s.Insert("twitter_account", []DbModel{account}); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_user_store.save_twitter_account", err.Error(), http.StatusInternalServerError,
+			map[string]string{"user_id": account.UserId},
+		)
+	}
+	return nil
+}
+
 func (s *SqlUserStore) Get(userId string) (*model.User, *model.AppError) {
 	user := &model.User{}
 	sql := "SELECT " + Cols(user) + " FROM user WHERE id = ?"

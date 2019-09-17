@@ -8,6 +8,7 @@ require (
 	github.com/alexedwards/scs/v2 v2.2.0
 	github.com/dghubble/gologin v2.1.0+incompatible
 	github.com/dghubble/gologin/v2 v2.2.0
+	github.com/dghubble/oauth1 v0.6.0
 	github.com/go-http-utils/headers v0.0.0-20161116095340-dd89efed1674
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259

@@ -70,6 +70,7 @@ type Job_ struct {
 type OAuth struct {
 	Google   OAuth_ `mapstructure:"google"`
 	Facebook OAuth_ `mapstructure:"facebook"`
+	Twitter  OAuth_ `mapstructure:"twitter"`
 }
 
 type OAuth_ struct {

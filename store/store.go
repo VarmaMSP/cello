@@ -16,6 +16,7 @@ type UserStore interface {
 	Save(user *model.User) *model.AppError
 	SaveGoogleAccount(account *model.GoogleAccount) *model.AppError
 	SaveFacebookAccount(account *model.FacebookAccount) *model.AppError
+	SaveTwitterAccount(account *model.TwitterAccount) *model.AppError
 	Get(userId string) (*model.User, *model.AppError)
 	GetGoogleAccount(userId string) (*model.GoogleAccount, *model.AppError)
 	GetFacebookAccount(userId string) (*model.FacebookAccount, *model.AppError)
