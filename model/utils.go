@@ -32,6 +32,7 @@ const (
 )
 
 type DbModel interface {
+	PreSave()
 	DbColumns() []string
 	FieldAddrs() []interface{}
 }

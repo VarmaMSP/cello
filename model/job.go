@@ -44,3 +44,13 @@ func (t *Task) FieldAddrs() []interface{} {
 		&t.Active, &t.CreatedAt, &t.UpdatedAt,
 	}
 }
+
+func (t *Task) PreSave() {
+	if t.CreatedAt == 0 {
+		t.CreatedAt = Now()
+	}
+
+	if t.UpdatedAt == 0 {
+		t.UpdatedAt = Now()
+	}
+}
