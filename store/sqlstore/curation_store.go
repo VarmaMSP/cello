@@ -17,7 +17,7 @@ func NewSqlCurationStore(store SqlStore) *SqlCurationStore {
 func (s *SqlCurationStore) Save(curation *model.Curation) *model.AppError {
 	curation.PreSave()
 
-	_, err := s.Insert("curation", []DbModel{curation})
+	_, err := s.Insert("curation", []model.DbModel{curation})
 	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_curation_store.save", err.Error(), http.StatusInternalServerError,
@@ -30,7 +30,7 @@ func (s *SqlCurationStore) Save(curation *model.Curation) *model.AppError {
 func (s *SqlCurationStore) SavePodcastCuration(item *model.PodcastCuration) *model.AppError {
 	item.PreSave()
 
-	_, err := s.Insert("podcast_curation", []DbModel{item})
+	_, err := s.Insert("podcast_curation", []model.DbModel{item})
 	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_curation_store.save_podcast_curation", err.Error(), http.StatusInternalServerError,

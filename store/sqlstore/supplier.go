@@ -45,7 +45,7 @@ func (s *SqlSupplier) GetMaster() *sql.DB {
 	return s.db
 }
 
-func (s *SqlSupplier) Insert(tableName string, models []DbModel) (sql.Result, error) {
+func (s *SqlSupplier) Insert(tableName string, models []model.DbModel) (sql.Result, error) {
 	query, insertValues, noValues := InsertQuery(tableName, models)
 	if noValues {
 		return nil, nil
@@ -54,7 +54,7 @@ func (s *SqlSupplier) Insert(tableName string, models []DbModel) (sql.Result, er
 	return s.db.Exec(query, insertValues...)
 }
 
-func (s *SqlSupplier) UpdateChanges(tableName string, old, new DbModel, where string, values ...interface{}) (sql.Result, error) {
+func (s *SqlSupplier) UpdateChanges(tableName string, old, new model.DbModel, where string, values ...interface{}) (sql.Result, error) {
 	query, updateValues, noChanges := UpdateQuery(tableName, old, new, where, values)
 	if noChanges {
 		return nil, nil

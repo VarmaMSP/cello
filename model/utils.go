@@ -31,6 +31,11 @@ const (
 	secondsInYear  = 60 * 60 * 24 * 365
 )
 
+type DbModel interface {
+	DbColumns() []string
+	FieldAddrs() []interface{}
+}
+
 type AppError struct {
 	Id            string            `json:"id"`          // Function at which the error occured
 	DetailedError string            `json:"error"`       // Internal Error string

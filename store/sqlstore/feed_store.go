@@ -17,7 +17,7 @@ func NewSqlFeedStore(store SqlStore) *SqlFeedStore {
 func (s *SqlFeedStore) Save(feed *model.Feed) *model.AppError {
 	feed.PreSave()
 
-	if _, err := s.Insert("feed", []DbModel{feed}); err != nil {
+	if _, err := s.Insert("feed", []model.DbModel{feed}); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_feed_store.save", err.Error(), http.StatusInternalServerError,
 			map[string]string{"source": feed.Source, "source_id": feed.SourceId},

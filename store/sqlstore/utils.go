@@ -10,7 +10,7 @@ import (
 
 func InsertQuery(
 	tableName string,
-	models []DbModel,
+	models []model.DbModel,
 ) (sql string, insertValues []interface{}, noValues bool) {
 	if len(models) == 0 {
 		noValues = true
@@ -37,7 +37,7 @@ func InsertQuery(
 
 func UpdateQuery(
 	tableName string,
-	old, new DbModel,
+	old, new model.DbModel,
 	whereClause string,
 	values []interface{},
 ) (sql string, updateValues []interface{}, noChanges bool) {
@@ -79,7 +79,7 @@ func ValuesFromAddrs(addrs []interface{}) []interface{} {
 	return values
 }
 
-func Cols(m DbModel, prefix ...string) string {
+func Cols(m model.DbModel, prefix ...string) string {
 	cols := m.DbColumns()
 	if len(prefix) > 0 {
 		for i, col := range cols {

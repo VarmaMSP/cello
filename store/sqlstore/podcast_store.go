@@ -18,7 +18,7 @@ func NewSqlPodcastStore(store SqlStore) store.PodcastStore {
 func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 	podcast.PreSave()
 
-	if _, err := s.Insert("podcast", []DbModel{podcast}); err != nil {
+	if _, err := s.Insert("podcast", []model.DbModel{podcast}); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_podcast_store.save", err.Error(), http.StatusInternalServerError,
 			map[string]string{"title": podcast.Title},
