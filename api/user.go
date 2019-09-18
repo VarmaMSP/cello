@@ -10,9 +10,9 @@ import (
 
 func (api *Api) RegisterUserHandlers() {
 	api.router.Handler("GET", "/me", api.NewHandlerSessionRequired(Me))
-	api.router.Handler("GET", "/google/login", api.app.GoogleSignIn())
-	api.router.Handler("GET", "/facebook/login", api.app.FacebookSignIn())
-	api.router.Handler("GET", "/twitter/login", api.app.TwitterSignIn())
+	api.router.Handler("GET", "/google/signin", api.app.GoogleSignIn())
+	api.router.Handler("GET", "/facebook/signin", api.app.FacebookSignIn())
+	api.router.Handler("GET", "/twitter/signin", api.app.TwitterSignIn())
 	api.router.Handler("GET", "/google/callback", api.app.GoogleCallback(api.NewHandler(LoginWithSocial("google"))))
 	api.router.Handler("GET", "/facebook/callback", api.app.FacebookCallback(api.NewHandler(LoginWithSocial("facebook"))))
 	api.router.Handler("GET", "/twitter/callback", api.app.TwitterCallback(api.NewHandler(LoginWithSocial("twitter"))))
