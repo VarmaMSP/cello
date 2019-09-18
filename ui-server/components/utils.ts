@@ -43,3 +43,7 @@ export function humanizePastDate(dateStr: string): string {
     })
   }
 }
+
+export function imageUrl(id: string, _: 'sm' | 'md' | 'lg'): string {
+  return `${process.env.IMAGE_BASE_URL}/${id}-500x500.jpg`
+}

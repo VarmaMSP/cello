@@ -1,3 +1,4 @@
+import { imageUrl } from 'components/utils'
 import React, { useState } from 'react'
 import Shiitake from 'shiitake'
 import { Podcast } from 'types/app'
@@ -19,7 +20,7 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
     <div className="flex mb-8">
       <img
         className="lg:h-56 lg:w-56 h-36 w-36 flex-none object-contain object-center rounded-lg border"
-        src={`${process.env.IMAGE_BASE_URL}/${podcast.id}p-500x500.jpg`}
+        src={imageUrl(podcast.id, 'md')}
       />
       <div className="flex flex-col lg:px-5 px-3">
         <h2 className="md:text-2xl text-lg text-gray-900">{podcast.title}</h2>

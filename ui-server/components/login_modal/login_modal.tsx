@@ -32,18 +32,22 @@ const LoginModal: React.SFC<Props> = (props) => {
           icon="google-color"
           text="Sign in with Google"
           onClick={() => {
-            window.location.href = `${process.env.API_BASE_URL}/google/login`
+            window.location.href = `${process.env.API_BASE_URL}/google/signin`
           }}
         />
         <SocialSignInButton
           icon="facebook-color"
           text="Sign in with Faceebook"
-          onClick={() => {}}
+          onClick={() => {
+            window.location.href = `${process.env.API_BASE_URL}/facebook/signin`
+          }}
         />
         <SocialSignInButton
           icon="twitter-color"
           text="Sign in with Twitter"
-          onClick={() => {}}
+          onClick={() => {
+            window.location.href = `${process.env.API_BASE_URL}/twitter/signin`
+          }}
         />
       </div>
     </Modal>

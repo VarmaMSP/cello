@@ -2,6 +2,7 @@ import Link from 'next/link'
 import React, { Component } from 'react'
 import Shiitake from 'shiitake'
 import { Podcast } from 'types/app'
+import { imageUrl } from './utils'
 
 interface Props {
   podcast: Podcast
@@ -19,7 +20,7 @@ export default class PodcastThumbnail extends Component<Props> {
         <div className="w-full cursor-pointer">
           <img
             className="w-full h-auto flex-none object-contain rounded-lg border"
-            src={`${process.env.IMAGE_BASE_URL}/${podcast.id}p-500x500.jpg`}
+            src={imageUrl(podcast.id, 'md')}
           />
           <Shiitake
             lines={2}
