@@ -1,23 +1,18 @@
 import client from 'client'
-import { Dispatch } from 'redux'
 import {
-  AppActions,
   GET_SIGNED_IN_USER_FAILURE,
   GET_SIGNED_IN_USER_REQUEST,
   GET_SIGNED_IN_USER_SUCCESS,
   RECEIVED_SIGNED_IN_USER,
 } from 'types/actions'
+import { requestAction } from './utils'
 
-export const getSignedInUser = () => {
-  return async (dispatch: Dispatch<AppActions>) => {
-    dispatch({ type: GET_SIGNED_IN_USER_REQUEST })
-
-    try {
-      const { user } = await client.getSignedInUser()
-      dispatch({ type: RECEIVED_SIGNED_IN_USER, user: user })
-      dispatch({ type: GET_SIGNED_IN_USER_SUCCESS })
-    } catch (err) {
-      dispatch({ type: GET_SIGNED_IN_USER_FAILURE })
-    }
-  }
+export function getSignedInUser() {
+  return requestAction(
+    () => client.getSignedInUser(),
+    (dispatch, { user }) => dispatch({ type: RECEIVED_SIGNED_IN_USER, user }),
+    { type: GET_SIGNED_IN_USER_REQUEST },
+    { type: GET_SIGNED_IN_USER_SUCCESS },
+    { type: GET_SIGNED_IN_USER_FAILURE },
+  )
 }

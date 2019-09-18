@@ -1,41 +1,38 @@
 import client from 'client'
-import { Dispatch } from 'redux'
 import {
-  AppActions,
-  GET_PODCAST_CURATIONS_FAILURE,
   GET_PODCAST_FAILURE,
   GET_PODCAST_REQUEST,
   GET_PODCAST_SUCCESS,
   RECEIVED_EPISODES,
   RECEIVED_PODCAST,
   RECEIVED_SEARCH_PODCASTS,
+  SEARCH_PODCASTS_FAILURE,
   SEARCH_PODCASTS_REQUEST,
   SEARCH_PODCASTS_SUCCESS,
 } from 'types/actions'
+import { requestAction } from './utils'
 
-export const getPodcast = (podcastId: string) => {
-  return async (dispatch: Dispatch<AppActions>) => {
-    dispatch({ type: GET_PODCAST_REQUEST, podcastId })
-    try {
-      const { podcast, episodes } = await client.getPodcastById(podcastId)
+export function getPodcast(podcastId: string) {
+  return requestAction(
+    () => client.getPodcastById(podcastId),
+    (dispatch, { podcast, episodes }) => {
       dispatch({ type: RECEIVED_PODCAST, podcast })
       dispatch({ type: RECEIVED_EPISODES, podcastId: podcast.id, episodes })
-      dispatch({ type: GET_PODCAST_SUCCESS, podcastId })
-    } catch (err) {
-      dispatch({ type: GET_PODCAST_FAILURE, error: err.toString() })
-    }
-  }
+    },
+    { type: GET_PODCAST_REQUEST, podcastId },
+    { type: GET_PODCAST_SUCCESS, podcastId },
+    { type: GET_PODCAST_FAILURE, error: '' },
+  )
 }
 
-export const searchPodcasts = (searchQuery: string) => {
-  return async (dispatch: Dispatch<AppActions>) => {
-    dispatch({ type: SEARCH_PODCASTS_REQUEST })
-    try {
-      const { podcasts } = await client.searchPodcasts(searchQuery)
+export function searchPodcasts(searchQuery: string) {
+  return requestAction(
+    () => client.searchPodcasts(searchQuery),
+    (dispatch, { podcasts }) => {
       dispatch({ type: RECEIVED_SEARCH_PODCASTS, podcasts })
-      dispatch({ type: SEARCH_PODCASTS_SUCCESS })
-    } catch (err) {
-      dispatch({ type: GET_PODCAST_CURATIONS_FAILURE, error: err.toString() })
-    }
-  }
+    },
+    { type: SEARCH_PODCASTS_REQUEST },
+    { type: SEARCH_PODCASTS_SUCCESS },
+    { type: SEARCH_PODCASTS_FAILURE },
+  )
 }
