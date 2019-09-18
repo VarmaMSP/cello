@@ -11,8 +11,8 @@ interface StateToProps {
 
 interface OwnProps {
   // No of Rows
-  // - If Specified The grid is truncated to specfied no of rows
-  // - Defaults to undefined
+  //  - If Specified The grid is truncated to specfied no of rows
+  //  - Defaults to undefined
   rows?: number
 
   // No of Columns

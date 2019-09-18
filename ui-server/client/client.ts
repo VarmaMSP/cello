@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-unfetch'
-import { Curation, Episode, Podcast } from 'types/app'
+import { Curation, Episode, Podcast, User } from 'types/app'
 
 export interface RequestException {
   url: string
@@ -101,6 +101,14 @@ export default class Client {
     const res = await this.doFetch('GET', url)
     return {
       podcastCurations: res.results,
+    }
+  }
+
+  async getSignedInUser(): Promise<{ user: User }> {
+    const url = `${this.url}/me`
+    const res = await this.doFetch('GET', url)
+    return {
+      user: res.user,
     }
   }
 }

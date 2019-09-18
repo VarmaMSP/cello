@@ -6,6 +6,10 @@ export interface Entity {
   id: string
 }
 
+export interface User extends Entity {
+  name: string
+}
+
 export interface Curation extends Entity {
   title: string
 }

@@ -1,11 +1,13 @@
+import { getSignedInUser } from 'actions/user'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
 import { AppActions, SET_SCREEN_WIDTH } from 'types/actions'
 import { ScreenWidth } from 'types/app'
 
 interface DispatchToProps {
+  getSignedInUser: () => void
   setScreenWidth: (s: ScreenWidth) => void
 }
 
@@ -17,8 +19,9 @@ interface Props extends DispatchToProps, OwnProps {}
 
 class Screen extends Component<Props> {
   componentDidMount() {
-    window.addEventListener('resize', this.handleScreenResize)
+    this.props.getSignedInUser()
     this.handleScreenResize()
+    window.addEventListener('resize', this.handleScreenResize)
   }
 
   componentWillUnmount() {
@@ -50,6 +53,7 @@ class Screen extends Component<Props> {
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
+    getSignedInUser: bindActionCreators(getSignedInUser, dispatch),
     setScreenWidth: (s: ScreenWidth) =>
       dispatch({ type: SET_SCREEN_WIDTH, width: s }),
   }
