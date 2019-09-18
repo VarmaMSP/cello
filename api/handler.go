@@ -35,13 +35,22 @@ type Handler struct {
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	c := &Context{app: h.app, req: req}
+	c := &Context{
+		app:     h.app,
+		req:     req,
+		session: h.app.GetSession(req.Context()),
+	}
 
 	c.app.Log.Info().
 		Str("method", req.Method).
 		Str("path", req.URL.String()).
 		Str("user_agent", req.Header.Get(headers.UserAgent)).
 		Msg("")
+
+	if h.requireSession && c.session == nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
 	h.handleFunc(c, w)
 
@@ -53,6 +62,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 		w.WriteHeader(c.err.StatusCode)
 		w.Write([]byte(c.err.Error()))
+		return
 	}
 }
 
@@ -61,5 +71,13 @@ func (api *Api) NewHandler(h func(*Context, http.ResponseWriter)) http.Handler {
 		app:            api.app,
 		handleFunc:     h,
 		requireSession: false,
+	})
+}
+
+func (api *Api) NewHandlerSessionRequired(h func(*Context, http.ResponseWriter)) http.Handler {
+	return api.app.SessionManager.LoadAndSave(&Handler{
+		app:            api.app,
+		handleFunc:     h,
+		requireSession: true,
 	})
 }

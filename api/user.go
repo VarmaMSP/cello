@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-http-utils/headers"
@@ -8,6 +9,7 @@ import (
 )
 
 func (api *Api) RegisterUserHandlers() {
+	api.router.Handler("GET", "/me", api.NewHandlerSessionRequired(Me))
 	api.router.Handler("GET", "/google/login", api.app.GoogleSignIn())
 	api.router.Handler("GET", "/facebook/login", api.app.FacebookSignIn())
 	api.router.Handler("GET", "/twitter/login", api.app.TwitterSignIn())
@@ -16,8 +18,23 @@ func (api *Api) RegisterUserHandlers() {
 	api.router.Handler("GET", "/twitter/callback", api.app.TwitterCallback(api.NewHandler(LoginWithSocial("twitter"))))
 }
 
-func LoginWithSocial(accountType string) func(c *Context, res http.ResponseWriter) {
-	return func(c *Context, res http.ResponseWriter) {
+func Me(c *Context, w http.ResponseWriter) {
+	user, err := c.app.GetUser(c.session.UserId)
+	if err != nil {
+		c.err = err
+		return
+	}
+
+	res, _ := json.Marshal(map[string]interface{}{
+		"user": user,
+	})
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+}
+
+func LoginWithSocial(accountType string) func(*Context, http.ResponseWriter) {
+	return func(c *Context, w http.ResponseWriter) {
 		var user *model.User
 		var err *model.AppError
 
@@ -34,7 +51,7 @@ func LoginWithSocial(accountType string) func(c *Context, res http.ResponseWrite
 			return
 		}
 		c.app.CreateSession(c.req.Context(), user)
-		res.Header().Set(headers.Location, "http://localhost:8080")
-		res.WriteHeader(http.StatusFound)
+		w.Header().Set(headers.Location, "http://localhost:8080")
+		w.WriteHeader(http.StatusFound)
 	}
 }

@@ -134,11 +134,18 @@ func (app *App) CreateSession(ctx context.Context, user *model.User) *model.Sess
 	return session
 }
 
+func (app *App) GetUser(userId string) (*model.User, *model.AppError) {
+	return app.Store.User().Get(userId)
+}
+
 func (app *App) GetSession(ctx context.Context) *model.Session {
 	session := &model.Session{}
 	session.UserId = app.SessionManager.GetString(ctx, "user_id")
 	session.IsAdmin = app.SessionManager.GetInt(ctx, "is_admin")
 
+	if session.UserId == "" {
+		return nil
+	}
 	return session
 }
 
