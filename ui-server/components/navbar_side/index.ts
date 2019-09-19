@@ -1,3 +1,11 @@
-import Navbar from './navbar_side'
+import { connect } from 'react-redux'
+import { AppState } from 'store'
+import Navbar, { StateToProps } from './navbar_side'
 
-export default Navbar
+function mapStateToProps(state: AppState): StateToProps {
+  return {
+    currentPathName: state.ui.currentPathName,
+  }
+}
+
+export default connect<StateToProps, {}, {}, AppState>(mapStateToProps)(Navbar)

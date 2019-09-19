@@ -1,12 +1,13 @@
 import { iconMap } from 'components/icon'
-import { WithRouterProps } from 'next/dist/client/with-router'
 import Link from 'next/link'
-import { withRouter } from 'next/router'
 import React from 'react'
 import MenuItem from './components/menu_item'
 
-const NavbarSide: React.SFC<WithRouterProps> = ({ router }) => {
-  const pathname = !!router ? router.pathname : ''
+export interface StateToProps {
+  currentPathName: string
+}
+
+const NavbarSide: React.SFC<StateToProps> = ({ currentPathName }) => {
   const LogoIcon = iconMap['logo-md']
 
   return (
@@ -15,7 +16,11 @@ const NavbarSide: React.SFC<WithRouterProps> = ({ router }) => {
       <ul>
         <Link href="/">
           <li className="my-3">
-            <MenuItem icon="explore" name="discover" active={pathname === ''} />
+            <MenuItem
+              icon="explore"
+              name="discover"
+              active={currentPathName === '/'}
+            />
           </li>
         </Link>
         <li className="my-3">
@@ -24,12 +29,9 @@ const NavbarSide: React.SFC<WithRouterProps> = ({ router }) => {
         <li className="my-3">
           <MenuItem icon="heart" name="subscriptions" />
         </li>
-        <li className="my-3">
-          <MenuItem icon="user-solid-circle" name="profile" />
-        </li>
       </ul>
     </div>
   )
 }
 
-export default withRouter(NavbarSide)
+export default NavbarSide

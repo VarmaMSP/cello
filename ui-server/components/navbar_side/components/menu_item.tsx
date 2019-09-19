@@ -13,12 +13,10 @@ const MenuItem: React.SFC<Props> = ({ icon, name, active }) => {
 
   return (
     <a
-      href="#"
       className={classnames(
         'flex items-center w-full px-4 rounded-full',
+        'hover:bg-gray-200 cursor-pointer',
         { 'text-gray-700': !active, 'text-green-600': active },
-        { 'hover:bg-gray-200': !active },
-        { 'cursor-pointer': !active, 'cursor-default': active },
       )}
     >
       <Icon className="w-5 h-5 mr-3 fill-current" />

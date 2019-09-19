@@ -3,6 +3,7 @@ import {
   AppActions,
   CLOSE_SIGN_IN_MODAL,
   SEARCH_BAR_TEXT_CHANGE,
+  SET_CURRENT_PATH_NAME,
   SET_SCREEN_WIDTH,
   SHOW_SIGN_IN_MODAL,
 } from 'types/actions'
@@ -16,6 +17,15 @@ const screenWidth: Reducer<ScreenWidth, AppActions> = (
   switch (action.type) {
     case SET_SCREEN_WIDTH:
       return action.width
+    default:
+      return state
+  }
+}
+
+const currentPathName: Reducer<string, AppActions> = (state = '', action) => {
+  switch (action.type) {
+    case SET_CURRENT_PATH_NAME:
+      return action.pathName
     default:
       return state
   }
@@ -46,6 +56,7 @@ const showSignInModal: Reducer<boolean, AppActions> = (
 
 export default combineReducers({
   screenWidth,
+  currentPathName,
   searchText,
   showSignInModal,
   player,

@@ -2,10 +2,16 @@ import { AudioState, ScreenWidth } from 'types/app'
 
 // DOM and Window Actions
 export const SET_SCREEN_WIDTH = 'SET_SCREEN_WIDTH'
+export const SET_CURRENT_PATH_NAME = 'SET_CURRENT_PATH_NAME'
 
 export interface SetScreenWidthAction {
   type: typeof SET_SCREEN_WIDTH
   width: ScreenWidth
+}
+
+export interface SetCurrentPathNameAction {
+  type: typeof SET_CURRENT_PATH_NAME
+  pathName: string
 }
 
 // Modal Actions
@@ -50,6 +56,7 @@ export interface ToggleExpandOnMobileAction {
 export type UiActionTypes =
   // Dom
   | SetScreenWidthAction
+  | SetCurrentPathNameAction
   // Modal
   | ShowSignInModalAction
   | CloseSignInModalAction
