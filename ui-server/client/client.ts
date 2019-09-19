@@ -111,4 +111,9 @@ export default class Client {
       user: res.user,
     }
   }
+
+  async signOutUser(): Promise<void> {
+    const url = `${this.url}/signout`
+    await this.doFetch('GET', url)
+  }
 }

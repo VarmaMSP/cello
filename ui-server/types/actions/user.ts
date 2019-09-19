@@ -4,8 +4,11 @@ export const GET_SIGNED_IN_USER_REQUEST = 'GET_SIGNED_IN_USER_REQUEST'
 export const GET_SIGNED_IN_USER_SUCCESS = 'GET_SIGNED_IN_USER_SUCCESS'
 export const GET_SIGNED_IN_USER_FAILURE = 'GET_SIGNED_IN_USER_FAILURE'
 
+export const SIGN_OUT_USER_REQUEST = 'SIGN_OUT_USER_REQUEST'
+export const SIGN_OUT_USER_SUCCESS = 'SIGN_OUT_USER_SUCCESS'
+export const SIGN_OUT_USER_FAILURE = 'SIGN_OUT_USER_FAILURE'
+
 export const RECEIVED_SIGNED_IN_USER = 'RECEIVED_SIGNED_IN_USER'
-export const USER_SIGNED_OUT = 'USER_SIGNED_OUT'
 
 export interface GetSignedInUserRequestAction {
   type: typeof GET_SIGNED_IN_USER_REQUEST
@@ -24,8 +27,16 @@ export interface ReceivedSignedInUserAction {
   user: User
 }
 
-export interface UserSignedOutAction {
-  type: typeof USER_SIGNED_OUT
+export interface SignOutUserRequestAction {
+  type: typeof SIGN_OUT_USER_REQUEST
+}
+
+export interface SignOutUserSuccessAction {
+  type: typeof SIGN_OUT_USER_SUCCESS
+}
+
+export interface SignOutUserFailureAction {
+  type: typeof SIGN_OUT_USER_FAILURE
 }
 
 export type UserActionTypes =
@@ -33,4 +44,6 @@ export type UserActionTypes =
   | GetSignedInUserSuccessAction
   | GetSignedInUserFailureAction
   | ReceivedSignedInUserAction
-  | UserSignedOutAction
+  | SignOutUserRequestAction
+  | SignOutUserSuccessAction
+  | SignOutUserFailureAction

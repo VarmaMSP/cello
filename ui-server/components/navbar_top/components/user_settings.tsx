@@ -1,9 +1,10 @@
+import { signOutUser } from 'actions/user'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { getCurrenUser } from 'selectors/entities/users'
 import { AppState } from 'store'
-import { AppActions, USER_SIGNED_OUT } from 'types/actions'
+import { AppActions } from 'types/actions'
 import { User } from 'types/app'
 
 interface StateToProps {
@@ -63,7 +64,7 @@ function mapStateToProps(state: AppState): StateToProps {
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
-    signOutUser: () => dispatch({ type: USER_SIGNED_OUT }),
+    signOutUser: bindActionCreators(signOutUser, dispatch),
   }
 }
 

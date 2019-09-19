@@ -2,7 +2,7 @@ import { combineReducers, Reducer } from 'redux'
 import {
   AppActions,
   RECEIVED_SIGNED_IN_USER,
-  USER_SIGNED_OUT,
+  SIGN_OUT_USER_SUCCESS,
 } from 'types/actions'
 import { User } from 'types/app'
 
@@ -10,7 +10,7 @@ const currentUserId: Reducer<string, AppActions> = (state = '', action) => {
   switch (action.type) {
     case RECEIVED_SIGNED_IN_USER:
       return action.user.id
-    case USER_SIGNED_OUT:
+    case SIGN_OUT_USER_SUCCESS:
       return ''
     default:
       return state
