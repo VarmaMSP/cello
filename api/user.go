@@ -13,6 +13,7 @@ func (api *Api) RegisterUserHandlers() {
 	api.router.Handler("GET", "/google/signin", api.app.GoogleSignIn())
 	api.router.Handler("GET", "/facebook/signin", api.app.FacebookSignIn())
 	api.router.Handler("GET", "/twitter/signin", api.app.TwitterSignIn())
+	api.router.Handler("GET", "/signout", api.NewHandler(SignOut))
 	api.router.Handler("GET", "/google/callback", api.app.GoogleCallback(api.NewHandler(LoginWithSocial("google"))))
 	api.router.Handler("GET", "/facebook/callback", api.app.FacebookCallback(api.NewHandler(LoginWithSocial("facebook"))))
 	api.router.Handler("GET", "/twitter/callback", api.app.TwitterCallback(api.NewHandler(LoginWithSocial("twitter"))))
@@ -31,6 +32,15 @@ func Me(c *Context, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
+}
+
+func SignOut(c *Context, w http.ResponseWriter) {
+	err := c.app.DeleteSession(c.req.Context())
+	if err != nil {
+		c.err = err
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func LoginWithSocial(accountType string) func(*Context, http.ResponseWriter) {

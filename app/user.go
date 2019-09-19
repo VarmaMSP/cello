@@ -149,6 +149,14 @@ func (app *App) GetSession(ctx context.Context) *model.Session {
 	return session
 }
 
+func (app *App) DeleteSession(ctx context.Context) *model.AppError {
+	err := app.SessionManager.Destroy(ctx)
+	if err != nil {
+		return model.NewAppError("app.delete_session", err.Error(), http.StatusInternalServerError, nil)
+	}
+	return nil
+}
+
 func (app *App) GoogleSignIn() http.Handler {
 	return googleLogin.StateHandler(gologin.DebugOnlyCookieConfig, googleLogin.LoginHandler(app.GoogleOAuthConfig, nil))
 }
