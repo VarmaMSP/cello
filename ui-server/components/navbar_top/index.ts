@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+import { getIsUserSignedIn } from 'selectors/entities/users'
 import { getSearchBarText } from 'selectors/ui/search'
 import { AppState } from 'store'
 import { AppActions, SEARCH_BAR_TEXT_CHANGE } from 'types/actions'
@@ -7,6 +8,7 @@ import NavbarTop, { DispatchToProps, StateToProps } from './navbar_top'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {
+    userSignedIn: getIsUserSignedIn(state),
     searchText: getSearchBarText(state),
   }
 }

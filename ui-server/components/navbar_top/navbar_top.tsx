@@ -1,12 +1,14 @@
+import ButtonWithIcon from 'components/button_with_icon'
+import SignInButton from 'components/sign_in_button'
 import Router from 'next/router'
 import React, { Component } from 'react'
-import ButtonWithIcon from '../button_with_icon'
 import AppLogo from './components/app_logo'
 import SearchBar from './components/search_bar'
 import FullWidthSearchBar from './components/search_bar_full_width'
-import SignInButton from './components/sign_in_button'
+import UserSettings from './components/user_settings'
 
 export interface StateToProps {
+  userSignedIn: boolean
   searchText: string
 }
 
@@ -53,7 +55,7 @@ export default class TopNavbar extends Component<Props, State> {
   }
 
   render() {
-    const { searchText } = this.props
+    const { searchText, userSignedIn } = this.props
     const { showFullWidthSearchBar } = this.state
 
     if (showFullWidthSearchBar) {
@@ -88,7 +90,9 @@ export default class TopNavbar extends Component<Props, State> {
             handleSearchTextSubmit={this.handleSearchTextSubmit}
           />
         </div>
-        <SignInButton />
+        <div className="md:w-24 w-20 h-8">
+          {userSignedIn ? <UserSettings /> : <SignInButton />}
+        </div>
       </header>
     )
   }
