@@ -16,7 +16,6 @@ func (api *Api) RegisterCurationRoutes() {
 
 func AddCuration(c *Context, w http.ResponseWriter) {
 	curationTitle := c.Body()["curation_title"]
-
 	if err := c.app.SaveCuration(curationTitle); err != nil {
 		c.err = err
 		return
@@ -59,7 +58,6 @@ func GetCurationsWithPodcasts(c *Context, w http.ResponseWriter) {
 
 func DeleteCuration(c *Context, w http.ResponseWriter) {
 	curationId := c.Param("curationId")
-
 	if err := c.app.DeleteCuration(curationId); err != nil {
 		c.err = err
 		return
@@ -70,7 +68,6 @@ func DeleteCuration(c *Context, w http.ResponseWriter) {
 
 func GetPodcastsByCuration(c *Context, w http.ResponseWriter) {
 	curationId := c.Param("curationId")
-
 	curation, err := c.app.GetCuration(curationId)
 	if err != nil {
 		c.err = err
@@ -99,7 +96,6 @@ func GetPodcastsByCuration(c *Context, w http.ResponseWriter) {
 
 func AddPodcastToCuration(c *Context, w http.ResponseWriter) {
 	podcastId, curationId := c.Param("podcastId"), c.Param("curationId")
-
 	if err := c.app.SavePodcastToCuration(curationId, podcastId); err != nil {
 		c.err = err
 		return

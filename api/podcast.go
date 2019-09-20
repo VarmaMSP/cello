@@ -10,6 +10,23 @@ func (api *Api) RegisterPodcastHandlers() {
 	api.router.Handler("GET", "/podcasts/:podcastId", api.NewHandler(GetPodcast))
 }
 
+func SearchPodcasts(c *Context, w http.ResponseWriter) {
+	searchQuery := c.Query("search_query")
+	podcasts, err := c.app.SearchPodcasts(searchQuery)
+	if err != nil {
+		return
+	}
+
+	res, _ := json.Marshal(map[string]interface{}{
+		"totalCount": len(podcasts),
+		"results":    podcasts,
+	})
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+}
+
 func GetPodcast(c *Context, w http.ResponseWriter) {
 	podcastId := c.Param("podcastId")
 	podcast, err := c.app.GetPodcastInfo(podcastId)
@@ -27,23 +44,6 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 		"podcast":  podcast,
 		"episodes": episodes,
 	})
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(res)
-}
-
-func SearchPodcasts(c *Context, w http.ResponseWriter) {
-	searchQuery := c.Query("search_query")
-	podcasts, err := c.app.SearchPodcasts(searchQuery)
-	if err != nil {
-		return
-	}
-
-	res, _ := json.Marshal(map[string]interface{}{
-		"totalCount": len(podcasts),
-		"results":    podcasts,
-	})
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
