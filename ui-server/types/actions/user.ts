@@ -8,7 +8,17 @@ export const SIGN_OUT_USER_REQUEST = 'SIGN_OUT_USER_REQUEST'
 export const SIGN_OUT_USER_SUCCESS = 'SIGN_OUT_USER_SUCCESS'
 export const SIGN_OUT_USER_FAILURE = 'SIGN_OUT_USER_FAILURE'
 
+export const SUBSCRIBE_TO_PODCAST_REQUEST = 'SUBSCRIBE_TO_PODCAST_REQUEST'
+export const SUBSCRIBE_TO_PODCAST_SUCCESS = 'SUBSCRIBE_TO_PODCAST_SUCCESS'
+export const SUBSCRIBE_TO_PODCAST_FAILURE = 'SUBSCRIBE_TO_PODCAST_FAILURE'
+
+export const UNSUBSCRIBE_TO_PODCAST_REQUEST = 'UNSUBSCRIBE_TO_PODCAST_REQUEST'
+export const UNSUBSCRIBE_TO_PODCAST_SUCCESS = 'UNSUBSCRIBE_TO_PODCAST_SUCCESS'
+export const UNSUBSCRIBE_TO_PODCAST_FAILURE = 'UNSUBSCRIBE_TO_PODCAST_FAILURE'
+
 export const RECEIVED_SIGNED_IN_USER = 'RECEIVED_SIGNED_IN_USER'
+export const SUBSCRIBED_TO_PODCAST = 'SUBSCRIBED_TO_PODCAST'
+export const UNSUBSCRIBED_TO_PODCAST = 'UNSUBSCRIBED_TO_PODCAST'
 
 export interface GetSignedInUserRequestAction {
   type: typeof GET_SIGNED_IN_USER_REQUEST
@@ -39,6 +49,42 @@ export interface SignOutUserFailureAction {
   type: typeof SIGN_OUT_USER_FAILURE
 }
 
+export interface SubscribeToPodcastRequestAction {
+  type: typeof SUBSCRIBE_TO_PODCAST_REQUEST
+}
+
+export interface SubscribeToPodcastSuccessAction {
+  type: typeof SUBSCRIBE_TO_PODCAST_SUCCESS
+}
+
+export interface SubscribeToPodcastFailureAction {
+  type: typeof SUBSCRIBE_TO_PODCAST_FAILURE
+}
+
+export interface SubscribedToPodcastAction {
+  type: typeof SUBSCRIBED_TO_PODCAST
+  userId: string
+  podcastId: string
+}
+
+export interface UnsubscribeToPodcastRequestAction {
+  type: typeof UNSUBSCRIBE_TO_PODCAST_REQUEST
+}
+
+export interface UnsubscribeToPodcastSuccessAction {
+  type: typeof UNSUBSCRIBE_TO_PODCAST_SUCCESS
+}
+
+export interface UnsubscribeToPodcastFailureAction {
+  type: typeof UNSUBSCRIBE_TO_PODCAST_FAILURE
+}
+
+export interface UnsubscribedToPodcastAction {
+  type: typeof UNSUBSCRIBED_TO_PODCAST
+  userId: string
+  podcastId: string
+}
+
 export type UserActionTypes =
   | GetSignedInUserRequestAction
   | GetSignedInUserSuccessAction
@@ -47,3 +93,11 @@ export type UserActionTypes =
   | SignOutUserRequestAction
   | SignOutUserSuccessAction
   | SignOutUserFailureAction
+  | SubscribeToPodcastRequestAction
+  | SubscribeToPodcastSuccessAction
+  | SubscribeToPodcastFailureAction
+  | SubscribedToPodcastAction
+  | UnsubscribeToPodcastRequestAction
+  | UnsubscribeToPodcastSuccessAction
+  | UnsubscribeToPodcastFailureAction
+  | UnsubscribedToPodcastAction

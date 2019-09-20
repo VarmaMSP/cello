@@ -4,6 +4,8 @@ import {
   RECEIVED_PODCAST,
   RECEIVED_PODCAST_CURATION,
   RECEIVED_SEARCH_PODCASTS,
+  SUBSCRIBED_TO_PODCAST,
+  UNSUBSCRIBED_TO_PODCAST,
 } from 'types/actions'
 import { Podcast } from 'types/app'
 
@@ -41,7 +43,30 @@ const podcastsInCuration: Reducer<
   }
 }
 
+const podcastsSubscribedByUser: Reducer<
+  { [userId: string]: string[] },
+  AppActions
+> = (state = {}, action) => {
+  switch (action.type) {
+    case SUBSCRIBED_TO_PODCAST:
+      return {
+        ...state,
+        [action.userId]: [action.podcastId],
+      }
+    case UNSUBSCRIBED_TO_PODCAST:
+      return {
+        ...state,
+        [action.userId]: (state[action.userId] || []).filter(
+          (id) => id !== action.podcastId,
+        ),
+      }
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   podcasts,
   podcastsInCuration,
+  podcastsSubscribedByUser,
 })

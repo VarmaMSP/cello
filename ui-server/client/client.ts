@@ -117,4 +117,14 @@ export default class Client {
     const url = `${this.url}/signout`
     await this.doFetch('GET', url)
   }
+
+  async subscribeToPodcast(podcastId: string): Promise<void> {
+    const url = `${this.getPodcastRoute()}/${podcastId}/subscribe`
+    await this.doFetch('POST', url)
+  }
+
+  async unsubscribeToPodcast(podcastId: string): Promise<void> {
+    const url = `${this.getPodcastRoute()}/${podcastId}/unsubscribe`
+    await this.doFetch('POST', url)
+  }
 }

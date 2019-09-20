@@ -6,6 +6,9 @@ import {
   SIGN_OUT_USER_FAILURE,
   SIGN_OUT_USER_REQUEST,
   SIGN_OUT_USER_SUCCESS,
+  SUBSCRIBE_TO_PODCAST_FAILURE,
+  SUBSCRIBE_TO_PODCAST_REQUEST,
+  SUBSCRIBE_TO_PODCAST_SUCCESS,
 } from 'types/actions'
 import { defaultRequestReducer } from './utils'
 
@@ -21,7 +24,14 @@ const signOutUser = defaultRequestReducer(
   SIGN_OUT_USER_FAILURE,
 )
 
+const subscribeToPodcast = defaultRequestReducer(
+  SUBSCRIBE_TO_PODCAST_REQUEST,
+  SUBSCRIBE_TO_PODCAST_SUCCESS,
+  SUBSCRIBE_TO_PODCAST_FAILURE,
+)
+
 export default combineReducers({
   getSignedInUser,
   signOutUser,
+  subscribeToPodcast,
 })
