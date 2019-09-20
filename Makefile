@@ -12,6 +12,7 @@ purge-data:
 	rabbitmqadmin purge queue name=refresh_podcast
 
 start-services:
+	nginx
 	elasticsearch -d
 	rabbitmq-server -d
 	redis-server --daemonize yes
@@ -20,4 +21,4 @@ create-image-directories:
 	mkdir /var/www && mkdir /var/www/img
 
 nginx-reload:
-	cp ./configs/nginx/dev.conf /usr/local/etc/nginx/nginx.conf && nginx -s reload
+	cp ./config/nginx/dev.conf /usr/local/etc/nginx/nginx.conf && nginx -s reload
