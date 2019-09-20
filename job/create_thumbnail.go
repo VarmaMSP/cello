@@ -54,7 +54,7 @@ func NewCreateThumbnailJob(app *app.App, config *model.Config) (model.Job, error
 		input:       createThumbnailC.D,
 		storagePath: IMAGE_STORAGE_PATH,
 		httpClient: &http.Client{
-			Timeout: 600 * time.Second,
+			Timeout: 1200 * time.Second,
 			Transport: &http.Transport{
 				MaxIdleConns:        workerLimit,
 				MaxIdleConnsPerHost: int(0.5 * float32(workerLimit)),
@@ -81,16 +81,30 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 
 	go func() {
 		defer func() { <-job.rateLimiter }()
-		defer delivery.Ack(false)
 
 		img, err := fetchImage(input.ImageSrc, job.httpClient)
 		if err != nil {
+			job.Log.Error().Msg(err.Error())
+			if delivery.Redelivered {
+				delivery.Ack(false)
+			} else {
+				delivery.Nack(false, true)
+			}
 			return
 		}
 
 		if input.Type == "PODCAST" {
-			job.saveThumbnailsForPodcast(input.Id, img)
+			if err := job.saveThumbnailsForPodcast(input.Id, img); err != nil {
+				job.Log.Error().Msg(err.Error())
+				if delivery.Redelivered {
+					delivery.Ack(false)
+				} else {
+					delivery.Nack(false, true)
+				}
+				return
+			}
 		}
+		delivery.Ack(false)
 	}()
 }
 
