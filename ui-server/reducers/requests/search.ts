@@ -1,27 +1,16 @@
-import { combineReducers, Reducer } from 'redux'
+import { combineReducers } from 'redux'
 import {
-  AppActions,
   SEARCH_PODCASTS_FAILURE,
   SEARCH_PODCASTS_REQUEST,
   SEARCH_PODCASTS_SUCCESS,
 } from 'types/actions'
-import { initialRequestState, RequestState } from './utils'
+import { defaultRequestReducer } from './utils'
 
-const searchPodcasts: Reducer<RequestState, AppActions> = (
-  state = initialRequestState(),
-  action,
-) => {
-  switch (action.type) {
-    case SEARCH_PODCASTS_REQUEST:
-      return { status: 'STARTED', error: null }
-    case SEARCH_PODCASTS_SUCCESS:
-      return { status: 'SUCCESS', error: null }
-    case SEARCH_PODCASTS_FAILURE:
-      return { status: 'FAILURE', error: null }
-    default:
-      return state
-  }
-}
+const searchPodcasts = defaultRequestReducer(
+  SEARCH_PODCASTS_REQUEST,
+  SEARCH_PODCASTS_SUCCESS,
+  SEARCH_PODCASTS_FAILURE,
+)
 
 export default combineReducers({
   searchPodcasts,
