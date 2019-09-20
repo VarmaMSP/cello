@@ -11,6 +11,11 @@ purge-data:
 	rabbitmqadmin purge queue name=import_podcast
 	rabbitmqadmin purge queue name=refresh_podcast
 
+start-services:
+	elasticsearch -d
+	rabbitmq-server -d
+	redis-server --daemonize yes
+
 create-image-directories:
 	mkdir /var/www && mkdir /var/www/img
 
