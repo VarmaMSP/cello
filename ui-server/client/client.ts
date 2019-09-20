@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-unfetch'
 import { Curation, Episode, Podcast, User } from 'types/app'
+import { episodeFromJson, podcastFromJson } from 'utils/entities'
 
 export interface RequestException {
   url: string
@@ -78,11 +79,8 @@ export default class Client {
     const url = `${this.getPodcastRoute()}/${podcastId}`
     const res = await this.doFetch('GET', url)
     return {
-      podcast: res.podcast,
-      episodes: (res.episodes || []).map((episode: object) => ({
-        ...episode,
-        podcastId: res.podcast.id,
-      })),
+      podcast: podcastFromJson(res.podcast),
+      episodes: (res.episodes || []).map((e: any) => episodeFromJson(e)),
     }
   }
 
@@ -90,7 +88,7 @@ export default class Client {
     const url = `${this.getResultsRoute()}?search_query=${searchQuery}`
     const res = await this.doFetch('GET', url)
     return {
-      podcasts: res.results,
+      podcasts: (res.results || []).map((p: any) => podcastFromJson(p)),
     }
   }
 
@@ -100,7 +98,10 @@ export default class Client {
     const url = `${this.getCurationsRoute()}`
     const res = await this.doFetch('GET', url)
     return {
-      podcastCurations: res.results,
+      podcastCurations: (res.results || []).map((r: any) => ({
+        curation: r.curation,
+        podcasts: (r.podcasts || []).map((p: any) => podcastFromJson(p)),
+      })),
     }
   }
 

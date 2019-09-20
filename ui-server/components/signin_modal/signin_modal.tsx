@@ -13,7 +13,7 @@ export interface DispatchToProps {
 
 interface Props extends StateToProps, DispatchToProps {}
 
-const LoginModal: React.SFC<Props> = (props) => {
+const SigninModal: React.SFC<Props> = (props) => {
   const { showSignInModal, closeModal } = props
   const LogoIcon = iconMap['logo-lg']
 
@@ -32,21 +32,21 @@ const LoginModal: React.SFC<Props> = (props) => {
           icon="google-color"
           text="Sign in with Google"
           onClick={() => {
-            window.location.href = `${process.env.API_BASE_URL}/google/signin`
+            window.location.href = `${process.env.API_BASE_URL}/signin/google`
           }}
         />
         <SocialSignInButton
           icon="facebook-color"
           text="Sign in with Faceebook"
           onClick={() => {
-            window.location.href = `${process.env.API_BASE_URL}/facebook/signin`
+            window.location.href = `${process.env.API_BASE_URL}/signin/facebook`
           }}
         />
         <SocialSignInButton
           icon="twitter-color"
           text="Sign in with Twitter"
           onClick={() => {
-            window.location.href = `${process.env.API_BASE_URL}/twitter/signin`
+            window.location.href = `${process.env.API_BASE_URL}/signin/twitter`
           }}
         />
       </div>
@@ -54,4 +54,4 @@ const LoginModal: React.SFC<Props> = (props) => {
   )
 }
 
-export default LoginModal
+export default SigninModal

@@ -1,8 +1,8 @@
 import AudioPlayer from 'components/audio_player'
-import LoginModal from 'components/login_modal'
 import MainContainer from 'components/main_container'
 import NavbarSide from 'components/navbar_side'
 import NavbarTop from 'components/navbar_top'
+import SigninModal from 'components/signin_modal'
 import withRedux from 'next-redux-wrapper'
 import { AppProps, Container } from 'next/app'
 import Head from 'next/head'
@@ -38,7 +38,7 @@ export default withRedux(makeStore)(
             <NavbarTop />
             <AudioPlayer />
             <NavbarSide />
-            <LoginModal />
+            <SigninModal />
           </Provider>
         </Container>
       )
