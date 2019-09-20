@@ -12,6 +12,7 @@ import (
 type SchedulerJob struct {
 	*app.App
 	scrapeItunes           *task.ScrapeItunes
+	scrapeItunesCharts     *task.ScrapeItunesCharts
 	schedulePodcastRefresh *task.SchedulePodcastRefresh
 }
 
@@ -21,14 +22,22 @@ func NewSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
 		return nil, err
 	}
 
+	scrapeItunesCharts, err := task.NewScrapeItunesCharts(app)
+	if err != nil {
+		return nil, err
+	}
+
 	schedulePodcastRefresh, err := task.NewSchedulePodcastRefresh(app, config)
 	if err != nil {
 		return nil, err
 	}
 
+	scrapeItunesCharts.Call()
+
 	return &SchedulerJob{
 		App:                    app,
 		scrapeItunes:           scrapeItunes,
+		scrapeItunesCharts:     scrapeItunesCharts,
 		schedulePodcastRefresh: schedulePodcastRefresh,
 	}, nil
 }
@@ -107,6 +116,8 @@ func (job *SchedulerJob) callTask(task *model.Task) {
 	switch task.Name {
 	case model.TASK_NAME_SCRAPE_ITUNES:
 		job.scrapeItunes.Call()
+	case model.TASK_NAME_SCRAPE_ITUNES_CHARTS:
+		job.scrapeItunesCharts.Call()
 	case model.TASK_NAME_SCHEDULE_PODCAST_REFRESH:
 		job.schedulePodcastRefresh.Call()
 	}

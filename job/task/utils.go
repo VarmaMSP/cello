@@ -58,6 +58,7 @@ func (f *Frontier) Clear() {
 // Check if given link points to itunes podcast page
 // and return podcast id if true
 func isPodcastPage(url string) (bool, string) {
+	url = model.RemoveQueryFromUrl(url)
 	if regexpItunesPodcastPageUrl.MatchString(url) {
 		res := regexpItunesPodcastPageUrl.FindStringSubmatch(url)
 		return true, res[1]
