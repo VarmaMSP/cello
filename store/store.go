@@ -31,8 +31,10 @@ type FeedStore interface {
 
 type PodcastStore interface {
 	Save(podcast *model.Podcast) *model.AppError
+	SaveSubscription(subscription *model.PodcastSubscription) *model.AppError
 	Get(podcastId string) (*model.Podcast, *model.AppError)
 	GetAllByCuration(curationId string, offset, limit int) ([]*model.Podcast, *model.AppError)
+	DeleteSubscription(userId, podcastId string) *model.AppError
 }
 
 type EpisodeStore interface {

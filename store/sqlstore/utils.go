@@ -18,7 +18,7 @@ func InsertQuery(
 	}
 
 	// (col1, col2, col3)
-	cols := "(" + strings.Join(models[0].DbColumns(), ",") + ")"
+	cols := "(" + Cols(models[0]) + ")"
 	// (?, ?, ?), (?, ?, ?)...
 	placeholders := strings.Join(
 		Replicate(

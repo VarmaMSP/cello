@@ -8,6 +8,8 @@ import (
 func (api *Api) RegisterPodcastHandlers() {
 	api.router.Handler("GET", "/results", api.NewHandler(SearchPodcasts))
 	api.router.Handler("GET", "/podcasts/:podcastId", api.NewHandler(GetPodcast))
+	api.router.Handler("POST", "/podcasts/:podcastId/subscribe", api.NewHandlerSessionRequired(SubscribeToPodcast))
+	api.router.Handler("POST", "/podcasts/:podcastId/unsubscribe", api.NewHandlerSessionRequired(UnsubscribeToPodcast))
 }
 
 func SearchPodcasts(c *Context, w http.ResponseWriter) {
@@ -47,4 +49,26 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
+}
+
+func SubscribeToPodcast(c *Context, w http.ResponseWriter) {
+	userId := c.session.UserId
+	podcastId := c.Param("podcastId")
+
+	if err := c.app.CreateSubscription(userId, podcastId); err != nil {
+		c.err = err
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+}
+
+func UnsubscribeToPodcast(c *Context, w http.ResponseWriter) {
+	userId := c.session.UserId
+	podcastId := c.Param("podcastId")
+
+	if err := c.app.DeleteSubscription(userId, podcastId); err != nil {
+		c.err = err
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }

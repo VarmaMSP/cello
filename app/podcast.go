@@ -35,3 +35,16 @@ func (app *App) SearchPodcasts(searchQuery string) ([]*model.PodcastIndex, *mode
 
 	return podcasts, nil
 }
+
+func (app *App) CreateSubscription(userId, podcastId string) *model.AppError {
+	m := &model.PodcastSubscription{
+		PodcastId:    podcastId,
+		SubscribedBy: userId,
+		Active:       1,
+	}
+	return app.Store.Podcast().SaveSubscription(m)
+}
+
+func (app *App) DeleteSubscription(userId, podcastId string) *model.AppError {
+	return app.Store.Podcast().DeleteSubscription(userId, podcastId)
+}

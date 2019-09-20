@@ -33,6 +33,14 @@ type Podcast struct {
 	UpdatedAt   int64  `json:"updated_at,omitempty"`
 }
 
+type PodcastSubscription struct {
+	PodcastId    string
+	SubscribedBy string
+	Active       int
+	CreatedAt    int64
+	UpdatedAt    int64
+}
+
 // Elasticsearch podcast index type
 type PodcastIndex struct {
 	Id          string `json:"id,omitempty"`
@@ -58,6 +66,20 @@ func (p *Podcast) FieldAddrs() []interface{} {
 		&p.Language, &p.Explicit, &p.Author, &p.Type,
 		&p.Block, &p.Complete, &p.Link, &p.OwnerName,
 		&p.OwnerEmail, &p.Copyright, &p.CreatedAt, &p.UpdatedAt,
+	}
+}
+
+func (p *PodcastSubscription) DbColumns() []string {
+	return []string{
+		"podcast_id", "subscribed_by", "active", "created_at",
+		"updated_at",
+	}
+}
+
+func (p *PodcastSubscription) FieldAddrs() []interface{} {
+	return []interface{}{
+		&p.PodcastId, &p.SubscribedBy, &p.Active, &p.CreatedAt,
+		&p.UpdatedAt,
 	}
 }
 
@@ -183,6 +205,16 @@ func (p *Podcast) PreSave() {
 		p.OwnerEmail = ""
 	}
 
+	if p.CreatedAt == 0 {
+		p.CreatedAt = Now()
+	}
+
+	if p.UpdatedAt == 0 {
+		p.UpdatedAt = Now()
+	}
+}
+
+func (p *PodcastSubscription) PreSave() {
 	if p.CreatedAt == 0 {
 		p.CreatedAt = Now()
 	}

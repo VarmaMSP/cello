@@ -98,6 +98,17 @@ CREATE TABLE `podcast` (
     FOREIGN KEY (`id`) REFERENCES `feed` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+CREATE TABLE `podcast_subscription` (
+    `podcast_id` VARCHAR(20),
+    `subscribed_by` VARCHAR(20),
+    `active` TINYINT,
+    `created_at` BIGINT,
+    `updated_at` BIGINT,
+    PRIMARY KEY (`podcast_id`, `subscribed_by`),
+    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (`subscribed_by`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 CREATE TABLE `episode` (
     `id` VARCHAR(20),
     `podcast_id` VARCHAR(20),
