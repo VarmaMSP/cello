@@ -39,6 +39,19 @@ func (s *SqlFeedStore) Get(id string) (*model.Feed, *model.AppError) {
 	return feed, nil
 }
 
+func (s *SqlFeedStore) GetBySource(source, sourceId string) (*model.Feed, *model.AppError) {
+	feed := &model.Feed{}
+	sql := "SELECT " + Cols(feed) + " FROM feed WHERE source = ? AND source_id = ?"
+
+	if err := s.GetMaster().QueryRow(sql, source, sourceId).Scan(feed.FieldAddrs()...); err != nil {
+		return nil, model.NewAppError(
+			"store.sqlstore.sql_feed_store.get_by_source", err.Error(), http.StatusInternalServerError,
+			map[string]string{"source": source, "source_id": sourceId},
+		)
+	}
+	return feed, nil
+}
+
 func (s *SqlFeedStore) GetAllBySource(source string, offset, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Feed{}) + " FROM feed WHERE source = ? LIMIT ?, ?"
 
