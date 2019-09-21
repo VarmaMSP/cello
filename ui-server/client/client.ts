@@ -127,4 +127,10 @@ export default class Client {
     const url = `${this.getPodcastRoute()}/${podcastId}/unsubscribe`
     await this.doFetch('POST', url)
   }
+
+  async getTrendingPodcasts(): Promise<Podcast[]> {
+    const url = `http://localhost:8080/static/trending.json`
+    const res = await this.doFetch('GET', url)
+    return res.map((p: any) => podcastFromJson(p))
+  }
 }

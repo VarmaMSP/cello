@@ -3,9 +3,13 @@ import {
   GET_PODCAST_FAILURE,
   GET_PODCAST_REQUEST,
   GET_PODCAST_SUCCESS,
+  GET_TRENDING_PODCASTS_FAILURE,
+  GET_TRENDING_PODCASTS_REQUEST,
+  GET_TRENDING_PODCASTS_SUCCESS,
   RECEIVED_EPISODES,
   RECEIVED_PODCAST,
   RECEIVED_SEARCH_PODCASTS,
+  RECEIVED_TRENDING_PODCASTS,
   SEARCH_PODCASTS_FAILURE,
   SEARCH_PODCASTS_REQUEST,
   SEARCH_PODCASTS_SUCCESS,
@@ -19,9 +23,21 @@ export function getPodcast(podcastId: string) {
       dispatch({ type: RECEIVED_PODCAST, podcast })
       dispatch({ type: RECEIVED_EPISODES, podcastId: podcast.id, episodes })
     },
-    { type: GET_PODCAST_REQUEST, podcastId },
-    { type: GET_PODCAST_SUCCESS, podcastId },
-    { type: GET_PODCAST_FAILURE, error: '' },
+    { type: GET_PODCAST_REQUEST },
+    { type: GET_PODCAST_SUCCESS },
+    { type: GET_PODCAST_FAILURE },
+  )
+}
+
+export function getTrendingPodcasts() {
+  return requestAction(
+    () => client.getTrendingPodcasts(),
+    (dispatch, podcasts) => {
+      dispatch({ type: RECEIVED_TRENDING_PODCASTS, podcasts })
+    },
+    { type: GET_TRENDING_PODCASTS_REQUEST },
+    { type: GET_TRENDING_PODCASTS_SUCCESS },
+    { type: GET_TRENDING_PODCASTS_FAILURE },
   )
 }
 

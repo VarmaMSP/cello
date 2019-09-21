@@ -4,6 +4,7 @@ import {
   RECEIVED_PODCAST,
   RECEIVED_PODCAST_CURATION,
   RECEIVED_SEARCH_PODCASTS,
+  RECEIVED_TRENDING_PODCASTS,
   SUBSCRIBED_TO_PODCAST,
   UNSUBSCRIBED_TO_PODCAST,
 } from 'types/actions'
@@ -18,11 +19,24 @@ const podcasts: Reducer<{ [PodcastId: string]: Podcast }, AppActions> = (
       return { ...state, [action.podcast.id]: action.podcast }
     case RECEIVED_SEARCH_PODCASTS:
     case RECEIVED_PODCAST_CURATION:
+    case RECEIVED_TRENDING_PODCASTS:
       const podcasts = action.podcasts.reduce<{ [id: string]: Podcast }>(
         (acc, p) => ({ ...acc, [p.id]: p }),
         {},
       )
       return { ...state, ...podcasts }
+    default:
+      return state
+  }
+}
+
+const podcastsTrending: Reducer<string[], AppActions> = (
+  state = [],
+  action,
+) => {
+  switch (action.type) {
+    case RECEIVED_TRENDING_PODCASTS:
+      return action.podcasts.map((p) => p.id)
     default:
       return state
   }
@@ -67,6 +81,7 @@ const podcastsSubscribedByUser: Reducer<
 
 export default combineReducers({
   podcasts,
+  podcastsTrending,
   podcastsInCuration,
   podcastsSubscribedByUser,
 })

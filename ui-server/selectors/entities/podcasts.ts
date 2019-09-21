@@ -25,3 +25,13 @@ export function makeGetPodcastsInCuration() {
     (podcasts, podcastIds) => podcastIds.map((id) => podcasts[id]),
   )
 }
+
+export function makeGetTrendingPodcasts() {
+  return createSelector<AppState, $Id<Podcast>[], MapById<Podcast>, Podcast[]>(
+    (state) => state.entities.podcasts.podcastsTrending,
+    getAllPodcasts,
+    (ids, podcasts) => {
+      return ids.map((id) => podcasts[id])
+    },
+  )
+}
