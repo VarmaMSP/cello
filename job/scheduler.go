@@ -32,8 +32,6 @@ func NewSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
 		return nil, err
 	}
 
-	scrapeItunesCharts.Call()
-
 	return &SchedulerJob{
 		App:                    app,
 		scrapeItunes:           scrapeItunes,

@@ -2,7 +2,6 @@ package task
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -71,9 +70,9 @@ func (s *ScrapeItunesCharts) Call() {
 			return
 		}
 
-		fmt.Println("writing")
-
 		file, _ := json.MarshalIndent(podcasts, "", " ")
-		ioutil.WriteFile("/var/www/static/trending.json", file, 0644)
+		if err := ioutil.WriteFile("/var/www/static/trending.json", file, 0644); err != nil {
+			s.Log.Error().Msg(err.Error())
+		}
 	}()
 }
