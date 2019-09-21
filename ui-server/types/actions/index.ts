@@ -1,3 +1,4 @@
+import { BrowserActionTypes } from './browser'
 import { CurationActionTypes } from './curation'
 import { PodcastActionTypes } from './podcast'
 import { UiActionTypes } from './ui'
@@ -8,7 +9,9 @@ export type AppActions =
   | UserActionTypes
   | PodcastActionTypes
   | CurationActionTypes
+  | BrowserActionTypes
 
+export * from './browser'
 export * from './curation'
 export * from './podcast'
 export * from './ui'

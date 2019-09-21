@@ -6,20 +6,53 @@ import SigninModal from 'components/signin_modal'
 import withRedux from 'next-redux-wrapper'
 import { AppProps, Container } from 'next/app'
 import Head from 'next/head'
+import Router from 'next/router'
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import { makeStore } from 'store'
+import { POP_PAGE, PUSH_PAGE, SET_PAGE_PREVENT_RELOAD } from 'types/actions'
 import { AppContext, PageContext } from 'types/utilities'
 import '../styles/index.css'
 
 export default withRedux(makeStore)(
   class MyApp extends Component<AppProps & PageContext> {
     static async getInitialProps({ Component, ctx }: AppContext) {
-      let pageProps = {}
-      if (Component.getInitialProps) {
-        pageProps = await Component.getInitialProps(ctx)
+      const { query, asPath: currentUrl, store } = ctx
+      const pagePreventReload = store.getState().browser.pagePreventReload
+
+      let scrollY = 0
+      if (currentUrl !== pagePreventReload.url && Component.getInitialProps) {
+        await Component.getInitialProps(ctx)
+      } else {
+        scrollY = pagePreventReload.scrollY
       }
-      return { pageProps }
+
+      return { pageProps: { ...query, scrollY } }
+    }
+
+    componentDidMount() {
+      window.history.scrollRestoration = 'manual'
+
+      const { store } = this.props
+      Router.events.on('routeChangeStart', (toUrl) => {
+        const pagePreventReload = store.getState().browser.pagePreventReload
+        if (pagePreventReload.url !== toUrl) {
+          store.dispatch({
+            type: PUSH_PAGE,
+            page: { url: Router.asPath, scrollY: window.scrollY },
+          })
+        }
+      })
+
+      Router.beforePopState(({ as: toUrl }) => {
+        const pages = store.getState().browser.pages
+        if (pages.length > 0 && pages[0].url === toUrl) {
+          store.dispatch({ type: POP_PAGE })
+          store.dispatch({ type: SET_PAGE_PREVENT_RELOAD, page: pages[0] })
+        }
+
+        return true
+      })
     }
 
     render() {
