@@ -14,7 +14,7 @@ const TrendingPodcastsList: React.SFC<StateToProps> = (props) => {
     Router.push(
       {
         pathname: '/podcasts',
-        query: { id: podcastId },
+        query: { podcastId },
       },
       `/podcasts/${podcastId}`,
     )
@@ -24,8 +24,9 @@ const TrendingPodcastsList: React.SFC<StateToProps> = (props) => {
     const podcast = trendingPodcasts[i]
     colsJsx.push(
       <div
-        className="flex md:w-6/13 w-full my-5 md:p-3 lg:hover:bg-gray-200 cursor-pointer rounded-xl"
+        className="flex flex-initial md:w-6/13 w-full my-5 md:p-3 lg:hover:bg-gray-200 cursor-pointer rounded-xl"
         onClick={onPodcastSelect(podcast.id)}
+        key={podcast.id}
       >
         <img
           className="md:w-32 w-30 md:h-32 h-30 flex-none object-contain rounded-lg border"
@@ -53,7 +54,7 @@ const TrendingPodcastsList: React.SFC<StateToProps> = (props) => {
   let rowsJsx: JSX.Element[] = []
   for (let i = 0; i < colsJsx.length; i += 2) {
     rowsJsx.push(
-      <div className="flex md:flex-row flex-col justify-around">
+      <div className="flex md:flex-row flex-col justify-around" key={i}>
         {colsJsx[i]}
         {colsJsx[i + 1]}
       </div>,

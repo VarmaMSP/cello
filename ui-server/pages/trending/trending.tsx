@@ -10,8 +10,14 @@ export interface StateToProps {
   reqState: RequestState
 }
 
-export default class extends React.Component<StateToProps> {
-  static async getInitialProps(ctx: PageContext): Promise<{}> {
+export interface OwnProps {
+  scrollY: number
+}
+
+interface Props extends StateToProps, OwnProps {}
+
+export default class extends React.Component<Props> {
+  static async getInitialProps(ctx: PageContext): Promise<void> {
     const { store, isServer } = ctx
     const loadTrendingPodcasts = bindActionCreators(
       getTrendingPodcasts,
@@ -21,7 +27,10 @@ export default class extends React.Component<StateToProps> {
     if (isServer) {
       await loadTrendingPodcasts
     }
-    return {}
+  }
+
+  componentDidMount() {
+    window.window.scrollTo(0, this.props.scrollY)
   }
 
   render() {

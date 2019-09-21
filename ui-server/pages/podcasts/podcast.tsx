@@ -13,17 +13,17 @@ export interface StateToProps {
 
 export interface OwnProps {
   podcastId: string
+  scrollY: number
 }
 
 interface Props extends StateToProps, OwnProps {}
 
 export default class PodcastPage extends Component<Props> {
-  static async getInitialProps(ctx: PageContext): Promise<OwnProps> {
+  static async getInitialProps(ctx: PageContext): Promise<void> {
     const { query, store, isServer } = ctx
-    const podcastId = query['id'] as string
-    const loadPodcast = bindActionCreators(getPodcast, store.dispatch)(
-      podcastId,
-    )
+    const loadPodcast = bindActionCreators(getPodcast, store.dispatch)(query[
+      'podcastId'
+    ] as string)
 
     if (isServer) {
       // Type definitions for bindActionCreators is not overloaded for thunks
@@ -32,11 +32,11 @@ export default class PodcastPage extends Component<Props> {
       // - https://github.com/piotrwitek/react-redux-typescript-guide/pull/157
       await loadPodcast
     }
-    return { podcastId }
   }
 
-  // Calling loadPodcast in componentDidUpdate is not needed, a new url is pushed into the history for
-  // every new page so it will be called in the getInitalProps itself
+  componentDidMount() {
+    window.window.scrollTo(0, this.props.scrollY)
+  }
 
   render() {
     const { reqState, podcastId } = this.props

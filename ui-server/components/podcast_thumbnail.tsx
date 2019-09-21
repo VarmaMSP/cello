@@ -14,7 +14,7 @@ export default class PodcastThumbnail extends Component<Props> {
 
     return (
       <Link
-        href={{ pathname: '/podcasts', query: { id: podcast.id } }}
+        href={{ pathname: '/podcasts', query: { podcastId: podcast.id } }}
         as={`/podcasts/${podcast.id}`}
       >
         <div className="w-full cursor-pointer">

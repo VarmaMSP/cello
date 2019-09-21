@@ -11,27 +11,30 @@ export interface StateToProps {
 }
 
 export interface OwnProps {
-  searchQuery: string
+  query: string
+  scrollY: number
 }
 
 interface Props extends StateToProps, OwnProps {}
 
 export default class ResultsPage extends Component<Props> {
-  static async getInitialProps(ctx: PageContext): Promise<OwnProps> {
+  static async getInitialProps(ctx: PageContext): Promise<void> {
     const { query, store, isServer } = ctx
-    const searchQuery = query['search_query'] as string
     const loadResults = bindActionCreators(searchPodcasts, store.dispatch)(
-      searchQuery,
+      query['query'] as string,
     )
 
     if (isServer) {
       await loadResults
     }
-    return { searchQuery }
+  }
+
+  componentDidMount() {
+    window.window.scrollTo(0, this.props.scrollY)
   }
 
   render() {
-    const { reqState, searchQuery } = this.props
+    const { reqState, query } = this.props
 
     if (reqState.status === 'STARTED') {
       return <LoadingPage />
@@ -40,8 +43,8 @@ export default class ResultsPage extends Component<Props> {
     if (reqState.status === 'SUCCESS') {
       return (
         <div>
-          <div className="-mt-1 mb-5 text-gray-700 text-lg lg:text-xl">{`Podcasts matching "${searchQuery}"`}</div>
-          <SearchResults searchQuery={this.props.searchQuery} />
+          <div className="-mt-1 mb-5 text-gray-700 text-lg lg:text-xl">{`Podcasts matching "${query}"`}</div>
+          <SearchResults searchQuery={this.props.query} />
         </div>
       )
     }

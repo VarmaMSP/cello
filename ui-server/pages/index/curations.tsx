@@ -1,4 +1,5 @@
 import { getCurations } from 'actions/curations'
+import { getTrendingPodcasts } from 'actions/podcast'
 import Discover from 'components/discover'
 import LoadingPage from 'components/loading_page'
 import React from 'react'
@@ -10,15 +11,30 @@ export interface StateToProps {
   reqState: RequestState
 }
 
-export default class extends React.Component<StateToProps> {
-  static async getInitialProps(ctx: PageContext): Promise<{}> {
+export interface OwnProps {
+  scrollY: number
+}
+
+interface Props extends StateToProps, OwnProps {}
+
+export default class extends React.Component<Props> {
+  static async getInitialProps(ctx: PageContext): Promise<void> {
     const { store, isServer } = ctx
+
     const loadCurations = bindActionCreators(getCurations, store.dispatch)()
+    const loadTrendingPodcasts = bindActionCreators(
+      getTrendingPodcasts,
+      store.dispatch,
+    )()
 
     if (isServer) {
       await loadCurations
+      await loadTrendingPodcasts
     }
-    return {}
+  }
+
+  componentDidMount() {
+    window.window.scrollTo(0, this.props.scrollY)
   }
 
   render() {

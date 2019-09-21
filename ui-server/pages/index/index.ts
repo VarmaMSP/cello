@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { AppState } from 'store'
-import CurationsPage, { StateToProps } from './curations'
+import CurationsPage, { OwnProps, StateToProps } from './curations'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {
@@ -8,6 +8,6 @@ function mapStateToProps(state: AppState): StateToProps {
   }
 }
 
-export default connect<StateToProps, {}, {}, AppState>(mapStateToProps)(
+export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
   CurationsPage,
 )

@@ -49,7 +49,7 @@ export default class TopNavbar extends Component<Props, State> {
     if (searchText.length > 0) {
       Router.push({
         pathname: '/results',
-        query: { search_query: searchText },
+        query: { query: searchText },
       })
     }
   }

@@ -13,19 +13,17 @@ router.get('/', async (ctx) => {
 
 router.get('/podcasts/:podcastId', async (ctx) => {
   await app.render(ctx.req, ctx.res, '/podcasts', <any>{
-    id: ctx.params['podcastId'],
+    podcastId: ctx.params['podcastId'],
   })
   ctx.respond = false
 })
 
 router.get('/results', async (ctx) => {
   await app.render(ctx.req, ctx.res, '/results', {
-    search_query: ctx.request.query['search_query'],
+    query: ctx.request.query['query'],
   })
   ctx.respond = false
 })
-
-router.get('/results/api/goo')
 
 router.get('*', async (ctx) => {
   await handle(ctx.req, ctx.res)

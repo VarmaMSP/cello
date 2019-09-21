@@ -17,7 +17,7 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
     <div className="fixed left-0 top-0 lg:flex flex-col hidden h-screen w-56 px-3 bg-white shadow">
       <LogoIcon className="mx-auto mt-4 mb-8" />
       <ul>
-        <Link href="/">
+        <Link href="/" scroll={false}>
           <li className="h-10 my-1">
             <MenuItem
               icon="explore"
