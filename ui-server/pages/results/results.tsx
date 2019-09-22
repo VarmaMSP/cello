@@ -44,7 +44,7 @@ export default class ResultsPage extends Component<Props> {
       return (
         <div>
           <div className="-mt-1 mb-5 text-gray-700 text-lg lg:text-xl">{`Podcasts matching "${query}"`}</div>
-          <SearchResults searchQuery={this.props.query} />
+          <SearchResults query={this.props.query} />
         </div>
       )
     }

@@ -71,6 +71,7 @@ export interface ReceivedEpisodesAction {
 
 export interface ReceivedSearchPodcastsAction {
   type: typeof RECEIVED_SEARCH_PODCASTS
+  query: string
   podcasts: Podcast[]
 }
 

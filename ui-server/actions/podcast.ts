@@ -27,11 +27,11 @@ export function getTrendingPodcasts() {
   )
 }
 
-export function searchPodcasts(searchQuery: string) {
+export function searchPodcasts(query: string) {
   return requestAction(
-    () => client.searchPodcasts(searchQuery),
+    () => client.searchPodcasts(query),
     (dispatch, { podcasts }) => {
-      dispatch({ type: T.RECEIVED_SEARCH_PODCASTS, podcasts })
+      dispatch({ type: T.RECEIVED_SEARCH_PODCASTS, query, podcasts })
     },
     { type: T.SEARCH_PODCASTS_REQUEST },
     { type: T.SEARCH_PODCASTS_SUCCESS },

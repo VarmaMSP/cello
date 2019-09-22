@@ -8,7 +8,7 @@ export interface StateToProps {
 }
 
 export interface OwnProps {
-  searchQuery: string
+  query: string
 }
 
 interface Props extends StateToProps, OwnProps {}
