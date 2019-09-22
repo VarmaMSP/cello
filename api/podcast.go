@@ -3,6 +3,9 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/go-http-utils/headers"
+	"github.com/varmamsp/cello/model"
 )
 
 func (api *Api) RegisterPodcastHandlers() {
@@ -24,13 +27,38 @@ func SearchPodcasts(c *Context, w http.ResponseWriter) {
 		"results":    podcasts,
 	})
 
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set(headers.CacheControl, "private, max-age=3600")
+	w.Header().Set(headers.ContentType, "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }
 
 func GetPodcast(c *Context, w http.ResponseWriter) {
 	podcastId := c.Param("podcastId")
+
+	feed, err := c.app.GetFeed(podcastId)
+	if err != nil {
+		c.err = err
+		return
+	}
+	w.Header().Set(headers.CacheControl, "private, max-age=300, must-revalidate")
+	if feed.ETag != "" {
+		ifNoneMatch := c.req.Header.Get(headers.IfNoneMatch)
+		w.Header().Set(headers.ETag, feed.ETag)
+		if ifNoneMatch != "" && ifNoneMatch == feed.ETag {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+	}
+	if feed.LastModified != "" {
+		ifModifiedSince := c.req.Header.Get(headers.IfModifiedSince)
+		w.Header().Set(headers.LastModified, feed.LastModified)
+		if ifModifiedSince != "" && ifModifiedSince == feed.LastModified {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+	}
+
 	podcast, err := c.app.GetPodcastInfo(podcastId)
 	if err != nil {
 		c.err = err
@@ -42,13 +70,12 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	res, _ := json.Marshal(map[string]interface{}{
-		"podcast":  podcast,
-		"episodes": episodes,
-	})
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(res)
+	w.Write(model.EncodeToJson(map[string]interface{}{
+		"podcast":  podcast,
+		"episodes": episodes,
+	}))
 }
 
 func SubscribeToPodcast(c *Context, w http.ResponseWriter) {

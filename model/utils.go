@@ -159,6 +159,14 @@ func MapFromJson(data io.Reader) map[string]string {
 	return map[string]string{}
 }
 
+// toResponseBody will encode given map to valid json
+func EncodeToJson(data map[string]interface{}) []byte {
+	if res, err := json.Marshal(data); err == nil {
+		return res
+	}
+	return []byte{}
+}
+
 // MinInt returns minimum of two integers
 func MinInt(x, y int) int {
 	if x < y {
