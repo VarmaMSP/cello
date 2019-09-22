@@ -5,7 +5,9 @@ import { requestAction } from './utils'
 export function getSignedInUser() {
   return requestAction(
     () => client.getSignedInUser(),
-    (dispatch, { user }) => dispatch({ type: T.RECEIVED_SIGNED_IN_USER, user }),
+    (dispatch, { user, subscriptions }) => {
+      dispatch({ type: T.RECEIVED_SIGNED_IN_USER, user, subscriptions })
+    },
     { type: T.GET_SIGNED_IN_USER_REQUEST },
     { type: T.GET_SIGNED_IN_USER_SUCCESS },
     { type: T.GET_SIGNED_IN_USER_FAILURE },

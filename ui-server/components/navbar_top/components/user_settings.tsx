@@ -40,8 +40,8 @@ const UserSettings: React.SFC<StateToProps & DispatchToProps> = (props) => {
       </button>
       {showDropDown && (
         <div
-          className="absolute right-0 w-36 z-50 py-5 border-gray-300 shadow-lg rounded"
-          style={{ top: '110%' }}
+          className="absolute right-0 w-36 z-50 py-5 bg-white border border-gray-400 shadow rounded"
+          style={{ top: '130%' }}
           ref={dropdown}
         >
           <div

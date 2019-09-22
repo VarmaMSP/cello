@@ -12,11 +12,19 @@ const podcasts: Reducer<{ [PodcastId: string]: Podcast }, T.AppActions> = (
     case T.RECEIVED_SEARCH_PODCASTS:
     case T.RECEIVED_PODCAST_CURATION:
     case T.RECEIVED_TRENDING_PODCASTS:
-      const podcasts = action.podcasts.reduce<{ [id: string]: Podcast }>(
-        (acc, p) => ({ ...acc, [p.id]: p }),
-        {},
-      )
-      return { ...state, ...podcasts }
+      return {
+        ...state,
+        ...action.podcasts.reduce<{
+          [id: string]: Podcast
+        }>((acc, p) => ({ ...acc, [p.id]: p }), {}),
+      }
+    case T.RECEIVED_SIGNED_IN_USER:
+      return {
+        ...state,
+        ...action.subscriptions.reduce<{
+          [id: string]: Podcast
+        }>((acc, p) => ({ ...acc, [p.id]: p }), {}),
+      }
     default:
       return state
   }
@@ -54,6 +62,11 @@ const podcastsSubscribedByUser: Reducer<
   T.AppActions
 > = (state = {}, action) => {
   switch (action.type) {
+    case T.RECEIVED_SIGNED_IN_USER:
+      return {
+        ...state,
+        [action.user.id]: action.subscriptions.map((p) => p.id),
+      }
     case T.SUBSCRIBED_TO_PODCAST:
       return {
         ...state,

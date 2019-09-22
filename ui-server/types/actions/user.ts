@@ -1,4 +1,4 @@
-import { User } from 'types/app'
+import { Podcast, User } from 'types/app'
 
 export const GET_SIGNED_IN_USER_REQUEST = 'GET_SIGNED_IN_USER_REQUEST'
 export const GET_SIGNED_IN_USER_SUCCESS = 'GET_SIGNED_IN_USER_SUCCESS'
@@ -35,6 +35,7 @@ export interface GetSignedInUserFailureAction {
 export interface ReceivedSignedInUserAction {
   type: typeof RECEIVED_SIGNED_IN_USER
   user: User
+  subscriptions: Podcast[]
 }
 
 export interface SignOutUserRequestAction {

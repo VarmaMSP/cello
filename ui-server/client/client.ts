@@ -80,7 +80,7 @@ export default class Client {
     const res = await this.doFetch('GET', url)
     return {
       podcast: podcastFromJson(res.podcast),
-      episodes: (res.episodes || []).map((e: any) => episodeFromJson(e)),
+      episodes: (res.episodes || []).map(episodeFromJson),
     }
   }
 
@@ -88,7 +88,7 @@ export default class Client {
     const url = `${this.getResultsRoute()}?search_query=${searchQuery}`
     const res = await this.doFetch('GET', url)
     return {
-      podcasts: (res.results || []).map((p: any) => podcastFromJson(p)),
+      podcasts: (res.results || []).map(podcastFromJson),
     }
   }
 
@@ -100,16 +100,17 @@ export default class Client {
     return {
       podcastCurations: (res.results || []).map((r: any) => ({
         curation: r.curation,
-        podcasts: (r.podcasts || []).map((p: any) => podcastFromJson(p)),
+        podcasts: (r.podcasts || []).map(podcastFromJson),
       })),
     }
   }
 
-  async getSignedInUser(): Promise<{ user: User }> {
+  async getSignedInUser(): Promise<{ user: User; subscriptions: Podcast[] }> {
     const url = `${this.url}/me`
     const res = await this.doFetch('GET', url)
     return {
       user: res.user,
+      subscriptions: (res.subscriptions || []).map(podcastFromJson),
     }
   }
 
@@ -131,6 +132,6 @@ export default class Client {
   async getTrendingPodcasts(): Promise<Podcast[]> {
     const url = `http://localhost:8080/static/trending.json`
     const res = await this.doFetch('GET', url)
-    return res.map((p: any) => podcastFromJson(p))
+    return res.map(podcastFromJson)
   }
 }
