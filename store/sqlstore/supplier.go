@@ -54,6 +54,12 @@ func (s *SqlSupplier) Insert(tableName string, models []model.DbModel) (sql.Resu
 	return s.db.Exec(query, insertValues...)
 }
 
+func (s *SqlSupplier) InsertOrUpdate(tableName string, m model.DbModel, updateSql string, updateValues ...interface{}) (sql.Result, error) {
+	query, insertValues, _ := InsertQuery(tableName, []model.DbModel{m})
+
+	return s.db.Exec(query+" ON DUPLICATE KEY UPDATE "+updateSql, append(insertValues, updateValues...)...)
+}
+
 func (s *SqlSupplier) UpdateChanges(tableName string, old, new model.DbModel, where string, values ...interface{}) (sql.Result, error) {
 	query, updateValues, noChanges := UpdateQuery(tableName, old, new, where, values)
 	if noChanges {

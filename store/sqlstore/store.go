@@ -11,6 +11,8 @@ type SqlStore interface {
 	GetMaster() *sql.DB
 
 	Insert(tableName string, models []model.DbModel) (sql.Result, error)
+	InsertOrUpdate(tableName string, m model.DbModel, updateSql string, updateValues ...interface{}) (sql.Result, error)
+
 	UpdateChanges(tableName string, old, new model.DbModel, where string, values ...interface{}) (sql.Result, error)
 	Query(copyTo func() []interface{}, sql string, values ...interface{}) error
 

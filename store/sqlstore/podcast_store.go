@@ -30,7 +30,7 @@ func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 func (s *SqlPodcastStore) SaveSubscription(subscription *model.PodcastSubscription) *model.AppError {
 	subscription.PreSave()
 
-	if _, err := s.Insert("podcast_subscription", []model.DbModel{subscription}); err != nil {
+	if _, err := s.InsertOrUpdate("podcast_subscription", subscription, "active = 1, updated_at = ?", model.Now()); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_podcast_store.save_subscription", err.Error(), http.StatusInternalServerError,
 			map[string]string{"subscribed_by": subscription.SubscribedBy, "podcast_id": subscription.PodcastId},
@@ -95,9 +95,9 @@ func (s *SqlPodcastStore) GetAllSubscribedBy(userId string) (res []*model.Podcas
 }
 
 func (s *SqlPodcastStore) DeleteSubscription(userId, podcastId string) *model.AppError {
-	sql := "DELETE from podcast_subscription WHERE podcast_id = ? AND subscribed_by = ?"
+	sql := "UPDATE podcast_subscription SET active = 0 AND updated_at = ? WHERE podcast_id = ? AND subscribed_by = ?"
 
-	if _, err := s.GetMaster().Exec(sql, podcastId, userId); err != nil {
+	if _, err := s.GetMaster().Exec(sql, model.Now(), podcastId, userId); err != nil {
 		return model.NewAppError(
 			"sqlstore.sql_podcast_store.delete_subscription", err.Error(), http.StatusInternalServerError,
 			map[string]string{"userId": userId, "podcastId": podcastId},
