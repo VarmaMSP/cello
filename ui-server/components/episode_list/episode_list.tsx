@@ -21,24 +21,25 @@ const EpisodeList: React.SFC<Props> = ({ episodes, playEpisode }) => {
   return (
     <>
       {episodes.map(({ id, title, duration, pubDate }) => (
-        <div key={id}>
-          <div className="flex justify-between my-2 lg:px-6 sm:px-4 py-2 rounded-full lg:hover:bg-gray-200">
-            <div className="flex-auto">
-              <p className="md:text-base text-sm tracking-wide leading-relaxed line-clamp-2">
-                {title}
-              </p>
-              <span className="text-xs">
-                {Utils.humanizeDuration(duration)}
-                <span className="mx-2 font-extrabold">&middot;</span>
-                {Utils.humanizePastDate(pubDate)}
-              </span>
-            </div>
-            <ButtonWithIcon
-              className="flex-none w-8 ml-2 text-gray-700"
-              icon="play-outline"
-              onClick={() => playEpisode(id)}
-            />
+        <div
+          key={id}
+          className="flex justify-between mb-2 lg:pl-6 lg:pr-3 py-2 rounded-full lg:hover:bg-gray-200"
+        >
+          <div className="w-11/12 pr-3">
+            <span className="text-xs text-gray-600">
+              {Utils.humanizePastDate(pubDate)}
+              <span className="mx-2 font-extrabold">&middot;</span>
+              {Utils.humanizeDuration(duration)}
+            </span>
+            <p className="font-medium md:text-base text-sm text-gray-800 tracking-wide truncate">
+              {title}
+            </p>
           </div>
+          <ButtonWithIcon
+            className="w-8 mx-auto text-gray-600 hover:text-black"
+            icon="play-outline"
+            onClick={() => playEpisode(id)}
+          />
         </div>
       ))}
     </>

@@ -43,10 +43,14 @@ export default class PodcastPage extends Component<Props> {
 
     if (reqState.status == 'SUCCESS') {
       return (
-        <>
-          <PodcastDetails podcastId={podcastId} />
-          <EpisodeList podcastId={podcastId} />
-        </>
+        <div>
+          <div className="md:mb-12 mb-10">
+            <PodcastDetails podcastId={podcastId} />
+          </div>
+          <div className="lg:w-4/6 w-full">
+            <EpisodeList podcastId={podcastId} />
+          </div>
+        </div>
       )
     }
 

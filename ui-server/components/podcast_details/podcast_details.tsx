@@ -15,20 +15,20 @@ interface Props extends StateToProps, OwnProps {}
 
 const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
   return (
-    <div className="flex mb-8">
+    <div className="flex">
       <img
-        className="lg:h-56 lg:w-56 h-36 w-36 flex-none object-contain object-center rounded-lg border"
+        className="lg:h-56 h-36 lg:w-56 w-36 flex-none object-contain object-center rounded-lg border"
         src={imageUrl(podcast.id, 'md')}
       />
       <div className="flex flex-col justify-between lg:px-5 px-3">
         <div>
-          <h2 className="md:text-2xl text-lg text-gray-900 leading-tight">
+          <h2 className="md:text-2xl text-lg text-gray-900 leading-tight line-clamp-2">
             {podcast.title}
           </h2>
           <h3 className="md:text-base text-sm text-gray-800 leading-loose truncate">
             {podcast.author}
           </h3>
-          <p className="lg:line-clamp-3 hidden mt-1 text-sm text-gray-800">
+          <p className="hidden mt-1 text-sm leading-snug text-gray-600 lg:line-clamp-3">
             {podcast.description}
           </p>
         </div>
