@@ -1,22 +1,38 @@
-export const PUSH_PAGE = 'PUSH_PAGE'
-export const POP_PAGE = 'POP_PAGE'
-export const SET_PAGE_PREVENT_RELOAD = 'SET_PAGE_PREVENT_RELOAD'
+import { ViewportSize } from 'types/app'
 
-export interface PushPageAction {
-  type: typeof PUSH_PAGE
-  page: { url: string; scrollY: number }
+export const PUSH_PREVIOUS_PAGE_STACK = 'PUSH_PREVIOUS_PAGE_STACK'
+export const POP_PREVIOUS_PAGE_STACK = 'POP_PREVIOUS_PAGE_STACK'
+export const SET_PREVIOUS_PAGE = 'SET_PREVIOUS_PAGE'
+export const SET_VIEWPORT_SIZE = 'SET_VIEWPORT_WIDTH'
+export const SET_CURRENT_URL_PATH = 'SET_CURRENT_URL_PATH'
+
+export interface PushPreviousPageStackAction {
+  type: typeof PUSH_PREVIOUS_PAGE_STACK
+  page: { urlPath: string; scrollY: number }
 }
 
-export interface PopPageAction {
-  type: typeof POP_PAGE
+export interface PopPreviousPageStackAction {
+  type: typeof POP_PREVIOUS_PAGE_STACK
 }
 
-export interface SetPagePreventReloadAction {
-  type: typeof SET_PAGE_PREVENT_RELOAD
-  page: { url: string; scrollY: number }
+export interface SetPreviousPageAction {
+  type: typeof SET_PREVIOUS_PAGE
+  page: { urlPath: string; scrollY: number }
+}
+
+export interface SetViewportSizeAction {
+  type: typeof SET_VIEWPORT_SIZE
+  size: ViewportSize
+}
+
+export interface SetCurrentUrlPathAction {
+  type: typeof SET_CURRENT_URL_PATH
+  urlPath: string
 }
 
 export type BrowserActionTypes =
-  | PushPageAction
-  | PopPageAction
-  | SetPagePreventReloadAction
+  | PushPreviousPageStackAction
+  | PopPreviousPageStackAction
+  | SetPreviousPageAction
+  | SetViewportSizeAction
+  | SetCurrentUrlPathAction

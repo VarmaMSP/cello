@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+import { getViewportSize } from 'selectors/browser/viewport'
 import {
   getAudioState,
   getExpandOnMobile,
@@ -7,7 +8,6 @@ import {
   makeGetPlayingEpisode,
   makeGetPlayingPodcast,
 } from 'selectors/ui/player'
-import { getScreenWidth } from 'selectors/ui/screen'
 import { AppState } from 'store'
 import {
   AppActions,
@@ -26,7 +26,7 @@ function makeMapStateToProps() {
     episode: getPlayingEpisode(state),
     podcast: getPlayingPodcast(state),
     audioState: getAudioState(state),
-    screenWidth: getScreenWidth(state),
+    viewportSize: getViewportSize(state),
     expandOnMobile: getExpandOnMobile(state),
   })
 }

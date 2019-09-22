@@ -1,6 +1,6 @@
 export type AudioState = 'PLAYING' | 'PAUSED' | 'LOADING' | 'ENDED'
 
-export type ScreenWidth = 'SM' | 'MD' | 'LG'
+export type ViewportSize = 'SM' | 'MD' | 'LG'
 
 export interface Entity {
   id: string

@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { getCurrentUrlPath } from 'selectors/browser/urlPath'
 import { getIsUserSignedIn } from 'selectors/entities/users'
 import { AppState } from 'store'
 import Navbar, { StateToProps } from './navbar_side'
@@ -6,7 +7,7 @@ import Navbar, { StateToProps } from './navbar_side'
 function mapStateToProps(state: AppState): StateToProps {
   return {
     userSignedIn: getIsUserSignedIn(state),
-    currentPathName: state.ui.currentPathName,
+    currentUrlPath: getCurrentUrlPath(state),
   }
 }
 

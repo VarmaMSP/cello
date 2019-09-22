@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { AudioState, Episode, Podcast, ScreenWidth } from 'types/app'
+import { AudioState, Episode, Podcast, ViewportSize } from 'types/app'
 import AudioPlayerLarge from './audio_player_large'
 import AudioPlayerMedium from './audio_player_medium'
 import AudioPlayerSmall from './audio_player_small'
@@ -9,7 +9,7 @@ export interface StateToProps {
   episode: Episode
   podcast: Podcast
   audioState: AudioState
-  screenWidth: ScreenWidth
+  viewportSize: ViewportSize
   expandOnMobile: boolean
 }
 
@@ -113,11 +113,11 @@ export default class AudioPlayer extends Component<
       podcast,
       episode,
       audioState,
-      screenWidth,
+      viewportSize,
       expandOnMobile,
     } = this.props
 
-    if (screenWidth === 'SM') {
+    if (viewportSize === 'SM') {
       return (
         <AudioPlayerSmall
           podcast={podcast}
@@ -134,7 +134,7 @@ export default class AudioPlayer extends Component<
       )
     }
 
-    if (screenWidth === 'MD') {
+    if (viewportSize === 'MD') {
       return (
         <AudioPlayerMedium
           podcast={podcast}
@@ -149,7 +149,7 @@ export default class AudioPlayer extends Component<
       )
     }
 
-    if (screenWidth === 'LG') {
+    if (viewportSize === 'LG') {
       return (
         <AudioPlayerLarge
           podcast={podcast}

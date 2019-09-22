@@ -12,21 +12,21 @@ import { Provider } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStore } from 'store'
 import * as T from 'types/actions'
-import { ScreenWidth } from 'types/app'
+import { ViewportSize } from 'types/app'
 import { AppContext, PageContext } from 'types/utilities'
 import '../styles/index.css'
 
 export default withRedux(makeStore)(
   class MyApp extends Component<AppProps & PageContext> {
     static async getInitialProps({ Component, ctx }: AppContext) {
-      const { query, asPath: currentUrl, store } = ctx
-      const pagePreventReload = store.getState().browser.pagePreventReload
+      const { query, asPath: currentUrlPath, store } = ctx
+      const prevPage = store.getState().browser.previousPage.page
 
       let scrollY = 0
-      if (currentUrl === pagePreventReload.url) {
-        scrollY = pagePreventReload.scrollY
+      if (currentUrlPath === prevPage.urlPath) {
+        scrollY = prevPage.scrollY
       }
-      if (currentUrl !== pagePreventReload.url && Component.getInitialProps) {
+      if (currentUrlPath !== prevPage.urlPath && Component.getInitialProps) {
         await Component.getInitialProps(ctx)
       }
       return { pageProps: { ...query, scrollY } }
@@ -38,34 +38,33 @@ export default withRedux(makeStore)(
       } = this.props
 
       /*
-       * Redux store maintains the following data regrading routing
-       *  - A stack [pages] of {url, scrollPosition} pairs for all the pages
-       *    that can be reached by clicking back button in the same order
-       *  - A page [pagePreventReload] representing a page that user has previously
-       *    navigated, and thus can be loaded from store
+       * previous_page field in redux stor is used to store previous pages
+       *  - `stack` contains all the pages that can be reached by clicking back button
+       *    , in the same order
+       *  - When user clicks back the `stack` is poped and the result is store in
+       *    `page` field.
+       *  - When a page loads, it can compare its urlPath to `previous_page.page` and determine
+       *    wheather to set scroll, load data from store etc.
        */
       window.history.scrollRestoration = 'manual'
 
-      Router.events.on('routeChangeStart', (toUrl) => {
-        const pagePreventReload = getState().browser.pagePreventReload
-        // Preventing push_page when user is going to previous page
-        if (pagePreventReload.url !== toUrl) {
-          // Push page from which user clicked on back
+      Router.events.on('routeChangeStart', (urlPath) => {
+        const prevPage = getState().browser.previousPage.page
+        // Preventing push when user is going to previous page
+        if (prevPage.urlPath !== urlPath) {
           dispatch({
-            type: T.PUSH_PAGE,
-            page: { url: Router.asPath, scrollY: window.scrollY },
+            type: T.PUSH_PREVIOUS_PAGE_STACK,
+            page: { urlPath: Router.asPath, scrollY: window.scrollY }, // Push page from which user clicked on back
           })
         }
       })
 
-      Router.beforePopState(({ as: toUrl }) => {
-        const pages = getState().browser.pages
-        // Pop State will be called when users clicks on either back or next button
+      Router.beforePopState(({ as: toUrlPath }) => {
+        const stack = getState().browser.previousPage.stack
         // Preventing pop_state when user is going to next page
-        if (pages.length > 0 && pages[0].url === toUrl) {
-          // Set previous page to prevent load
-          dispatch({ type: T.SET_PAGE_PREVENT_RELOAD, page: pages[0] })
-          dispatch({ type: T.POP_PAGE })
+        if (stack.length > 0 && stack[0].urlPath === toUrlPath) {
+          dispatch({ type: T.SET_PREVIOUS_PAGE, page: stack[0] })
+          dispatch({ type: T.POP_PREVIOUS_PAGE_STACK })
         }
         return true
       })
@@ -73,14 +72,14 @@ export default withRedux(makeStore)(
       /*
        * Listen to screen width changes
        */
-      this.handleScreenWidthChange()
-      window.addEventListener('resize', this.handleScreenWidthChange)
+      this.handleViewportSizeChange()
+      window.addEventListener('resize', this.handleViewportSizeChange)
 
       /*
        * Listen to route changes
        */
-      Router.events.on('routeChangeComplete', (toUrl) => {
-        dispatch({ type: T.SET_CURRENT_PATH_NAME, pathName: toUrl })
+      Router.events.on('routeChangeComplete', (toUrlPath) => {
+        dispatch({ type: T.SET_CURRENT_URL_PATH, urlPath: toUrlPath })
       })
 
       /*
@@ -89,17 +88,17 @@ export default withRedux(makeStore)(
       bindActionCreators(getSignedInUser, dispatch)()
     }
 
-    handleScreenWidthChange = () => {
-      const setScreenWidth = (s: ScreenWidth) =>
-        this.props.store.dispatch({ type: T.SET_SCREEN_WIDTH, width: s })
+    handleViewportSizeChange = () => {
+      const setViewportSize = (s: ViewportSize) =>
+        this.props.store.dispatch({ type: T.SET_VIEWPORT_SIZE, size: s })
 
-      const screenWidth = window.innerWidth
-      if (screenWidth >= 1024) {
-        return setScreenWidth('LG')
-      } else if (screenWidth >= 768) {
-        return setScreenWidth('MD')
+      const width = window.innerWidth
+      if (width >= 1024) {
+        return setViewportSize('LG')
+      } else if (width >= 768) {
+        return setViewportSize('MD')
       } else {
-        return setScreenWidth('SM')
+        return setViewportSize('SM')
       }
     }
 

@@ -6,11 +6,11 @@ import MenuItem from './components/menu_item'
 
 export interface StateToProps {
   userSignedIn: boolean
-  currentPathName: string
+  currentUrlPath: string
 }
 
 const NavbarSide: React.SFC<StateToProps> = (props) => {
-  const { userSignedIn, currentPathName } = props
+  const { userSignedIn, currentUrlPath } = props
   const LogoIcon = iconMap['logo-md']
 
   return (
@@ -22,7 +22,7 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
             <MenuItem
               icon="explore"
               name="discover"
-              active={currentPathName === '/'}
+              active={currentUrlPath === '/'}
             />
           </li>
         </Link>
@@ -30,14 +30,14 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
           <MenuItem
             icon="feed"
             name="feed"
-            active={currentPathName === '/feed'}
+            active={currentUrlPath === '/feed'}
           />
         </li>
         <li className="h-10 my-1">
           <MenuItem
             icon="heart"
             name="subscriptions"
-            active={currentPathName === '/subscriptions'}
+            active={currentUrlPath === '/subscriptions'}
           />
         </li>
       </ul>

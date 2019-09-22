@@ -1,12 +1,12 @@
 import classNames from 'classnames'
 import React from 'react'
 import { connect } from 'react-redux'
-import { getScreenWidth } from 'selectors/ui/screen'
+import { getViewportSize } from 'selectors/browser/viewport'
 import { AppState } from 'store'
-import { ScreenWidth } from 'types/app'
+import { ViewportSize } from 'types/app'
 
 interface StateToProps {
-  screenWidth: ScreenWidth
+  viewPortSize: ViewportSize
 }
 
 interface OwnProps {
@@ -19,7 +19,7 @@ interface OwnProps {
   //  - If a object is provided grid will be responsive otherwise rows
   //    will overflow in x-axis with each childs width set to provided width
   //  - Defaults to { LG: 7 , MD: 6, SM: 3 }
-  cols?: { [key in ScreenWidth]: number } | number
+  cols?: { [key in ViewportSize]: number } | number
 
   // Optional css class assigned to each row
   className?: string
@@ -37,10 +37,10 @@ const Grid: React.SFC<StateToProps & OwnProps> = ({
   className = '',
   classNameChild = '',
   children,
-  screenWidth,
+  viewPortSize,
 }) => {
   let overflowRow = typeof cols === 'number' && !!cols
-  let itemsPerRow = typeof cols === 'object' ? cols[screenWidth] : cols
+  let itemsPerRow = typeof cols === 'object' ? cols[viewPortSize] : cols
 
   // Add Placeholders if required
   if (children.length % itemsPerRow > 0) {
@@ -77,7 +77,7 @@ const Grid: React.SFC<StateToProps & OwnProps> = ({
 }
 
 function mapStateToProps(state: AppState): StateToProps {
-  return { screenWidth: getScreenWidth(state) }
+  return { viewPortSize: getViewportSize(state) }
 }
 
 export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
