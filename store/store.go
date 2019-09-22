@@ -35,6 +35,7 @@ type PodcastStore interface {
 	SaveSubscription(subscription *model.PodcastSubscription) *model.AppError
 	Get(podcastId string) (*model.Podcast, *model.AppError)
 	GetAllByCuration(curationId string, offset, limit int) ([]*model.Podcast, *model.AppError)
+	GetAllSubscribedBy(userId string) ([]*model.Podcast, *model.AppError)
 	DeleteSubscription(userId, podcastId string) *model.AppError
 }
 

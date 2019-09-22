@@ -16,6 +16,10 @@ func (app *App) GetPodcastsInCuration(curationId string) ([]*model.Podcast, *mod
 	return app.Store.Podcast().GetAllByCuration(curationId, 0, 7)
 }
 
+func (app *App) GetUserSubscriptions(userId string) ([]*model.Podcast, *model.AppError) {
+	return app.Store.Podcast().GetAllSubscribedBy(userId)
+}
+
 func (app *App) SearchPodcasts(searchQuery string) ([]*model.PodcastIndex, *model.AppError) {
 	results, err := app.ElasticSearch.Search().
 		Index("podcast").

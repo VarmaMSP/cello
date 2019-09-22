@@ -26,8 +26,18 @@ func Me(c *Context, w http.ResponseWriter) {
 		return
 	}
 
+	subscriptions, err := c.app.GetUserSubscriptions(c.session.UserId)
+	if err != nil {
+		c.err = err
+		return
+	}
+	for _, subscription := range subscriptions {
+		subscription.SanitizeToMin()
+	}
+
 	res, _ := json.Marshal(map[string]interface{}{
-		"user": user,
+		"user":          user,
+		"subscriptions": subscriptions,
 	})
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

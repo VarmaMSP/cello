@@ -73,6 +73,27 @@ func (s *SqlPodcastStore) GetAllByCuration(curationId string, offset, limit int)
 	return
 }
 
+func (s *SqlPodcastStore) GetAllSubscribedBy(userId string) (res []*model.Podcast, appE *model.AppError) {
+	sql := "SELECT " + Cols(&model.Podcast{}, "podcast") + ` FROM podcast
+		INNER JOIN podcast_subscription ON podcast_subscription.podcast_id = podcast.id
+		WHERE podcast_subscription.subscribed_by = ?
+		ORDER BY podcast_subscription.updated_at DESC`
+
+	copyTo := func() []interface{} {
+		tmp := &model.Podcast{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql, userId); err != nil {
+		appE = model.NewAppError(
+			"sqlstore.sql_curation_store.get_podcast_by_curation", err.Error(), http.StatusInternalServerError,
+			map[string]string{"user_id": userId},
+		)
+	}
+	return
+}
+
 func (s *SqlPodcastStore) DeleteSubscription(userId, podcastId string) *model.AppError {
 	sql := "DELETE from podcast_subscription WHERE podcast_id = ? AND subscribed_by = ?"
 

@@ -231,3 +231,15 @@ func (p *Podcast) Sanitize() {
 	p.CreatedAt = 0
 	p.UpdatedAt = 0
 }
+
+func (p *Podcast) SanitizeToMin() {
+	p.Sanitize()
+	p.Author = ""
+	p.Description = ""
+	p.Language = ""
+	p.Explicit = 0
+	p.Type = ""
+	p.Complete = 0
+	p.Link = ""
+	p.Copyright = ""
+}
