@@ -26,10 +26,6 @@ export default class PodcastPage extends Component<Props> {
     ] as string)
 
     if (isServer) {
-      // Type definitions for bindActionCreators is not overloaded for thunks
-      // - https://github.com/piotrwitek/react-redux-typescript-guide/issues/110
-      // - https://github.com/piotrwitek/react-redux-typescript-guide/issues/6
-      // - https://github.com/piotrwitek/react-redux-typescript-guide/pull/157
       await loadPodcast
     }
   }
