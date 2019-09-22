@@ -121,12 +121,12 @@ export default class Client {
 
   async subscribeToPodcast(podcastId: string): Promise<void> {
     const url = `${this.getPodcastRoute()}/${podcastId}/subscribe`
-    await this.doFetch('POST', url)
+    await this.doFetch('PUT', url)
   }
 
   async unsubscribeToPodcast(podcastId: string): Promise<void> {
     const url = `${this.getPodcastRoute()}/${podcastId}/unsubscribe`
-    await this.doFetch('POST', url)
+    await this.doFetch('PUT', url)
   }
 
   async getTrendingPodcasts(): Promise<Podcast[]> {

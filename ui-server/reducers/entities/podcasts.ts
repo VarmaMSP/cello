@@ -20,10 +20,10 @@ const podcasts: Reducer<{ [PodcastId: string]: Podcast }, T.AppActions> = (
       }
     case T.RECEIVED_SIGNED_IN_USER:
       return {
-        ...state,
         ...action.subscriptions.reduce<{
           [id: string]: Podcast
         }>((acc, p) => ({ ...acc, [p.id]: p }), {}),
+        ...state,
       }
     default:
       return state

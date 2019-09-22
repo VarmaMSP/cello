@@ -8,8 +8,8 @@ import (
 func (api *Api) RegisterPodcastHandlers() {
 	api.router.Handler("GET", "/results", api.NewHandler(SearchPodcasts))
 	api.router.Handler("GET", "/podcasts/:podcastId", api.NewHandler(GetPodcast))
-	api.router.Handler("POST", "/podcasts/:podcastId/subscribe", api.NewHandlerSessionRequired(SubscribeToPodcast))
-	api.router.Handler("POST", "/podcasts/:podcastId/unsubscribe", api.NewHandlerSessionRequired(UnsubscribeToPodcast))
+	api.router.Handler("PUT", "/podcasts/:podcastId/subscribe", api.NewHandlerSessionRequired(SubscribeToPodcast))
+	api.router.Handler("PUT", "/podcasts/:podcastId/unsubscribe", api.NewHandlerSessionRequired(UnsubscribeToPodcast))
 }
 
 func SearchPodcasts(c *Context, w http.ResponseWriter) {
@@ -59,7 +59,7 @@ func SubscribeToPodcast(c *Context, w http.ResponseWriter) {
 		c.err = err
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 }
 
 func UnsubscribeToPodcast(c *Context, w http.ResponseWriter) {
