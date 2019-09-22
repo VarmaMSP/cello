@@ -21,22 +21,32 @@ export default withRedux(makeStore)(
       const pagePreventReload = store.getState().browser.pagePreventReload
 
       let scrollY = 0
-      if (currentUrl !== pagePreventReload.url && Component.getInitialProps) {
-        await Component.getInitialProps(ctx)
-      } else {
+      if (currentUrl === pagePreventReload.url) {
         scrollY = pagePreventReload.scrollY
       }
-
+      if (currentUrl !== pagePreventReload.url && Component.getInitialProps) {
+        await Component.getInitialProps(ctx)
+      }
       return { pageProps: { ...query, scrollY } }
     }
 
     componentDidMount() {
       window.history.scrollRestoration = 'manual'
 
+      /*
+       ** Redux store maintains the following data regrading routing
+       **  - A stack [pages] of {url, scrollPosition} pairs for all the pages
+       **    that can be reached by clicking back button in the same order
+       **  - A page [pagePreventReload] representing a page that user has previously
+       **    navigated, and thus can be loaded from store
+       */
+
       const { store } = this.props
       Router.events.on('routeChangeStart', (toUrl) => {
         const pagePreventReload = store.getState().browser.pagePreventReload
+        // Preventing push_page when user is going to previous page
         if (pagePreventReload.url !== toUrl) {
+          // Push page from which user clicked on back
           store.dispatch({
             type: PUSH_PAGE,
             page: { url: Router.asPath, scrollY: window.scrollY },
@@ -46,9 +56,12 @@ export default withRedux(makeStore)(
 
       Router.beforePopState(({ as: toUrl }) => {
         const pages = store.getState().browser.pages
+        // Pop State will be called when users clicks on either back or next button
+        // Preventing pop_state when user is going to next page
         if (pages.length > 0 && pages[0].url === toUrl) {
-          store.dispatch({ type: POP_PAGE })
+          // Set previous page to prevent load
           store.dispatch({ type: SET_PAGE_PREVENT_RELOAD, page: pages[0] })
+          store.dispatch({ type: POP_PAGE })
         }
 
         return true
@@ -64,7 +77,7 @@ export default withRedux(makeStore)(
           </Head>
 
           <Provider store={store}>
-            {/* Order components based on z-axis */}
+            {/* Order components by z-axis */}
             <MainContainer>
               <Component {...pageProps} />
             </MainContainer>
