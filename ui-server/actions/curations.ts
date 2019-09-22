@@ -1,9 +1,5 @@
 import client from 'client'
-import {
-  GET_PODCAST_CURATIONS_REQUEST,
-  GET_PODCAST_CURATIONS_SUCCESS,
-  RECEIVED_PODCAST_CURATION,
-} from 'types/actions'
+import * as T from 'types/actions'
 import { requestAction } from './utils'
 
 export function getCurations() {
@@ -13,11 +9,11 @@ export function getCurations() {
       podcastCurations
         .filter(({ podcasts }) => !!podcasts)
         .map(({ podcasts, curation }) =>
-          dispatch({ type: RECEIVED_PODCAST_CURATION, curation, podcasts }),
+          dispatch({ type: T.RECEIVED_PODCAST_CURATION, curation, podcasts }),
         )
     },
-    { type: GET_PODCAST_CURATIONS_REQUEST },
-    { type: GET_PODCAST_CURATIONS_SUCCESS },
-    { type: GET_PODCAST_CURATIONS_SUCCESS },
+    { type: T.GET_PODCAST_CURATIONS_REQUEST },
+    { type: T.GET_PODCAST_CURATIONS_SUCCESS },
+    { type: T.GET_PODCAST_CURATIONS_SUCCESS },
   )
 }

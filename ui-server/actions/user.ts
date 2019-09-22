@@ -1,30 +1,14 @@
 import client from 'client'
-import {
-  GET_SIGNED_IN_USER_FAILURE,
-  GET_SIGNED_IN_USER_REQUEST,
-  GET_SIGNED_IN_USER_SUCCESS,
-  RECEIVED_SIGNED_IN_USER,
-  SIGN_OUT_USER_FAILURE,
-  SIGN_OUT_USER_REQUEST,
-  SIGN_OUT_USER_SUCCESS,
-  SUBSCRIBED_TO_PODCAST,
-  SUBSCRIBE_TO_PODCAST_FAILURE,
-  SUBSCRIBE_TO_PODCAST_REQUEST,
-  SUBSCRIBE_TO_PODCAST_SUCCESS,
-  UNSUBSCRIBED_TO_PODCAST,
-  UNSUBSCRIBE_TO_PODCAST_FAILURE,
-  UNSUBSCRIBE_TO_PODCAST_REQUEST,
-  UNSUBSCRIBE_TO_PODCAST_SUCCESS,
-} from 'types/actions'
+import * as T from 'types/actions'
 import { requestAction } from './utils'
 
 export function getSignedInUser() {
   return requestAction(
     () => client.getSignedInUser(),
-    (dispatch, { user }) => dispatch({ type: RECEIVED_SIGNED_IN_USER, user }),
-    { type: GET_SIGNED_IN_USER_REQUEST },
-    { type: GET_SIGNED_IN_USER_SUCCESS },
-    { type: GET_SIGNED_IN_USER_FAILURE },
+    (dispatch, { user }) => dispatch({ type: T.RECEIVED_SIGNED_IN_USER, user }),
+    { type: T.GET_SIGNED_IN_USER_REQUEST },
+    { type: T.GET_SIGNED_IN_USER_SUCCESS },
+    { type: T.GET_SIGNED_IN_USER_FAILURE },
   )
 }
 
@@ -32,9 +16,9 @@ export function signOutUser() {
   return requestAction(
     () => client.signOutUser(),
     () => {},
-    { type: SIGN_OUT_USER_REQUEST },
-    { type: SIGN_OUT_USER_SUCCESS },
-    { type: SIGN_OUT_USER_FAILURE },
+    { type: T.SIGN_OUT_USER_REQUEST },
+    { type: T.SIGN_OUT_USER_SUCCESS },
+    { type: T.SIGN_OUT_USER_FAILURE },
   )
 }
 
@@ -43,14 +27,14 @@ export function subscribeToPodcast(podcastId: string) {
     () => client.subscribeToPodcast(podcastId),
     (dispatch, _, getState) => {
       dispatch({
-        type: SUBSCRIBED_TO_PODCAST,
+        type: T.SUBSCRIBED_TO_PODCAST,
         userId: getState().entities.user.currentUserId,
         podcastId,
       })
     },
-    { type: SUBSCRIBE_TO_PODCAST_REQUEST },
-    { type: SUBSCRIBE_TO_PODCAST_SUCCESS },
-    { type: SUBSCRIBE_TO_PODCAST_FAILURE },
+    { type: T.SUBSCRIBE_TO_PODCAST_REQUEST },
+    { type: T.SUBSCRIBE_TO_PODCAST_SUCCESS },
+    { type: T.SUBSCRIBE_TO_PODCAST_FAILURE },
   )
 }
 
@@ -59,13 +43,13 @@ export function unsubscribeToPodcast(podcastId: string) {
     () => client.unsubscribeToPodcast(podcastId),
     (dispatch, _, getState) => {
       dispatch({
-        type: UNSUBSCRIBED_TO_PODCAST,
+        type: T.UNSUBSCRIBED_TO_PODCAST,
         userId: getState().entities.user.currentUserId,
         podcastId,
       })
     },
-    { type: UNSUBSCRIBE_TO_PODCAST_REQUEST },
-    { type: UNSUBSCRIBE_TO_PODCAST_SUCCESS },
-    { type: UNSUBSCRIBE_TO_PODCAST_FAILURE },
+    { type: T.UNSUBSCRIBE_TO_PODCAST_REQUEST },
+    { type: T.UNSUBSCRIBE_TO_PODCAST_SUCCESS },
+    { type: T.UNSUBSCRIBE_TO_PODCAST_FAILURE },
   )
 }
