@@ -1,9 +1,9 @@
 import { combineReducers, Reducer } from 'redux'
-import { AppActions, RECEIVED_SEARCH_PODCASTS } from 'types/actions'
+import * as T from 'types/actions'
 
-const podcasts: Reducer<string[], AppActions> = (state = [], action) => {
+const podcasts: Reducer<string[], T.AppActions> = (state = [], action) => {
   switch (action.type) {
-    case RECEIVED_SEARCH_PODCASTS:
+    case T.RECEIVED_SEARCH_PODCASTS:
       return action.podcasts.map((p) => p.id)
     default:
       return state

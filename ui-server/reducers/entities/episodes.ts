@@ -1,13 +1,13 @@
 import { combineReducers, Reducer } from 'redux'
-import { AppActions, RECEIVED_EPISODES } from 'types/actions'
+import * as T from 'types/actions'
 import { Episode } from 'types/app'
 
-const episodes: Reducer<{ [episodeId: string]: Episode }, AppActions> = (
+const episodes: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
   state = {},
   action,
 ) => {
   switch (action.type) {
-    case RECEIVED_EPISODES:
+    case T.RECEIVED_EPISODES:
       const episodes = action.episodes.reduce<{ [id: string]: Episode }>(
         (acc, e) => ({ ...acc, [e.id]: e }),
         {},
@@ -20,10 +20,10 @@ const episodes: Reducer<{ [episodeId: string]: Episode }, AppActions> = (
 
 const episodesInPodcast: Reducer<
   { [podcastId: string]: string[] },
-  AppActions
+  T.AppActions
 > = (state = {}, action) => {
   switch (action.type) {
-    case RECEIVED_EPISODES:
+    case T.RECEIVED_EPISODES:
       return {
         ...state,
         [action.podcastId]: action.episodes.map((e) => e.id),

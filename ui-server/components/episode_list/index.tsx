@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { makeGetEpisodesInPodcast } from 'selectors/entities/episodes'
 import { AppState } from 'store'
-import { AppActions, PLAY_EPISODE } from 'types/actions'
+import * as T from 'types/actions'
 import EpisodeList, {
   DispatchToProps,
   OwnProps,
@@ -18,11 +18,11 @@ function makeMapStateToProps() {
   })
 }
 
-function dispatchToProps(dispatch: Dispatch<AppActions>) {
+function dispatchToProps(dispatch: Dispatch<T.AppActions>) {
   return {
     playEpisode: (episodeId: string) =>
       dispatch({
-        type: PLAY_EPISODE,
+        type: T.PLAY_EPISODE,
         episodeId,
       }),
   }

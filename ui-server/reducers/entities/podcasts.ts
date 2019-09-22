@@ -1,25 +1,17 @@
 import { combineReducers, Reducer } from 'redux'
-import {
-  AppActions,
-  RECEIVED_PODCAST,
-  RECEIVED_PODCAST_CURATION,
-  RECEIVED_SEARCH_PODCASTS,
-  RECEIVED_TRENDING_PODCASTS,
-  SUBSCRIBED_TO_PODCAST,
-  UNSUBSCRIBED_TO_PODCAST,
-} from 'types/actions'
+import * as T from 'types/actions'
 import { Podcast } from 'types/app'
 
-const podcasts: Reducer<{ [PodcastId: string]: Podcast }, AppActions> = (
+const podcasts: Reducer<{ [PodcastId: string]: Podcast }, T.AppActions> = (
   state = {},
   action,
 ) => {
   switch (action.type) {
-    case RECEIVED_PODCAST:
+    case T.RECEIVED_PODCAST:
       return { ...state, [action.podcast.id]: action.podcast }
-    case RECEIVED_SEARCH_PODCASTS:
-    case RECEIVED_PODCAST_CURATION:
-    case RECEIVED_TRENDING_PODCASTS:
+    case T.RECEIVED_SEARCH_PODCASTS:
+    case T.RECEIVED_PODCAST_CURATION:
+    case T.RECEIVED_TRENDING_PODCASTS:
       const podcasts = action.podcasts.reduce<{ [id: string]: Podcast }>(
         (acc, p) => ({ ...acc, [p.id]: p }),
         {},
@@ -30,12 +22,12 @@ const podcasts: Reducer<{ [PodcastId: string]: Podcast }, AppActions> = (
   }
 }
 
-const podcastsTrending: Reducer<string[], AppActions> = (
+const podcastsTrending: Reducer<string[], T.AppActions> = (
   state = [],
   action,
 ) => {
   switch (action.type) {
-    case RECEIVED_TRENDING_PODCASTS:
+    case T.RECEIVED_TRENDING_PODCASTS:
       return action.podcasts.map((p) => p.id)
     default:
       return state
@@ -44,10 +36,10 @@ const podcastsTrending: Reducer<string[], AppActions> = (
 
 const podcastsInCuration: Reducer<
   { [curationId: string]: string[] },
-  AppActions
+  T.AppActions
 > = (state = {}, action) => {
   switch (action.type) {
-    case RECEIVED_PODCAST_CURATION:
+    case T.RECEIVED_PODCAST_CURATION:
       return {
         ...state,
         [action.curation.id]: action.podcasts.map((p) => p.id),
@@ -59,15 +51,15 @@ const podcastsInCuration: Reducer<
 
 const podcastsSubscribedByUser: Reducer<
   { [userId: string]: string[] },
-  AppActions
+  T.AppActions
 > = (state = {}, action) => {
   switch (action.type) {
-    case SUBSCRIBED_TO_PODCAST:
+    case T.SUBSCRIBED_TO_PODCAST:
       return {
         ...state,
         [action.userId]: [action.podcastId],
       }
-    case UNSUBSCRIBED_TO_PODCAST:
+    case T.UNSUBSCRIBED_TO_PODCAST:
       return {
         ...state,
         [action.userId]: (state[action.userId] || []).filter(

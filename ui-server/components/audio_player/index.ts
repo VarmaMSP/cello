@@ -9,11 +9,7 @@ import {
   makeGetPlayingPodcast,
 } from 'selectors/ui/player'
 import { AppState } from 'store'
-import {
-  AppActions,
-  SET_AUDIO_STATE,
-  TOGGLE_EXPAND_ON_MOBILE,
-} from 'types/actions'
+import * as T from 'types/actions'
 import { AudioState } from 'types/app'
 import AudioPlayer, { DispatchToProps, StateToProps } from './audio_player'
 
@@ -31,11 +27,11 @@ function makeMapStateToProps() {
   })
 }
 
-function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
+function mapDispatchToProps(dispatch: Dispatch<T.AppActions>): DispatchToProps {
   return {
     setAudioState: (s: AudioState) =>
-      dispatch({ type: SET_AUDIO_STATE, state: s }),
-    toggleExpandOnMobile: () => dispatch({ type: TOGGLE_EXPAND_ON_MOBILE }),
+      dispatch({ type: T.SET_AUDIO_STATE, state: s }),
+    toggleExpandOnMobile: () => dispatch({ type: T.TOGGLE_EXPAND_ON_MOBILE }),
   }
 }
 
