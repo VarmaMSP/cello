@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import React, { Component } from 'react'
-import Shiitake from 'shiitake'
 import { Podcast } from 'types/app'
 import { imageUrl } from './utils'
 
@@ -22,22 +21,12 @@ export default class PodcastThumbnail extends Component<Props> {
             className="w-full h-auto flex-none object-contain rounded-lg border"
             src={imageUrl(podcast.id, 'md')}
           />
-          <Shiitake
-            lines={2}
-            throttleRate={200}
-            renderFullOnServer
-            className="text-sm tracking-tight text-gray-800 mt-3 mb-1"
-          >
+          <p className="text-sm tracking-tight text-gray-800 mt-3 mb-1 line-clamp-2">
             {podcast.title}
-          </Shiitake>
-          <Shiitake
-            lines={1}
-            throttleRate={200}
-            renderFullOnServer
-            className="text-sm tracking-tigher text-gray-600"
-          >
+          </p>
+          <p className="text-sm tracking-tigher text-gray-600 truncate">
             {`by ${podcast.author}`}
-          </Shiitake>
+          </p>
         </div>
       </Link>
     )

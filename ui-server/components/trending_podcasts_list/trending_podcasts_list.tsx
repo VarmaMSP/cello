@@ -1,7 +1,6 @@
 import { imageUrl } from 'components/utils'
 import Router from 'next/router'
 import React from 'react'
-import Shiitake from 'shiitake'
 import { Podcast } from 'types/app'
 
 export interface StateToProps {
@@ -33,16 +32,12 @@ const TrendingPodcastsList: React.SFC<StateToProps> = (props) => {
           src={imageUrl(podcast.id, 'md')}
         />
         <div className="w-2/3 py-1 pl-3">
-          <div className="w-full font-sans text-gray-800 tracking-tight mb-2">
+          <div className="w-full font-sans text-gray-800 tracking-tight mb-2 line-clamp-2">
             {podcast.title}
           </div>
-          <Shiitake
-            lines={4}
-            throttleRate={200}
-            className="text-sm text-gray-600 leading-snug tracking-tight"
-          >
+          <p className="text-sm text-gray-600 leading-snug tracking-tight line-clamp-4">
             {podcast.description}
-          </Shiitake>
+          </p>
         </div>
       </div>,
     )

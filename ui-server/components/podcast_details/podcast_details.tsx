@@ -1,6 +1,5 @@
 import { imageUrl } from 'components/utils'
-import React, { useState } from 'react'
-import Shiitake from 'shiitake'
+import React from 'react'
 import { Podcast } from 'types/app'
 import SubscribeButton from './components/subscribe_button'
 
@@ -15,8 +14,6 @@ export interface OwnProps {
 interface Props extends StateToProps, OwnProps {}
 
 const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
-  const [lineCountDesc, setLineCountDesc] = useState(2)
-
   return (
     <div className="flex mb-8">
       <img
@@ -25,26 +22,15 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
       />
       <div className="flex flex-col justify-between lg:px-5 px-3">
         <div>
-          <h2 className="md:text-2xl text-lg text-gray-900">{podcast.title}</h2>
-          <h3 className="md:text-lg text-base text-gray-800 leading-relaxed">
+          <h2 className="md:text-2xl text-lg text-gray-900 leading-tight">
+            {podcast.title}
+          </h2>
+          <h3 className="md:text-base text-sm text-gray-800 leading-loose truncate">
             {podcast.author}
           </h3>
-          <Shiitake
-            lines={lineCountDesc}
-            throttleRate={200}
-            renderFullOnServer
-            className="lg:block hidden mt-1 text-sm text-gray-800"
-            overflowNode={
-              <span
-                onClick={() => setLineCountDesc(lineCountDesc == 4 ? 100 : 4)}
-                className="text-blue-700 cursor-pointer"
-              >
-                {' ...read more'}
-              </span>
-            }
-          >
+          <p className="lg:line-clamp-3 hidden mt-1 text-sm text-gray-800">
             {podcast.description}
-          </Shiitake>
+          </p>
         </div>
         <SubscribeButton
           className="md:w-32 w-24 md:h-10 h-8 md:text-base text-sm"
