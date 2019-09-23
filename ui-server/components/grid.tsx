@@ -13,7 +13,7 @@ interface OwnProps {
   // No of Rows
   //  - If Specified The grid is truncated to specfied no of rows
   //  - Defaults to undefined
-  rows?: number
+  rows?: { [key in ViewportSize]: number } | number
 
   // No of Columns
   //  - If a object is provided grid will be responsive otherwise rows
@@ -27,6 +27,10 @@ interface OwnProps {
   // Optional css class assigned to each child wrapper
   classNameChild?: string
 
+  // percentage of container width that is spread amoung children in each row
+  //  - default to 12%
+  totalRowSpacing?: { [key in ViewportSize]: number } | number
+
   // Children
   children: JSX.Element[]
 }
@@ -36,11 +40,16 @@ const Grid: React.SFC<StateToProps & OwnProps> = ({
   cols = { LG: 7, MD: 6, SM: 3 },
   className = '',
   classNameChild = '',
+  totalRowSpacing = 12,
   children,
   viewPortSize,
 }) => {
   let overflowRow = typeof cols === 'number' && !!cols
   let itemsPerRow = typeof cols === 'object' ? cols[viewPortSize] : cols
+  let totalSpacing =
+    typeof totalRowSpacing === 'object'
+      ? totalRowSpacing[viewPortSize]
+      : totalRowSpacing
 
   // Add Placeholders if required
   if (children.length % itemsPerRow > 0) {
@@ -64,7 +73,11 @@ const Grid: React.SFC<StateToProps & OwnProps> = ({
           <div
             key={j}
             className={classNames('flex-none', classNameChild)}
-            style={{ width: !overflowRow ? `${88 / itemsPerRow}%` : undefined }}
+            style={{
+              width: !overflowRow
+                ? `${(100 - totalSpacing) / itemsPerRow}%`
+                : undefined,
+            }}
           >
             {item}
           </div>
@@ -73,7 +86,13 @@ const Grid: React.SFC<StateToProps & OwnProps> = ({
     )
   }
 
-  return <div>{rows ? rowsJsx.slice(0, rows) : rowsJsx}</div>
+  if (typeof rows === 'object') {
+    return <div>{rows ? rowsJsx.slice(0, rows[viewPortSize]) : rowsJsx}</div>
+  }
+  if (typeof rows === 'number') {
+    return <div>{rows ? rowsJsx.slice(0, rows) : rowsJsx}</div>
+  }
+  return <div>{rowsJsx}</div>
 }
 
 function mapStateToProps(state: AppState): StateToProps {
