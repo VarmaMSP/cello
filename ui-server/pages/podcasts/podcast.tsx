@@ -44,8 +44,11 @@ export default class PodcastPage extends Component<Props> {
     if (reqState.status == 'SUCCESS') {
       return (
         <div>
-          <div className="md:mb-12 mb-10">
-            <PodcastDetails podcastId={podcastId} />
+          <PodcastDetails podcastId={podcastId} />
+          <div className="flex mt-8 mb-2">
+            <div className="bg-green-200 px-3 py-1 md:text-base text-sm rounded-full">
+              Episodes
+            </div>
           </div>
           <div className="lg:w-4/6 w-full">
             <EpisodeList podcastId={podcastId} />
