@@ -21,7 +21,7 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
           <li className="h-10 my-1">
             <MenuItem
               icon="explore"
-              name="discover"
+              name="home"
               active={currentUrlPath === '/'}
             />
           </li>
