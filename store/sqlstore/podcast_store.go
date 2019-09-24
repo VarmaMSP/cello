@@ -76,7 +76,7 @@ func (s *SqlPodcastStore) GetAllByCuration(curationId string, offset, limit int)
 func (s *SqlPodcastStore) GetAllSubscribedBy(userId string) (res []*model.Podcast, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Podcast{}, "podcast") + ` FROM podcast
 		INNER JOIN podcast_subscription ON podcast_subscription.podcast_id = podcast.id
-		WHERE podcast_subscription.subscribed_by = ?
+		WHERE podcast_subscription.active = 1 AND podcast_subscription.subscribed_by = ?
 		ORDER BY podcast_subscription.updated_at DESC`
 
 	copyTo := func() []interface{} {
