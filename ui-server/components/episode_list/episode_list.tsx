@@ -25,7 +25,7 @@ const EpisodeList: React.SFC<Props> = ({ episodes, playEpisode }) => {
           key={id}
           className="flex mb-3 lg:px-6 py-2 rounded-full lg:hover:bg-gray-200"
         >
-          <div className="w-11/12 pr-3">
+          <div className="flex-auto w-11/12 pr-3">
             <span className="text-xs text-gray-700">
               {Utils.humanizePastDate(pubDate)}
               <span className="mx-2 font-extrabold">&middot;</span>

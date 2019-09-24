@@ -20,7 +20,7 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
         className="lg:h-56 h-36 lg:w-56 w-36 flex-none object-contain object-center rounded-lg border"
         src={imageUrl(podcast.id, 'md')}
       />
-      <div className="flex flex-col justify-between lg:px-5 px-3">
+      <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
         <div className="w-full">
           <h2 className="md:text-2xl text-lg text-gray-900 leading-tight line-clamp-2">
             {podcast.title}
