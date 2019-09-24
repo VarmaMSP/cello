@@ -33,13 +33,15 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
             active={currentUrlPath === '/feed'}
           />
         </li>
-        <li className="h-10 my-1">
-          <MenuItem
-            icon="heart"
-            name="subscriptions"
-            active={currentUrlPath === '/subscriptions'}
-          />
-        </li>
+        <Link href="/subscriptions" scroll={false}>
+          <li className="h-10 my-1">
+            <MenuItem
+              icon="heart"
+              name="subscriptions"
+              active={currentUrlPath === '/subscriptions'}
+            />
+          </li>
+        </Link>
       </ul>
       <hr className="my-4" />
       {!userSignedIn ? (

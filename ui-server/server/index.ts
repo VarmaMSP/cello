@@ -7,6 +7,9 @@ const handle = app.getRequestHandler()
 const router = new Router()
 
 router.get('/', async (ctx) => {
+  ctx.set({
+    'Cache-Control': '',
+  })
   await app.render(ctx.req, ctx.res, '/')
   ctx.respond = false
 })

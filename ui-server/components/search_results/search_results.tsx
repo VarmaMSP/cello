@@ -17,7 +17,7 @@ export default class SearchResults extends Component<Props> {
   render() {
     const { podcasts } = this.props
     return (
-      <Grid className="mb-3 pb-3">
+      <Grid totalRowSpacing={{ LG: 12, MD: 8, SM: 8 }} className="mb-3 pb-3">
         {podcasts.map((podcast) => (
           <PodcastThumbnail key={podcast.id} podcast={podcast} />
         ))}

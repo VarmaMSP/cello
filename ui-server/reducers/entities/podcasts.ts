@@ -70,7 +70,9 @@ const podcastsSubscribedByUser: Reducer<
     case T.SUBSCRIBED_TO_PODCAST:
       return {
         ...state,
-        [action.userId]: [action.podcastId],
+        [action.userId]: [
+          ...new Set([action.podcastId, ...(state[action.userId] || [])]),
+        ],
       }
     case T.UNSUBSCRIBED_TO_PODCAST:
       return {

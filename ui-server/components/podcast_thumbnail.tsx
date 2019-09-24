@@ -21,10 +21,10 @@ export default class PodcastThumbnail extends Component<Props> {
             className="w-full h-auto flex-none object-contain rounded-lg border"
             src={imageUrl(podcast.id, 'md')}
           />
-          <p className="text-sm tracking-tight text-gray-800 mt-3 mb-1 line-clamp-2">
+          <p className="text-xs tracking-wide leading-tight text-gray-800 mt-2 mb-1 line-clamp-2">
             {podcast.title}
           </p>
-          <p className="text-sm tracking-tigher text-gray-600 truncate">
+          <p className="text-xs tracking-tigher text-gray-600 truncate">
             {`by ${podcast.author}`}
           </p>
         </div>
