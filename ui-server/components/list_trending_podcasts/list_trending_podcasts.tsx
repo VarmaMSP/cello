@@ -8,7 +8,7 @@ export interface StateToProps {
   trendingPodcasts: Podcast[]
 }
 
-const TrendingPodcastsList: React.SFC<StateToProps> = (props) => {
+const ListTrendingPodcasts: React.SFC<StateToProps> = (props) => {
   const { trendingPodcasts } = props
   const onPodcastSelect = (podcastId: string) => () =>
     Router.push(
@@ -52,4 +52,4 @@ const TrendingPodcastsList: React.SFC<StateToProps> = (props) => {
   )
 }
 
-export default TrendingPodcastsList
+export default ListTrendingPodcasts

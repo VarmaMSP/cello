@@ -17,7 +17,7 @@ export interface OwnProps {
 
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
-const EpisodeList: React.SFC<Props> = ({ episodes, playEpisode }) => {
+const ListEpisodes: React.SFC<Props> = ({ episodes, playEpisode }) => {
   return (
     <>
       {episodes.map(({ id, title, duration, pubDate }) => (
@@ -47,4 +47,4 @@ const EpisodeList: React.SFC<Props> = ({ episodes, playEpisode }) => {
   )
 }
 
-export default EpisodeList
+export default ListEpisodes

@@ -1,5 +1,5 @@
 import { getPodcast } from 'actions/podcast'
-import EpisodeList from 'components/episode_list'
+import ListEpisodes from 'components/list_episodes'
 import LoadingPage from 'components/loading_page'
 import PodcastDetails from 'components/podcast_details'
 import React, { Component } from 'react'
@@ -51,7 +51,7 @@ export default class PodcastPage extends Component<Props> {
             </div>
           </div>
           <div className="lg:w-4/6 w-full">
-            <EpisodeList podcastId={podcastId} />
+            <ListEpisodes podcastId={podcastId} />
           </div>
         </div>
       )

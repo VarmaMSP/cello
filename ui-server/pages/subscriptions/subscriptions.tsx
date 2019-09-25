@@ -1,5 +1,5 @@
+import ListSubscriptions from 'components/list_subscriptions'
 import LoadingPage from 'components/loading_page'
-import SubscriptionsList from 'components/subscriptions_list'
 import React from 'react'
 import { RequestState } from 'reducers/requests/utils'
 
@@ -26,7 +26,7 @@ export default class extends React.Component<Props> {
     }
 
     if (reqState.status == 'SUCCESS') {
-      return <SubscriptionsList />
+      return <ListSubscriptions />
     }
 
     return <></>

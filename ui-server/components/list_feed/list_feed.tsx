@@ -14,7 +14,7 @@ export interface DispatchToProps {
 
 interface Props extends StateToProps, DispatchToProps {}
 
-const FeedList: React.SFC<Props> = (props) => {
+const ListFeed: React.SFC<Props> = (props) => {
   return (
     <>
       <h1 className="text-xl text-gray-900 mb-5">
@@ -57,4 +57,4 @@ const FeedList: React.SFC<Props> = (props) => {
   )
 }
 
-export default FeedList
+export default ListFeed

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { makeGetUserFeed } from 'selectors/entities/episodes'
 import { AppState } from 'store'
 import { AppActions, PLAY_EPISODE } from 'types/actions'
-import FeedList, { DispatchToProps, StateToProps } from './feed_list'
+import ListFeed, { DispatchToProps, StateToProps } from './list_feed'
 
 function makeMapStateToProps() {
   const getUserFeed = makeGetUserFeed()
@@ -26,4 +26,4 @@ function mapDispatchToProps(dispatch: Dispatch<AppActions>) {
 export default connect<StateToProps, DispatchToProps, {}, AppState>(
   makeMapStateToProps(),
   mapDispatchToProps,
-)(FeedList)
+)(ListFeed)

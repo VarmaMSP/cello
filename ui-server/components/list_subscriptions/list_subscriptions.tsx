@@ -7,7 +7,7 @@ export interface StateToProps {
   subscriptions: Podcast[]
 }
 
-const SubscriptionsList: React.SFC<StateToProps> = ({ subscriptions }) => {
+const ListSubscriptions: React.SFC<StateToProps> = ({ subscriptions }) => {
   return (
     <>
       <h2 className="text-xl text-gray-900 pb-8">{'Your subscriptions'}</h2>
@@ -35,4 +35,4 @@ const SubscriptionsList: React.SFC<StateToProps> = ({ subscriptions }) => {
   )
 }
 
-export default SubscriptionsList
+export default ListSubscriptions

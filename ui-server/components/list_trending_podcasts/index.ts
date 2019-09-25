@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { makeGetTrendingPodcasts } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
-import TrendingPodcastsList, { StateToProps } from './trending_podcasts_list'
+import ListTrendingPodcasts, { StateToProps } from './list_trending_podcasts'
 
 function makeMapStateToProps() {
   const getTrendingPodcasts = makeGetTrendingPodcasts()
@@ -11,5 +11,5 @@ function makeMapStateToProps() {
 }
 
 export default connect<StateToProps, {}, {}, AppState>(makeMapStateToProps())(
-  TrendingPodcastsList,
+  ListTrendingPodcasts,
 )

@@ -1,6 +1,6 @@
 import { getTrendingPodcasts } from 'actions/podcast'
+import ListTrendingPodcasts from 'components/list_trending_podcasts'
 import LoadingPage from 'components/loading_page'
-import TrendingPodcastsList from 'components/trending_podcasts_list'
 import React from 'react'
 import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators } from 'redux'
@@ -41,7 +41,7 @@ export default class extends React.Component<Props> {
     }
 
     if (reqState.status == 'SUCCESS') {
-      return <TrendingPodcastsList />
+      return <ListTrendingPodcasts />
     }
 
     return <></>
