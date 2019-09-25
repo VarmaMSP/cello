@@ -1,6 +1,6 @@
 import { searchPodcasts } from 'actions/podcast'
+import ListSearchResults from 'components/list_search_results'
 import LoadingPage from 'components/loading_page'
-import SearchResults from 'components/search_results'
 import React, { Component } from 'react'
 import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators } from 'redux'
@@ -44,7 +44,7 @@ export default class ResultsPage extends Component<Props> {
       return (
         <div>
           <div className="-mt-1 mb-5 text-gray-700 text-lg lg:text-xl">{`Podcasts matching "${query}"`}</div>
-          <SearchResults query={this.props.query} />
+          <ListSearchResults query={this.props.query} />
         </div>
       )
     }

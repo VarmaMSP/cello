@@ -1,7 +1,10 @@
 import { connect } from 'react-redux'
 import { makeGetSearchPodcastResults } from 'selectors/entities/search'
 import { AppState } from 'store'
-import SearchResults, { OwnProps, StateToProps } from './search_results'
+import ListSearchResults, {
+  OwnProps,
+  StateToProps,
+} from './list_search_results'
 
 function makeMapStateToProps() {
   const getSearchPodcastResults = makeGetSearchPodcastResults()
@@ -13,4 +16,4 @@ function makeMapStateToProps() {
 
 export default connect<StateToProps, {}, OwnProps, AppState>(
   makeMapStateToProps(),
-)(SearchResults)
+)(ListSearchResults)

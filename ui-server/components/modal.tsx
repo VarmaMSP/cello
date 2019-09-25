@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import ButtonWithIcon from '../../button_with_icon'
+import ButtonWithIcon from './button_with_icon'
 
 export interface Props {
   handleClose: () => void

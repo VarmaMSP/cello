@@ -2,7 +2,7 @@ import { Dispatch } from 'react'
 import { connect } from 'react-redux'
 import { AppState } from 'store'
 import { AppActions, CLOSE_SIGN_IN_MODAL } from 'types/actions'
-import SigninModal, { DispatchToProps, StateToProps } from './signin_modal'
+import SigninModal, { DispatchToProps, StateToProps } from './modal_signin'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {

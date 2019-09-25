@@ -8,7 +8,7 @@ interface DispatchToProps {
   showModal: () => void
 }
 
-const SignInButton: React.SFC<DispatchToProps> = (props) => {
+const ButtonSignin: React.SFC<DispatchToProps> = (props) => {
   return (
     <button
       className="w-full h-full rounded border-2 border-orange-600 focus:outline-none focus:shadow-outline"
@@ -30,4 +30,4 @@ function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
 export default connect<{}, DispatchToProps, {}, AppState>(
   null,
   mapDispatchToProps,
-)(SignInButton)
+)(ButtonSignin)

@@ -1,5 +1,5 @@
+import ButtonSignin from 'components/button_signin'
 import { iconMap } from 'components/icon'
-import SignInButton from 'components/sign_in_button'
 import Link from 'next/link'
 import React from 'react'
 import MenuItem from './components/menu_item'
@@ -52,7 +52,7 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
             Subscribe to podcasts, curate episodes and do much more
           </div>
           <div className="w-4/5 h-8 mx-auto">
-            <SignInButton />
+            <ButtonSignin />
           </div>
         </div>
       ) : (

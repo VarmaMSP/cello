@@ -13,7 +13,7 @@ export interface OwnProps {
 
 interface Props extends StateToProps, OwnProps {}
 
-export default class SearchResults extends Component<Props> {
+export default class extends Component<Props> {
   render() {
     const { podcasts } = this.props
     return (

@@ -1,5 +1,5 @@
+import ButtonSignIn from 'components/button_signin'
 import ButtonWithIcon from 'components/button_with_icon'
-import SignInButton from 'components/sign_in_button'
 import Router from 'next/router'
 import React, { Component } from 'react'
 import AppLogo from './components/app_logo'
@@ -91,7 +91,7 @@ export default class TopNavbar extends Component<Props, State> {
           />
         </div>
         <div className="md:w-24 w-20 h-8">
-          {userSignedIn ? <UserSettings /> : <SignInButton />}
+          {userSignedIn ? <UserSettings /> : <ButtonSignIn />}
         </div>
       </header>
     )

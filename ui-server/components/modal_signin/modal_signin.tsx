@@ -1,7 +1,7 @@
 import { iconMap } from 'components/icon'
+import Modal from 'components/modal'
 import React from 'react'
-import Modal from './components/modal'
-import SocialSignInButton from './components/social_sign_in_button'
+import ButtonSocialSignin from './components/button_social_signin'
 
 export interface StateToProps {
   showSignInModal: boolean
@@ -28,21 +28,21 @@ const SigninModal: React.SFC<Props> = (props) => {
         <div className="text-center mt-3 mb-10">
           The Best web plodcast player
         </div>
-        <SocialSignInButton
+        <ButtonSocialSignin
           icon="google-color"
           text="Sign in with Google"
           onClick={() => {
             window.location.href = `${process.env.API_BASE_URL}/signin/google`
           }}
         />
-        <SocialSignInButton
+        <ButtonSocialSignin
           icon="facebook-color"
           text="Sign in with Faceebook"
           onClick={() => {
             window.location.href = `${process.env.API_BASE_URL}/signin/facebook`
           }}
         />
-        <SocialSignInButton
+        <ButtonSocialSignin
           icon="twitter-color"
           text="Sign in with Twitter"
           onClick={() => {
