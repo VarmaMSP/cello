@@ -1,6 +1,6 @@
 import { getSignedInUser } from 'actions/user'
 import AudioPlayer from 'components/audio_player'
-import ModalSignin from 'components/modal_signin'
+import Modals from 'components/modals'
 import NavbarSide from 'components/navbar_side'
 import NavbarTop from 'components/navbar_top'
 import withRedux from 'next-redux-wrapper'
@@ -125,7 +125,7 @@ export default withRedux(makeStore)(
             <NavbarTop />
             <AudioPlayer />
             <NavbarSide />
-            <ModalSignin />
+            <Modals />
           </Provider>
         </Container>
       )

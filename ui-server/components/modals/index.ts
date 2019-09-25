@@ -1,20 +1,22 @@
-import { Dispatch } from 'react'
 import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 import { AppState } from 'store'
-import { AppActions, CLOSE_SIGN_IN_MODAL } from 'types/actions'
-import SigninModal, { DispatchToProps, StateToProps } from './modal_signin'
+import { AppActions, CLOSE_MODAL } from 'types/actions'
+import Modal, { DispatchToProps, StateToProps } from './modals'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {
-    showSignInModal: state.ui.showSignInModal,
+    modalToShow: state.ui.showModal,
   }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
-  return { closeModal: () => dispatch({ type: CLOSE_SIGN_IN_MODAL }) }
+  return {
+    closeModal: () => dispatch({ type: CLOSE_MODAL }),
+  }
 }
 
 export default connect<StateToProps, DispatchToProps, {}, AppState>(
   mapStateToProps,
   mapDispatchToProps,
-)(SigninModal)
+)(Modal)
