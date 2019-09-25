@@ -1,8 +1,8 @@
 import ButtonWithIcon from 'components/button_with_icon'
-import NavbarBottom from 'components/navbar_bottom'
 import React from 'react'
 import { AudioState, Episode, Podcast } from 'types/app'
 import ActionButton from './components/action_button'
+import NavbarBottom from './components/navbar_bottom'
 import SeekBar from './components/seek_bar'
 
 interface Props {
