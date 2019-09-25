@@ -64,7 +64,7 @@ const Grid: React.SFC<StateToProps & OwnProps> = ({
     rowsJsx.push(
       <div
         key={i + itemsPerRow}
-        className={classNames('flex justify-between', className, {
+        className={classNames('flex justify-around', className, {
           'flex-wrap-none': overflowRow,
           'overflow-x-auto': overflowRow,
         })}

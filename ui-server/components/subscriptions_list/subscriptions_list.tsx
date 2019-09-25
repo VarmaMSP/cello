@@ -12,7 +12,7 @@ const SubscriptionsList: React.SFC<StateToProps> = ({ subscriptions }) => {
     <>
       <h2 className="text-xl text-gray-900 pb-8">{'Your subscriptions'}</h2>
       <Grid
-        cols={{ LG: 7, MD: 6, SM: 3 }}
+        cols={{ LG: 8, MD: 6, SM: 3 }}
         totalRowSpacing={{ LG: 12, MD: 10, SM: 10 }}
         className="md:mb-4 mb-2"
       >

@@ -29,7 +29,7 @@ const Trending: React.SFC<StateToProps> = (props) => {
       </div>
       <Grid
         rows={{ LG: 2, MD: 3, SM: 3 }}
-        cols={{ LG: 7, MD: 6, SM: 4 }}
+        cols={{ LG: 8, MD: 6, SM: 4 }}
         totalRowSpacing={{ LG: 12, MD: 8, SM: 5 }}
         className="md:mb-3 mb-2"
       >
