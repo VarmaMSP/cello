@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React, { Component } from 'react'
 import { Podcast } from 'types/app'
-import { imageUrl } from './utils'
+import { getImageUrl } from 'utils/dom'
 
 interface Props {
   podcast: Podcast
@@ -19,7 +19,7 @@ export default class PodcastThumbnail extends Component<Props> {
         <div className="w-full cursor-pointer">
           <img
             className="w-full h-auto flex-none object-contain rounded-lg border"
-            src={imageUrl(podcast.id, 'md')}
+            src={getImageUrl(podcast.id, 'md')}
           />
           <p className="text-xs tracking-wide leading-tight text-gray-800 mt-2 mb-1 line-clamp-2">
             {podcast.title}

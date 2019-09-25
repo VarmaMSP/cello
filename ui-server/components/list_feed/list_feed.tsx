@@ -1,8 +1,8 @@
 import ButtonWithIcon from 'components/button_with_icon'
 import Grid from 'components/grid'
-import * as Utils from 'components/utils'
-import { imageUrl } from 'components/utils'
 import { Episode } from 'types/app'
+import { getImageUrl } from 'utils/dom'
+import { formatEpisodeDuration, formatEpisodePubDate } from 'utils/format'
 
 export interface StateToProps {
   feed: Episode[]
@@ -29,7 +29,7 @@ const ListFeed: React.SFC<Props> = (props) => {
           <>
             <img
               className="w-24 h-24 flex-none object-contain rounded-lg border cursor-pointer"
-              src={imageUrl(episode.podcastId, 'md')}
+              src={getImageUrl(episode.podcastId, 'md')}
             />
             <div className="flex flex-col justify-between pl-3">
               <div>
@@ -37,9 +37,9 @@ const ListFeed: React.SFC<Props> = (props) => {
                   {episode.title}
                 </h1>
                 <span className="text-xs text-gray-700">
-                  {Utils.humanizePastDate(episode.pubDate)}
+                  {formatEpisodePubDate(episode.pubDate)}
                   <span className="mx-2 font-extrabold">&middot;</span>
-                  {Utils.humanizeDuration(episode.duration)}
+                  {formatEpisodeDuration(episode.duration)}
                 </span>
               </div>
               <div className="">

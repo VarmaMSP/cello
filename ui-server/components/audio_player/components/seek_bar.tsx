@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import Utils, { TouchOrMouseEvent } from './utils'
+import { getClickPosition, TouchOrMouseEvent } from 'utils/dom'
+import { formatPlayerDuration } from 'utils/format'
 
 interface Props {
   duration: number
@@ -66,9 +67,9 @@ export default class SeekBar extends Component<Props, State> {
     const { currentTime, duration } = this.props
     const { firstRender, seeking, sliderPosition } = this.state
     if (firstRender || !seeking) {
-      return Utils.formatTimeForDisplay(currentTime, duration)
+      return formatPlayerDuration(currentTime, duration)
     }
-    return Utils.formatTimeForDisplay(
+    return formatPlayerDuration(
       (sliderPosition / this.getSeekBarPosition().width) * duration,
       duration,
     )
@@ -76,7 +77,7 @@ export default class SeekBar extends Component<Props, State> {
 
   // Calculate slider clientX when user performs seek action
   getNewSliderPosition = (e: TouchOrMouseEvent): number => {
-    const { clientX: clickX } = Utils.getClickPosition(e)
+    const { clientX: clickX } = getClickPosition(e)
     const { clientX: seekBarX, width } = this.getSeekBarPosition()
     if (seekBarX <= clickX && clickX <= seekBarX + width) {
       return clickX - seekBarX

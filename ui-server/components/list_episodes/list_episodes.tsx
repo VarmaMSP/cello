@@ -1,7 +1,7 @@
 import ButtonWithIcon from 'components/button_with_icon'
 import React from 'react'
 import { Episode } from 'types/app'
-import * as Utils from '../utils'
+import { formatEpisodeDuration, formatEpisodePubDate } from 'utils/format'
 
 export interface StateToProps {
   episodes: Episode[]
@@ -27,9 +27,9 @@ const ListEpisodes: React.SFC<Props> = ({ episodes, playEpisode }) => {
         >
           <div className="flex-auto w-11/12 pr-3">
             <span className="text-xs text-gray-700">
-              {Utils.humanizePastDate(pubDate)}
+              {formatEpisodePubDate(pubDate)}
               <span className="mx-2 font-extrabold">&middot;</span>
-              {Utils.humanizeDuration(duration)}
+              {formatEpisodeDuration(duration)}
             </span>
             <p className="pb-1 font-medium md:text-base text-sm text-gray-800 tracking-wide truncate">
               {/* <span className="cursor-pointer hover:underline">{title}</span> */}

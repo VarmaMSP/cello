@@ -1,8 +1,8 @@
 import Grid from 'components/grid'
-import { imageUrl } from 'components/utils'
 import Router from 'next/router'
 import React from 'react'
 import { Podcast } from 'types/app'
+import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {
   trendingPodcasts: Podcast[]
@@ -35,7 +35,7 @@ const ListTrendingPodcasts: React.SFC<StateToProps> = (props) => {
           >
             <img
               className="md:w-28 w-30 md:h-28 h-30 flex-none object-contain rounded-lg border"
-              src={imageUrl(podcast.id, 'md')}
+              src={getImageUrl(podcast.id, 'md')}
             />
             <div className="w-2/3 pl-3">
               <div className="w-full font-sans text-gray-800 tracking-tight mb-2 line-clamp-2">

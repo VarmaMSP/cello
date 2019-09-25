@@ -1,11 +1,11 @@
 import Grid from 'components/grid'
-import { imageUrl } from 'components/utils'
 import Link from 'next/link'
 import React from 'react'
 import { connect } from 'react-redux'
 import { makeGetTrendingPodcasts } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
 import { Podcast } from 'types/app'
+import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {
   trendingPodcasts: Podcast[]
@@ -21,8 +21,8 @@ const Trending: React.SFC<StateToProps> = (props) => {
         </h3>
         <Link href="/trending" scroll={false}>
           <a>
-            <div className="flex align-center text-lg font-semibold text-green-600">
-              {'more ➔'}
+            <div className="flex align-center text-lg text-green-600">
+              {'see more'}
             </div>
           </a>
         </Link>
@@ -42,7 +42,7 @@ const Trending: React.SFC<StateToProps> = (props) => {
             <a>
               <img
                 className="w-full h-auto flex-none object-contain rounded-lg border cursor-pointer"
-                src={imageUrl(podcast.id, 'md')}
+                src={getImageUrl(podcast.id, 'md')}
               />
             </a>
           </Link>

@@ -1,7 +1,7 @@
 import Grid from 'components/grid'
-import { imageUrl } from 'components/utils'
 import Link from 'next/link'
 import { Podcast } from 'types/app'
+import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {
   subscriptions: Podcast[]
@@ -25,7 +25,7 @@ const ListSubscriptions: React.SFC<StateToProps> = ({ subscriptions }) => {
             <a>
               <img
                 className="w-full h-auto flex-none object-contain rounded-lg border cursor-pointer"
-                src={imageUrl(podcast.id, 'md')}
+                src={getImageUrl(podcast.id, 'md')}
               />
             </a>
           </Link>
