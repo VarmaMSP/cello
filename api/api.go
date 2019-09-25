@@ -78,6 +78,7 @@ func NewApi(config model.Config) (*Api, error) {
 	}
 
 	api.RegisterPodcastHandlers()
+	api.RegisterEpisodeHandlers()
 	api.RegisterCurationRoutes()
 	api.RegisterUserHandlers()
 

@@ -2,6 +2,8 @@ package sqlstore
 
 import (
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
@@ -55,6 +57,32 @@ func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) (
 		appE = model.NewAppError(
 			"store.sqlstore.sql_episode_store.get_all_by_podcast", err.Error(), http.StatusInternalServerError,
 			map[string]string{"podcast_id": podcastId},
+		)
+	}
+	return
+}
+
+func (s *SqlEpisodeStore) GetAllPublishedBetween(from, to *time.Time, podcastIds []string) (res []*model.Episode, appE *model.AppError) {
+	sql := "SELECT " + Cols(&model.Episode{}) + ` FROM episode
+		WHERE podcast_id IN (` + strings.Join(Replicate("?", len(podcastIds)), ",") + `) AND
+			  pub_date BETWEEN ? AND ?
+		ORDER BY pub_date DESC`
+
+	var values []interface{}
+	for _, podcastId := range podcastIds {
+		values = append(values, podcastId)
+	}
+	values = append(values, from.Format(model.MYSQL_DATETIME), to.Format(model.MYSQL_DATETIME))
+
+	copyTo := func() []interface{} {
+		tmp := &model.Episode{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql, values...); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_episode_store.get_all_published_between", err.Error(), http.StatusInternalServerError, nil,
 		)
 	}
 	return

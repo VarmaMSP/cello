@@ -1,6 +1,8 @@
 package store
 
 import (
+	"time"
+
 	"github.com/varmamsp/cello/model"
 )
 
@@ -43,6 +45,7 @@ type EpisodeStore interface {
 	Save(episode *model.Episode) *model.AppError
 	Get(episodeId string) (*model.Episode, *model.AppError)
 	GetAllByPodcast(podcastId string, limit, offset int) ([]*model.Episode, *model.AppError)
+	GetAllPublishedBetween(from, to *time.Time, podcastIds []string) ([]*model.Episode, *model.AppError)
 	Block(podcastId, episodeGuid string) *model.AppError
 }
 
