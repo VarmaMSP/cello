@@ -25,6 +25,11 @@ function dispatchToProps(dispatch: Dispatch<T.AppActions>) {
         type: T.PLAY_EPISODE,
         episodeId,
       }),
+    showEpisodeModal: (episodeId: string) =>
+      dispatch({
+        type: T.SHOW_EPISODE_MODAL,
+        episodeId,
+      }),
   }
 }
 

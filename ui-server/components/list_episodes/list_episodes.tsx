@@ -9,6 +9,7 @@ export interface StateToProps {
 
 export interface DispatchToProps {
   playEpisode: (episodeId: string) => void
+  showEpisodeModal: (episodeId: string) => void
 }
 
 export interface OwnProps {
@@ -17,7 +18,11 @@ export interface OwnProps {
 
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
-const ListEpisodes: React.SFC<Props> = ({ episodes, playEpisode }) => {
+const ListEpisodes: React.SFC<Props> = ({
+  episodes,
+  playEpisode,
+  showEpisodeModal,
+}) => {
   return (
     <>
       {episodes.map(({ id, title, duration, pubDate }) => (
@@ -32,8 +37,12 @@ const ListEpisodes: React.SFC<Props> = ({ episodes, playEpisode }) => {
               {formatEpisodeDuration(duration)}
             </span>
             <p className="pb-1 font-medium md:text-base text-sm text-gray-800 tracking-wide truncate">
-              {/* <span className="cursor-pointer hover:underline">{title}</span> */}
-              {title}
+              <span
+                className="cursor-pointer hover:underline"
+                onClick={() => showEpisodeModal(id)}
+              >
+                {title}
+              </span>
             </p>
           </div>
           <ButtonWithIcon
