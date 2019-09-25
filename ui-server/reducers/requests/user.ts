@@ -20,8 +20,15 @@ const subscribeToPodcast = defaultRequestReducer(
   T.SUBSCRIBE_TO_PODCAST_FAILURE,
 )
 
+const getUserFeed = defaultRequestReducer(
+  T.GET_USER_FEED_REQUEST,
+  T.GET_USER_FEED_SUCCESS,
+  T.GET_USER_FEED_FAILURE,
+)
+
 export default combineReducers({
   getSignedInUser,
+  getUserFeed,
   signOutUser,
   subscribeToPodcast,
 })

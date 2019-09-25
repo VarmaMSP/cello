@@ -55,3 +55,19 @@ export function unsubscribeToPodcast(podcastId: string) {
     { type: T.UNSUBSCRIBE_TO_PODCAST_FAILURE },
   )
 }
+
+export function getUserFeed() {
+  return requestAction(
+    () => client.getUserFeed(),
+    (dispatch, { episodes }, getState) => {
+      dispatch({
+        type: T.RECEIVED_USER_FEED,
+        userId: getState().entities.user.currentUserId,
+        episodes,
+      })
+    },
+    { type: T.GET_USER_FEED_REQUEST },
+    { type: T.GET_USER_FEED_SUCCESS },
+    { type: T.GET_USER_FEED_FAILURE },
+  )
+}

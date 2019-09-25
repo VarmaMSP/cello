@@ -26,3 +26,13 @@ export function makeGetEpisodesInPodcast() {
     },
   )
 }
+
+export function makeGetUserFeed() {
+  return createSelector<AppState, $Id<Episode>[], MapById<Episode>, Episode[]>(
+    (state) => state.entities.user.feed,
+    getAllEpisodes,
+    (ids, episodes) => {
+      return ids.map((id) => episodes[id])
+    },
+  )
+}

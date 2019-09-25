@@ -134,4 +134,12 @@ export default class Client {
     const res = await this.doFetch('GET', url)
     return res.map(podcastFromJson)
   }
+
+  async getUserFeed(): Promise<{ episodes: Episode[] }> {
+    const url = `${this.url}/feed`
+    const res = await this.doFetch('GET', url)
+    return {
+      episodes: (res.episodes || []).map(episodeFromJson),
+    }
+  }
 }

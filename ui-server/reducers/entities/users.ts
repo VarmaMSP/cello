@@ -25,7 +25,17 @@ const users: Reducer<{ [userId: string]: User }, T.AppActions> = (
   }
 }
 
+const feed: Reducer<string[], T.AppActions> = (state = [], action) => {
+  switch (action.type) {
+    case T.RECEIVED_USER_FEED:
+      return action.episodes.map((e) => e.id)
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   currentUserId,
   users,
+  feed,
 })
