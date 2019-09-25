@@ -1,19 +1,19 @@
 import ListSubscriptions from 'components/list_subscriptions'
 import LoadingPage from 'components/loading_page'
 import React from 'react'
+import { connect } from 'react-redux'
 import { RequestState } from 'reducers/requests/utils'
+import { AppState } from 'store'
 
-export interface StateToProps {
+interface StateToProps {
   reqState: RequestState
 }
 
-export interface OwnProps {
+interface OwnProps {
   scrollY: number
 }
 
-interface Props extends StateToProps, OwnProps {}
-
-export default class extends React.Component<Props> {
+class SubscriptionsPage extends React.Component<StateToProps & OwnProps> {
   componentDidMount() {
     window.window.scrollTo(0, this.props.scrollY)
   }
@@ -24,11 +24,19 @@ export default class extends React.Component<Props> {
     if (reqState.status == 'STARTED') {
       return <LoadingPage />
     }
-
     if (reqState.status == 'SUCCESS') {
       return <ListSubscriptions />
     }
-
     return <></>
   }
 }
+
+function mapStateToProps(state: AppState): StateToProps {
+  return {
+    reqState: state.requests.user.getSignedInUser,
+  }
+}
+
+export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
+  SubscriptionsPage,
+)

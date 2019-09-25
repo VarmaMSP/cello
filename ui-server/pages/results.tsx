@@ -2,22 +2,22 @@ import { searchPodcasts } from 'actions/podcast'
 import ListSearchResults from 'components/list_search_results'
 import LoadingPage from 'components/loading_page'
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators } from 'redux'
+import { AppState } from 'store'
 import { PageContext } from 'types/utilities'
 
-export interface StateToProps {
+interface StateToProps {
   reqState: RequestState
 }
 
-export interface OwnProps {
+interface OwnProps {
   query: string
   scrollY: number
 }
 
-interface Props extends StateToProps, OwnProps {}
-
-export default class ResultsPage extends Component<Props> {
+class ResultsPage extends Component<StateToProps & OwnProps> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
     const { query, store, isServer } = ctx
     const loadResults = bindActionCreators(searchPodcasts, store.dispatch)(
@@ -39,7 +39,6 @@ export default class ResultsPage extends Component<Props> {
     if (reqState.status === 'STARTED') {
       return <LoadingPage />
     }
-
     if (reqState.status === 'SUCCESS') {
       return (
         <div>
@@ -48,7 +47,16 @@ export default class ResultsPage extends Component<Props> {
         </div>
       )
     }
-
     return <></>
   }
 }
+
+function mapStateToProps(state: AppState): StateToProps {
+  return {
+    reqState: state.requests.search.searchPodcasts,
+  }
+}
+
+export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
+  ResultsPage,
+)

@@ -3,8 +3,10 @@ import ListEpisodes from 'components/list_episodes'
 import LoadingPage from 'components/loading_page'
 import PodcastDetails from 'components/podcast_details'
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators } from 'redux'
+import { AppState } from 'store'
 import { PageContext } from 'types/utilities'
 
 export interface StateToProps {
@@ -16,9 +18,7 @@ export interface OwnProps {
   scrollY: number
 }
 
-interface Props extends StateToProps, OwnProps {}
-
-export default class PodcastPage extends Component<Props> {
+class PodcastsPage extends Component<StateToProps & OwnProps> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
     const { query, store, isServer } = ctx
     const loadPodcast = bindActionCreators(getPodcast, store.dispatch)(query[
@@ -60,3 +60,13 @@ export default class PodcastPage extends Component<Props> {
     return <></>
   }
 }
+
+function mapStateToProps(state: AppState): StateToProps {
+  return {
+    reqState: state.requests.podcast.getPodcast,
+  }
+}
+
+export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
+  PodcastsPage,
+)
