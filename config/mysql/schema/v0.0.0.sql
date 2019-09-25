@@ -55,7 +55,7 @@ CREATE TABLE `twitter_account` (
     `profile_image` VARCHAR(255),
     `created_at` BIGINT,
     `updated_at` BIGINT,
-     PRIMARY KEY(`id`),
+    PRIMARY KEY(`id`),
     FOREIGN KEY(`user_id`) REFERENCES `user` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -130,7 +130,8 @@ CREATE TABLE `episode` (
     `created_at` BIGINT,
     `updated_at` BIGINT,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+    INDEX (`pub_date`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `category` (
