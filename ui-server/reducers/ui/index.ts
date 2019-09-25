@@ -1,5 +1,6 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
+import { Modal } from 'types/app'
 import player from './player'
 
 const searchText: Reducer<string, T.AppActions> = (state = '', action) => {
@@ -11,15 +12,17 @@ const searchText: Reducer<string, T.AppActions> = (state = '', action) => {
   }
 }
 
-const showSignInModal: Reducer<boolean, T.AppActions> = (
-  state = false,
+const showModal: Reducer<Modal, T.AppActions> = (
+  state = { type: 'NONE' },
   action,
 ) => {
   switch (action.type) {
-    case T.SHOW_SIGN_IN_MODAL:
-      return true
-    case T.CLOSE_SIGN_IN_MODAL:
-      return false
+    case T.SHOW_SIGNIN_MODAL:
+      return { type: 'SIGNIN_MODAL' }
+    case T.SHOW_EPISODE_MODAL:
+      return { type: 'EPISODE_MODAL', episodeId: action.episodeId }
+    case T.CLOSE_MODAL:
+      return { type: 'NONE' }
     default:
       return state
   }
@@ -27,6 +30,6 @@ const showSignInModal: Reducer<boolean, T.AppActions> = (
 
 export default combineReducers({
   searchText,
-  showSignInModal,
+  showModal,
   player,
 })

@@ -1,15 +1,21 @@
 import { AudioState } from 'types/app'
 
 // Modal Actions
-export const SHOW_SIGN_IN_MODAL = 'SHOW_SIGN_IN_MODAL'
-export const CLOSE_SIGN_IN_MODAL = 'CLOSE_SIGN_IN_MODAL'
+export const SHOW_SIGNIN_MODAL = 'SHOW_SIGNIN_MODAL'
+export const SHOW_EPISODE_MODAL = 'SHOW_EPISODE_MODAL'
+export const CLOSE_MODAL = 'CLOSE_MODAL'
 
-export interface ShowSignInModalAction {
-  type: typeof SHOW_SIGN_IN_MODAL
+export interface ShowSigninModalAction {
+  type: typeof SHOW_SIGNIN_MODAL
 }
 
-export interface CloseSignInModalAction {
-  type: typeof CLOSE_SIGN_IN_MODAL
+export interface ShowEpisodeModalAction {
+  type: typeof SHOW_EPISODE_MODAL
+  episodeId: string
+}
+
+export interface CloseModalAction {
+  type: typeof CLOSE_MODAL
 }
 
 // Searchbar Actions
@@ -41,8 +47,9 @@ export interface ToggleExpandOnMobileAction {
 
 export type UiActionTypes =
   // Modal
-  | ShowSignInModalAction
-  | CloseSignInModalAction
+  | ShowSigninModalAction
+  | ShowEpisodeModalAction
+  | CloseModalAction
   // Searchbar
   | SearchBarTextChangeAction
   // Audio Player

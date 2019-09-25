@@ -2,6 +2,11 @@ export type AudioState = 'PLAYING' | 'PAUSED' | 'LOADING' | 'ENDED'
 
 export type ViewportSize = 'SM' | 'MD' | 'LG'
 
+export type Modal =
+  | { type: 'NONE' }
+  | { type: 'SIGNIN_MODAL' }
+  | { type: 'EPISODE_MODAL'; episodeId: string }
+
 export interface Entity {
   id: string
 }
