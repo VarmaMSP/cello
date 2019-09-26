@@ -14,8 +14,8 @@ export function getImageUrl(id: string, size: 'sm' | 'md' | 'lg'): string {
   switch (size) {
     case 'lg':
     case 'md':
-      return `${process.env.IMAGE_BASE_URL}/${id}-500x500.jpg`
+      return `${process.env.IMAGE_URL}/${id}-500x500.jpg`
     case 'sm':
-      return `${process.env.IMAGE_BASE_URL}/${id}-250x250.jpg`
+      return `${process.env.IMAGE_URL}/${id}-250x250.jpg`
   }
 }

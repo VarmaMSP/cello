@@ -1,6 +1,6 @@
 import { Episode, Podcast } from 'types/app'
 
-export function podcastFromJson(j: any): Podcast {
+export function unmarshalPodcast(j: any): Podcast {
   return {
     id: j.id,
     title: j.title,
@@ -11,7 +11,7 @@ export function podcastFromJson(j: any): Podcast {
   }
 }
 
-export function episodeFromJson(j: any): Episode {
+export function unmarshalEpisode(j: any): Episode {
   return {
     id: j.id,
     podcastId: j.podcast_id,

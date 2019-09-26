@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-unfetch'
 import { Curation, Episode, Podcast, User } from 'types/app'
-import { episodeFromJson, podcastFromJson } from 'utils/entities'
+import { unmarshalEpisode, unmarshalPodcast } from 'utils/entities'
 
 export interface RequestException {
   url: string
@@ -11,21 +11,11 @@ export interface RequestException {
 
 export default class Client {
   url: string
+  baseUrl: string
 
   constructor(url: string) {
-    this.url = url
-  }
-
-  getPodcastRoute(): string {
-    return `${this.url}/podcasts`
-  }
-
-  getResultsRoute(): string {
-    return `${this.url}/results`
-  }
-
-  getCurationsRoute(): string {
-    return `${this.url}/curations`
+    this.url = `${url}/api`
+    this.baseUrl = url
   }
 
   async doFetch(method: string, url: string, body?: object): Promise<any> {
@@ -76,70 +66,67 @@ export default class Client {
   async getPodcastById(
     podcastId: string,
   ): Promise<{ podcast: Podcast; episodes: Episode[] }> {
-    const url = `${this.getPodcastRoute()}/${podcastId}`
-    const res = await this.doFetch('GET', url)
+    const res = await this.doFetch('GET', `${this.url}/podcasts/${podcastId}`)
     return {
-      podcast: podcastFromJson(res.podcast),
-      episodes: (res.episodes || []).map(episodeFromJson),
+      podcast: unmarshalPodcast(res.podcast),
+      episodes: (res.episodes || []).map(unmarshalEpisode),
     }
   }
 
+  async subscribeToPodcast(podcastId: string): Promise<void> {
+    await this.doFetch('PUT', `${this.url}/podcasts/${podcastId}/subscribe`)
+  }
+
+  async unsubscribeToPodcast(podcastId: string): Promise<void> {
+    await this.doFetch('PUT', `${this.url}/podcasts/${podcastId}/unsubscribe`)
+  }
+
   async searchPodcasts(searchQuery: string): Promise<{ podcasts: Podcast[] }> {
-    const url = `${this.getResultsRoute()}?search_query=${searchQuery}`
-    const res = await this.doFetch('GET', url)
+    const res = await this.doFetch(
+      'GET',
+      `${this.url}/results?search_query=${searchQuery}`,
+    )
     return {
-      podcasts: (res.results || []).map(podcastFromJson),
+      podcasts: (res.results || []).map(unmarshalPodcast),
     }
   }
 
   async getPodcastCurations(): Promise<{
     podcastCurations: { curation: Curation; podcasts: Podcast[] }[]
   }> {
-    const url = `${this.getCurationsRoute()}`
-    const res = await this.doFetch('GET', url)
+    const res = await this.doFetch('GET', `${this.url}/curations`)
     return {
       podcastCurations: (res.results || []).map((r: any) => ({
         curation: r.curation,
-        podcasts: (r.podcasts || []).map(podcastFromJson),
+        podcasts: (r.podcasts || []).map(unmarshalPodcast),
       })),
     }
   }
 
   async getSignedInUser(): Promise<{ user: User; subscriptions: Podcast[] }> {
-    const url = `${this.url}/me`
-    const res = await this.doFetch('GET', url)
+    const res = await this.doFetch('GET', `${this.url}/me`)
     return {
       user: res.user,
-      subscriptions: (res.subscriptions || []).map(podcastFromJson),
+      subscriptions: (res.subscriptions || []).map(unmarshalPodcast),
     }
   }
 
   async signOutUser(): Promise<void> {
-    const url = `${this.url}/signout`
-    await this.doFetch('GET', url)
-  }
-
-  async subscribeToPodcast(podcastId: string): Promise<void> {
-    const url = `${this.getPodcastRoute()}/${podcastId}/subscribe`
-    await this.doFetch('PUT', url)
-  }
-
-  async unsubscribeToPodcast(podcastId: string): Promise<void> {
-    const url = `${this.getPodcastRoute()}/${podcastId}/unsubscribe`
-    await this.doFetch('PUT', url)
-  }
-
-  async getTrendingPodcasts(): Promise<Podcast[]> {
-    const url = `http://localhost:8080/static/trending.json`
-    const res = await this.doFetch('GET', url)
-    return res.map(podcastFromJson)
+    await this.doFetch('GET', `${this.url}/signout`)
   }
 
   async getUserFeed(): Promise<{ episodes: Episode[] }> {
-    const url = `${this.url}/feed`
-    const res = await this.doFetch('GET', url)
+    const res = await this.doFetch('GET', `${this.url}/feed`)
     return {
-      episodes: (res.episodes || []).map(episodeFromJson),
+      episodes: (res.episodes || []).map(unmarshalEpisode),
     }
+  }
+
+  async getTrendingPodcasts(): Promise<Podcast[]> {
+    const res = await this.doFetch(
+      'GET',
+      `${this.baseUrl}/static/trending.json`,
+    )
+    return res.map(unmarshalPodcast)
   }
 }
