@@ -23,21 +23,21 @@ const ModalSignin: React.SFC<Props> = (props) => {
             icon="google-color"
             text="Sign in with Google"
             onClick={() => {
-              window.location.href = `${process.env.API_BASE_URL}/signin/google`
+              window.location.href = `${process.env.API_URL}/api/signin/google`
             }}
           />
           <ButtonSocialSignin
             icon="facebook-color"
             text="Sign in with Faceebook"
             onClick={() => {
-              window.location.href = `${process.env.API_BASE_URL}/signin/facebook`
+              window.location.href = `${process.env.API_URL}/api/signin/facebook`
             }}
           />
           <ButtonSocialSignin
             icon="twitter-color"
             text="Sign in with Twitter"
             onClick={() => {
-              window.location.href = `${process.env.API_BASE_URL}/signin/twitter`
+              window.location.href = `${process.env.API_URL}/api/signin/twitter`
             }}
           />
         </div>
