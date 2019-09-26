@@ -17,7 +17,7 @@ const stack: Reducer<{ urlPath: string; scrollY: number }[], T.AppActions> = (
 }
 
 const page: Reducer<{ urlPath: string; scrollY: number }, T.AppActions> = (
-  state = { urlPath: 'HELLO MORTY', scrollY: 0 },
+  state = { urlPath: '', scrollY: 0 },
   action,
 ) => {
   switch (action.type) {

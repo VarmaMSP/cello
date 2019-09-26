@@ -4,6 +4,7 @@ export const GET_SIGNED_IN_USER_REQUEST = 'GET_SIGNED_IN_USER_REQUEST'
 export const GET_SIGNED_IN_USER_SUCCESS = 'GET_SIGNED_IN_USER_SUCCESS'
 export const GET_SIGNED_IN_USER_FAILURE = 'GET_SIGNED_IN_USER_FAILURE'
 
+export const SIGN_OUT_USER_FORCEFULLY = 'SIGN_OUT_USER_FORCEFULLY'
 export const SIGN_OUT_USER_REQUEST = 'SIGN_OUT_USER_REQUEST'
 export const SIGN_OUT_USER_SUCCESS = 'SIGN_OUT_USER_SUCCESS'
 export const SIGN_OUT_USER_FAILURE = 'SIGN_OUT_USER_FAILURE'
@@ -41,6 +42,10 @@ export interface ReceivedSignedInUserAction {
   type: typeof RECEIVED_SIGNED_IN_USER
   user: User
   subscriptions: Podcast[]
+}
+
+export interface SignOutUserForcefullyAction {
+  type: typeof SIGN_OUT_USER_FORCEFULLY
 }
 
 export interface SignOutUserRequestAction {
@@ -114,6 +119,7 @@ export type UserActionTypes =
   | GetSignedInUserSuccessAction
   | GetSignedInUserFailureAction
   | ReceivedSignedInUserAction
+  | SignOutUserForcefullyAction
   | SignOutUserRequestAction
   | SignOutUserSuccessAction
   | SignOutUserFailureAction

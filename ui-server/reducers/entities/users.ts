@@ -6,6 +6,7 @@ const currentUserId: Reducer<string, T.AppActions> = (state = '', action) => {
   switch (action.type) {
     case T.RECEIVED_SIGNED_IN_USER:
       return action.user.id
+    case T.SIGN_OUT_USER_FORCEFULLY:
     case T.SIGN_OUT_USER_SUCCESS:
       return ''
     default:
