@@ -10,7 +10,6 @@ export function getSignedInUser() {
     },
     { type: T.GET_SIGNED_IN_USER_REQUEST },
     { type: T.GET_SIGNED_IN_USER_SUCCESS },
-    { type: T.GET_SIGNED_IN_USER_FAILURE },
   )
 }
 
