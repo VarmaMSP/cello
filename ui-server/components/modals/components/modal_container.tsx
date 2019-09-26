@@ -13,7 +13,7 @@ const ModalContainer: React.SFC<Props> = (props) => {
 
   const handleClickOutside = (e: any) => {
     if (ref.current && !ref.current.contains(e.target as Node)) {
-      closeUponClicking && handleClose()
+      closeUponClicking === 'OVERLAY' && handleClose()
     }
   }
 
@@ -27,12 +27,12 @@ const ModalContainer: React.SFC<Props> = (props) => {
   return (
     <div
       ref={ref}
-      className="modal px-3 py-4 bg-white border md:border-2 md:border-gray-300 border-gray-400 shadow z-20"
+      className="modal px-4 py-4 bg-white border md:border-2 md:border-gray-300 border-gray-400 shadow z-20"
     >
       {closeUponClicking === 'CROSS' && (
         <div className="w-full h-5 relative">
           <ButtonWithIcon
-            className="absolute right-0 w-4 text-gray-600"
+            className="absolute right-0 w-4 text-gray-600 hover:text-black"
             icon="close"
             onClick={handleClose}
           />

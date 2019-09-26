@@ -43,12 +43,12 @@ const ModalEpisode: React.SFC<Props> = (props) => {
             className="w-20 h-20 flex-none object-contain rounded-lg border cursor-pointer"
             src={getImageUrl(episode.podcastId, 'md')}
           />
-          <div className="flex flex-col justify-between px-4">
+          <div className="flex flex-col justify-between md:pl-4 pl-3">
             <div>
-              <h1 className="text-base leading-tight pb-1 line-clamp-2">
+              <h1 className="text-base font-medium text-gray-900 leading-tight pb-1 line-clamp-2">
                 {episode.title}
               </h1>
-              <h2 className="text-sm text-gray-800 line-clamp-2">
+              <h2 className="text-sm text-gray-700 line-clamp-2">
                 {`by ${podcast.title}`}
               </h2>
             </div>
@@ -62,7 +62,7 @@ const ModalEpisode: React.SFC<Props> = (props) => {
             {`${formatEpisodeDuration(episode.duration)} long`}
           </div>
           <ButtonWithIcon
-            className="flex-none w-6 text-gray-700 hover:text-black"
+            className="flex-none w-6 text-gray-600 hover:text-black"
             icon="play-outline"
             onClick={() => {}}
           />
