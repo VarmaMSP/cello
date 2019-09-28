@@ -1,0 +1,4 @@
+host1 ansible_host=152.44.40.253 ansible_user=root ansible_ssh_pass=
+
+[web]
+host1
