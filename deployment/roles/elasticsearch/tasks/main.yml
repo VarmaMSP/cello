@@ -1,21 +1,2 @@
-- name: Add Elasticsearch PGP Key
-  apt_key:
-    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-    state: present
-
-- name: Add Elasticsearch Debian package to apt
-  apt_repository:
-    repo: 'deb https://artifacts.elastic.co/packages/7.x/apt stable main'
-    state: present
-    update_cache: yes
-
-- name: Install Elasticsearch 7
-  apt:
-    pkg: elasticsearch
-    state: present
-
-- name: Start Elasticsearch as systemd service
-  service:
-    name: elasticsearch
-    state: started
-    enabled: yes
+- name: Setup
+  import_tasks: setup.yml
