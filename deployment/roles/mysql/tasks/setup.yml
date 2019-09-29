@@ -1,0 +1,15 @@
+- name: Install MySQL 5.7
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop:
+    - mysql-server-5.7
+    - mysql-client-5.7
+    - python-pymysql
+    - mytop
+
+- name: Ensure Mysql is started
+  service:
+    name: mysql
+    state: started

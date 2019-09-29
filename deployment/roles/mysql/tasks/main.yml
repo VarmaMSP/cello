@@ -1,21 +1,11 @@
-- name: Add Mysql PGP key
-  apt_key:
-    data: "{{ lookup('file', 'files/signing_key.pem') }}"
-    state: present
+- name: Setup
+  import_tasks: setup.yml
 
-- name: Add Mysql debian package to APT
-  apt_repository:
-    repo: deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-8.0
-    state: present
-    update_cache: yes
+- name: Configuration
+  import_tasks: configuration.yml
 
-- name: Install mysql 
-  apt:
-    pkg: '{{ packages }}'
-    state: present
-    update_cache: yes
-  vars:
-    packages:
-    - mysql-server
-    - mysql-client
-    - mytop
+- name: User Management
+  import_tasks: users.yml
+
+- name: Security
+  import_tasks: security.yml

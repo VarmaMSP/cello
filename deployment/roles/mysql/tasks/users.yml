@@ -1,0 +1,17 @@
+- name: Set MySQL root user password
+  mysql_user:
+    name: root
+    password: "{{ mysql.password }}"
+    host: "{{ item }}"
+    priv: "*.*:ALL,GRANT"
+    state: present
+  loop:
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: Configure MySQL for easy access as root user
+  template:
+    src: root.my.cnf.j2
+    dest: /root/.my.cnf
+    mode: 0600
