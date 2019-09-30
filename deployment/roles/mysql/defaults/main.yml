@@ -1,5 +1,2 @@
 mysql:
-  start: false
-  service_enabled: yes
-  password: secret
   bind_address: 127.0.0.1

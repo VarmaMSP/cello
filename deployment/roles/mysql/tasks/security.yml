@@ -1,6 +1,14 @@
-- name: Remove the MySQL test database
+- name: Remove anonymous users
+  mysql_user:
+    user: ""
+    host: "{{ item }}"
+    state: absent
+  loop:
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: Remove MySQL test database
   mysql_db:
     db: test
     state: absent
-    login_user: root
-    login_password: "{{ mysql.password }}"

@@ -5,8 +5,7 @@
     update_cache: yes
   loop:
     - mysql-server-5.7
-    - mysql-client-5.7
-    - python-pymysql
+    - python3-pymysql
     - mytop
 
 - name: Ensure Mysql is started
