@@ -1,0 +1,22 @@
+- name: Request certificate
+  command: "certbot certonly --standalone -n -m {{ webmaster_email }} --agree-tos -d {{ domain_name }}"
+  args:
+    creates: "/etc/letsencrypt/live/{{ domain_name }}"
+
+- name: Copy Nginx configuration
+  template:
+    src: templates/nginx.j2
+    dest: /etc/nginx/nginx.conf
+
+- name: Generate dhparams
+  command: openssl dhparam -out /etc/nginx/dhparams.pem 2048
+  args:
+    creates: /etc/nginx/dhparams.pem
+  notify:
+    - restart nginx
+
+- name: Add cronjob for certificate renewal
+  cron:
+    name: certificate_renewal
+    special_time: weekly
+    job: certbot --renew --pre-hook "service nginx stop" --post-hook "service nginx start"

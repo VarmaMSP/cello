@@ -1,19 +1,6 @@
-- name: Add Nginx signing key
-  apt_key:
-    url: https://nginx.org/keys/nginx_signing.key
-    state: present
+# - name: Setup Nginx
+#   include_tasks: setup.yml
 
-- name: Add Nginx repositories
-  apt_repository:
-    repo: "{{ item }}"
-    state: present
-    update_cache: yes
-  loop:
-    - deb http://nginx.org/packages/ubuntu/ bionic nginx
-    - deb-src http://nginx.org/packages/ubuntu/ bionic nginx
+- name: Configuration
+  include_tasks: configuration.yml
 
-- name: Install Nginx
-  apt:
-    pkg: nginx
-    state: present
-    update_cache: yes

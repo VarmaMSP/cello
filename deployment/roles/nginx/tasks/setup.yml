@@ -1,0 +1,24 @@
+- name: Add Nginx signing key
+  apt_key:
+    url: https://nginx.org/keys/nginx_signing.key
+    state: present
+
+- name: Add Nginx and Certbot repositories
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - deb http://nginx.org/packages/ubuntu/ bionic nginx
+    - deb-src http://nginx.org/packages/ubuntu/ bionic nginx
+    - ppa:certbot/certbot
+
+- name: Install Nginx and Nginx Certbot package
+  apt:
+    pkg: nginx
+    state: present
+    update_cache: yes
+  loop:
+    - nginx
+    - software-properties-common
+    - certbot
