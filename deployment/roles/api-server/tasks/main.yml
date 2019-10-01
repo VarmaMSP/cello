@@ -1,0 +1,20 @@
+- name: download golang
+  get_url:
+    url: "https://dl.google.com/go/go{{golang_version}}.linux-amd64.tar.gz"
+    dest: "/tmp/go{{golang_version}}.linux-amd64.tar.gz"
+    checksum: '{{golang_checksum}}'
+
+- name: install golang
+  unarchive:
+    src: "/tmp/go{{golang_version}}.linux-amd64.tar.gz"
+    dest: /usr/local
+    remote_src: true
+    creates: /usr/local/bin/go
+
+- name: add go to PATH 
+  lineinfile:
+    path: /etc/profile
+    line: "{{ item }}"
+  loop:
+    - export GOROOT=/usr/local/go
+    - export PATH=$PATH:$GOROOT/bin
