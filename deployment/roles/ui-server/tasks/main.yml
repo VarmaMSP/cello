@@ -1,0 +1,31 @@
+- name: add nodejs signing key
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state: present
+
+- name: add nodejs repository
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - "deb https://deb.nodesource.com/{{ nodejs_version }} bionic main"
+    - "deb-src https://deb.nodesource.com/{{ nodejs_version }} bionic main"
+
+- name: install nodejs
+  apt:
+    pkg: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - build-essential
+    - nodejs
+
+- name: install npm packages
+  npm:
+    path: "{{ cello_path }}/ui-server"
+
+- name: build ui-server
+  command: npm run build
+  args: 
+    chdir: "{{ cello_path }}/ui-server"
