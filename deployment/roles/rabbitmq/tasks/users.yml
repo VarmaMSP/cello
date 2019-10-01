@@ -1,0 +1,28 @@
+- include_vars:
+    file: passwords.yml
+    name: passwords
+
+- name: delete default guest user
+  rabbitmq_user:
+    user: guest
+    state: absent
+
+- name: create admin user
+  rabbitmq_user:
+    user: admin
+    password: "{{ passwords.admin }}"
+    vhost: /
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
+
+- name: create read_write user
+  rabbitmq_user: 
+    user: read_write
+    password: "{{ passwords.read_write }}"
+    vhost: /
+    configure_priv: ^$
+    read_priv: .*
+    write_priv: .*
+    state: present
