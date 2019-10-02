@@ -8,20 +8,20 @@ server:
   img_dir: /var/www/img
 
 mysql:
-  address: 127.0.0.1
+  address: localhost:3306
   database: phenopod
   user: read_write
 
 rabbitmq:
-  address:
+  address: localhost:5672
   user: read_write
 
 elasticsearch:
-  address:
-  user: read_write
+  address: localhost:9200
+  user: elastic
 
 redis:
-  address:
+  address: localhost:6379
 
 jobs:
   import_podcast: 
