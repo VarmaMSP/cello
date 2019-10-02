@@ -1,25 +1,5 @@
-- name: add nodejs signing key
-  apt_key:
-    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-    state: present
-
-- name: add nodejs repository
-  apt_repository:
-    repo: "{{ item }}"
-    state: present
-    update_cache: yes
-  loop:
-    - "deb https://deb.nodesource.com/{{ nodejs_version }} bionic main"
-    - "deb-src https://deb.nodesource.com/{{ nodejs_version }} bionic main"
-
 - name: install nodejs
-  apt:
-    pkg: "{{ item }}"
-    state: present
-    update_cache: yes
-  loop:
-    - build-essential
-    - nodejs
+  import_tasks: install-node.yml
 
 - name: install npm packages
   npm:
@@ -29,3 +9,16 @@
   command: npm run build
   args: 
     chdir: "{{ cello_path }}/ui-server"
+
+- name: ensure ui-server service exists
+  template:
+    src: ui-server.service.j2
+    dest: /lib/systemd/system/ui-server.service
+  notify:
+    - reload systemd
+
+- name: ensure ui-server is started
+  service:
+    name: ui-server
+    state: started
+    enabled: yes

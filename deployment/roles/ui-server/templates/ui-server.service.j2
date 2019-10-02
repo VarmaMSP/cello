@@ -1,0 +1,15 @@
+[Unit]
+Description=Phenopod UI Server
+Documentation=https://github.com/VarmaMSP/cello/tree/master/ui-server
+After=network.target
+
+[Service]
+Environment=NODE_ENV=production
+Type=simple
+User=root
+WorkingDirectory={{ cello_path }}/ui-server
+ExecStart=/usr/bin/npm run start
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
