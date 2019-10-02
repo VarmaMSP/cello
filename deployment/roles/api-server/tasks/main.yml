@@ -1,20 +1,22 @@
-- name: download golang
-  get_url:
-    url: "https://dl.google.com/go/go{{golang_version}}.linux-amd64.tar.gz"
-    dest: "/tmp/go{{golang_version}}.linux-amd64.tar.gz"
-    checksum: '{{golang_checksum}}'
+- name: setup golang
+  import_tasks: install-go.yml
 
-- name: install golang
-  unarchive:
-    src: "/tmp/go{{golang_version}}.linux-amd64.tar.gz"
-    dest: /usr/local
-    remote_src: true
-    creates: /usr/local/bin/go
+- name: compile api-server
+  command: "/usr/local/go/bin/go build -o {{ cello_path }}/main {{ cello_path }}/cmd/cello/main.go"
+  args: 
+    chdir: "{{ cello_path }}"
+  environment:
+    GO111MODULE: "on"
 
-- name: add go to PATH 
-  lineinfile:
-    path: /etc/profile
-    line: "{{ item }}"
-  loop:
-    - export GOROOT=/usr/local/go
-    - export PATH=$PATH:$GOROOT/bin
+- name: ensure api-server service exists
+  template:
+    src: api-server.service.j2
+    dest: /lib/systemd/system/api-server.service
+  notify:
+    - reload systemd
+
+- name: ensure api-server is started
+  service:
+    name: api-server
+    state: started
+    enabled: yes

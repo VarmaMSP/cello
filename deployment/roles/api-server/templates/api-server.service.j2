@@ -1,0 +1,13 @@
+[Unit]
+Description=Phenopod API Server
+Documentation=https://github.com/VarmaMSP/cello
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart={{ cello_path }}/main
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
