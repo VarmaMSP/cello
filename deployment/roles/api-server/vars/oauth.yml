@@ -1,0 +1,14 @@
+google:
+  client_id: 
+  client_secret:
+  redirect_url:
+
+facebook:
+  client_id:
+  client_secret:
+  redirect_url:
+
+twitter:
+  client_id:
+  client_secret:
+  redirect_url:

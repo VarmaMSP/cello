@@ -1,0 +1,77 @@
+mysql:
+  address: {{ mysql.address }}
+  database: {{ mysql.database }}
+  user: {{ mysql.user }}
+  password: {{ passwords.mysql }}
+
+rabbitmq:
+  address: {{ rabbitmq.address }}
+  user: {{ rabbitmq.user }}
+  password: {{ passwords.rabbitmq }}
+
+elasticsearch:
+  address: {{ elasticsearch.address }}
+  user: {{ elasticsearch.user }}
+  password: {{ passwords.elasticsearch }}
+
+redis:
+  address: {{ redis.address }}
+  max_idle_conn: 10
+
+queues:
+  import_podcast: 
+    delivery_mode: 2
+    consumer_name: import_podcast
+    consumer_auto_ack: false
+    consumer_exclusive: true
+    consumer_prefetch_count: 100
+
+  refresh_podcast: 
+    delivery_mode: 2
+    consumer_name: refresh_podcast
+    consumer_auto_ack: false
+    consumer_exclusive: true
+    consumer_prefetch_count: 100
+
+  create_thumbnail:
+    delivery_mode: 2
+    consumer_name: create_thumbnail
+    consumer_auto_ack: false
+    consumer_exclusive: true
+    consumer_prefetch_count: 100
+
+jobs:
+  import_podcast: 
+    enable: {{ jobs.import_podcast.enable }}
+    worker_limit: {{ jobs.import_podcast.worker_limit }}
+
+  refresh_podcast:
+    enable: {{ jobs.refresh_podcast.enable }}
+    worker_limit: {{ jobs.refresh_podcast.worker_limit }}
+
+  create_thumbnail:
+    enable: {{ jobs.create_thumbnail.enable }}
+    worker_limit: {{ jobs.create_thumbnail.worker_limit }}
+
+  scheduler:
+    enable: {{ jobs.scheduler.enable }}
+    worker_limit: {{ jobs.scheduler.worker_limit }}
+
+oauth:
+  google:
+    client_id: {{ oauth.google.client_id }}
+    client_secret: {{ oauth.google.client_secret }}
+    redirect_url: {{ oauth.google.redirect_url}}
+    scopes: ['profile', 'email']
+
+  facebook:
+    client_id: {{ oauth.facebook.client_id }}
+    client_secret: {{ oauth.facebook.client_secret }}
+    redirect_url: {{ oauth.facebook.redirect_url}}
+    scopes: ['email']
+
+  twitter:
+    client_id: {{ oauth.twitter.client_id }}
+    client_secret: {{ oauth.twitter.client_secret }}
+    redirect_url: {{ oauth.twitter.redirect_url}}
+    scopes: []

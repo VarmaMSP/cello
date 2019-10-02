@@ -1,0 +1,11 @@
+- name: compile api-server
+  command: "/usr/local/go/bin/go build -o {{ cello_path }}/main {{ cello_path }}/cmd/cello/main.go"
+  args: 
+    chdir: "{{ cello_path }}"
+  environment:
+    GO111MODULE: "on"
+
+- name: ensure api-server configuration exists
+  template:
+    src: api-server.conf.j2
+    dest: /etc/cello

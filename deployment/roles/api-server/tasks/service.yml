@@ -1,0 +1,12 @@
+- name: ensure api-server service exists
+  template:
+    src: api-server.service.j2
+    dest: /lib/systemd/system/api-server.service
+  notify:
+    - reload systemd
+
+- name: ensure api-server is started
+  service:
+    name: api-server
+    state: started
+    enabled: yes

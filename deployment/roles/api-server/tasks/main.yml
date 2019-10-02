@@ -1,22 +1,8 @@
-- name: setup golang
+- name: install golang
   import_tasks: install-go.yml
 
-- name: compile api-server
-  command: "/usr/local/go/bin/go build -o {{ cello_path }}/main {{ cello_path }}/cmd/cello/main.go"
-  args: 
-    chdir: "{{ cello_path }}"
-  environment:
-    GO111MODULE: "on"
+- name: build server
+  import_tasks: build-server.yml
 
-- name: ensure api-server service exists
-  template:
-    src: api-server.service.j2
-    dest: /lib/systemd/system/api-server.service
-  notify:
-    - reload systemd
-
-- name: ensure api-server is started
-  service:
-    name: api-server
-    state: started
-    enabled: yes
+- name: run service
+  import_tasks: service.yml
