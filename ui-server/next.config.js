@@ -22,8 +22,8 @@ const purgeCssConfig = {
 
 const nextConfig = {
   env: {
-    API_URL: 'http://localhost:8080',
-    IMAGE_URL: 'http://localhost:8080/img',
+    API_URL: process.NODE_ENV === 'production' ? 'https://phenopod.com' : 'http://localhost:8080',
+    IMAGE_URL: process.NODE_ENV === 'production' ? 'https://phenopod.com/img' : 'http://localhost:8080/img',
   },
   distDir: 'next',
   generateEtags: false,
