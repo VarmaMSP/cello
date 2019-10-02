@@ -15,7 +15,7 @@
 
 - name: Install Nginx and Nginx Certbot package
   apt:
-    pkg: nginx
+    pkg: "{{ item }}"
     state: present
     update_cache: yes
   loop:

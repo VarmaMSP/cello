@@ -1,5 +1,5 @@
-# - name: Setup
-#   import_tasks: setup.yml
+- name: Setup
+  import_tasks: setup.yml
 
 - name: Users
   import_tasks: users.yml
