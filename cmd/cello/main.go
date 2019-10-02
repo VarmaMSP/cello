@@ -9,8 +9,11 @@ import (
 )
 
 func main() {
-	viper.SetConfigName("cello.conf")
+	viper.SetConfigName("api-server.conf")
+	viper.AddConfigPath("/usr/api-server")
 	viper.AddConfigPath("./config")
+	viper.AddConfigPath(".")
+
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Println(err.Error())
 		return
