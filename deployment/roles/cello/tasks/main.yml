@@ -1,0 +1,12 @@
+- name: Ensure GitHub deploy key is present on the server.
+  copy:
+    src: files/github_deploy_key
+    dest: ~/.ssh/github_deploy_key
+    mode: 0600
+
+- name: Clone cello
+  git:
+    repo: git@github.com:VarmaMSP/cello.git
+    dest: "{{ cello_path }}"
+    accept_hostkey: yes
+    key_file: ~/.ssh/github_deploy_key
