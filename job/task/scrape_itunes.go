@@ -51,7 +51,7 @@ func NewScrapeItunes(app *app.App, config *model.Config) (*ScrapeItunes, error) 
 		return nil, err
 	}
 
-	workerLimit := 10
+	workerLimit := config.Jobs.Scheduler.WorkerLimit
 
 	scrapeItunes := &ScrapeItunes{
 		App:            app,
