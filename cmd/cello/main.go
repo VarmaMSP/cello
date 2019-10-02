@@ -8,9 +8,14 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
+const (
+	CONFIG_NAME = "api-server.conf"
+	BUILD_DIR   = "/usr/local/api-server"
+)
+
 func main() {
-	viper.SetConfigName("api-server.conf")
-	viper.AddConfigPath("/usr/api-server")
+	viper.SetConfigName(CONFIG_NAME)
+	viper.AddConfigPath(BUILD_DIR)
 	viper.AddConfigPath("./config")
 	viper.AddConfigPath(".")
 
