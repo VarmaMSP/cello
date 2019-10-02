@@ -2,6 +2,11 @@ golang:
   version: 1.13.1
   checksum: sha256:94f874037b82ea5353f4061e543681a0e79657f787437974214629af8407d124
 
+server:
+  build_dir: /usr/local/api-server
+  static_dir: /var/www/static
+  img_dir: /var/www/img
+
 mysql:
   address: 127.0.0.1
   database: phenopod
@@ -19,18 +24,18 @@ redis:
   address:
 
 jobs:
-  - import_podcast: 
-      enable: yes
-      worker_limit: 100
+  import_podcast: 
+    enable: yes
+    worker_limit: 100
+    
+  refresh_podcast:
+    enable: yes 
+    worker_limit: 100
 
-  - refresh_podcast:
-      enable: yes 
-      worker_limit: 100
-
-  - create_thumbnail:
-      enable: yes
-      worker_limit: 100
+  create_thumbnail:
+    enable: yes
+    worker_limit: 100
   
-  - scheduler:
-      enable: yes
-      worker_limit: 100
+  scheduler:
+    enable: yes
+    worker_limit: 100

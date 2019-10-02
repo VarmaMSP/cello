@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Type=simple
 User=root
-ExecStart={{ cello_path }}/main
+ExecStart={{ server.build_dir }}/main
 Restart=on-failure
 
 [Install]
