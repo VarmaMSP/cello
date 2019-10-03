@@ -14,7 +14,7 @@ mysql:
 
 rabbitmq:
   address: localhost:5672
-  user: read_write
+  user: admin
 
 elasticsearch:
   address: localhost:9200
