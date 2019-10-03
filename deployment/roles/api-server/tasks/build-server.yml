@@ -9,7 +9,7 @@
     - "{{ server.img_dir }}"
 
 - name: compile server
-  command: "/usr/local/go/bin/go build -o {{ server.build_dir }} ./cmd/cello/main.go"
+  command: "/usr/local/go/bin/go build -o {{ server.build_dir }}/server ./cmd/cello/main.go"
   args: 
     chdir: "{{ cello_path }}"
   environment:
