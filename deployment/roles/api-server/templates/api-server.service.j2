@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Type=simple
 User=root
-ExecStart={{ server.build_dir }}/main
+ExecStart={{ server.build_dir }}/server
 Restart=on-failure
 
 [Install]
