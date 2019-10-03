@@ -1,6 +1,6 @@
 - name: Setup Nginx
-  include_tasks: setup.yml
+  import_tasks: setup.yml
 
 - name: Configuration
-  include_tasks: configuration.yml
+  import_tasks: configuration.yml
 
