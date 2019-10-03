@@ -28,15 +28,17 @@ export function requestAction<T extends Promise<any>>(
       processData(dispatch, res, getState)
       dispatch(onSuccessAction)
     } catch (err) {
-      if (onFailureAction) {
-        if ((err as RequestException).statusCode === 401) {
-          if (!getIsUserSignedIn(getState())) {
-            dispatch({ type: SHOW_SIGNIN_MODAL })
-          }
-          dispatch({ type: SIGN_OUT_USER_FORCEFULLY })
-        }
-        dispatch(onFailureAction)
+      if (!onFailureAction) {
+        return
       }
+
+      if ((err as RequestException).statusCode === 401) {
+        if (!getIsUserSignedIn(getState())) {
+          dispatch({ type: SHOW_SIGNIN_MODAL })
+        }
+        dispatch({ type: SIGN_OUT_USER_FORCEFULLY })
+      }
+      dispatch(onFailureAction)
     }
   }
 }
