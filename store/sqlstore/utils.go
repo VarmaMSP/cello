@@ -90,13 +90,14 @@ func Cols(m model.DbModel, prefix ...string) string {
 }
 
 func MakeMysqlDSN(config *model.Config) string {
-	c := mysql.Config{
-		Addr:                 config.Mysql.Address,
-		DBName:               config.Mysql.Database,
-		User:                 config.Mysql.User,
-		Passwd:               config.Mysql.Password,
-		AllowNativePasswords: true,
-		Params:               map[string]string{"collation": "utf8mb4_unicode_ci"},
-	}
+	c := mysql.NewConfig()
+	c.Net = "tcp"
+	c.Addr = config.Mysql.Address
+	c.DBName = config.Mysql.Database
+	c.User = config.Mysql.User
+	c.Passwd = config.Mysql.Password
+	c.AllowNativePasswords = true
+	c.Params = map[string]string{"collation": "utf8mb4_unicode_ci"}
+
 	return c.FormatDSN()
 }
