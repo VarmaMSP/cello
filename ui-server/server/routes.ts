@@ -48,7 +48,10 @@ function makeServePage(app: NextServer) {
     query?: (ctx: KoaContext) => ParsedUrlQuery,
   ) => {
     return async (ctx: KoaContext) => {
-      ctx.set({ 'Cache-Control': cacheControl })
+      if (process.env.NODE_ENV === 'production') {
+        ctx.set({ 'Cache-Control': cacheControl })
+      }
+
       await app.render(ctx.req, ctx.res, page, query && query(ctx))
       ctx.respond = false
     }
