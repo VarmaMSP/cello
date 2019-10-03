@@ -7,6 +7,8 @@
   template:
     src: templates/nginx.j2
     dest: /etc/nginx/nginx.conf
+  notify:
+    - restart nginx
 
 - name: Generate dhparams
   command: openssl dhparam -out /etc/nginx/dhparams.pem 2048
