@@ -11,11 +11,16 @@ export function getClickPosition(e: TouchOrMouseEvent): { clientX: number } {
 }
 
 export function getImageUrl(id: string, size: 'sm' | 'md' | 'lg'): string {
+  const baseUrl =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:8080'
+      : 'https://phenopod.com'
+
   switch (size) {
     case 'lg':
     case 'md':
-      return `${process.env.IMAGE_URL}/${id}-500x500.jpg`
+      return `${baseUrl}/img/${id}-500x500.jpg`
     case 'sm':
-      return `${process.env.IMAGE_URL}/${id}-250x250.jpg`
+      return `${baseUrl}/img/${id}-250x250.jpg`
   }
 }
