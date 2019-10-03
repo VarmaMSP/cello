@@ -1,0 +1,10 @@
+- name: install npm packages
+  npm:
+    path: "{{ cello_path }}/ui-server"
+
+- name: build ui-server
+  command: npm run build
+  args: 
+    chdir: "{{ cello_path }}/ui-server"
+  environment:
+    NODE_ENV: "production"

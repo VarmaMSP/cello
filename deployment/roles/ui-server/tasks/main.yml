@@ -1,24 +1,8 @@
 - name: install nodejs
   import_tasks: install-node.yml
 
-- name: install npm packages
-  npm:
-    path: "{{ cello_path }}/ui-server"
+- name: build server
+  import_tasks: build-server.yml
 
-- name: build ui-server
-  command: npm run build
-  args: 
-    chdir: "{{ cello_path }}/ui-server"
-
-- name: ensure ui-server service exists
-  template:
-    src: ui-server.service.j2
-    dest: /lib/systemd/system/ui-server.service
-  notify:
-    - reload systemd
-
-- name: ensure ui-server is started
-  service:
-    name: ui-server
-    state: started
-    enabled: yes
+- name: run service
+  import_tasks: service.yml
