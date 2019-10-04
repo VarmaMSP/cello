@@ -1,0 +1,20 @@
+cluster:
+  name: phenopod
+
+node:
+  name: node-0
+
+http:
+  port: 9200
+
+network:
+  host:
+    - 127.0.0.1
+    - {{ hostvars[inventory_hostname]['private_ip'] }}
+
+discovery:
+  seed_hosts: []
+
+path:
+  data: /var/lib/elasticsearch
+  logs: /var/log/elasticsearch

@@ -1,21 +1,29 @@
-- name: Add Elasticsearch signing key
+- name: add elasticsearch signing key
   apt_key:
     url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
     state: present
 
-- name: Add Elasticsearch repository
+- name: add elasticsearch repository
   apt_repository:
     repo: 'deb https://artifacts.elastic.co/packages/7.x/apt stable main'
     state: present
     update_cache: yes
 
-- name: Install Elasticsearch
+- name: install elasticsearch
   apt:
     pkg: elasticsearch
     state: present
+  notify:
+    - enable elasticsearch service
 
-- name: Ensure Elasticsearch is started
+- name: add elasticsearch config
+  template:
+    src: elasticsearch.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+  notify:
+    - restart elasticsearch
+
+- name: ensure elasticsearch is started
   service:
     name: elasticsearch
     state: started
-    enabled: yes

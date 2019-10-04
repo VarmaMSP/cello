@@ -1,2 +1,4 @@
+- meta: flush_handlers
+
 - name: Setup
   import_tasks: setup.yml
