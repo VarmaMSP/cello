@@ -1,0 +1,15 @@
+!includedir /etc/mysql/conf.d/
+!includedir /etc/mysql/mysql.conf.d/
+
+[mysqld]
+bind-address = {{ hostvars[inventory_hostname]['private_ip'] }}
+
+max_connections   = 300
+
+long_query_time   = 1
+slow_query_log    = 1
+
+innodb_buffer_pool_size         = 5G
+innodb_log_file_size            = 256M
+innodb_flush_log_at_trx_commit  = 1
+innodb_flush_method             = O_DIRECT

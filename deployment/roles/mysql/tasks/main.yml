@@ -1,11 +1,10 @@
-- name: Setup
-  import_tasks: setup.yml
+- include_vars:
+    file: passwords.yml
+    name: passwords
 
-- name: Configuration
-  import_tasks: configuration.yml
+- name: install mysql
+  import_tasks: install-mysql.yml
 
-- name: User Management
+- name: create users
   import_tasks: users.yml
 
-- name: Security
-  import_tasks: security.yml

@@ -1,27 +1,4 @@
-- include_vars:
-    file: passwords.yml
-    name: passwords
-
-- name: Set MySQL root user password
-  mysql_user:
-    name: root
-    password: "{{ passwords.root }}"
-    host: "{{ item }}"
-    priv: "*.*:ALL,GRANT"
-    state: present
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-  loop:
-    - 127.0.0.1
-    - ::1
-    - localhost
-
-- name: Configure MySQL for easy access as root user
-  template:
-    src: root.my.cnf.j2
-    dest: ~/.my.cnf
-    mode: 0600
-
-- name: Create admin user
+- name: create admin user
   mysql_user:
     name: admin
     password: "{{ passwords.admin }}"
@@ -33,7 +10,7 @@
     - ::1
     - localhost
 
-- name: Create backup user
+- name: create backup user
   mysql_user:
     name: backup
     password: "{{ passwords.backup }}"
@@ -45,7 +22,7 @@
     - ::1
     - localhost
 
-- name: Create read_write user
+- name: create read_write user
   mysql_user:
     name: read_write
     password: "{{ passwords.read_write }}"
@@ -53,6 +30,16 @@
     priv: "*.*:DELETE,INSERT,SELECT,UPDATE"
     state: present
   loop:
+    - "%"
+    - localhost
+
+- name: remove anonymous users
+  mysql_user:
+    user: ""
+    host: "{{ item }}"
+    state: absent
+  loop:
+    - "%"
     - 127.0.0.1
     - ::1
     - localhost
