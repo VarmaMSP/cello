@@ -1,14 +1,15 @@
-- name: Add Rabbitmq signing key
+- name: add rabbitmq signing key
   apt_key:
     url: https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
     state: present
 
-- name: Copy erlang prefrences file
+# https://www.rabbitmq.com/install-debian.html#apt-pinning
+- name: copy erlang preference file
   copy:
     src: files/preferences
     dest: /etc/apt/preferences.d/erlang
 
-- name: Add Erlang and Rabbitmq repositories
+- name: add erlang and rabbitmq repositories
   apt_repository:
     repo: "{{ item }}"
     state: present
@@ -17,9 +18,9 @@
     - deb https://dl.bintray.com/rabbitmq-erlang/debian bionic erlang-22.x
     - deb https://dl.bintray.com/rabbitmq/debian bionic main
 
-- name: Install Erlang and Rabbitmq
+- name: install erlang and rabbitmq
   apt:
-    pkg: '{{ item }}'
+    pkg: "{{ item }}"
     state: present
     update_cache: yes
   loop:
@@ -41,12 +42,27 @@
     - erlang-tools
     - erlang-xmerl
     - rabbitmq-server
+  notify:
+    - enable rabbitmq-server service
 
-- name: Ensure rabbitmq server is started
+# https://www.rabbitmq.com/plugins.html#enabled-plugins-file
+- name: copy enabled_plugins file
+  copy:
+    src: files/enabled_plugins
+    dest: /etc/rabbitmq/enabled_plugins
+
+# https://www.rabbitmq.com/configure.html
+- name: copy rabbitmq configuration
+  template:
+    src: rabbitmq.conf.j2
+    dest: /etc/rabbitmq/rabbitmq.conf
+  notify: 
+    - restart rabbitmq-server
+
+- meta: flush_handlers
+
+- name: ensure rabbitmq server is started
   service:
     name: rabbitmq-server
     state: started
     enabled: yes
-
-    
-

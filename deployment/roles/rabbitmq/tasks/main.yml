@@ -1,3 +1,8 @@
+- include_vars:
+    file: passwords.yml
+    name: passwords
+
+# https://www.rabbitmq.com/install-debian.html
 - name: Setup
   import_tasks: setup.yml
 
