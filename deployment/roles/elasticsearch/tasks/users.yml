@@ -1,0 +1,39 @@
+# https://discuss.elastic.co/t/how-to-set-passwords-for-built-in-users-in-batch-mode/119655/6
+- name: stop the node
+  service:
+    name: elasticsearch
+    state: stopped
+
+- name: setup xpack bootstrap password
+  command: printf "{{ passwords.xpack }}" | elasticsearch-keystore add bootstrap.password
+  args:
+    chdir: /usr/share/elasticsearch/bin
+
+- name: start the node
+  service:
+    name: elasticsearch
+    state: started
+
+- name: reset password for user elastic
+  uri:
+    url: "http://127.0.0.1:{{ http_port }}/_xpack/security/user/elastic/_password"
+    url_username: elastic
+    url_password: "{{ passwords.elastic }}"
+    method: PUT
+    body: '{"password": "{{ passwords.elastic }}"}'
+    body_format: json
+
+- name: reset password for other built-in users
+  uri:
+    url: "http://127.0.0.1:{{ http_port }}/_xpack/security/user/{{ item.user }}/_password"
+    url_username: elastic
+    url_password: "{{ passwords.elastic }}"
+    method: PUT
+    body: '{"password": "{{ item.password }}"}'
+    body_format: json
+  loop:
+    - { user: kibana, password: "{{ passwords.kibana }}"}
+    - { user: logstash_system, password: "{{ passwords.logstash_system }}" }
+    - { user: beats_system, password: "{{ passwords.beats_system }}" }
+    - { user: apm_system, password: "{{ passwords.apm_system }}" }
+    - { user: remote_monitoring_user, password: "{{ passwords.remote_monitoring_user }}" }

@@ -13,15 +13,23 @@
   apt:
     pkg: elasticsearch
     state: present
+  register: installation
   notify:
     - enable elasticsearch service
 
-- name: add elasticsearch config
+- name: copy ssl certificates
+  copy: 
+    src: files/elastic-certificates.p12
+    dest: /etc/elasticsearch/elastic-certificates.p12
+
+- name: copy elasticsearch config
   template:
     src: elasticsearch.j2
     dest: /etc/elasticsearch/elasticsearch.yml
   notify:
     - restart elasticsearch
+
+- meta: flush_handlers
 
 - name: ensure elasticsearch is started
   service:

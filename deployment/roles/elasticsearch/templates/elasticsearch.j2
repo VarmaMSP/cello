@@ -5,7 +5,7 @@ node:
   name: node-0
 
 http:
-  port: 9200
+  port: {{ http_port }}
 
 network:
   host:
@@ -18,3 +18,15 @@ discovery:
 path:
   data: /var/lib/elasticsearch
   logs: /var/log/elasticsearch
+
+xpack:
+  security:
+    enabled: true
+    transport:
+      ssl:
+        enabled: true
+        verification_mode: certificate
+        keystore:
+          path: elastic-certificates.p12
+        truststore:
+          path: elastic-certificates.p12

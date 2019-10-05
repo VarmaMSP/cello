@@ -1,4 +1,12 @@
-- meta: flush_handlers
+- include_vars:
+    file: passwords.yml
+    name: passwords
 
-- name: Setup
-  import_tasks: setup.yml
+- name: install elasticsearch
+  import_tasks: install-elasticsearch.yml
+
+- name: setup users
+  import_tasks: users.yml
+  when: 
+    - elasticsearch.setup_users
+    - installation.changed | default(false)
