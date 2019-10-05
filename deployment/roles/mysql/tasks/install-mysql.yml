@@ -41,3 +41,8 @@
   mysql_db:
     db: test
     state: absent
+
+- name: create phenopod database
+  mysql_db:
+    db: phenopod
+    state: present
