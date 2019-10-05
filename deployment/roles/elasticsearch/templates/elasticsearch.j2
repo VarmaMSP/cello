@@ -13,7 +13,7 @@ network:
     - {{ hostvars[inventory_hostname]['private_ip'] }}
 
 discovery:
-  seed_hosts: []
+  type: single-node
 
 path:
   data: /var/lib/elasticsearch
