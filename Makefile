@@ -14,8 +14,8 @@ purge-data:
 start-services:
 	nginx
 	elasticsearch -d
-	rabbitmq-server -d
 	redis-server --daemonize yes
+	rabbitmq-server -d
 
 create-image-directories:
 	mkdir /var/www && mkdir /var/www/img
