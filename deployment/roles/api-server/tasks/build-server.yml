@@ -10,7 +10,7 @@
 
 - name: compile server
   command: "/usr/local/go/bin/go build -o {{ server.build_dir }}/server ./cmd/cello/main.go"
-  args: 
+  args:
     chdir: "{{ cello_path }}"
   environment:
     GO111MODULE: "on"

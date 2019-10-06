@@ -7,4 +7,3 @@
 
 - name: create users
   import_tasks: users.yml
-

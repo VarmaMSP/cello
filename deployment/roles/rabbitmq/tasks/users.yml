@@ -14,7 +14,7 @@
     state: present
 
 - name: create read_write user
-  rabbitmq_user: 
+  rabbitmq_user:
     user: read_write
     password: "{{ passwords.read_write }}"
     vhost: /

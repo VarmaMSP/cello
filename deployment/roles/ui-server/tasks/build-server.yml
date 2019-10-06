@@ -4,7 +4,7 @@
 
 - name: build ui-server
   command: npm run build
-  args: 
+  args:
     chdir: "{{ cello_path }}/ui-server"
   environment:
     NODE_ENV: "production"
