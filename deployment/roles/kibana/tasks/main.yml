@@ -1,0 +1,35 @@
+- name: add elasticsearch signing key
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: add kibana repository
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+    state: present
+    update_cache: yes
+
+- name: install kibana 7.x
+  apt:
+    pkg: kibana
+    state: present
+  notify:
+    - enable kibana service
+
+- include_vars:
+    file: passwords.yml
+    name: passwords
+
+- name: copy config
+  template:
+    src: kibana.j2
+    dest: /etc/kibana/kibana.yml
+  notify:
+    - restart kibana
+
+- meta: flush_handlers
+
+- name: ensure kibana is started
+  service:
+    name: kibana
+    state: started

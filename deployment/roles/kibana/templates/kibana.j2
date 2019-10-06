@@ -1,0 +1,10 @@
+server:
+  port: 5601
+  host: {{ hostvars[inventory_hostname]['private_ip'] }}
+  name: phenopod
+
+elasticsearch:
+  username: kibana
+  password: {{ passwords.kibana }}
+  hosts:
+    - http://127.0.0.1:9200
