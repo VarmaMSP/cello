@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	strip "github.com/grokify/html-strip-tags-go"
-	"github.com/mmcdole/gofeed/rss"
+	"github.com/varmamsp/gofeed/rss"
 	"github.com/rs/xid"
 )
 

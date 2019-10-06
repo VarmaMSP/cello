@@ -8,10 +8,10 @@ import (
 	"github.com/streadway/amqp"
 
 	h "github.com/go-http-utils/headers"
-	"github.com/mmcdole/gofeed/rss"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/rabbitmq"
+	"github.com/varmamsp/gofeed/rss"
 )
 
 type RefreshPodcastJob struct {

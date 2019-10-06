@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/mmcdole/gofeed/rss"
+	"github.com/varmamsp/gofeed/rss"
 	"github.com/rs/xid"
 )
 

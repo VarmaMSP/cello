@@ -27,7 +27,8 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.4.0
 	github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
-	github.com/stretchr/testify v1.3.0
+	github.com/stretchr/testify v1.4.0
+	github.com/varmamsp/gofeed v1.0.0
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	golang.org/x/sys v0.0.0-20190812172437-4e8604ab3aff // indirect
 	google.golang.org/api v0.7.0

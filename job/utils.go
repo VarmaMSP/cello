@@ -9,7 +9,7 @@ import (
 	"net/http"
 
 	h "github.com/go-http-utils/headers"
-	"github.com/mmcdole/gofeed/rss"
+	"github.com/varmamsp/gofeed/rss"
 	"github.com/varmamsp/cello/model"
 )
 

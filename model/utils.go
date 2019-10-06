@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mmcdole/gofeed/rss"
+	"github.com/varmamsp/gofeed/rss"
 )
 
 const (

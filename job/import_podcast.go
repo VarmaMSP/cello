@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/mmcdole/gofeed/rss"
+	"github.com/varmamsp/gofeed/rss"
 
 	h "github.com/go-http-utils/headers"
 	"github.com/streadway/amqp"
