@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/varmamsp/gofeed/rss"
 	"github.com/rs/xid"
+	"github.com/varmamsp/gofeed/rss"
 )
 
 const (
@@ -128,28 +128,27 @@ func (e *Episode) LoadDetails(rssItem *rss.Item) *AppError {
 	}
 
 	// Episode
-	// if rssItem.ITunesExt != nil && rssItem.ITunesExt.Episode != "" {
-	// 	e.Episode, _ = strconv.Atoi(rssItem.ITunesExt.Episode)
-	// } else {
-	// 	e.Episode = 0
-	// }
+	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Episode != "" {
+		e.Episode, _ = strconv.Atoi(rssItem.ITunesExt.Episode)
+	} else {
+		e.Episode = 0
+	}
 
 	// Season
-	// if rssItem.ITunesExt != nil && rssItem.ITunesExt.Season != "" {
-	// 	e.Season, _ = strconv.Atoi(rssItem.ITunesExt.Season)
-	// } else {
-	// 	e.Season = 0
-	// }
+	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Season != "" {
+		e.Season, _ = strconv.Atoi(rssItem.ITunesExt.Season)
+	} else {
+		e.Season = 0
+	}
 
 	// Type
-	// if rssItem.ITunesExt != nil && rssItem.ITunesExt.EpisodeType == "trailer" {
-	// 	e.Type = "TRAILER"
-	// } else if rssItem.ITunesExt != nil && rssItem.ITunesExt.EpisodeType == "bonus" {
-	// 	e.Type = "BONUS"
-	// } else {
-	// 	e.Type = "FULL"
-	// }
-	e.Type = "FULL"
+	if rssItem.ITunesExt != nil && rssItem.ITunesExt.EpisodeType == "trailer" {
+		e.Type = "TRAILER"
+	} else if rssItem.ITunesExt != nil && rssItem.ITunesExt.EpisodeType == "bonus" {
+		e.Type = "BONUS"
+	} else {
+		e.Type = "FULL"
+	}
 
 	// Block
 	if rssItem.ITunesExt != nil && rssItem.ITunesExt.Block == "true" {
