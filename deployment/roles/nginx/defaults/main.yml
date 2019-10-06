@@ -1,2 +1,5 @@
 domain_name: phenopod.com
 webmaster_email: pavan.varma@phenopod.com
+
+kibana_port: 5601
+rabbimq_management_port: 15672
