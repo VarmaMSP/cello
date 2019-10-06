@@ -3,10 +3,10 @@
     name: passwords
 
 - name: install elasticsearch
-  import_tasks: install-elasticsearch.yml
+  import_tasks: install.yml
 
 - name: setup users
   import_tasks: users.yml
-  when: 
-    - elasticsearch.setup_users
-    - installation.changed | default(false)
+  when:
+    - fresh_install
+    - es_reset_user_passwords

@@ -1,7 +1,2 @@
 http_port: 9200
-
-elasticsearch:
-  master_node: true
-  data_node: true
-  client_node: true
-  setup_users: true
+es_reset_user_passwords: false

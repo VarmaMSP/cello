@@ -1,15 +1,31 @@
+- name: install pip
+  apt:
+    pkg: python3-pip
+    state: present
+    update_cache: yes
+
+- name: install pexpect
+  pip:
+    name: pexpect
+
 # https://discuss.elastic.co/t/how-to-set-passwords-for-built-in-users-in-batch-mode/119655/6
-- name: stop the node
+- name: stop elasticsearch node
   service:
     name: elasticsearch
     state: stopped
 
-- name: setup xpack bootstrap password
-  command: printf "{{ passwords.xpack }}" | elasticsearch-keystore add bootstrap.password
-  args:
-    chdir: /usr/share/elasticsearch/bin
+# FIX ME:
+# this task will hang if passwords.bootstrap is already set and killing
+# it then will the node stopped. Use with caution
+- name: setup bootstrap password
+  expect:
+    chdir: /usr/share/elasticsearch
+    command: ./bin/elasticsearch-keystore add bootstrap.password
+    responses:
+      (?i)bootstrap.password: "{{ passwords.bootstrap }}"
+  no_log: yes
 
-- name: start the node
+- name: start elasticsearch node
   service:
     name: elasticsearch
     state: started
@@ -18,7 +34,7 @@
   uri:
     url: "http://127.0.0.1:{{ http_port }}/_xpack/security/user/elastic/_password"
     url_username: elastic
-    url_password: "{{ passwords.elastic }}"
+    url_password: "{{ passwords.bootstrap }}"
     method: PUT
     body: '{"password": "{{ passwords.elastic }}"}'
     body_format: json
@@ -32,8 +48,11 @@
     body: '{"password": "{{ item.password }}"}'
     body_format: json
   loop:
-    - { user: kibana, password: "{{ passwords.kibana }}"}
+    - { user: kibana, password: "{{ passwords.kibana }}" }
     - { user: logstash_system, password: "{{ passwords.logstash_system }}" }
     - { user: beats_system, password: "{{ passwords.beats_system }}" }
     - { user: apm_system, password: "{{ passwords.apm_system }}" }
-    - { user: remote_monitoring_user, password: "{{ passwords.remote_monitoring_user }}" }
+    - {
+        user: remote_monitoring_user,
+        password: "{{ passwords.remote_monitoring_user }}",
+      }
