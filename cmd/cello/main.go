@@ -17,6 +17,7 @@ func main() {
 	viper.SetConfigName(CONFIG_NAME)
 	viper.AddConfigPath(BUILD_DIR)
 	viper.AddConfigPath("./config")
+	viper.AddConfigPath("../../config")
 	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); err != nil {
