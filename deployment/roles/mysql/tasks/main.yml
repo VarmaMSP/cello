@@ -3,7 +3,10 @@
     name: passwords
 
 - name: install mysql
-  import_tasks: install-mysql.yml
+  import_tasks: install.yml
+
+- name: create databases
+  import_tasks: databases.yml
 
 - name: create users
   import_tasks: users.yml

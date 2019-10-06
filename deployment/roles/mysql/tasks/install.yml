@@ -37,12 +37,9 @@
   notify:
     - restart mysql
 
-- name: remove test database
-  mysql_db:
-    db: test
-    state: absent
+- meta: flush_handlers
 
-- name: create phenopod database
-  mysql_db:
-    db: phenopod
-    state: present
+- name: ensure mysql is started
+  service:
+    name: mysql
+    state: started
