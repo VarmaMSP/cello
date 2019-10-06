@@ -22,3 +22,14 @@
     read_priv: .*
     write_priv: .*
     state: present
+
+- name: create management_admin user
+  rabbitmq_user:
+    user: management_admin
+    password: "{{ passwords.management_admin }}"
+    vhost: /
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    tags: administrator
+    state: present

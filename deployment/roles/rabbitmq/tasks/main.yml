@@ -3,8 +3,8 @@
     name: passwords
 
 # https://www.rabbitmq.com/install-debian.html
-- name: Setup
-  import_tasks: setup.yml
+- name: install rabbitmq and its dependencies
+  import_tasks: install.yml
 
-- name: Users
+- name: setup users
   import_tasks: users.yml
