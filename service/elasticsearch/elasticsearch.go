@@ -10,8 +10,10 @@ import (
 )
 
 func NewClient(config *model.Config) (*elastic.Client, error) {
-	dsn := fmt.Sprintf("http://%s:%s@%s", config.Elasticsearch.User, config.Elasticsearch.Password, config.Elasticsearch.Address)
-	client, err := elastic.NewClient(elastic.SetURL(dsn))
+	client, err := elastic.NewClient(
+		elastic.SetURL("http://"+config.Elasticsearch.Address),
+		elastic.SetBasicAuth(config.Elasticsearch.User, config.Elasticsearch.Password),
+	)
 	if err != nil {
 		return nil, err
 	}
