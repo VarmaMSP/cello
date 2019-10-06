@@ -1,0 +1,6 @@
+- hosts: hal
+  roles:
+    - nginx
+    - cello
+    - api-server
+    - ui-server

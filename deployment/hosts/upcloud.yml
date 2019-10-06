@@ -1,0 +1,19 @@
+all:
+  hosts:
+    hal:
+      ansible_host:
+      private_ip:
+      ansible_user:
+      ansible_ssh_pass:
+
+    anton:
+      ansible_host:
+      private_ip:
+      ansible_user:
+      ansible_ssh_pass:
+
+    keyser:
+      ansible_host:
+      private_ip:
+      ansible_user:
+      ansible_ssh_pass:

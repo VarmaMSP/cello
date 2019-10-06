@@ -1,0 +1,7 @@
+- hosts: anton
+  vars:
+    es_reset_user_passwords: true
+  roles:
+    - redis
+    - elasticsearch
+    - kibana
