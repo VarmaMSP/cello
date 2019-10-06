@@ -26,16 +26,16 @@ redis:
 jobs:
   import_podcast:
     enable: false
-    worker_limit: 100
+    worker_limit: 15
 
   refresh_podcast:
     enable: false
-    worker_limit: 100
+    worker_limit: 20
 
   create_thumbnail:
     enable: false
-    worker_limit: 100
+    worker_limit: 5
 
   scheduler:
     enable: true
-    worker_limit: 100
+    worker_limit: 10
