@@ -1,5 +1,5 @@
 - name: install nginx and certbot
-  import_tasks: intall.yml
+  import_tasks: install.yml
 
 - name: setup https
   import_tasks: certs.yml

@@ -3,7 +3,7 @@
     path: ~/.ssh
     state: directory
 
-- name: ensure gitHub deploy key is present on the server.
+- name: ensure gitHub deploy key is present on the server
   copy:
     src: files/github_deploy_key
     dest: ~/.ssh/github_deploy_key
