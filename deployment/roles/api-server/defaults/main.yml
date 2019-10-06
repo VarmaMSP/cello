@@ -8,34 +8,34 @@ server:
   img_dir: /var/www/img
 
 mysql:
-  address: localhost:3306
+  port: 3306
   database: phenopod
   user: read_write
 
 rabbitmq:
-  address: localhost:5672
+  port: 5672
   user: admin
 
 elasticsearch:
-  address: localhost:9200
+  port: 9200
   user: elastic
 
 redis:
-  address: localhost:6379
+  port: 6379
 
 jobs:
-  import_podcast: 
-    enable: yes
+  import_podcast:
+    enable: false
     worker_limit: 100
-    
+
   refresh_podcast:
-    enable: yes 
+    enable: false
     worker_limit: 100
 
   create_thumbnail:
-    enable: yes
+    enable: false
     worker_limit: 100
-  
+
   scheduler:
-    enable: yes
+    enable: true
     worker_limit: 100

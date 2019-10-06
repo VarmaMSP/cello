@@ -1,21 +1,21 @@
 mysql:
-  address: {{ mysql.address }}
+  address: {{ hostvars['keyser']['private_ip'] }}:{{ mysql.port }}
   database: {{ mysql.database }}
   user: {{ mysql.user }}
   password: {{ passwords.mysql }}
 
 rabbitmq:
-  address: {{ rabbitmq.address }}
+  address: {{ hostvars['keyser']['private_ip'] }}:{{ rabbitmq.port }}
   user: {{ rabbitmq.user }}
   password: {{ passwords.rabbitmq }}
 
 elasticsearch:
-  address: {{ elasticsearch.address }}
+  address: {{ hostvars['anton']['private_ip'] }}:{{ elasticsearch.port }}
   user: {{ elasticsearch.user }}
   password: {{ passwords.elasticsearch }}
 
 redis:
-  address: {{ redis.address }}
+  address: {{ hostvars['anton']['private_ip'] }}:{{ redis.port }}
   max_idle_conn: 10
 
 queues:
