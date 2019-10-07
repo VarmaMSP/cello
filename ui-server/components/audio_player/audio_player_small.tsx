@@ -94,13 +94,10 @@ export default class AudioPlayerSmall extends Component<Props> {
             src={getImageUrl(podcast.id, 'lg')}
           />
           <section className="flex-1 ml-3">
-            <h4 className="text-md font-semibold text-green-600 leading-loose">
-              Now Playing
-            </h4>
-            <h5 className="text-md font-bold text-gray-700 leading-tight">
+            <h5 className="text-sm font-bold text-gray-700 leading-tight">
               {episode.title}
             </h5>
-            <h5 className="text-sm font-semibold text-gray-600 leading-loose">
+            <h5 className="text-xs font-semibold text-gray-600 leading-loose">
               {podcast.title}
             </h5>
           </section>

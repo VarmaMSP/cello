@@ -51,7 +51,7 @@ const AudioPlayerMedium: React.SFC<Props> = (props) => {
           <div className="text-sm font-semibold text-gray-800 leading-tight tracking-wide">
             {episode.title}
           </div>
-          <div className="text-sm text-gray-700 leading-loose tracking-wide truncate">
+          <div className="text-xs text-gray-700 leading-loose tracking-wide truncate">
             {podcast.title}
           </div>
         </div>

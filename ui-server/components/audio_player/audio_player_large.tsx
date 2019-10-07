@@ -51,10 +51,10 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
       </div>
       <div className="flex-auto flex flex-col justify-center mx-4 text-center">
         <div className="-mb-1">
-          <div className="text-ms font-semibold text-gray-800 leading-tight tracking-wide truncate">
+          <div className="text-base font-semibold text-gray-800 leading-wide tracking-wide truncate">
             {episode.title}
           </div>
-          <div className="text-sm font-semibold text-gray-700 leading-loose tracking-tigh truncate">
+          <div className="text-xs font-semibold text-gray-700 leading-loose tracking-tight truncate">
             {podcast.title}
           </div>
         </div>
