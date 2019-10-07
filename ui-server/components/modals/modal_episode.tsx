@@ -70,7 +70,8 @@ const ModalEpisode: React.SFC<Props> = (props) => {
 
         <div
           ref={ref}
-          className="external-html px-1 overflow-y-auto md:text-sm text-sm leading-sung text-gray-800"
+          style={{ height: '21rem' }}
+          className="external-html px-1 text-sm leading-sung text-gray-800 overflow-y-auto"
           dangerouslySetInnerHTML={{ __html: episode.description }}
         />
       </ModalContainer>
