@@ -35,7 +35,7 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
     <div className="fixed bottom-0 left-0 flex items-center justify-around w-full h-24 pl-56 bg-white border">
       <div className="flex-none flex items-center h-full mx-4">
         <ButtonWithIcon
-          className="w-10"
+          className="w-8"
           icon="fast-rewind"
           onClick={() => handleFastForward(-10)}
         />
@@ -44,7 +44,7 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
           handleActionButtonPress={handleActionButtonPress}
         />
         <ButtonWithIcon
-          className="w-10"
+          className="w-8"
           icon="fast-forward"
           onClick={() => handleFastForward(10)}
         />

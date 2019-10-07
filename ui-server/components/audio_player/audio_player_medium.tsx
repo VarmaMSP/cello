@@ -32,7 +32,7 @@ const AudioPlayerMedium: React.SFC<Props> = (props) => {
     <div className="flex items-center justify-center w-full h-20">
       <div className="flex-none flex items-center h-full">
         <ButtonWithIcon
-          className="w-10"
+          className="w-8"
           icon="fast-rewind"
           onClick={() => handleFastForward(-10)}
         />
@@ -41,7 +41,7 @@ const AudioPlayerMedium: React.SFC<Props> = (props) => {
           handleActionButtonPress={handleActionButtonPress}
         />
         <ButtonWithIcon
-          className="w-10"
+          className="w-8"
           icon="fast-forward"
           onClick={() => handleFastForward(10)}
         />

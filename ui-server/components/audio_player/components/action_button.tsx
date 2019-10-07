@@ -21,7 +21,7 @@ const ActionButton: React.SFC<Props> = ({
     )
   }
 
-  if (audioState === 'PAUSED') {
+  if (audioState === 'PAUSED' || audioState === 'ENDED') {
     return (
       <ButtonWithIcon
         className="w-16 h-16 px-3 py- 3"

@@ -1,6 +1,7 @@
 import ButtonWithIcon from 'components/button_with_icon'
 import React, { Component } from 'react'
 import { AudioState, Episode, Podcast } from 'types/app'
+import { getImageUrl } from 'utils/dom'
 import ActionButton from './components/action_button'
 import NavbarBottom from './components/navbar_bottom'
 import SeekBar from './components/seek_bar'
@@ -90,7 +91,7 @@ export default class AudioPlayerSmall extends Component<Props> {
         <section className="px-3 flex flex-row">
           <img
             className="h-32 w-32 flex-none object-cover object-center rounded"
-            src={`${process.env.IMAGE_BASE_URL}/${podcast.id}p-500x500.jpg`}
+            src={getImageUrl(podcast.id, 'lg')}
           />
           <section className="flex-1 ml-3">
             <h4 className="text-md font-semibold text-green-600 leading-loose">
@@ -106,7 +107,7 @@ export default class AudioPlayerSmall extends Component<Props> {
         </section>
         <section className="flex flex-row items-center justify-center my-2 text-gray-800">
           <ButtonWithIcon
-            className="w-10"
+            className="w-8"
             icon="fast-rewind"
             onClick={() => handleFastForward(-10)}
           />
@@ -115,7 +116,7 @@ export default class AudioPlayerSmall extends Component<Props> {
             handleActionButtonPress={handleActionButtonPress}
           />
           <ButtonWithIcon
-            className="w-10"
+            className="w-8"
             icon="fast-forward"
             onClick={() => handleFastForward(10)}
           />
