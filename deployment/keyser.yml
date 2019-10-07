@@ -1,5 +1,26 @@
 - hosts: keyser
-  roles:
-    - cello
-    - mysql
-    - rabbitmq
+  vars:
+    skip_api-server: false
+
+  tasks:
+    - include_role:
+        name: mysql
+
+    - include_role:
+        name: rabbitmq
+
+    - include_role:
+        name: cello
+
+    - include_role:
+        name: api-server
+      vars:
+        elasticsearch_host: "{{ hostvars['anton']['private_ip'] }}"
+        redis_host: "{{ hostvars['anton']['private_ip'] }}"
+
+        create_thumbnail_enable: false
+        scheduler_enable: false
+
+        import_podcast_concurrency: 20
+        refresh_podcast_concurrency: 30
+      when: skip_api-server == false

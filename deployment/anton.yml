@@ -1,7 +1,31 @@
 - hosts: anton
   vars:
-    es_reset_user_passwords: true
-  roles:
-    - redis
-    - elasticsearch
-    - kibana
+    skip_api-server: false
+
+  tasks:
+    - include_role:
+        name: redis
+
+    - include_role:
+        name: elasticsearch
+      vars:
+        es_reset_user_passwords: true
+
+    - include_role:
+        name: kibana
+
+    - include_role:
+        name: cello
+
+    - include_role:
+        name: api-server
+      vars:
+        mysql_host: "{{ hostvars['keyser']['private_ip'] }}"
+        rabbitmq_host: "{{ hostvars['keyser']['private_ip'] }}"
+
+        create_thumbnail_enable: false
+        scheduler_enable: false
+
+        import_podcast_concurrency: 20
+        refresh_podcast_concurrency: 30
+      when: skip_api-server == false
