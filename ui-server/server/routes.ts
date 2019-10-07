@@ -24,7 +24,7 @@ export function registerRoutes(app: NextServer, router: Router) {
 
   // Podcast Page
   router.get(
-    'podcasts/:podcastId',
+    '/podcasts/:podcastId',
     servePage('/podcasts', 'public,max-age=3600,must-revalidate', (ctx) => ({
       podcastId: ctx.params['podcastId'],
     })),
@@ -52,7 +52,7 @@ function makeServePage(app: NextServer) {
         ctx.set({ 'Cache-Control': cacheControl })
       }
 
-      await app.render(ctx.req, ctx.res, page, query && query(ctx))
+      await app.render(ctx.req, ctx.res, page, (query && query(ctx)) || {})
       ctx.respond = false
     }
   }

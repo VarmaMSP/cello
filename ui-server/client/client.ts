@@ -10,13 +10,13 @@ export interface RequestException {
 }
 
 export default class Client {
-  url: string
   baseUrl: string
 
   constructor(url: string) {
-    this.url = `${url}/api`
     this.baseUrl = url
   }
+
+  url = () => `${this.baseUrl}${process.browser ? '/api' : ''}`
 
   async doFetch(method: string, url: string, body?: object): Promise<any> {
     // Make Request
@@ -66,7 +66,7 @@ export default class Client {
   async getPodcastById(
     podcastId: string,
   ): Promise<{ podcast: Podcast; episodes: Episode[] }> {
-    const res = await this.doFetch('GET', `${this.url}/podcasts/${podcastId}`)
+    const res = await this.doFetch('GET', `${this.url()}/podcasts/${podcastId}`)
     return {
       podcast: unmarshalPodcast(res.podcast),
       episodes: (res.episodes || []).map(unmarshalEpisode),
@@ -74,17 +74,17 @@ export default class Client {
   }
 
   async subscribeToPodcast(podcastId: string): Promise<void> {
-    await this.doFetch('PUT', `${this.url}/podcasts/${podcastId}/subscribe`)
+    await this.doFetch('PUT', `${this.url()}/podcasts/${podcastId}/subscribe`)
   }
 
   async unsubscribeToPodcast(podcastId: string): Promise<void> {
-    await this.doFetch('PUT', `${this.url}/podcasts/${podcastId}/unsubscribe`)
+    await this.doFetch('PUT', `${this.url()}/podcasts/${podcastId}/unsubscribe`)
   }
 
   async searchPodcasts(searchQuery: string): Promise<{ podcasts: Podcast[] }> {
     const res = await this.doFetch(
       'GET',
-      `${this.url}/results?search_query=${searchQuery}`,
+      `${this.url()}/results?search_query=${searchQuery}`,
     )
     return {
       podcasts: (res.results || []).map(unmarshalPodcast),
@@ -94,7 +94,7 @@ export default class Client {
   async getPodcastCurations(): Promise<{
     podcastCurations: { curation: Curation; podcasts: Podcast[] }[]
   }> {
-    const res = await this.doFetch('GET', `${this.url}/curations`)
+    const res = await this.doFetch('GET', `${this.url()}/curations`)
     return {
       podcastCurations: (res.results || []).map((r: any) => ({
         curation: r.curation,
@@ -104,7 +104,7 @@ export default class Client {
   }
 
   async getSignedInUser(): Promise<{ user: User; subscriptions: Podcast[] }> {
-    const res = await this.doFetch('GET', `${this.url}/me`)
+    const res = await this.doFetch('GET', `${this.url()}/me`)
     return {
       user: res.user,
       subscriptions: (res.subscriptions || []).map(unmarshalPodcast),
@@ -112,11 +112,11 @@ export default class Client {
   }
 
   async signOutUser(): Promise<void> {
-    await this.doFetch('GET', `${this.url}/signout`)
+    await this.doFetch('GET', `${this.url()}/signout`)
   }
 
   async getUserFeed(): Promise<{ episodes: Episode[] }> {
-    const res = await this.doFetch('GET', `${this.url}/feed`)
+    const res = await this.doFetch('GET', `${this.url()}/feed`)
     return {
       episodes: (res.episodes || []).map(unmarshalEpisode),
     }

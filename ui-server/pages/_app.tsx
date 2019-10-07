@@ -83,7 +83,7 @@ export default withRedux(makeStore)(
       })
 
       /*
-       ** Try to get signed in user session details
+       * Try to get signed in user session details
        */
       bindActionCreators(getSignedInUser, dispatch)()
     }
