@@ -10,5 +10,5 @@
 - name: ensure api-server is started
   service:
     name: api-server
-    state: started
+    state: restarted
     enabled: yes

@@ -8,5 +8,5 @@
 - name: ensure ui-server is started
   service:
     name: ui-server
-    state: started
+    state: restarted
     enabled: yes

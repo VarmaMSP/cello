@@ -1,7 +1,7 @@
 - hosts: hal
   vars:
-    skip_ui_server: false
-    skip_api_server: false
+    skip_ui: false
+    skip_api: false
 
   tasks:
     - include_role:
@@ -12,7 +12,7 @@
 
     - include_role:
         name: ui-server
-      when: skip_ui-server == false
+      when: skip_ui == false
 
     - include_role:
         name: api-server
@@ -21,4 +21,4 @@
         rabbitmq_host: "{{ hostvars['keyser']['private_ip'] }}"
         elasticsearch_host: "{{ hostvars['anton']['private_ip'] }}"
         redis_host: "{{ hostvars['anton']['private_ip'] }}"
-      when: skip_api-server == false
+      when: skip_api == false

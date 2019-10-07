@@ -1,6 +1,6 @@
 - hosts: keyser
   vars:
-    skip_api-server: false
+    skip_api: false
 
   tasks:
     - include_role:
@@ -23,4 +23,4 @@
 
         import_podcast_concurrency: 20
         refresh_podcast_concurrency: 30
-      when: skip_api-server == false
+      when: skip_api == false
