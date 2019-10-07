@@ -1,3 +1,5 @@
+env: dev
+
 mysql:
   address: localhost:3306
   database: phenopod
@@ -59,19 +61,19 @@ jobs:
 
 oauth:
   google:
-    client_id: 844087729764-4kof4gr262r2u0lhtb5d2a3viqr1p08a.apps.googleusercontent.com
-    client_secret: NtmEm0srKHKG-zUMGFccYekR
+    client_id:
+    client_secret:
     redirect_url: http://localhost:8080/api/callback/google
     scopes: ["profile", "email"]
 
   facebook:
-    client_id: 1461695093970060
-    client_secret: f302cd975a5ebef96a295486be7b6aa3
+    client_id:
+    client_secret:
     redirect_url: http://localhost:8080/api/callback/facebook
     scopes: ["email"]
 
   twitter:
-    client_id: cmn3dPHdbvuIwh03R1Cy1ajYr
-    client_secret: RtzXg4suls5qaJgiH3El2UiKwziXe9KNUGUwEYyPhzYSs8FHNM
+    client_id:
+    client_secret:
     redirect_url: http://localhost:8080/api/callback/twitter
     scopes: []
