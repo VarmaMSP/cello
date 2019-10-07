@@ -1,6 +1,7 @@
 package model
 
 type Config struct {
+	Env           string        `mapstructure:"env"`
 	Mysql         Mysql         `mapstructure:"mysql"`
 	Rabbitmq      Rabbitmq      `mapstructure:"rabbitmq"`
 	Elasticsearch Elasticsearch `mapstructure:"elasticsearch"`

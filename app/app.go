@@ -23,6 +23,8 @@ import (
 )
 
 type App struct {
+	HostName string
+
 	Store                store.Store
 	Redis                *redis.Pool
 	ElasticSearch        *elastic.Client
@@ -40,12 +42,12 @@ type App struct {
 func NewApp(config model.Config) (*App, error) {
 	app := &App{}
 
-	dev := true
-	if dev {
+	if config.Env == "dev" {
 		app.Log = log.Output(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
+		app.HostName = "http://localhost:8080"
 	} else {
 		app.Log = zerolog.New(os.Stdout).With().Timestamp().Logger()
-
+		app.HostName = "https://phenopod.com"
 	}
 
 	app.Log.Info().Msg("Connecting to Mysql ...")

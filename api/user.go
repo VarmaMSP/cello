@@ -62,7 +62,7 @@ func SignInWithSocial(accountType string) func(*Context, http.ResponseWriter) {
 			return
 		}
 		c.app.CreateSession(c.req.Context(), user)
-		w.Header().Set(headers.Location, "http://localhost:8080")
+		w.Header().Set(headers.Location, c.app.HostName)
 		w.WriteHeader(http.StatusFound)
 	}
 }
