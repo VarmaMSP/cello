@@ -40,8 +40,8 @@ const ModalEpisode: React.SFC<Props> = (props) => {
       <ModalContainer handleClose={closeModal} closeUponClicking="OVERLAY">
         <div className="flex">
           <img
-            className="w-20 h-20 flex-none object-contain rounded-lg border cursor-pointer"
-            src={getImageUrl(episode.podcastId, 'md')}
+            className="w-24 h-24 flex-none object-contain rounded-lg border cursor-pointer"
+            src={getImageUrl(episode.podcastId, 'sm')}
           />
           <div className="flex flex-col justify-between md:pl-4 pl-3">
             <div>
