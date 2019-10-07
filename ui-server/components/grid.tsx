@@ -44,44 +44,49 @@ const Grid: React.SFC<StateToProps & OwnProps> = ({
   children,
   viewPortSize,
 }) => {
-  let overflowRow = typeof cols === 'number' && !!cols
+  let itemsOverflow = typeof cols === 'number' && !!cols
   let itemsPerRow = typeof cols === 'object' ? cols[viewPortSize] : cols
-  let totalSpacing =
+  let itemWidth =
     typeof totalRowSpacing === 'object'
-      ? totalRowSpacing[viewPortSize]
-      : totalRowSpacing
+      ? (100 - totalRowSpacing[viewPortSize]) / itemsPerRow
+      : (100 - totalRowSpacing) / itemsPerRow
+
+  const items = children.map((child, i) => (
+    <div
+      key={i}
+      className={classNames('flex-none', classNameChild)}
+      style={{ width: !itemsOverflow ? `${itemWidth}%` : undefined }}
+    >
+      {child}
+    </div>
+  ))
 
   // Add Placeholders if required
-  if (children.length % itemsPerRow > 0) {
-    let placeholderCount = itemsPerRow - (children.length % itemsPerRow)
+  let len = items.length
+  if (len % itemsPerRow > 0) {
+    let placeholderCount = itemsPerRow - (len % itemsPerRow)
     while (placeholderCount--) {
-      children.push(<div />)
+      items.push(
+        <div
+          key={len + placeholderCount}
+          className="flex-none"
+          style={{ width: !itemsOverflow ? `${itemWidth}%` : undefined }}
+        />,
+      )
     }
   }
 
   let rowsJsx: JSX.Element[] = []
-  for (let i = 0; i < children.length; i += itemsPerRow) {
+  for (let i = 0; i < items.length; i += itemsPerRow) {
     rowsJsx.push(
       <div
         key={i + itemsPerRow}
         className={classNames('flex justify-around', className, {
-          'flex-wrap-none': overflowRow,
-          'overflow-x-auto': overflowRow,
+          'flex-wrap-none': itemsOverflow,
+          'overflow-x-auto': itemsOverflow,
         })}
       >
-        {children.slice(i, i + itemsPerRow).map((item, j) => (
-          <div
-            key={j}
-            className={classNames('flex-none', classNameChild)}
-            style={{
-              width: !overflowRow
-                ? `${(100 - totalSpacing) / itemsPerRow}%`
-                : undefined,
-            }}
-          >
-            {item}
-          </div>
-        ))}
+        {items.slice(i, i + itemsPerRow)}
       </div>,
     )
   }
