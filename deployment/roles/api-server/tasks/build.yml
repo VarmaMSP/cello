@@ -1,0 +1,29 @@
+- name: ensure build and static directories exists
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0600
+  loop:
+    - "{{ server_build_dir }}"
+    - "{{ server_static_dir }}"
+    - "{{ server_img_dir }}"
+
+- name: compile server
+  command: "/usr/local/go/bin/go build -o {{ server_build_dir }}/server ./cmd/cello/main.go"
+  args:
+    chdir: "{{ cello_path }}"
+  environment:
+    GO111MODULE: "on"
+
+- name: load passwords and oauth variables
+  include_vars:
+    file: "{{ item.file }}"
+    name: "{{ item.name }}"
+  loop:
+    - { file: oauth.yml, name: oauth }
+    - { file: passwords.yml, name: passwords }
+
+- name: ensure server configuration exists
+  template:
+    src: api-server.conf.j2
+    dest: "{{ server_build_dir }}/api-server.conf.yml"

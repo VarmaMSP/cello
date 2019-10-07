@@ -1,6 +1,24 @@
 - hosts: hal
-  roles:
-    - nginx
-    - cello
-    - api-server
-    - ui-server
+  vars:
+    skip_ui_server: false
+    skip_api_server: false
+
+  tasks:
+    - include_role:
+        name: nginx
+
+    - include_role:
+        name: cello
+
+    - include_role:
+        name: ui-server
+      when: skip_ui-server == false
+
+    - include_role:
+        name: api-server
+      vars:
+        mysql_host: "{{ hostvars['keyser']['private_ip'] }}"
+        rabbitmq_host: "{{ hostvars['keyser']['private_ip'] }}"
+        elasticsearch_host: "{{ hostvars['anton']['private_ip'] }}"
+        redis_host: "{{ hostvars['anton']['private_ip'] }}"
+      when: skip_api-server == false

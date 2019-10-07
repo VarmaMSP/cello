@@ -5,6 +5,8 @@
   notify:
     - reload systemd
 
+- meta: flush_handlers
+
 - name: ensure api-server is started
   service:
     name: api-server

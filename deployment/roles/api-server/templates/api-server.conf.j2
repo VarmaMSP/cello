@@ -1,36 +1,36 @@
 mysql:
-  address: {{ hostvars['keyser']['private_ip'] }}:{{ mysql.port }}
-  database: {{ mysql.database }}
-  user: {{ mysql.user }}
+  address: {{ mysql_host }}:{{ mysql_port }}
+  database: {{ mysql_database }}
+  user: {{ mysql_user }}
   password: {{ passwords.mysql }}
 
 rabbitmq:
-  address: {{ hostvars['keyser']['private_ip'] }}:{{ rabbitmq.port }}
-  user: {{ rabbitmq.user }}
+  address: {{ rabbitmq_host }}:{{ rabbitmq_port }}
+  user: {{ rabbitmq_user }}
   password: {{ passwords.rabbitmq }}
 
 elasticsearch:
-  address: {{ hostvars['anton']['private_ip'] }}:{{ elasticsearch.port }}
-  user: {{ elasticsearch.user }}
+  address: {{ elasticsearch_host }}:{{ elasticsearch_port }}
+  user: {{ elasticsearch_user }}
   password: {{ passwords.elasticsearch }}
 
 redis:
-  address: {{ hostvars['anton']['private_ip'] }}:{{ redis.port }}
-  max_idle_conn: 10
+  address: {{ redis_host }}:{{ redis_port }}
+  max_idle_conn: {{ redis_max_idle_conn }}
 
 queues:
   import_podcast: 
     delivery_mode: 2
     consumer_name: import_podcast
     consumer_auto_ack: false
-    consumer_exclusive: true
+    consumer_exclusive: false
     consumer_prefetch_count: 100
 
   refresh_podcast: 
     delivery_mode: 2
     consumer_name: refresh_podcast
     consumer_auto_ack: false
-    consumer_exclusive: true
+    consumer_exclusive: false
     consumer_prefetch_count: 100
 
   create_thumbnail:
@@ -38,24 +38,24 @@ queues:
     consumer_name: create_thumbnail
     consumer_auto_ack: false
     consumer_exclusive: true
-    consumer_prefetch_count: 100
+    consumer_prefetch_count: 10
 
 jobs:
   import_podcast: 
-    enable: {{ jobs.import_podcast.enable }}
-    worker_limit: {{ jobs.import_podcast.worker_limit }}
+    enable: {{ import_podcast_enable }}
+    worker_limit: {{ import_podcast_concurrency }}
 
   refresh_podcast:
-    enable: {{ jobs.refresh_podcast.enable }}
-    worker_limit: {{ jobs.refresh_podcast.worker_limit }}
+    enable: {{ refresh_podcast_enable }}
+    worker_limit: {{ refresh_podcast_concurrency }}
 
   create_thumbnail:
-    enable: {{ jobs.create_thumbnail.enable }}
-    worker_limit: {{ jobs.create_thumbnail.worker_limit }}
+    enable: {{ create_thumbnail_enable }}
+    worker_limit: {{ create_thumbnail_concurrency }}
 
   scheduler:
-    enable: {{ jobs.scheduler.enable }}
-    worker_limit: {{ jobs.scheduler.worker_limit }}
+    enable: {{ scheduler_enable }}
+    worker_limit: {{ scheduler_concurrency }}
 
 oauth:
   google:

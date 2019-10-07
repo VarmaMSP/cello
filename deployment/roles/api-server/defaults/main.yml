@@ -1,41 +1,39 @@
-golang:
-  version: 1.13.1
-  checksum: sha256:94f874037b82ea5353f4061e543681a0e79657f787437974214629af8407d124
+# golang binary
+golang_version: 1.13.1
+golang_checksum: sha256:94f874037b82ea5353f4061e543681a0e79657f787437974214629af8407d124
 
-server:
-  build_dir: /usr/local/api-server
-  static_dir: /var/www/static
-  img_dir: /var/www/img
+# directories
+server_build_dir: /usr/local/api-server
+server_static_dir: /var/www/static
+server_img_dir: /var/www/img
 
-mysql:
-  port: 3306
-  database: phenopod
-  user: read_write
+# Connections
+mysql_host: 127.0.0.1
+mysql_port: 3306
+mysql_database: phenopod
+mysql_user: read_write
 
-rabbitmq:
-  port: 5672
-  user: admin
+rabbitmq_host: 127.0.0.1
+rabbitmq_port: 5672
+rabbitmq_user: admin
 
-elasticsearch:
-  port: 9200
-  user: elastic
+elasticsearch_host: 127.0.0.1
+elasticsearch_port: 9200
+elasticsearch_user: elastic
 
-redis:
-  port: 6379
+redis_host: 127.0.0.1
+redis_port: 6379
+redis_max_idle_conn: 10
 
-jobs:
-  import_podcast:
-    enable: false
-    worker_limit: 15
+# Jobs
+import_podcast_enable: true
+import_podcast_concurrency: 15
 
-  refresh_podcast:
-    enable: false
-    worker_limit: 20
+refresh_podcast_enable: true
+refresh_podcast_concurrency: 20
 
-  create_thumbnail:
-    enable: false
-    worker_limit: 5
+create_thumbnail_enable: true
+create_thumbnail_concurrency: 3
 
-  scheduler:
-    enable: true
-    worker_limit: 10
+scheduler_enable: true
+scheduler_concurrency: 10
