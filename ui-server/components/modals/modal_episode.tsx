@@ -1,9 +1,11 @@
 import ButtonWithIcon from 'components/button_with_icon'
 import { useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 import { getEpisodeById } from 'selectors/entities/episodes'
 import { getPodcastById } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
+import { AppActions, PLAY_EPISODE } from 'types/actions'
 import { Episode, Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
 import { formatEpisodeDuration, formatEpisodePubDate } from 'utils/format'
@@ -15,16 +17,20 @@ interface StateToProps {
   podcast: Podcast
 }
 
+interface DispatchToProps {
+  playEpisode: (episodeId: string) => void
+}
+
 interface OwnProps {
   episodeId: string
   closeModal: () => void
 }
 
-interface Props extends StateToProps, OwnProps {}
+interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
 const ModalEpisode: React.SFC<Props> = (props) => {
   const ref = useRef(null) as React.RefObject<HTMLDivElement>
-  const { episode, podcast, closeModal } = props
+  const { episode, podcast, closeModal, playEpisode } = props
 
   useEffect(() => {
     if (ref.current) {
@@ -64,7 +70,10 @@ const ModalEpisode: React.SFC<Props> = (props) => {
           <ButtonWithIcon
             className="flex-none w-6 text-gray-600 hover:text-black"
             icon="play-outline"
-            onClick={() => {}}
+            onClick={() => {
+              closeModal()
+              playEpisode(episode.id)
+            }}
           />
         </div>
 
@@ -86,6 +95,17 @@ function mapStateToProps(state: AppState, props: OwnProps): StateToProps {
   return { episode, podcast }
 }
 
-export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
-  ModalEpisode,
-)
+function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
+  return {
+    playEpisode: (episodeId: string) =>
+      dispatch({
+        type: PLAY_EPISODE,
+        episodeId,
+      }),
+  }
+}
+
+export default connect<StateToProps, DispatchToProps, OwnProps, AppState>(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ModalEpisode)
