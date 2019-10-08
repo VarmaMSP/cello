@@ -17,7 +17,7 @@ const ModalSignin: React.SFC<Props> = (props) => {
         <div className="h-full pt-8">
           <LogoIcon className="mx-auto" />
           <div className="text-center mt-3 mb-10">
-            The Best web plodcast player
+            Subscribe to podcasts, create playlists and much more
           </div>
           <ButtonSocialSignin
             icon="google-color"

@@ -49,7 +49,7 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
       {!userSignedIn ? (
         <div className="w-full my-3">
           <div className="mb-2 text-center text-sm text-gray-800 tracking-tighter">
-            Subscribe to podcasts, curate episodes and do much more
+            Subscribe to podcasts, create playlists and much more
           </div>
           <div className="w-4/5 h-8 mx-auto">
             <ButtonSignin />
