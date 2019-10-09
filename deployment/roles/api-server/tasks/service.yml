@@ -7,7 +7,7 @@
 
 - meta: flush_handlers
 
-- name: ensure api-server is started
+- name: restart api-server
   service:
     name: api-server
     state: restarted

@@ -5,7 +5,9 @@
   notify:
     - reload systemd
 
-- name: ensure ui-server is started
+- meta: flush_handlers
+
+- name: restart ui-server
   service:
     name: ui-server
     state: restarted
