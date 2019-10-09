@@ -4,32 +4,27 @@ import LoadingPage from 'components/loading_page'
 import React from 'react'
 import { connect } from 'react-redux'
 import { RequestState } from 'reducers/requests/utils'
-import { bindActionCreators } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
-import { PageContext } from 'types/utilities'
+import { AppActions } from 'types/actions'
 
 interface StateToProps {
   reqState: RequestState
+}
+
+interface DispatchToProps {
+  loadTrendingPodcasts: () => void
 }
 
 interface OwnProps {
   scrollY: number
 }
 
-class IndexPage extends React.Component<StateToProps & OwnProps> {
-  static async getInitialProps(ctx: PageContext): Promise<void> {
-    const { store, isServer } = ctx
-    const loadTrendingPodcasts = bindActionCreators(
-      getTrendingPodcasts,
-      store.dispatch,
-    )()
+interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
-    if (!isServer) {
-      await loadTrendingPodcasts
-    }
-  }
-
+class IndexPage extends React.Component<Props> {
   componentDidMount() {
+    this.props.loadTrendingPodcasts()
     window.window.scrollTo(0, this.props.scrollY)
   }
 
@@ -52,6 +47,13 @@ function mapStateToProps(state: AppState): StateToProps {
   }
 }
 
-export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
-  IndexPage,
-)
+function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
+  return {
+    loadTrendingPodcasts: bindActionCreators(getTrendingPodcasts, dispatch),
+  }
+}
+
+export default connect<StateToProps, {}, OwnProps, AppState>(
+  mapStateToProps,
+  mapDispatchToProps,
+)(IndexPage)

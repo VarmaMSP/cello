@@ -113,9 +113,9 @@ export default withRedux(makeStore)(
           {/* Order components by z-axis */}
           <Provider store={store}>
             {/* base padding */}
-            <div className="pl-4 pr-4 pt-20 pb-64 z-0">
+            <div className="pl-4 pr-4 pt-20 pb-32 z-0">
               {/* additonal padding for large screens */}
-              <div className="lg:pl-60 lg:pr-1 lg:pb-36">
+              <div className="lg:pl-60 lg:pr-1 lg:pb-16">
                 {/* additonal padding for extra large screens */}
                 <div className="xl:pl-20 xl:pr-40">
                   <Component {...pageProps} />
