@@ -7,6 +7,7 @@ import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
+import { logPageView } from 'utils/analytics'
 
 interface StateToProps {
   reqState: RequestState
@@ -24,7 +25,9 @@ interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
 class IndexPage extends React.Component<Props> {
   componentDidMount() {
+    logPageView()
     this.props.loadTrendingPodcasts()
+
     window.window.scrollTo(0, this.props.scrollY)
   }
 
@@ -37,7 +40,7 @@ class IndexPage extends React.Component<Props> {
     if (reqState.status == 'SUCCESS') {
       return <Discover />
     }
-    return <>Hey Morty</>
+    return <></>
   }
 }
 

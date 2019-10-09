@@ -7,6 +7,7 @@ import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
+import { logPageView } from 'utils/analytics'
 
 interface StateToProps {
   reqState: RequestState
@@ -26,7 +27,9 @@ class FeedPage extends React.Component<
   static async getInitialProps(): Promise<void> {}
 
   componentDidMount() {
+    logPageView()
     this.props.loadFeed()
+
     window.window.scrollTo(0, this.props.scrollY)
   }
 

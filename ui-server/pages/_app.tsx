@@ -14,6 +14,7 @@ import { makeStore } from 'store'
 import * as T from 'types/actions'
 import { ViewportSize } from 'types/app'
 import { AppContext, PageContext } from 'types/utilities'
+import { initGA } from 'utils/analytics'
 import '../styles/index.css'
 
 export default withRedux(makeStore)(
@@ -86,6 +87,11 @@ export default withRedux(makeStore)(
        * Try to get signed in user session details
        */
       bindActionCreators(getSignedInUser, dispatch)()
+
+      /*
+       * Initialize Google analytics
+       */
+      initGA('UA-149726196-1')
     }
 
     handleViewportSizeChange = () => {

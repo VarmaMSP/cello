@@ -7,6 +7,7 @@ import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators } from 'redux'
 import { AppState } from 'store'
 import { PageContext } from 'types/utilities'
+import { logPageView } from 'utils/analytics'
 
 interface StateToProps {
   reqState: RequestState
@@ -30,6 +31,8 @@ class TrendingPage extends React.Component<StateToProps & OwnProps> {
   }
 
   componentDidMount() {
+    logPageView()
+
     window.window.scrollTo(0, this.props.scrollY)
   }
 

@@ -4,6 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { RequestState } from 'reducers/requests/utils'
 import { AppState } from 'store'
+import { logPageView } from 'utils/analytics'
 
 interface StateToProps {
   reqState: RequestState
@@ -15,6 +16,8 @@ interface OwnProps {
 
 class SubscriptionsPage extends React.Component<StateToProps & OwnProps> {
   componentDidMount() {
+    logPageView()
+
     window.window.scrollTo(0, this.props.scrollY)
   }
 
