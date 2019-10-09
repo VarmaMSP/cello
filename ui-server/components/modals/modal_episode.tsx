@@ -51,7 +51,7 @@ const ModalEpisode: React.SFC<Props> = (props) => {
           />
           <div className="flex flex-col justify-between md:pl-4 pl-3">
             <div>
-              <h1 className="text-base font-medium text-gray-900 leading-tight pb-1 line-clamp-2">
+              <h1 className="md:text-base text-sm font-medium text-gray-800 leading-tight pb-1 line-clamp-3">
                 {episode.title}
               </h1>
               <h2 className="text-sm text-gray-700 line-clamp-2">
@@ -65,7 +65,7 @@ const ModalEpisode: React.SFC<Props> = (props) => {
           <div className="text-sm text-gray-700">
             {`Published on ${formatEpisodePubDate(episode.pubDate, false)}`}
             <span className="mx-2 font-extrabold">&middot;</span>
-            {`${formatEpisodeDuration(episode.duration)} long`}
+            {formatEpisodeDuration(episode.duration)}
           </div>
           <ButtonWithIcon
             className="flex-none w-6 text-gray-600 hover:text-black"
