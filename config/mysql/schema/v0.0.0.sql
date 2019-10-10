@@ -189,7 +189,7 @@ CREATE TABLE `task` (
 );
 
 INSERT INTO `task` (`name`, `type`, `interval`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES ('scrape_itunes', 'PERIODIC', 28800, 0, 1, 0, 0);
-INSERT INTO `task` (`name`, `type`, `interval`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES ('scrape_itunes_charts', 'PERIODIC', , 1800, 0, 1, 0, 0);
+INSERT INTO `task` (`name`, `type`, `interval`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES ('scrape_itunes_charts', 'PERIODIC', 1800, 0, 1, 0, 0);
 INSERT INTO `task` (`name`, `type`, `interval`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES ('schedule_podcast_refresh', 'PERIODIC', 86400, 0, 1, 0, 0);
 
 INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
