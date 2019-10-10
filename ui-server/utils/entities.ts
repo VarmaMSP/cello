@@ -7,7 +7,7 @@ export function unmarshalPodcast(j: any): Podcast {
     author: j.author,
     description: j.description,
     type: j.type,
-    complete: j.complete,
+    complete: j.complete || 0,
   }
 }
 
@@ -19,9 +19,9 @@ export function unmarshalEpisode(j: any): Episode {
     description: j.description,
     mediaUrl: j.media_url,
     mediaType: j.media_type,
-    episode: j.episode,
-    season: j.season,
+    episode: j.episode || 0,
+    season: j.season || 0,
     pubDate: j.pub_date,
-    duration: j.duration,
+    duration: j.duration || 0,
   }
 }
