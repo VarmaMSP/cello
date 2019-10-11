@@ -25,6 +25,6 @@ export type MapOneToOne<_E1 extends Entity, E2 extends Entity> = {
   [id: string]: E2
 }
 
-export type MapOneToMany<_E1 extends Entity, _E2 extends Entity> = {
-  [id: string]: string[]
+export type MapOneToMany<_E1 extends Entity, E2 extends Entity> = {
+  [id: string]: $Id<E2>[]
 }
