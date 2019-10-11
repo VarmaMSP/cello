@@ -26,16 +26,10 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
           type: 'article',
           title: podcast.title,
           description: podcast.description,
-          site_name: 'Phenopod',
           images: [{ url: getImageUrl(podcast.id, 'md') }],
         }}
         twitter={{
           cardType: `summary_large_image`,
-          site: '@phenopod',
-          handle: '@phenopod',
-        }}
-        facebook={{
-          appId: '526472207897979',
         }}
       />
       <div className="flex">

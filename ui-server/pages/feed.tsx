@@ -48,9 +48,6 @@ class FeedPage extends React.Component<
             title="Feed - Phenopod"
             description="Feed"
             canonical="https://phenopod.com/feed"
-            facebook={{
-              appId: '526472207897979',
-            }}
           />
           <ListFeed />
         </>

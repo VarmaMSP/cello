@@ -50,15 +50,6 @@ class IndexPage extends React.Component<Props> {
               type: 'website',
               title: 'Phenopod',
               description: 'Podcast Player for Web',
-              site_name: 'Phenopod',
-            }}
-            twitter={{
-              cardType: 'summary',
-              site: '@phenopod',
-              handle: '@phenopod',
-            }}
-            facebook={{
-              appId: '526472207897979',
             }}
           />
           <Discover />

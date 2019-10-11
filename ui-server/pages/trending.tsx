@@ -55,15 +55,6 @@ class TrendingPage extends React.Component<StateToProps & OwnProps> {
               type: 'article',
               title: 'Trending Podcasts',
               description: 'Trending Podcasts',
-              site_name: 'Phenopod',
-            }}
-            twitter={{
-              cardType: `summary`,
-              site: '@phenopod',
-              handle: '@phenopod',
-            }}
-            facebook={{
-              appId: '526472207897979',
             }}
           />
           <ListTrendingPodcasts />

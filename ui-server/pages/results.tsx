@@ -47,6 +47,7 @@ class ResultsPage extends Component<StateToProps & OwnProps> {
       return (
         <>
           <NextSeo
+            noindex
             title={`${query} - Phenopod`}
             description={`${query} - Phenopod`}
             canonical={`https://phenopod.com/results?query=${query}`}
@@ -55,15 +56,6 @@ class ResultsPage extends Component<StateToProps & OwnProps> {
               type: 'website',
               title: `${query} - Phenopod`,
               description: `${query} - Phenopod`,
-              site_name: 'Phenopod',
-            }}
-            twitter={{
-              cardType: `summary`,
-              site: '@phenopod',
-              handle: '@phenopod',
-            }}
-            facebook={{
-              appId: '526472207897979',
             }}
           />
           <div>

@@ -4,6 +4,7 @@ import Modals from 'components/modals'
 import NavbarSide from 'components/navbar_side'
 import NavbarTop from 'components/navbar_top'
 import withRedux from 'next-redux-wrapper'
+import { DefaultSeo } from 'next-seo'
 import { AppProps, Container } from 'next/app'
 import Head from 'next/head'
 import Router from 'next/router'
@@ -112,16 +113,35 @@ export default withRedux(makeStore)(
       const { Component, pageProps, store } = this.props
       return (
         <Container>
+          {/* Override viewport meta tag set by next js */}
           <Head>
-            <title>phenopod</title>
+            <meta
+              name="viewport"
+              content="width=device-width,minimum-scale=1,initial-scale=0,user-scalable=no"
+            />
           </Head>
+
+          {/* Default seo that can be overidden by individual pages */}
+          <DefaultSeo
+            openGraph={{
+              site_name: 'Phenopod',
+            }}
+            twitter={{
+              handle: '@phenopod',
+              site: '@phenopod',
+              cardType: 'summary',
+            }}
+            facebook={{
+              appId: '526472207897979',
+            }}
+          />
 
           {/* Order components by z-axis */}
           <Provider store={store}>
             {/* base padding */}
-            <div className="pl-4 pr-4 pt-20 pb-32 z-0">
+            <div className="pl-4 pr-4 pt-20 pb-40 z-0">
               {/* additonal padding for large screens */}
-              <div className="lg:pl-60 lg:pr-1 lg:pb-16">
+              <div className="lg:pl-60 lg:pr-1 lg:pb-28">
                 {/* additonal padding for extra large screens */}
                 <div className="xl:pl-20 xl:pr-40">
                   <Component {...pageProps} />
