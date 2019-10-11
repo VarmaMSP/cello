@@ -1,4 +1,5 @@
 import Grid from 'components/grid'
+import { NextSeo } from 'next-seo'
 import Router from 'next/router'
 import React from 'react'
 import { Podcast } from 'types/app'
@@ -21,6 +22,23 @@ const ListTrendingPodcasts: React.SFC<StateToProps> = (props) => {
 
   return (
     <>
+      <NextSeo
+        title="Trending Podcasts - Phenopod"
+        description="Trending podcasts"
+        canonical="https://phenopod.com/trending"
+        openGraph={{
+          url: 'https://phenopod.com/trending',
+          type: 'article',
+          title: 'Trending Podcasts',
+          description: 'Trending Podcasts',
+          images: [
+            { url: getImageUrl(trendingPodcasts[2].id, 'sm') },
+            { url: getImageUrl(trendingPodcasts[3].id, 'sm') },
+            { url: getImageUrl(trendingPodcasts[5].id, 'sm') },
+            { url: getImageUrl(trendingPodcasts[7].id, 'sm') },
+          ],
+        }}
+      />
       <h3 className="text-xl font-sans">{'Podcasts trending today'}</h3>
       <Grid
         cols={{ LG: 3, MD: 1, SM: 1 }}
