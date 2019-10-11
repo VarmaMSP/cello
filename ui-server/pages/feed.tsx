@@ -1,6 +1,7 @@
 import { getUserFeed } from 'actions/user'
 import ListFeed from 'components/list_feed'
 import LoadingPage from 'components/loading_page'
+import { NextSeo } from 'next-seo'
 import React from 'react'
 import { connect } from 'react-redux'
 import { RequestState } from 'reducers/requests/utils'
@@ -40,7 +41,20 @@ class FeedPage extends React.Component<
       return <LoadingPage />
     }
     if (reqState.status == 'SUCCESS') {
-      return <ListFeed />
+      return (
+        <>
+          <NextSeo
+            noindex
+            title="Feed - Phenopod"
+            description="Feed"
+            canonical="https://phenopod.com/feed"
+            facebook={{
+              appId: '526472207897979',
+            }}
+          />
+          <ListFeed />
+        </>
+      )
     }
     return <></>
   }

@@ -9,7 +9,6 @@ import { bindActionCreators } from 'redux'
 import { AppState } from 'store'
 import { PageContext } from 'types/utilities'
 import { logPageView } from 'utils/analytics'
-
 export interface StateToProps {
   reqState: RequestState
 }

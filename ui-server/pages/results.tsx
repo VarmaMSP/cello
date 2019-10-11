@@ -1,6 +1,7 @@
 import { searchPodcasts } from 'actions/podcast'
 import ListSearchResults from 'components/list_search_results'
 import LoadingPage from 'components/loading_page'
+import { NextSeo } from 'next-seo'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { RequestState } from 'reducers/requests/utils'
@@ -44,10 +45,32 @@ class ResultsPage extends Component<StateToProps & OwnProps> {
     }
     if (reqState.status === 'SUCCESS') {
       return (
-        <div>
-          <div className="-mt-1 mb-5 text-gray-700 text-lg lg:text-xl">{`Podcasts matching "${query}"`}</div>
-          <ListSearchResults query={this.props.query} />
-        </div>
+        <>
+          <NextSeo
+            title={`${query} - Phenopod`}
+            description={`${query} - Phenopod`}
+            canonical={`https://phenopod.com/results?query=${query}`}
+            openGraph={{
+              url: `https://phenopod.com/results?query=${query}`,
+              type: 'website',
+              title: `${query} - Phenopod`,
+              description: `${query} - Phenopod`,
+              site_name: 'Phenopod',
+            }}
+            twitter={{
+              cardType: `summary`,
+              site: '@phenopod',
+              handle: '@phenopod',
+            }}
+            facebook={{
+              appId: '526472207897979',
+            }}
+          />
+          <div>
+            <div className="-mt-1 mb-5 text-gray-700 text-lg lg:text-xl">{`Podcasts matching "${query}"`}</div>
+            <ListSearchResults query={this.props.query} />
+          </div>
+        </>
       )
     }
     return <></>
