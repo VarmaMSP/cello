@@ -1,5 +1,6 @@
 import ButtonWithIcon from 'components/button_with_icon'
 import Grid from 'components/grid'
+import { NextSeo } from 'next-seo'
 import { Episode } from 'types/app'
 import { getImageUrl } from 'utils/dom'
 import { formatEpisodeDuration, formatEpisodePubDate } from 'utils/format'
@@ -17,6 +18,23 @@ interface Props extends StateToProps, DispatchToProps {}
 const ListFeed: React.SFC<Props> = (props) => {
   return (
     <>
+      <NextSeo
+        title="Trending Podcasts - Phenopod"
+        description="Trending podcasts"
+        canonical="https://phenopod.com/trending"
+        openGraph={{
+          url: 'https://phenopod.com/trending',
+          type: 'article',
+          title: 'Trending Podcasts',
+          description: 'Trending Podcasts',
+          images: [
+            { url: getImageUrl(props.feed[2].podcastId, 'sm') },
+            { url: getImageUrl(props.feed[3].podcastId, 'sm') },
+            { url: getImageUrl(props.feed[5].podcastId, 'sm') },
+            { url: getImageUrl(props.feed[7].podcastId, 'sm') },
+          ],
+        }}
+      />
       <h1 className="text-xl text-gray-900 mb-5">
         {'Your Feed for last week'}
       </h1>

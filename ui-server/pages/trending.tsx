@@ -1,7 +1,6 @@
 import { getTrendingPodcasts } from 'actions/podcast'
 import ListTrendingPodcasts from 'components/list_trending_podcasts'
 import LoadingPage from 'components/loading_page'
-import { NextSeo } from 'next-seo'
 import React from 'react'
 import { connect } from 'react-redux'
 import { RequestState } from 'reducers/requests/utils'
@@ -44,22 +43,7 @@ class TrendingPage extends React.Component<StateToProps & OwnProps> {
       return <LoadingPage />
     }
     if (reqState.status == 'SUCCESS') {
-      return (
-        <>
-          <NextSeo
-            title="Trending Podcasts - Phenopod"
-            description="Trending podcasts"
-            canonical="https://phenopod.com/trending"
-            openGraph={{
-              url: 'https://phenopod.com/trending',
-              type: 'article',
-              title: 'Trending Podcasts',
-              description: 'Trending Podcasts',
-            }}
-          />
-          <ListTrendingPodcasts />
-        </>
-      )
+      return <ListTrendingPodcasts />
     }
     return <></>
   }
