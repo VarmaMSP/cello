@@ -86,28 +86,9 @@ func NewApp(config model.Config) (*App, error) {
 	app.SessionManager = scs.New()
 	app.SessionManager.Store = redisstore.New(app.Redis)
 
-	app.GoogleOAuthConfig = &oauth2.Config{
-		ClientID:     config.OAuth.Google.ClientId,
-		ClientSecret: config.OAuth.Google.ClientSecret,
-		RedirectURL:  config.OAuth.Google.RedirectUrl,
-		Endpoint:     googleOAuth.Endpoint,
-		Scopes:       config.OAuth.Google.Scopes,
-	}
-
-	app.FacebookOAuthConfig = &oauth2.Config{
-		ClientID:     config.OAuth.Facebook.ClientId,
-		ClientSecret: config.OAuth.Facebook.ClientSecret,
-		RedirectURL:  config.OAuth.Facebook.RedirectUrl,
-		Endpoint:     facebookOAuth.Endpoint,
-		Scopes:       config.OAuth.Facebook.Scopes,
-	}
-
-	app.TwitterOAuthConfig = &oauth1.Config{
-		ConsumerKey:    config.OAuth.Twitter.ClientId,
-		ConsumerSecret: config.OAuth.Twitter.ClientSecret,
-		CallbackURL:    config.OAuth.Twitter.RedirectUrl,
-		Endpoint:       twitterOAuth.AuthorizeEndpoint,
-	}
+	app.GoogleOAuthConfig = NewGoogleOAuthConfig(&config)
+	app.FacebookOAuthConfig = NewFacebookOAuthConfig(&config)
+	app.TwitterOAuthConfig = NewTwitterOAuthConfig(&config)
 
 	return app, nil
 }
@@ -127,4 +108,33 @@ func NewRedisConnPool(config *model.Config) (*redis.Pool, error) {
 		return nil, err
 	}
 	return pool, nil
+}
+
+func NewGoogleOAuthConfig(config *model.Config) *oauth2.Config {
+	return &oauth2.Config{
+		ClientID:     config.OAuth.Google.ClientId,
+		ClientSecret: config.OAuth.Google.ClientSecret,
+		RedirectURL:  config.OAuth.Google.RedirectUrl,
+		Endpoint:     googleOAuth.Endpoint,
+		Scopes:       config.OAuth.Google.Scopes,
+	}
+}
+
+func NewFacebookOAuthConfig(config *model.Config) *oauth2.Config {
+	return &oauth2.Config{
+		ClientID:     config.OAuth.Facebook.ClientId,
+		ClientSecret: config.OAuth.Facebook.ClientSecret,
+		RedirectURL:  config.OAuth.Facebook.RedirectUrl,
+		Endpoint:     facebookOAuth.Endpoint,
+		Scopes:       config.OAuth.Facebook.Scopes,
+	}
+}
+
+func NewTwitterOAuthConfig(config *model.Config) *oauth1.Config {
+	return &oauth1.Config{
+		ConsumerKey:    config.OAuth.Twitter.ClientId,
+		ConsumerSecret: config.OAuth.Twitter.ClientSecret,
+		CallbackURL:    config.OAuth.Twitter.RedirectUrl,
+		Endpoint:       twitterOAuth.AuthorizeEndpoint,
+	}
 }
