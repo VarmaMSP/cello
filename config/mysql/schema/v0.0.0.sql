@@ -134,6 +134,18 @@ CREATE TABLE `episode` (
     INDEX (`pub_date`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+CREATE TABLE `episode_playback` (
+    `episode_id` VARCHAR(20),
+    `played_by` VARCHAR(20),
+    `count` INT,
+    `current_time` INT,
+    `created_at` BIGINT,
+    `updated_at` BIGINT,
+    PRIMARY KEY (`episode_id`, `played_by`),
+    FOREIGN KEY (`episode_id`) REFERENCES `episode` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (`played_by`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 CREATE TABLE `category` (
     `id` INT,
     `parent_id` INT, 

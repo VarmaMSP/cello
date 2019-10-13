@@ -35,6 +35,15 @@ type Episode struct {
 	UpdatedAt   int64  `json:"updated_at,omitempty"`
 }
 
+type EpisodePlayback struct {
+	EpisodeId   string `json:"episode_id,omitempty"`
+	PlayedBy    string `json:"played_by,omitempty"`
+	Count       int    `json:"count,omitempty"`
+	CurrentTime int    `json:"current_time,omitempty"`
+	CreatedAt   int64  `json:"created_at,omitempty"`
+	UpdatedAt   int64  `json:"updated_at,omitempty"`
+}
+
 func (e *Episode) DbColumns() []string {
 	return []string{
 		"id", "podcast_id", "guid", "title",
@@ -52,6 +61,20 @@ func (e *Episode) FieldAddrs() []interface{} {
 		&e.Description, &e.Duration, &e.Link, &e.ImageLink,
 		&e.Explicit, &e.Episode, &e.Season, &e.Type,
 		&e.Block, &e.CreatedAt, &e.UpdatedAt,
+	}
+}
+
+func (e *EpisodePlayback) DbColumns() []string {
+	return []string{
+		"episode_id", "played_by", "count", "current_time",
+		"created_at", "updated_at",
+	}
+}
+
+func (e *EpisodePlayback) FieldAddrs() []interface{} {
+	return []interface{}{
+		&e.EpisodeId, &e.PlayedBy, &e.Count, &e.CurrentTime,
+		&e.CreatedAt, &e.UpdatedAt,
 	}
 }
 
