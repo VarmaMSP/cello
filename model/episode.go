@@ -223,6 +223,16 @@ func (e *Episode) PreSave() {
 	}
 }
 
+func (e *EpisodePlayback) PreSave() {
+	if e.CreatedAt == 0 {
+		e.CreatedAt = Now()
+	}
+
+	if e.UpdatedAt == 0 {
+		e.UpdatedAt = Now()
+	}
+}
+
 func (e *Episode) Sanitize() {
 	e.Guid = ""
 	e.MediaType = ""

@@ -29,6 +29,18 @@ func (s *SqlEpisodeStore) Save(episode *model.Episode) *model.AppError {
 	return nil
 }
 
+func (s *SqlEpisodeStore) SavePlayback(playback *model.EpisodePlayback) *model.AppError {
+	playback.PreSave()
+
+	if _, err := s.InsertOrUpdate("episode_playback", playback, "count = VALUES(count) + 1, current_time = 0, updated_at = ?", model.Now()); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_episode_store.save_playback", err.Error(), http.StatusInternalServerError,
+			map[string]string{"episode_id": playback.EpisodeId, "played_by": playback.PlayedBy},
+		)
+	}
+	return nil
+}
+
 func (s *SqlEpisodeStore) Get(id string) (*model.Episode, *model.AppError) {
 	episode := &model.Episode{}
 	sql := "SELECT " + Cols(episode) + " FROM episode WHERE id = ?"
@@ -86,6 +98,18 @@ func (s *SqlEpisodeStore) GetAllPublishedBetween(from, to *time.Time, podcastIds
 		)
 	}
 	return
+}
+
+func (s *SqlEpisodeStore) SetPlaybackCurrentTime(episodeId, playedBy string, currentTime int) *model.AppError {
+	sql := `UPDATE episode_playback current_time = ?, updated_at = ? WHERE episode_id = ? AND played_by = ?`
+
+	if _, err := s.GetMaster().Exec(sql, currentTime, model.Now(), episodeId, playedBy); err != nil {
+		return model.NewAppError(
+			"store.sql_store.sql_episode_store.set_playback_current_time", err.Error(), http.StatusInternalServerError,
+			map[string]string{"episode_id": episodeId, "played_by": playedBy},
+		)
+	}
+	return nil
 }
 
 func (s *SqlEpisodeStore) Block(podcastId, episodeGuid string) *model.AppError {
