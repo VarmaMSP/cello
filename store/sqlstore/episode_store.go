@@ -32,7 +32,7 @@ func (s *SqlEpisodeStore) Save(episode *model.Episode) *model.AppError {
 func (s *SqlEpisodeStore) SavePlayback(playback *model.EpisodePlayback) *model.AppError {
 	playback.PreSave()
 
-	if _, err := s.InsertOrUpdate("episode_playback", playback, "count = VALUES(count) + 1, current_time = 0, updated_at = ?", model.Now()); err != nil {
+	if _, err := s.InsertOrUpdate("episode_playback", playback, "count = VALUES(count) + 1, updated_at = ?", model.Now()); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_episode_store.save_playback", err.Error(), http.StatusInternalServerError,
 			map[string]string{"episode_id": playback.EpisodeId, "played_by": playback.PlayedBy},
