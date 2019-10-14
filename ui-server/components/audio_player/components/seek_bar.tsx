@@ -77,6 +77,10 @@ export default class SeekBar extends Component<Props, State> {
 
   // Calculate slider clientX when user performs seek action
   getNewSliderPosition = (e: TouchOrMouseEvent): number => {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Touch_events/Supporting_both_TouchEvent_and_MouseEvent
+    // Prevent additional mouse events to be dispatched
+    e.preventDefault() 
+
     const { clientX: clickX } = getClickPosition(e)
     const { clientX: seekBarX, width } = this.getSeekBarPosition()
     if (seekBarX <= clickX && clickX <= seekBarX + width) {
@@ -87,6 +91,8 @@ export default class SeekBar extends Component<Props, State> {
 
   // Seek begins when user presses down anywhere on seekbar
   handleSeekBegin = (e: TouchOrMouseEvent) => {
+    e.preventDefault()
+
     this.setState({
       seeking: true,
       sliderPosition: this.getNewSliderPosition(e),
@@ -94,8 +100,12 @@ export default class SeekBar extends Component<Props, State> {
   }
 
   // Seek completes when user releases press from anywhere on viewport
-  handleSeekComplete = (_: TouchOrMouseEvent) => {
-    if (!this.state.seeking) return
+  handleSeekComplete = (e: TouchOrMouseEvent) => {
+    e.preventDefault()
+
+    if (!this.state.seeking) {
+      return
+    }
 
     const { duration } = this.props
     const { sliderPosition } = this.state
@@ -120,10 +130,10 @@ export default class SeekBar extends Component<Props, State> {
       <>
         <div
           className="relative flex items-center h-4 cursor-pointer select-none"
+          onMouseDown={this.handleSeekBegin}
           onTouchStart={this.handleSeekBegin}
           onTouchMove={this.handleSeek}
           onTouchEnd={this.handleSeekComplete}
-          onMouseDown={this.handleSeekBegin}
         >
           <div
             className="absolute left-0 w-full h-1 bg-gray-300 rounded select-none"
