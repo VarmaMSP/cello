@@ -148,6 +148,22 @@ func IsValidMediaType(mediaType string) bool {
 	return true
 }
 
+// IntFromStr decodes int from string
+func IntFromStr(str string) int {
+	if res, err := strconv.Atoi(str); err == nil {
+		return res
+	}
+	return 0
+}
+
+// Int64FromStr decodes int64 from string
+func Int64FromStr(str string) int64 {
+	if res, err := strconv.ParseInt(str, 10, 64); err == nil {
+		return res
+	}
+	return 0
+}
+
 // MapFromJson will decode a map
 func MapFromJson(data io.Reader) map[string]string {
 	decoder := json.NewDecoder(data)
