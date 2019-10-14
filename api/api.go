@@ -16,10 +16,11 @@ type Api struct {
 	server *http.Server
 	router *httprouter.Router
 
-	SchedulerJob       model.Job
-	ImportPodcastJob   model.Job
-	RefreshPodcastJob  model.Job
-	CreateThumbnailJob model.Job
+	SchedulerJob           model.Job
+	ImportPodcastJob       model.Job
+	RefreshPodcastJob      model.Job
+	CreateThumbnailJob     model.Job
+	SyncEpisodePlaybackJob model.Job
 }
 
 func NewApi(config model.Config) (*Api, error) {
@@ -75,6 +76,16 @@ func NewApi(config model.Config) (*Api, error) {
 		}
 		api.CreateThumbnailJob = job
 		go api.CreateThumbnailJob.Run()
+	}
+
+	if config.Jobs.SyncEpisodePlayback.Enable {
+		api.app.Log.Info().Msg("Starting sync episode playback job...")
+		job, err := job.NewSyncEpisodePlaybackJob(api.app, &config)
+		if err != nil {
+			return nil, err
+		}
+		api.SyncEpisodePlaybackJob = job
+		go api.SyncEpisodePlaybackJob.Run()
 	}
 
 	api.RegisterPodcastHandlers()
