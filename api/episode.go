@@ -9,6 +9,8 @@ import (
 
 func (api *Api) RegisterEpisodeHandlers() {
 	api.router.Handler("GET", "/feed", api.NewHandlerSessionRequired(WeeksFeed))
+	api.router.Handler("POST", "/playback/:episodeId", api.NewHandlerSessionRequired(PlaybackBegin))
+	api.router.Handler("PUT", "/playback/:episodeId/progress", api.NewHandlerSessionRequired(PlaybackProgress))
 }
 
 func WeeksFeed(c *Context, w http.ResponseWriter) {
@@ -35,4 +37,24 @@ func WeeksFeed(c *Context, w http.ResponseWriter) {
 	w.Write(model.EncodeToJson(map[string]interface{}{
 		"episodes": episodes,
 	}))
+}
+
+func PlaybackBegin(c *Context, w http.ResponseWriter) {
+	err := c.app.SaveEpisodePlayback(c.Param("episodeId"), c.session.UserId)
+	if err != nil {
+		c.err = err
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func PlaybackProgress(c *Context, w http.ResponseWriter) {
+	c.app.SaveEpisodeProgress(
+		c.Param("episodeId"),
+		c.session.UserId,
+		model.IntFromStr(c.Body()["current_time"]),
+	)
+
+	w.WriteHeader(http.StatusOK)
 }

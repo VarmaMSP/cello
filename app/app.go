@@ -37,6 +37,8 @@ type App struct {
 	TwitterOAuthConfig  *oauth1.Config
 
 	Log zerolog.Logger
+
+	SyncEpisodePlaybackP *rabbitmq.Producer
 }
 
 func NewApp(config model.Config) (*App, error) {
@@ -89,6 +91,15 @@ func NewApp(config model.Config) (*App, error) {
 	app.GoogleOAuthConfig = NewGoogleOAuthConfig(&config)
 	app.FacebookOAuthConfig = NewFacebookOAuthConfig(&config)
 	app.TwitterOAuthConfig = NewTwitterOAuthConfig(&config)
+
+	app.SyncEpisodePlaybackP, err = rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
+		ExchangeName: rabbitmq.DefaultExchange,
+		QueueName:    model.QUEUE_NAME_SYNC_EPISODE_PLAYBACK,
+		DeliveryMode: config.Queues.SyncEpisodePlayback.DeliveryMode,
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return app, nil
 }
