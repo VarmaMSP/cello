@@ -41,9 +41,10 @@ type Redis struct {
 
 // Queue
 type Queues struct {
-	ImportPodcast   Queue_ `mapstructure:"import_podcast"`
-	RefreshPodcast  Queue_ `mapstructure:"refresh_podcast"`
-	CreateThumbnail Queue_ `mapstructure:"create_thumbnail"`
+	ImportPodcast       Queue_ `mapstructure:"import_podcast"`
+	RefreshPodcast      Queue_ `mapstructure:"refresh_podcast"`
+	CreateThumbnail     Queue_ `mapstructure:"create_thumbnail"`
+	SyncEpisodePlayback Queue_ `mapstructure:"sync_episode_playback"`
 }
 
 type Queue_ struct {
@@ -56,10 +57,11 @@ type Queue_ struct {
 
 // Job
 type Jobs struct {
-	Scheduler       Job_ `mapstructure:"scheduler"`
-	ImportPodcast   Job_ `mapstructure:"import_podcast"`
-	RefreshPodcast  Job_ `mapstructure:"refresh_podcast"`
-	CreateThumbnail Job_ `mapstructure:"create_thumbnail"`
+	Scheduler           Job_ `mapstructure:"scheduler"`
+	ImportPodcast       Job_ `mapstructure:"import_podcast"`
+	RefreshPodcast      Job_ `mapstructure:"refresh_podcast"`
+	CreateThumbnail     Job_ `mapstructure:"create_thumbnail"`
+	SyncEpisodePlayback Job_ `mapstructure:"sync_episode_playback"`
 }
 
 type Job_ struct {

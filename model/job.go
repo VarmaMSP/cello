@@ -1,17 +1,19 @@
 package model
 
 const (
-	JOB_NAME_CREATE_THUMBNAIL = "create_thumbnail"
-	JOB_NAME_IMPORT_PODCAST   = "import_podcast"
-	JOB_NAME_REFRESH_PODCAST  = "refresh_podcast"
+	JOB_NAME_CREATE_THUMBNAIL      = "create_thumbnail"
+	JOB_NAME_IMPORT_PODCAST        = "import_podcast"
+	JOB_NAME_REFRESH_PODCAST       = "refresh_podcast"
+	JOB_NAME_SYNC_EPISODE_PLAYBACK = "sync_episode_playback"
 
 	TASK_NAME_SCRAPE_ITUNES            = "scrape_itunes"
 	TASK_NAME_SCRAPE_ITUNES_CHARTS     = "scrape_itunes_charts"
 	TASK_NAME_SCHEDULE_PODCAST_REFRESH = "schedule_podcast_refresh"
 
-	QUEUE_NAME_CREATE_THUMBNAIL = "create_thumbnail"
-	QUEUE_NAME_IMPORT_PODCAST   = "import_podcast"
-	QUEUE_NAME_REFRESH_PODCAST  = "refresh_podcast"
+	QUEUE_NAME_CREATE_THUMBNAIL      = "create_thumbnail"
+	QUEUE_NAME_IMPORT_PODCAST        = "import_podcast"
+	QUEUE_NAME_REFRESH_PODCAST       = "refresh_podcast"
+	QUEUE_NAME_SYNC_EPISODE_PLAYBACK = "sync_episode_playback"
 
 	TASK_TYPE_PERIODIC  = "PERIODIC"
 	TASK_TYPE_ONEOFF    = "ONEOFF"
