@@ -1,3 +1,4 @@
+import client from 'client'
 import React, { Component } from 'react'
 import { AudioState, Episode, Podcast, ViewportSize } from 'types/app'
 import AudioPlayerLarge from './audio_player_large'
@@ -82,6 +83,15 @@ export default class AudioPlayer extends Component<
     if (this.props.episodeId !== '') {
       this.audio.src = this.props.episode.mediaUrl
     }
+
+    setInterval(() => {
+      if (this.props.audioState === 'PLAYING') {
+        client.syncPlaybackProgress(
+          this.props.episodeId,
+          this.state.currentTime,
+        )
+      }
+    }, 5000)
   }
 
   handleActionButtonPress = () => {

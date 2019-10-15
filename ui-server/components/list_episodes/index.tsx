@@ -1,5 +1,6 @@
+import { playEpisode } from 'actions/episode'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { makeGetEpisodesInPodcast } from 'selectors/entities/episodes'
 import { AppState } from 'store'
 import * as T from 'types/actions'
@@ -21,10 +22,7 @@ function makeMapStateToProps() {
 function dispatchToProps(dispatch: Dispatch<T.AppActions>) {
   return {
     playEpisode: (episodeId: string) =>
-      dispatch({
-        type: T.PLAY_EPISODE,
-        episodeId,
-      }),
+      bindActionCreators(playEpisode, dispatch)(episodeId),
     showEpisodeModal: (episodeId: string) =>
       dispatch({
         type: T.SHOW_EPISODE_MODAL,

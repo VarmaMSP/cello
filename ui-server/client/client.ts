@@ -129,4 +129,17 @@ export default class Client {
     )
     return res.map(unmarshalPodcast)
   }
+
+  async syncPlayback(episodeId: string): Promise<void> {
+    await this.doFetch('POST', `${this.url()}/sync/${episodeId}`)
+  }
+
+  async syncPlaybackProgress(
+    episodeId: string,
+    currentTime: number,
+  ): Promise<void> {
+    await this.doFetch('POST', `${this.url()}/sync/${episodeId}/progress`, {
+      current_time: Math.ceil(currentTime).toString(),
+    })
+  }
 }
