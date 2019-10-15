@@ -27,7 +27,7 @@ const ModalContainer: React.SFC<Props> = (props) => {
   return (
     <div
       ref={ref}
-      className="modal md:px-6 px-4 py-6  bg-white border md:border-2 md:border-gray-300 border-gray-400 shadow z-20"
+      className="modal md:px-6 px-4 py-6  bg-white border shadow z-20"
     >
       {closeUponClicking === 'CROSS' && (
         <div className="w-full h-5 relative">
