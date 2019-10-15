@@ -101,7 +101,7 @@ func (s *SqlEpisodeStore) GetAllPublishedBetween(from, to *time.Time, podcastIds
 }
 
 func (s *SqlEpisodeStore) SetPlaybackCurrentTime(episodeId, playedBy string, currentTime int) *model.AppError {
-	sql := `UPDATE episode_playback current_time = ?, updated_at = ? WHERE episode_id = ? AND played_by = ?`
+	sql := `UPDATE episode_playback SET current_time_ = ?, updated_at = ? WHERE episode_id = ? AND played_by = ?`
 
 	if _, err := s.GetMaster().Exec(sql, currentTime, model.Now(), episodeId, playedBy); err != nil {
 		return model.NewAppError(

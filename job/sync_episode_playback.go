@@ -2,6 +2,7 @@ package job
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/streadway/amqp"
@@ -61,7 +62,7 @@ func (job *SyncEpisodePlaybackJob) Run() {
 }
 
 func (job *SyncEpisodePlaybackJob) Call(deliveries []amqp.Delivery) {
-	var progress map[string]*model.EpisodePlayback
+	progress := map[string]*model.EpisodePlayback{}
 	for _, delivery := range deliveries {
 		var playback model.EpisodePlayback
 		if err := json.Unmarshal(delivery.Body, &playback); err != nil {
@@ -75,6 +76,9 @@ func (job *SyncEpisodePlaybackJob) Call(deliveries []amqp.Delivery) {
 	}
 
 	for _, playback := range progress {
-		job.Store.Episode().SetPlaybackCurrentTime(playback.EpisodeId, playback.PlayedBy, playback.CurrentTime)
+		err := job.Store.Episode().SetPlaybackCurrentTime(playback.EpisodeId, playback.PlayedBy, playback.CurrentTime)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
