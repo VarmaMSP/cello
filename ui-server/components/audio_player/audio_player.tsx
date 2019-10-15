@@ -45,6 +45,7 @@ export default class AudioPlayer extends Component<
 
   componentDidMount() {
     this.audio = document.createElement('audio')
+    this.audio.preload = 'auto'
 
     // Play
     this.audio.addEventListener('canplay', () => {
