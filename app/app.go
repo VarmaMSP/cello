@@ -52,38 +52,35 @@ func NewApp(config model.Config) (*App, error) {
 		app.HostName = "https://phenopod.com"
 	}
 
+	var err error
+
 	app.Log.Info().Msg("Connecting to Mysql ...")
-	store, err := sqlstore.NewSqlStore(&config)
+	app.Store, err = sqlstore.NewSqlStore(&config)
 	if err != nil {
 		return nil, err
 	}
-	app.Store = store
 
 	app.Log.Info().Msg("Connecting to redis ...")
-	redisConnPool, err := NewRedisConnPool(&config)
+	app.Redis, err = NewRedisConnPool(&config)
 	if err != nil {
 		return nil, err
 	}
-	app.Redis = redisConnPool
 
 	app.Log.Info().Msg("Connecting to ElasticSearch ...")
-	elasticSearch, err := elasticsearch.NewClient(&config)
+	app.ElasticSearch, err = elasticsearch.NewClient(&config)
 	if err != nil {
 		return nil, err
 	}
-	app.ElasticSearch = elasticSearch
 
 	app.Log.Info().Msg("Connecting to Rabbitmq ...")
-	rabbitmqProducerConn, err := rabbitmq.NewConnection(&config)
+	app.RabbitmqProducerConn, err = rabbitmq.NewConnection(&config)
 	if err != nil {
 		return nil, err
 	}
-	rabbitmqConsumerConn, err := rabbitmq.NewConnection(&config)
+	app.RabbitmqConsumerConn, err = rabbitmq.NewConnection(&config)
 	if err != nil {
 		return nil, err
 	}
-	app.RabbitmqProducerConn = rabbitmqProducerConn
-	app.RabbitmqConsumerConn = rabbitmqConsumerConn
 
 	app.SessionManager = scs.New()
 	app.SessionManager.Store = redisstore.New(app.Redis)
