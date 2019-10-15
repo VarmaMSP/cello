@@ -66,7 +66,7 @@ func (e *Episode) FieldAddrs() []interface{} {
 
 func (e *EpisodePlayback) DbColumns() []string {
 	return []string{
-		"episode_id", "played_by", "count", "current_time",
+		"episode_id", "played_by", "count_", "current_time_",
 		"created_at", "updated_at",
 	}
 }
@@ -224,6 +224,10 @@ func (e *Episode) PreSave() {
 }
 
 func (e *EpisodePlayback) PreSave() {
+	if e.Count == 0 {
+		e.Count = 1
+	}
+
 	if e.CreatedAt == 0 {
 		e.CreatedAt = Now()
 	}

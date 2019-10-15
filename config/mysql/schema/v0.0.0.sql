@@ -137,8 +137,8 @@ CREATE TABLE `episode` (
 CREATE TABLE `episode_playback` (
     `episode_id` VARCHAR(20),
     `played_by` VARCHAR(20),
-    `count` INT,
-    `current_time` INT,
+    `count_` INT,
+    `current_time_` INT,
     `created_at` BIGINT,
     `updated_at` BIGINT,
     PRIMARY KEY (`episode_id`, `played_by`),
