@@ -18,6 +18,10 @@ func (app *App) GetAllEpisodesPubblishedBetween(from, to *time.Time, podcastIds 
 	return app.Store.Episode().GetAllPublishedBetween(from, to, podcastIds)
 }
 
+func (app *App) GetAllEpisodePlayabacks(episodeIds []string, userId string) ([]*model.EpisodePlayback, *model.AppError) {
+	return app.Store.Episode().GetAllPlaybacks(episodeIds, userId)
+}
+
 func (app *App) SaveEpisodePlayback(episodeId, userId string) *model.AppError {
 	return app.Store.Episode().SavePlayback(&model.EpisodePlayback{
 		EpisodeId: episodeId,

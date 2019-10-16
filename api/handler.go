@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-http-utils/headers"
@@ -26,6 +27,11 @@ func (c *Context) Param(key string) string {
 
 func (c *Context) Body() (m map[string]string) {
 	return model.MapFromJson(c.req.Body)
+}
+
+func (c *Context) DecodeBody(i interface{}) error {
+	decoder := json.NewDecoder(c.req.Body)
+	return decoder.Decode(i)
 }
 
 type Handler struct {
