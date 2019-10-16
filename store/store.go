@@ -47,6 +47,7 @@ type EpisodeStore interface {
 	Get(episodeId string) (*model.Episode, *model.AppError)
 	GetAllByPodcast(podcastId string, limit, offset int) ([]*model.Episode, *model.AppError)
 	GetAllPublishedBetween(from, to *time.Time, podcastIds []string) ([]*model.Episode, *model.AppError)
+	GetAllPlaybacks(episodeIds []string, userId string) ([]*model.EpisodePlayback, *model.AppError)
 	SetPlaybackCurrentTime(episodeId, userId string, currentTime int) *model.AppError
 	Block(podcastId, episodeGuid string) *model.AppError
 }

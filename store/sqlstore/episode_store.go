@@ -100,6 +100,30 @@ func (s *SqlEpisodeStore) GetAllPublishedBetween(from, to *time.Time, podcastIds
 	return
 }
 
+func (s *SqlEpisodeStore) GetAllPlaybacks(episodeIds []string, userId string) (res []*model.EpisodePlayback, appE *model.AppError) {
+	sql := "SELECT " + Cols(&model.EpisodePlayback{}, "episode_playback") + ` FROM episode_playback
+		WHERE episode_id IN (` + strings.Join(Replicate("?", len(episodeIds)), ",") + `) AND played_by = ?`
+
+	var values []interface{}
+	for _, episodeId := range episodeIds {
+		values = append(values, episodeId)
+	}
+	values = append(values, userId)
+
+	copyTo := func() []interface{} {
+		tmp := &model.EpisodePlayback{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql, values...); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_episode_store.get_all_playbacks", err.Error(), http.StatusInternalServerError, nil,
+		)
+	}
+	return
+}
+
 func (s *SqlEpisodeStore) SetPlaybackCurrentTime(episodeId, playedBy string, currentTime int) *model.AppError {
 	sql := `UPDATE episode_playback SET current_time_ = ?, updated_at = ? WHERE episode_id = ? AND played_by = ?`
 
