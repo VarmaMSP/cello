@@ -9,8 +9,16 @@ export function getPlayingEpisodeId(state: AppState) {
   return state.ui.player.episode
 }
 
+export function getAudioDuration(state: AppState) {
+  return state.ui.player.duration
+}
+
 export function getAudioState(state: AppState) {
   return state.ui.player.audioState
+}
+
+export function getAudioCurrentTime(state: AppState) {
+  return state.ui.player.currentTime
 }
 
 export function getExpandOnMobile(state: AppState) {

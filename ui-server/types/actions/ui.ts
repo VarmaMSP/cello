@@ -28,17 +28,30 @@ export interface SearchBarTextChangeAction {
 
 // Audio Player Actions
 export const PLAY_EPISODE = 'PLAY_EPISODE'
+export const SET_DURATION = 'SET_DURATION'
 export const SET_AUDIO_STATE = 'SET_AUDIO_STATE'
+export const SET_CURRENT_TIME = 'SET_CURRENT_TIME'
 export const TOGGLE_EXPAND_ON_MOBILE = 'TOGGLE_MOBILE_PLAYER' // TODO: The UI change has to be depricated
 
 export interface PlayEpisodeAction {
   type: typeof PLAY_EPISODE
   episodeId: string
+  currentTime: number
+}
+
+export interface SetDurationAction {
+  type: typeof SET_DURATION
+  duration: number
 }
 
 export interface SetAudioStateAction {
   type: typeof SET_AUDIO_STATE
   state: AudioState
+}
+
+export interface SetCurrentTimeAction {
+  type: typeof SET_CURRENT_TIME
+  currentTime: number
 }
 
 export interface ToggleExpandOnMobileAction {
@@ -54,5 +67,7 @@ export type UiActionTypes =
   | SearchBarTextChangeAction
   // Audio Player
   | PlayEpisodeAction
+  | SetDurationAction
   | SetAudioStateAction
+  | SetCurrentTimeAction
   | ToggleExpandOnMobileAction

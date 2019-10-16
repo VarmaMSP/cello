@@ -11,6 +11,15 @@ const episode: Reducer<string, T.AppActions> = (state = '', action) => {
   }
 }
 
+const duration: Reducer<number, T.AppActions> = (state = 0, action) => {
+  switch (action.type) {
+    case T.SET_DURATION:
+      return action.duration
+    default:
+      return state
+  }
+}
+
 const audioState: Reducer<AudioState, T.AppActions> = (
   state = 'LOADING',
   action,
@@ -18,6 +27,17 @@ const audioState: Reducer<AudioState, T.AppActions> = (
   switch (action.type) {
     case T.SET_AUDIO_STATE:
       return action.state
+    default:
+      return state
+  }
+}
+
+const currentTime: Reducer<number, T.AppActions> = (state = 0, action) => {
+  switch (action.type) {
+    case T.PLAY_EPISODE:
+      return action.currentTime
+    case T.SET_CURRENT_TIME:
+      return action.currentTime
     default:
       return state
   }
@@ -37,6 +57,8 @@ const expandOnMobile: Reducer<boolean, T.AppActions> = (
 
 export default combineReducers({
   episode,
+  duration,
   audioState,
+  currentTime,
   expandOnMobile,
 })
