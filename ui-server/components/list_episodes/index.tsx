@@ -22,8 +22,7 @@ function makeMapStateToProps() {
 
 function dispatchToProps(dispatch: Dispatch<T.AppActions>): DispatchToProps {
   return {
-    playEpisode: (episodeId: string) =>
-      bindActionCreators(beginPlayback, dispatch)(episodeId),
+    playEpisode: bindActionCreators(beginPlayback, dispatch),
     showEpisodeModal: (episodeId: string) =>
       dispatch({
         type: T.SHOW_EPISODE_MODAL,

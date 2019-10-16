@@ -8,31 +8,24 @@ export interface StateToProps {
   episodeId: string
   episode: Episode
   podcast: Podcast
+  duration: number
   audioState: AudioState
+  currentTime: number
   viewportSize: ViewportSize
   expandOnMobile: boolean
 }
 
 export interface DispatchToProps {
   syncPlayback: (episodeId: string, currentTime: number) => void
+  setDuration: (t: number) => void
   setAudioState: (s: AudioState) => void
+  setCurrentTime: (t: number) => void
   toggleExpandOnMobile: () => void
 }
 
-interface State {
-  duration: number
-  currentTime: number
-}
-
 export default class AudioPlayer extends Component<
-  StateToProps & DispatchToProps,
-  State
+  StateToProps & DispatchToProps
 > {
-  state = {
-    duration: 0,
-    currentTime: 0,
-  }
-
   // Avoid creating audio element in the constructor
   // Because document obect is not available on the server
   audio: HTMLAudioElement = {} as any
@@ -41,6 +34,7 @@ export default class AudioPlayer extends Component<
     const { episodeId } = this.props
     if (episodeId !== '' && episodeId !== prevProps.episodeId) {
       this.audio.src = this.props.episode.mediaUrl
+      this.audio.currentTime = this.props.currentTime
     }
   }
 
@@ -73,11 +67,16 @@ export default class AudioPlayer extends Component<
     })
     // Duration
     this.audio.addEventListener('durationchange', () => {
-      this.setState({ duration: this.audio.duration })
+      this.props.setDuration(this.audio.duration)
     })
     // Current time
     this.audio.addEventListener('timeupdate', () => {
-      this.setState({ currentTime: this.audio.currentTime })
+      if (
+        Math.floor(this.audio.currentTime) >=
+        Math.floor(this.props.currentTime) + 1
+      ) {
+        this.props.setCurrentTime(this.audio.currentTime)
+      }
     })
 
     if (this.props.episodeId !== '') {
@@ -85,9 +84,7 @@ export default class AudioPlayer extends Component<
     }
 
     setInterval(() => {
-      const { currentTime } = this.state
-      const { episodeId, syncPlayback, audioState } = this.props
-
+      const { episodeId, syncPlayback, audioState, currentTime } = this.props
       if (audioState === 'PLAYING') {
         syncPlayback(episodeId, currentTime)
       }
@@ -109,21 +106,22 @@ export default class AudioPlayer extends Component<
 
   handleSeek = (t: number) => {
     this.audio.currentTime = t
-    this.setState({ currentTime: t })
+    this.props.setCurrentTime(t)
   }
 
   handleFastForward = (t: number) => {
-    const { currentTime } = this.state
+    const { currentTime, setCurrentTime } = this.props
     this.audio.currentTime = currentTime + t
-    this.setState({ currentTime: currentTime + t })
+    setCurrentTime(currentTime)
   }
 
   render() {
-    const { currentTime, duration } = this.state
     const {
       podcast,
       episode,
+      duration,
       audioState,
+      currentTime,
       viewportSize,
       expandOnMobile,
     } = this.props

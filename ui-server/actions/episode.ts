@@ -5,17 +5,17 @@ import { getPlayingEpisodeId } from 'selectors/ui/player'
 import { AppState } from 'store'
 import * as T from 'types/actions'
 
-export function beginPlayback(episodeId: string) {
+export function beginPlayback(episodeId: string, currentTime: number) {
   return async (dispatch: Dispatch<T.AppActions>, getState: () => AppState) => {
     const state = getState()
     if (!getIsUserSignedIn(state) || getPlayingEpisodeId(state) === episodeId) {
-      dispatch({ type: T.PLAY_EPISODE, episodeId })
+      dispatch({ type: T.PLAY_EPISODE, episodeId, currentTime })
       return
     }
 
     try {
       await client.syncPlayback(episodeId)
-      dispatch({ type: T.PLAY_EPISODE, episodeId })
+      dispatch({ type: T.PLAY_EPISODE, episodeId, currentTime })
     } catch (err) {}
   }
 }

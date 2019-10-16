@@ -101,6 +101,7 @@ function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
       dispatch({
         type: PLAY_EPISODE,
         episodeId,
+        currentTime: 0,
       }),
   }
 }

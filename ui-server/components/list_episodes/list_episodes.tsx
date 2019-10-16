@@ -10,7 +10,7 @@ export interface StateToProps {
 }
 
 export interface DispatchToProps {
-  playEpisode: (episodeId: string) => void
+  playEpisode: (episodeId: string, currentTime: number) => void
   showEpisodeModal: (episodeId: string) => void
   loadEpisodePlaybacks: (episodeIds: string[]) => void
 }
@@ -68,7 +68,12 @@ const ListEpisodes: React.SFC<Props> = ({
           <ButtonWithIcon
             className="flex-none md:w-8 w-6 mx-auto text-gray-600 hover:text-black"
             icon="play-outline"
-            onClick={() => playEpisode(id)}
+            onClick={() =>
+              playEpisode(
+                id,
+                episodePlaybacks[id] ? episodePlaybacks[id].currentTime : 0,
+              )
+            }
           />
         </div>
       ))}

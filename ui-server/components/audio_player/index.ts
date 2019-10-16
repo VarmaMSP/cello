@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { getViewportSize } from 'selectors/browser/viewport'
 import {
+  getAudioCurrentTime,
+  getAudioDuration,
   getAudioState,
   getExpandOnMobile,
   getPlayingEpisodeId,
@@ -22,7 +24,9 @@ function makeMapStateToProps() {
     episodeId: getPlayingEpisodeId(state),
     episode: getPlayingEpisode(state),
     podcast: getPlayingPodcast(state),
+    duration: getAudioDuration(state),
     audioState: getAudioState(state),
+    currentTime: getAudioCurrentTime(state),
     viewportSize: getViewportSize(state),
     expandOnMobile: getExpandOnMobile(state),
   })
@@ -31,8 +35,11 @@ function makeMapStateToProps() {
 function mapDispatchToProps(dispatch: Dispatch<T.AppActions>): DispatchToProps {
   return {
     syncPlayback: bindActionCreators(syncPlayback, dispatch),
+    setDuration: (t: number) => dispatch({ type: T.SET_DURATION, duration: t }),
     setAudioState: (s: AudioState) =>
       dispatch({ type: T.SET_AUDIO_STATE, state: s }),
+    setCurrentTime: (t: number) =>
+      dispatch({ type: T.SET_CURRENT_TIME, currentTime: t }),
     toggleExpandOnMobile: () => dispatch({ type: T.TOGGLE_EXPAND_ON_MOBILE }),
   }
 }
