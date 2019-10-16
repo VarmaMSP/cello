@@ -1,5 +1,6 @@
+import { syncPlayback } from 'actions/episode'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { getViewportSize } from 'selectors/browser/viewport'
 import {
   getAudioState,
@@ -29,6 +30,7 @@ function makeMapStateToProps() {
 
 function mapDispatchToProps(dispatch: Dispatch<T.AppActions>): DispatchToProps {
   return {
+    syncPlayback: bindActionCreators(syncPlayback, dispatch),
     setAudioState: (s: AudioState) =>
       dispatch({ type: T.SET_AUDIO_STATE, state: s }),
     toggleExpandOnMobile: () => dispatch({ type: T.TOGGLE_EXPAND_ON_MOBILE }),
