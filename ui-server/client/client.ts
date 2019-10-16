@@ -1,6 +1,10 @@
 import fetch from 'isomorphic-unfetch'
-import { Curation, Episode, Podcast, User } from 'types/app'
-import { unmarshalEpisode, unmarshalPodcast } from 'utils/entities'
+import { Curation, Episode, EpisodePlayback, Podcast, User } from 'types/app'
+import {
+  unmarshalEpisode,
+  unmarshalEpisodePlayback,
+  unmarshalPodcast,
+} from 'utils/entities'
 
 export interface RequestException {
   url: string
@@ -141,5 +145,18 @@ export default class Client {
     await this.doFetch('POST', `${this.url()}/sync/${episodeId}/progress`, {
       current_time: Math.ceil(currentTime).toString(),
     })
+  }
+
+  async getEpisodePlaybacks(
+    episodeIds: string[],
+  ): Promise<{ playbacks: EpisodePlayback[] }> {
+    console.log('callled')
+    const res = await this.doFetch('PUT', `${this.url()}/playback`, {
+      episode_ids: episodeIds,
+    })
+    console.log(res)
+    return {
+      playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),
+    }
   }
 }
