@@ -2,6 +2,7 @@ package app
 
 import (
 	"os"
+	"time"
 
 	"github.com/alexedwards/scs/redisstore"
 	"github.com/alexedwards/scs/v2"
@@ -84,6 +85,7 @@ func NewApp(config model.Config) (*App, error) {
 
 	app.SessionManager = scs.New()
 	app.SessionManager.Store = redisstore.New(app.Redis)
+	app.SessionManager.Lifetime = 20 * 24 * time.Hour
 
 	app.GoogleOAuthConfig = NewGoogleOAuthConfig(&config)
 	app.FacebookOAuthConfig = NewFacebookOAuthConfig(&config)
