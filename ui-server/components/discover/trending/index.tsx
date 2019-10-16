@@ -21,7 +21,7 @@ const Trending: React.SFC<StateToProps> = (props) => {
         </h3>
         <Link href="/trending" scroll={false}>
           <a>
-            <div className="flex align-center text-lg text-green-600">
+            <div className="flex items-center text-lg text-green-600">
               {'see more'}
             </div>
           </a>

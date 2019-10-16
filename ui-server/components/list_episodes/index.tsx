@@ -1,7 +1,8 @@
-import { playEpisode } from 'actions/episode'
+import { beginPlayback, getEpisodePlaybacks } from 'actions/episode'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { makeGetEpisodesInPodcast } from 'selectors/entities/episodes'
+import { getUserEpisodePlaybacks } from 'selectors/entities/users'
 import { AppState } from 'store'
 import * as T from 'types/actions'
 import ListEpisodes, {
@@ -13,21 +14,22 @@ import ListEpisodes, {
 function makeMapStateToProps() {
   const getEpisodesInPodcast = makeGetEpisodesInPodcast()
 
-  return (state: AppState, props: OwnProps): StateToProps => ({
-    ...props,
-    episodes: getEpisodesInPodcast(state, props.podcastId),
+  return (state: AppState, { podcastId }: OwnProps): StateToProps => ({
+    episodes: getEpisodesInPodcast(state, podcastId),
+    episodePlaybacks: getUserEpisodePlaybacks(state),
   })
 }
 
-function dispatchToProps(dispatch: Dispatch<T.AppActions>) {
+function dispatchToProps(dispatch: Dispatch<T.AppActions>): DispatchToProps {
   return {
     playEpisode: (episodeId: string) =>
-      bindActionCreators(playEpisode, dispatch)(episodeId),
+      bindActionCreators(beginPlayback, dispatch)(episodeId),
     showEpisodeModal: (episodeId: string) =>
       dispatch({
         type: T.SHOW_EPISODE_MODAL,
         episodeId,
       }),
+    loadEpisodePlaybacks: bindActionCreators(getEpisodePlaybacks, dispatch),
   }
 }
 

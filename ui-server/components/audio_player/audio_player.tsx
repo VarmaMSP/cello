@@ -1,4 +1,3 @@
-import client from 'client'
 import React, { Component } from 'react'
 import { AudioState, Episode, Podcast, ViewportSize } from 'types/app'
 import AudioPlayerLarge from './audio_player_large'
@@ -15,6 +14,7 @@ export interface StateToProps {
 }
 
 export interface DispatchToProps {
+  syncPlayback: (episodeId: string, currentTime: number) => void
   setAudioState: (s: AudioState) => void
   toggleExpandOnMobile: () => void
 }
@@ -85,11 +85,11 @@ export default class AudioPlayer extends Component<
     }
 
     setInterval(() => {
-      if (this.props.audioState === 'PLAYING') {
-        client.syncPlaybackProgress(
-          this.props.episodeId,
-          this.state.currentTime,
-        )
+      const { currentTime } = this.state
+      const { episodeId, syncPlayback, audioState } = this.props
+
+      if (audioState === 'PLAYING') {
+        syncPlayback(episodeId, currentTime)
       }
     }, 5000)
   }
