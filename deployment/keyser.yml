@@ -18,9 +18,12 @@
         elasticsearch_host: "{{ hostvars['anton']['private_ip'] }}"
         redis_host: "{{ hostvars['anton']['private_ip'] }}"
 
+        import_podcast_enable: true
+        refresh_podcast_enable: true
         create_thumbnail_enable: false
         scheduler_enable: false
+        sync_episode_playback_enable: false
 
         import_podcast_concurrency: 20
-        refresh_podcast_concurrency: 30
+        refresh_podcast_concurrency: 20
       when: skip_api == false

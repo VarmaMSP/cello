@@ -21,14 +21,14 @@ redis:
   max_idle_conn: {{ redis_max_idle_conn }}
 
 queues:
-  import_podcast: 
+  import_podcast:
     delivery_mode: 2
     consumer_name: import_podcast
     consumer_auto_ack: false
     consumer_exclusive: false
     consumer_prefetch_count: 100
 
-  refresh_podcast: 
+  refresh_podcast:
     delivery_mode: 2
     consumer_name: refresh_podcast
     consumer_auto_ack: false
@@ -41,9 +41,16 @@ queues:
     consumer_auto_ack: false
     consumer_exclusive: true
     consumer_prefetch_count: 10
+  
+  sync_episode_playback:
+    deleivery_mode: 1
+    consumer_name: sync_episode_playback
+    consumer_auto_ack: true
+    consumer_exclusive: true
+    consumer_prefetch_count: 1000
 
 jobs:
-  import_podcast: 
+  import_podcast:
     enable: {{ import_podcast_enable }}
     worker_limit: {{ import_podcast_concurrency }}
 
@@ -58,6 +65,9 @@ jobs:
   scheduler:
     enable: {{ scheduler_enable }}
     worker_limit: {{ scheduler_concurrency }}
+  
+  sync_episode_playback:
+    enable: {{ sync_episode_playback_enable }}
 
 oauth:
   google:

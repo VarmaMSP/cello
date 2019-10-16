@@ -23,9 +23,10 @@
         mysql_host: "{{ hostvars['keyser']['private_ip'] }}"
         rabbitmq_host: "{{ hostvars['keyser']['private_ip'] }}"
 
+        import_podcast_enable: true
+        refresh_podcast_enable: true
         create_thumbnail_enable: false
-        scheduler_enable: false
 
         import_podcast_concurrency: 20
-        refresh_podcast_concurrency: 30
+        refresh_podcast_concurrency: 20
       when: skip_api == false

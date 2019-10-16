@@ -37,3 +37,5 @@ create_thumbnail_concurrency: 3
 
 scheduler_enable: true
 scheduler_concurrency: 10
+
+sync_episode_playback_enable: true
