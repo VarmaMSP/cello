@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { AppState } from 'store'
-import { Podcast, User } from 'types/app'
+import { EpisodePlayback, Podcast, User } from 'types/app'
 import { $Id, MapById, MapOneToMany } from 'types/utilities'
 
 export function getIsUserSignedIn(state: AppState) {
@@ -14,6 +14,12 @@ export function getIsUserSubscribedToPodcast(
   return makeGetUserSubscriptions()(state).some(
     (podcast) => podcast.id === podcastId,
   )
+}
+
+export function getUserEpisodePlaybacks(
+  state: AppState,
+): { [episodeId: string]: EpisodePlayback } {
+  return state.entities.user.playback
 }
 
 export function makeGetUserSubscriptions() {

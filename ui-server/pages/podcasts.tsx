@@ -9,11 +9,12 @@ import { bindActionCreators } from 'redux'
 import { AppState } from 'store'
 import { PageContext } from 'types/utilities'
 import { logPageView } from 'utils/analytics'
-export interface StateToProps {
+
+interface StateToProps {
   reqState: RequestState
 }
 
-export interface OwnProps {
+interface OwnProps {
   podcastId: string
   scrollY: number
 }

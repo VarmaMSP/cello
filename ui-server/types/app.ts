@@ -38,3 +38,9 @@ export interface Episode extends Entity {
   pubDate: string
   duration: number
 }
+
+export interface EpisodePlayback extends Entity {
+  episodeId: string
+  count: number
+  currentTime: number
+}
