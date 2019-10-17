@@ -22,7 +22,7 @@ const ListFeed: React.SFC<Props> = (props) => {
       </h1>
       <Grid
         cols={{ LG: 3, MD: 1, SM: 1 }}
-        classNameChild="flex my-2 px-2 py-2 rounded-lg md:hover:bg-gray-200"
+        classNameChild="flex my-2 lg:px-2 py-2 rounded-lg md:hover:bg-gray-200"
         totalRowSpacing={{ LG: 2, MD: 10, SM: 0 }}
       >
         {props.feed.map((episode) => (
