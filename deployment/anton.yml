@@ -26,6 +26,8 @@
         import_podcast_enable: true
         refresh_podcast_enable: true
         create_thumbnail_enable: false
+        scheduler_enable: false
+        sync_episode_playback_enable: true
 
         import_podcast_concurrency: 20
         refresh_podcast_concurrency: 20
