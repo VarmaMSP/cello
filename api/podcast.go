@@ -2,7 +2,9 @@ package api
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
+	"os"
 
 	"github.com/go-http-utils/headers"
 	"github.com/varmamsp/cello/model"
@@ -11,6 +13,8 @@ import (
 func (api *Api) RegisterPodcastHandlers() {
 	api.router.Handler("GET", "/results", api.NewHandler(SearchPodcasts))
 	api.router.Handler("GET", "/podcasts/:podcastId", api.NewHandler(GetPodcast))
+	api.router.Handler("GET", "/trending", api.NewHandler(GetTrendingPodcasts))
+	api.router.Handler("GET", "/trending/:category", api.NewHandler(GetTrendingPodcastsByCategory))
 	api.router.Handler("PUT", "/podcasts/:podcastId/subscribe", api.NewHandlerSessionRequired(SubscribeToPodcast))
 	api.router.Handler("PUT", "/podcasts/:podcastId/unsubscribe", api.NewHandlerSessionRequired(UnsubscribeToPodcast))
 }
@@ -76,6 +80,32 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 		"podcast":  podcast,
 		"episodes": episodes,
 	}))
+}
+
+func GetTrendingPodcasts(c *Context, w http.ResponseWriter) {
+	file, err := os.Open("/var/www/static/trending.json")
+	if err != nil {
+		c.err = model.NewAppError("api.get_trending_podcasts", err.Error(), 400, nil)
+		return
+	}
+
+	w.Header().Set(headers.CacheControl, "public, max-age=21600")
+	w.Header().Set(headers.ContentType, "application/json")
+	w.WriteHeader(http.StatusOK)
+	io.Copy(w, file)
+}
+
+func GetTrendingPodcastsByCategory(c *Context, w http.ResponseWriter) {
+	file, err := os.Open("/var/www/static/trending_" + c.Param("category") + ".json")
+	if err != nil {
+		c.err = model.NewAppError("api.get_trending_podcasts", err.Error(), 400, nil)
+		return
+	}
+
+	w.Header().Set(headers.CacheControl, "public, max-age=21600")
+	w.Header().Set(headers.ContentType, "application/json")
+	w.WriteHeader(http.StatusOK)
+	io.Copy(w, file)
 }
 
 func SubscribeToPodcast(c *Context, w http.ResponseWriter) {
