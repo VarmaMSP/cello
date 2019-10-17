@@ -127,10 +127,7 @@ export default class Client {
   }
 
   async getTrendingPodcasts(): Promise<Podcast[]> {
-    const res = await this.doFetch(
-      'GET',
-      `${this.baseUrl}/static/trending.json`,
-    )
+    const res = await this.doFetch('GET', `${this.url()}/trending`)
     return res.map(unmarshalPodcast)
   }
 
@@ -150,7 +147,6 @@ export default class Client {
   async getEpisodePlaybacks(
     episodeIds: string[],
   ): Promise<{ playbacks: EpisodePlayback[] }> {
-    console.log('callled')
     const res = await this.doFetch('PUT', `${this.url()}/playback`, {
       episode_ids: episodeIds,
     })
