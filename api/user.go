@@ -9,7 +9,7 @@ import (
 )
 
 func (api *Api) RegisterUserHandlers() {
-	api.router.Handler("GET", "/me", api.NewHandlerSessionRequired(Me))
+	api.router.Handler("GET", "/me", api.NewHandler(Me))
 	api.router.Handler("GET", "/signin/google", api.app.GoogleSignIn())
 	api.router.Handler("GET", "/signin/facebook", api.app.FacebookSignIn())
 	api.router.Handler("GET", "/signin/twitter", api.app.TwitterSignIn())
@@ -20,6 +20,13 @@ func (api *Api) RegisterUserHandlers() {
 }
 
 func Me(c *Context, w http.ResponseWriter) {
+	if c.session == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("{}"))
+		return
+	}
+
 	user, err := c.app.GetUser(c.session.UserId)
 	if err != nil {
 		c.err = err
