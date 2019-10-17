@@ -42,7 +42,7 @@ const NavbarBottom: React.SFC<StateToProps> = ({ currentUrlPath }) => {
   return (
     <div className="flex h-full pt-2 pb-0 bg-white z-50">
       <MenuItem
-        icon="explore"
+        icon="home"
         name="home"
         href="/"
         active={currentUrlPath === '/'}

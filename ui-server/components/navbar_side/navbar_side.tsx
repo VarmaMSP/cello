@@ -19,11 +19,7 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
       <ul>
         <Link href="/" scroll={false}>
           <li className="h-10 my-1">
-            <MenuItem
-              icon="explore"
-              name="home"
-              active={currentUrlPath === '/'}
-            />
+            <MenuItem icon="home" name="home" active={currentUrlPath === '/'} />
           </li>
         </Link>
         <Link href="/feed" scroll={false}>

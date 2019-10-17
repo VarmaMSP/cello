@@ -5,13 +5,13 @@ export type Icon =
   | 'arrow-right'
   | 'cheveron-up'
   | 'close'
-  | 'explore'
   | 'facebook-color'
   | 'fast-forward'
   | 'fast-rewind'
   | 'feed'
   | 'google-color'
   | 'heart'
+  | 'home'
   | 'logo-lg'
   | 'logo-md'
   | 'pause'
@@ -43,12 +43,6 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
   close: (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z" />
-    </svg>
-  ),
-
-  explore: (props) => (
-    <svg viewBox="0 0 20 20" {...props}>
-      <path d="M10 20a10 10 0 110-20 10 10 0 010 20zM7.88 7.88l-3.54 7.78 7.78-3.54 3.54-7.78-7.78 3.54zM10 11a1 1 0 110-2 1 1 0 010 2z" />
     </svg>
   ),
 
@@ -103,6 +97,12 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
   heart: (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M10 3.22l-.61-.6a5.5 5.5 0 00-7.78 7.77L10 18.78l8.39-8.4a5.5 5.5 0 00-7.78-7.77l-.61.61z" />
+    </svg>
+  ),
+
+  home: (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M8 20H3V10H0L10 0l10 10h-3v10h-5v-6H8v6z" />
     </svg>
   ),
 
