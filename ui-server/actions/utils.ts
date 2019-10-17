@@ -19,7 +19,7 @@ export function requestAction<T extends Promise<any>>(
   ) => void,
   onRequestAction: AppActions,
   onSuccessAction: AppActions,
-  onFailureAction?: AppActions,
+  onFailureAction: AppActions,
 ) {
   return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
     dispatch(onRequestAction)
@@ -28,10 +28,6 @@ export function requestAction<T extends Promise<any>>(
       processData(dispatch, res, getState)
       dispatch(onSuccessAction)
     } catch (err) {
-      if (!onFailureAction) {
-        return
-      }
-
       if ((err as RequestException).statusCode === 401) {
         if (!getIsUserSignedIn(getState())) {
           dispatch({ type: SHOW_SIGNIN_MODAL })

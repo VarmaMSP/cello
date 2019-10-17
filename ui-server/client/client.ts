@@ -4,6 +4,7 @@ import {
   unmarshalEpisode,
   unmarshalEpisodePlayback,
   unmarshalPodcast,
+  unmarshalUser,
 } from 'utils/entities'
 
 export interface RequestException {
@@ -107,10 +108,13 @@ export default class Client {
     }
   }
 
-  async getSignedInUser(): Promise<{ user: User; subscriptions: Podcast[] }> {
+  async getSignedInUser(): Promise<{
+    user: User | undefined
+    subscriptions: Podcast[]
+  }> {
     const res = await this.doFetch('GET', `${this.url()}/me`)
     return {
-      user: res.user,
+      user: res.user && unmarshalUser(res.user),
       subscriptions: (res.subscriptions || []).map(unmarshalPodcast),
     }
   }
@@ -150,7 +154,6 @@ export default class Client {
     const res = await this.doFetch('PUT', `${this.url()}/playback`, {
       episode_ids: episodeIds,
     })
-    console.log(res)
     return {
       playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),
     }

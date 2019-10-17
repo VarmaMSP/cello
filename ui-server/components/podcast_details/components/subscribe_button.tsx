@@ -1,4 +1,4 @@
-import { subscribeToPodcast, unsubscribeToPodcast } from 'actions/user'
+import { subscribeToPodcast, unsubscribeToPodcast } from 'actions/podcast'
 import classNames from 'classnames'
 import React from 'react'
 import { connect } from 'react-redux'

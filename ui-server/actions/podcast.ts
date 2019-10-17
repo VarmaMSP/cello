@@ -15,6 +15,38 @@ export function getPodcast(podcastId: string) {
   )
 }
 
+export function subscribeToPodcast(podcastId: string) {
+  return requestAction(
+    () => client.subscribeToPodcast(podcastId),
+    (dispatch, _, getState) => {
+      dispatch({
+        type: T.SUBSCRIBED_TO_PODCAST,
+        userId: getState().entities.user.currentUserId,
+        podcastId,
+      })
+    },
+    { type: T.SUBSCRIBE_TO_PODCAST_REQUEST },
+    { type: T.SUBSCRIBE_TO_PODCAST_SUCCESS },
+    { type: T.SUBSCRIBE_TO_PODCAST_FAILURE },
+  )
+}
+
+export function unsubscribeToPodcast(podcastId: string) {
+  return requestAction(
+    () => client.unsubscribeToPodcast(podcastId),
+    (dispatch, _, getState) => {
+      dispatch({
+        type: T.UNSUBSCRIBED_TO_PODCAST,
+        userId: getState().entities.user.currentUserId,
+        podcastId,
+      })
+    },
+    { type: T.UNSUBSCRIBE_TO_PODCAST_REQUEST },
+    { type: T.UNSUBSCRIBE_TO_PODCAST_SUCCESS },
+    { type: T.UNSUBSCRIBE_TO_PODCAST_FAILURE },
+  )
+}
+
 export function getTrendingPodcasts() {
   return requestAction(
     () => client.getTrendingPodcasts(),

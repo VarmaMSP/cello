@@ -3,9 +3,8 @@ import { getPodcastById } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
 import PodcastDetails, { OwnProps, StateToProps } from './podcast_details'
 
-function mapStateToProps(state: AppState, props: OwnProps) {
+function mapStateToProps(state: AppState, props: OwnProps): StateToProps {
   return {
-    ...props,
     podcast: getPodcastById(state, props.podcastId),
   }
 }

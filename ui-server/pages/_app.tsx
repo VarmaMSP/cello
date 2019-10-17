@@ -1,4 +1,4 @@
-import { getSignedInUser } from 'actions/user'
+import { getCurrentUser } from 'actions/user'
 import AudioPlayer from 'components/audio_player'
 import Modals from 'components/modals'
 import NavbarSide from 'components/navbar_side'
@@ -87,7 +87,7 @@ export default withRedux(makeStore)(
       /*
        * Try to get signed in user session details
        */
-      bindActionCreators(getSignedInUser, dispatch)()
+      bindActionCreators(getCurrentUser, dispatch)()
 
       /*
        * Initialize Google analytics
