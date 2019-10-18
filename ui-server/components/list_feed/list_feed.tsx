@@ -1,8 +1,8 @@
-import ButtonWithIcon from 'components/button_with_icon'
+import ButtonPlay from 'components/button_play'
+import EpisodeMeta from 'components/episode_meta/episode_meta'
 import Grid from 'components/grid'
 import { Episode } from 'types/app'
 import { getImageUrl } from 'utils/dom'
-import { formatEpisodeDuration, formatEpisodePubDate } from 'utils/format'
 
 export interface StateToProps {
   feed: Episode[]
@@ -36,19 +36,9 @@ const ListFeed: React.SFC<Props> = (props) => {
                 <h1 className="text-sm leading-tight line-clamp-2">
                   {episode.title}
                 </h1>
-                <span className="text-xs text-gray-700">
-                  {formatEpisodePubDate(episode.pubDate)}
-                  <span className="mx-2 font-extrabold">&middot;</span>
-                  {formatEpisodeDuration(episode.duration)}
-                </span>
+                <EpisodeMeta episode={episode} />
               </div>
-              <div className="">
-                <ButtonWithIcon
-                  className="flex-none w-5 text-gray-700 hover:text-black"
-                  icon="play-outline"
-                  onClick={() => props.playEpisode(episode.id)}
-                />
-              </div>
+              <ButtonPlay className="w-5" episodeId={episode.id} />
             </div>
           </>
         ))}
