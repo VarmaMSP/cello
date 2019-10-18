@@ -22,7 +22,7 @@ const ButtonWithIcon: React.SFC<Props> = (props) => {
   return (
     <button
       className={classnames(
-        'flex center-items focus:outline-none cursor-pointer',
+        'flex items-center focus:outline-none cursor-pointer',
         className,
       )}
       type={type || 'button'}
