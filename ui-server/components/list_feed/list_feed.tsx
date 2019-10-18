@@ -1,5 +1,5 @@
 import ButtonPlay from 'components/button_play'
-import EpisodeMeta from 'components/episode_meta/episode_meta'
+import EpisodeMeta from 'components/episode_meta'
 import Grid from 'components/grid'
 import { Episode } from 'types/app'
 import { getImageUrl } from 'utils/dom'
