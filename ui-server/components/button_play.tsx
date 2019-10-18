@@ -5,7 +5,7 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { getEpisodePlayback } from 'selectors/entities/users'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import { Episode, EpisodePlayback } from 'types/app'
+import { EpisodePlayback } from 'types/app'
 import ButtonWithIcon from './button_with_icon'
 
 interface StateToProps {
@@ -17,16 +17,18 @@ interface DispatchToProps {
 }
 
 interface OwnProps {
-  episode: Episode
+  episodeId: string
+  className: string
 }
 
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
-const ButtonPlay: React.SFC<Props> = ({ playback, playEpisode }) => {
+const ButtonPlay: React.SFC<Props> = ({ playback, playEpisode, className }) => {
   return (
     <ButtonWithIcon
       className={classNames(
-        'flex-none md:w-8 w-6 mx-auto text-gray-600 hover:text-black',
+        'flex-none mx-auto text-gray-600 hover:text-black',
+        className,
       )}
       icon="play-outline"
       onClick={() => playEpisode(playback ? playback.currentTime : 0)}
@@ -34,19 +36,22 @@ const ButtonPlay: React.SFC<Props> = ({ playback, playEpisode }) => {
   )
 }
 
-function mapStateToProps(state: AppState, { episode }: OwnProps): StateToProps {
+function mapStateToProps(
+  state: AppState,
+  { episodeId }: OwnProps,
+): StateToProps {
   return {
-    playback: getEpisodePlayback(state, episode.id),
+    playback: getEpisodePlayback(state, episodeId),
   }
 }
 
 function mapDispatchToProps(
   dispatch: Dispatch<AppActions>,
-  { episode }: OwnProps,
+  { episodeId }: OwnProps,
 ): DispatchToProps {
   return {
     playEpisode: (startTime: number) =>
-      bindActionCreators(beginPlayback, dispatch)(episode.id, startTime),
+      bindActionCreators(beginPlayback, dispatch)(episodeId, startTime),
   }
 }
 

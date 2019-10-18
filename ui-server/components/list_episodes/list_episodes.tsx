@@ -46,7 +46,7 @@ const ListEpisodes: React.SFC<Props> = ({
               </span>
             </p>
           </div>
-          <ButtonPlay episode={episode} />
+          <ButtonPlay className="md:w-8 w-6" episodeId={episode.id} />
         </div>
       ))}
     </>
