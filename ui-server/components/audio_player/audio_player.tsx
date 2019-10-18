@@ -23,18 +23,19 @@ export interface DispatchToProps {
   toggleExpandOnMobile: () => void
 }
 
-export default class AudioPlayer extends Component<
-  StateToProps & DispatchToProps
-> {
+interface Props extends StateToProps, DispatchToProps {}
+
+export default class AudioPlayer extends Component<Props> {
   // Avoid creating audio element in the constructor
   // Because document obect is not available on the server
   audio: HTMLAudioElement = {} as any
 
-  componentDidUpdate(prevProps: StateToProps & DispatchToProps) {
+  componentDidUpdate(prevProps: Props) {
     const { episodeId } = this.props
     if (episodeId !== '' && episodeId !== prevProps.episodeId) {
       this.audio.src = this.props.episode.mediaUrl
       this.audio.currentTime = this.props.currentTime
+      this.props.syncPlayback(prevProps.episodeId, prevProps.currentTime)
     }
   }
 
@@ -49,10 +50,6 @@ export default class AudioPlayer extends Component<
     })
     this.audio.addEventListener('playing', () => {
       this.props.setAudioState('PLAYING')
-    })
-    // Play
-    this.audio.addEventListener('play', () => {
-      this.props.syncPlayback(this.props.episodeId, this.audio.currentTime)
     })
     // Pause
     this.audio.addEventListener('pause', () => {
@@ -77,15 +74,19 @@ export default class AudioPlayer extends Component<
     })
     // Current time
     this.audio.addEventListener('timeupdate', () => {
-      if (Math.abs(this.audio.currentTime - this.props.currentTime) >= 5) {
-        this.props.syncPlayback(this.props.episodeId, this.audio.currentTime)
-      }
       this.props.setCurrentTime(this.audio.currentTime)
     })
 
     if (this.props.episodeId !== '') {
       this.audio.src = this.props.episode.mediaUrl
     }
+
+    setInterval(() => {
+      const { episodeId, syncPlayback, audioState, currentTime } = this.props
+      if (audioState === 'PLAYING') {
+        syncPlayback(episodeId, currentTime)
+      }
+    }, 5000)
   }
 
   handleActionButtonPress = () => {
@@ -95,9 +96,6 @@ export default class AudioPlayer extends Component<
     }
     if (audioState === 'PAUSED') {
       this.audio.play()
-    }
-    if (audioState === 'LOADING') {
-      return
     }
   }
 
