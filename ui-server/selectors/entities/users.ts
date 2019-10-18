@@ -16,6 +16,10 @@ export function getIsUserSubscribedToPodcast(
   )
 }
 
+export function getEpisodePlayback(state: AppState, episodeId: string) {
+  return state.entities.user.playback[episodeId]
+}
+
 export function getUserEpisodePlaybacks(
   state: AppState,
 ): { [episodeId: string]: EpisodePlayback } {
