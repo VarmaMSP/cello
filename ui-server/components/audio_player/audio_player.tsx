@@ -42,7 +42,7 @@ export default class AudioPlayer extends Component<
     this.audio = document.createElement('audio')
     this.audio.preload = 'auto'
 
-    // Play
+    // Can Play
     this.audio.addEventListener('canplay', () => {
       this.props.setAudioState('PAUSED')
       this.audio.play()
@@ -50,9 +50,14 @@ export default class AudioPlayer extends Component<
     this.audio.addEventListener('playing', () => {
       this.props.setAudioState('PLAYING')
     })
+    // Play
+    this.audio.addEventListener('play', () => {
+      this.props.syncPlayback(this.props.episodeId, this.audio.currentTime)
+    })
     // Pause
     this.audio.addEventListener('pause', () => {
       this.props.setAudioState('PAUSED')
+      this.props.syncPlayback(this.props.episodeId, this.audio.currentTime)
     })
     // Loading
     this.audio.addEventListener('loadstart', () => {
@@ -64,6 +69,7 @@ export default class AudioPlayer extends Component<
     //Ended
     this.audio.addEventListener('ended', () => {
       this.props.setAudioState('ENDED')
+      this.props.syncPlayback(this.props.episodeId, this.audio.currentTime)
     })
     // Duration
     this.audio.addEventListener('durationchange', () => {
@@ -71,24 +77,15 @@ export default class AudioPlayer extends Component<
     })
     // Current time
     this.audio.addEventListener('timeupdate', () => {
-      if (
-        Math.floor(this.audio.currentTime) >=
-        Math.floor(this.props.currentTime) + 1
-      ) {
-        this.props.setCurrentTime(this.audio.currentTime)
+      if (Math.abs(this.audio.currentTime - this.props.currentTime) >= 5) {
+        this.props.syncPlayback(this.props.episodeId, this.audio.currentTime)
       }
+      this.props.setCurrentTime(this.audio.currentTime)
     })
 
     if (this.props.episodeId !== '') {
       this.audio.src = this.props.episode.mediaUrl
     }
-
-    setInterval(() => {
-      const { episodeId, syncPlayback, audioState, currentTime } = this.props
-      if (audioState === 'PLAYING') {
-        syncPlayback(episodeId, currentTime)
-      }
-    }, 5000)
   }
 
   handleActionButtonPress = () => {
