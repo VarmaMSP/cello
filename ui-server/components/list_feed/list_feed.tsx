@@ -36,7 +36,9 @@ const ListFeed: React.SFC<Props> = (props) => {
                 <h1 className="text-sm leading-tight line-clamp-2">
                   {episode.title}
                 </h1>
-                <EpisodeMeta episode={episode} />
+                <div className="mt-2">
+                  <EpisodeMeta episode={episode} />
+                </div>
               </div>
               <ButtonPlay className="w-5" episodeId={episode.id} />
             </div>
