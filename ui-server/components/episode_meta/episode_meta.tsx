@@ -23,8 +23,8 @@ const EpisodeMeta: React.SFC<Props> = ({ episode, playback }) => {
       </div>
       <div
         className={classNames(
-          'relative lg:w-1/3 w-2/5 md:h-0.8 h-0.6 bg-gray-400 rounded-full',
-          { 'bg-gray-400': playback, 'bg-transparent': !playback },
+          'relative md:h-0.8 h-0.6 bg-gray-400 rounded-full',
+          { 'lg:w-1/3 w-2/5': !!playback, 'w-0': !!!playback },
         )}
       >
         <div
