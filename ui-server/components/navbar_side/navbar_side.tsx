@@ -11,11 +11,11 @@ export interface StateToProps {
 
 const NavbarSide: React.SFC<StateToProps> = (props) => {
   const { userSignedIn, currentUrlPath } = props
-  const LogoIcon = iconMap['logo-md']
+  const LogoIcon = iconMap['phenopod']
 
   return (
     <div className="fixed left-0 top-0 lg:flex flex-col hidden h-screen w-56 px-3 bg-white shadow">
-      <LogoIcon className="mx-auto mt-4 mb-8" />
+      <LogoIcon className="w-14 h-14 mx-auto mt-2 mb-5" />
       <ul>
         <Link href="/" scroll={false}>
           <li className="h-10 my-1">
