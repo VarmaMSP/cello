@@ -66,7 +66,7 @@ export default class AudioPlayer extends Component<Props> {
     //Ended
     this.audio.addEventListener('ended', () => {
       this.props.setAudioState('ENDED')
-      this.props.syncPlayback(this.props.episodeId, this.audio.currentTime)
+      this.props.syncPlayback(this.props.episodeId, this.audio.duration)
     })
     // Duration
     this.audio.addEventListener('durationchange', () => {

@@ -148,7 +148,7 @@ export default class Client {
     currentTime: number,
   ): Promise<void> {
     await this.doFetch('POST', `${this.url()}/sync/${episodeId}/progress`, {
-      current_time: Math.ceil(currentTime).toString(),
+      current_time: Math.floor(currentTime).toString(),
     })
   }
 
