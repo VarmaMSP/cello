@@ -115,6 +115,8 @@ export default withRedux(makeStore)(
         <Container>
           {/* Override viewport meta tag set by next js */}
           <Head>
+            <link rel="icon" href="favicon.ico" type="image/x-icon" />
+            <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
             <meta
               name="viewport"
               content="width=device-width,minimum-scale=1,initial-scale=0,user-scalable=no"
