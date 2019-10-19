@@ -75,7 +75,7 @@ export default class TopNavbar extends Component<Props, State> {
       <header className="fixed top-0 left-0 flex justify-between items-center w-full lg:h-14 h-12 lg:pl-56 lg:pr-5 md:px-10 px-4 bg-white">
         <div className="lg:hidden w-20">
           <ButtonWithIcon
-            className="w-6"
+            className="w-6 h-auto text-gray-700"
             icon="search"
             onClick={this.handleSearchBarCollapse}
           />
