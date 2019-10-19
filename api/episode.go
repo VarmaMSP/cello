@@ -33,10 +33,21 @@ func GetFeed(c *Context, w http.ResponseWriter) {
 		return
 	}
 
+	episodeIds := make([]string, len(episodes))
+	for i, episode := range episodes {
+		episodeIds[i] = episode.Id
+	}
+	playbacks, err := c.app.GetAllEpisodePlayabacks(episodeIds, c.session.UserId)
+	if err != nil {
+		c.err = err
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(model.EncodeToJson(map[string]interface{}{
-		"episodes": episodes,
+		"episodes":  episodes,
+		"playbacks": playbacks,
 	}))
 }
 

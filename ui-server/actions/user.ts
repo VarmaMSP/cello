@@ -27,11 +27,15 @@ export function signOutUser() {
 export function getUserFeed() {
   return requestAction(
     () => client.getUserFeed(),
-    (dispatch, { episodes }, getState) => {
+    (dispatch, { episodes, playbacks }, getState) => {
       dispatch({
         type: T.RECEIVED_USER_FEED,
         userId: getState().entities.user.currentUserId,
         episodes,
+      })
+      dispatch({
+        type: T.RECEIVED_EPISODE_PLAYBACKS,
+        playbacks,
       })
     },
     { type: T.GET_USER_FEED_REQUEST },

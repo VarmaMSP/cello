@@ -123,10 +123,14 @@ export default class Client {
     await this.doFetch('GET', `${this.url()}/signout`)
   }
 
-  async getUserFeed(): Promise<{ episodes: Episode[] }> {
+  async getUserFeed(): Promise<{
+    episodes: Episode[]
+    playbacks: EpisodePlayback[]
+  }> {
     const res = await this.doFetch('GET', `${this.url()}/feed`)
     return {
       episodes: (res.episodes || []).map(unmarshalEpisode),
+      playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),
     }
   }
 
