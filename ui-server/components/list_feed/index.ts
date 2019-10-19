@@ -2,7 +2,7 @@ import { Dispatch } from 'react'
 import { connect } from 'react-redux'
 import { makeGetUserFeed } from 'selectors/entities/episodes'
 import { AppState } from 'store'
-import { AppActions, PLAY_EPISODE } from 'types/actions'
+import { AppActions, SHOW_EPISODE_MODAL } from 'types/actions'
 import ListFeed, { DispatchToProps, StateToProps } from './list_feed'
 
 function makeMapStateToProps() {
@@ -13,13 +13,12 @@ function makeMapStateToProps() {
   })
 }
 
-function mapDispatchToProps(dispatch: Dispatch<AppActions>) {
+function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
-    playEpisode: (episodeId: string) =>
+    showEpisodeModal: (episodeId: string) =>
       dispatch({
-        type: PLAY_EPISODE,
+        type: SHOW_EPISODE_MODAL,
         episodeId,
-        currentTime: 0,
       }),
   }
 }
