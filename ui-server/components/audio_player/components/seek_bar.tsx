@@ -79,7 +79,7 @@ export default class SeekBar extends Component<Props, State> {
   getNewSliderPosition = (e: TouchOrMouseEvent): number => {
     // https://developer.mozilla.org/en-US/docs/Web/API/Touch_events/Supporting_both_TouchEvent_and_MouseEvent
     // Prevent additional mouse events to be dispatched
-    e.preventDefault() 
+    e.preventDefault()
 
     const { clientX: clickX } = getClickPosition(e)
     const { clientX: seekBarX, width } = this.getSeekBarPosition()
@@ -144,7 +144,7 @@ export default class SeekBar extends Component<Props, State> {
             style={{ transition: 'ease', width: `${sliderPosition}px` }}
           />
           <div
-            className="absolute w-4 h-4 -ml-2 rounded-full bg-white border shadow-md z-50 select-none"
+            className="absolute w-4 h-4 -ml-2 rounded-full bg-white border shadow-md select-none"
             style={{ transition: 'ease', left: `${sliderPosition}px` }}
           />
         </div>

@@ -88,7 +88,7 @@ export default class AudioPlayerSmall extends Component<Props> {
           transition: '0.4s cubic-bezier(.22,.86,.62,.95)',
         }}
       >
-        <section className="px-3 flex flex-row">
+        <section className="flex flex-row px-3 mb-2">
           <img
             className="h-32 w-32 flex-none object-cover object-center rounded"
             src={getImageUrl(podcast.id, 'lg')}
@@ -144,7 +144,7 @@ export default class AudioPlayerSmall extends Component<Props> {
 
         {/* Bottom navbar */}
         <div
-          className="overflow-y-hidden"
+          className="overflow-y-hidden z-40"
           style={{
             willChange: 'height',
             height: expandOnMobile ? '0rem' : '4rem',
