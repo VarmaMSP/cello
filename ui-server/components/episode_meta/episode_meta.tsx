@@ -16,15 +16,17 @@ interface Props extends StateToProps, OwnProps {}
 const EpisodeMeta: React.SFC<Props> = ({ episode, playback }) => {
   return (
     <div className="flex items-center">
-      <div className="flex-none w-36 mr-2 text-xs text-gray-700">
+      <div className="flex-none w-40 mr-2 text-xs text-gray-700">
         {formatEpisodePubDate(episode.pubDate)}
         <span className="mx-2 font-extrabold">&middot;</span>
         {formatEpisodeDuration(episode.duration)}
       </div>
       <div
         className={classNames(
-          'relative flex-initial bg-gray-400 rounded-full',
-          { 'lg:w-1/3 w-2/5': !!playback, 'w-0': !!!playback },
+          'relative flex-auto lg:w-1/3 w-2/5 bg-gray-400 rounded-full',
+          {
+            hidden: !!!playback,
+          },
         )}
         style={{ height: '0.20rem' }}
       >

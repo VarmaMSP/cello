@@ -33,10 +33,10 @@ const ListFeed: React.SFC<Props> = (props) => {
               className="w-24 h-24 flex-none object-contain rounded-lg cursor-pointer"
               src={getImageUrl(episode.podcastId, 'md')}
             />
-            <div className="flex flex-col justify-between pl-3">
+            <div className="flex-auto flex flex-col justify-between pl-3">
               <div>
                 <h1
-                  className="text-sm leading-tight line-clamp-2"
+                  className="text-sm leading-tight line-clamp-2 cursor-default"
                   onClick={() => showEpisodeModal(episode.id)}
                 >
                   {episode.title}
