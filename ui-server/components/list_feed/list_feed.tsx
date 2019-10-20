@@ -1,7 +1,6 @@
 import ButtonPlay from 'components/button_play'
 import EpisodeMeta from 'components/episode_meta'
 import Grid from 'components/grid'
-import Link from 'next/link'
 import { Episode } from 'types/app'
 import { getImageUrl } from 'utils/dom'
 
@@ -30,21 +29,10 @@ const ListFeed: React.SFC<Props> = (props) => {
       >
         {feed.map((episode) => (
           <>
-            <Link
-              href={{
-                pathname: '/podcasts',
-                query: { podcastId: episode.podcastId },
-              }}
-              as={`/podcasts/${episode.podcastId}`}
-              key={episode.podcastId}
-            >
-              <a>
-                <img
-                  className="w-24 h-24 flex-none object-contain rounded-lg border cursor-pointer"
-                  src={getImageUrl(episode.podcastId, 'md')}
-                />
-              </a>
-            </Link>
+            <img
+              className="w-24 h-24 flex-none object-contain rounded-lg cursor-pointer"
+              src={getImageUrl(episode.podcastId, 'md')}
+            />
             <div className="flex flex-col justify-between pl-3">
               <div>
                 <h1

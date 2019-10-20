@@ -34,7 +34,7 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
       />
       <div className="flex">
         <img
-          className="lg:h-56 h-36 lg:w-56 w-36 flex-none object-contain object-center rounded-lg border"
+          className="lg:h-56 h-36 lg:w-56 w-36 flex-none object-contain object-center rounded-lg"
           src={getImageUrl(podcast.id, 'md')}
         />
         <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
