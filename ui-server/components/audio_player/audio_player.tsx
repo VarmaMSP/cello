@@ -42,6 +42,7 @@ export default class AudioPlayer extends Component<Props> {
   componentDidMount() {
     this.audio = document.createElement('audio')
     this.audio.preload = 'auto'
+    this.audio.autoplay = true
 
     // Can Play
     this.audio.addEventListener('canplay', () => {
@@ -74,6 +75,7 @@ export default class AudioPlayer extends Component<Props> {
     })
     // Current time
     this.audio.addEventListener('timeupdate', () => {
+      this.props.setAudioState('PLAYING')
       this.props.setCurrentTime(this.audio.currentTime)
     })
 
