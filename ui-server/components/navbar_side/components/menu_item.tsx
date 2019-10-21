@@ -14,7 +14,7 @@ const MenuItem: React.SFC<Props> = ({ icon, name, active }) => {
   return (
     <a
       className={classnames(
-        'flex items-center w-full h-full px-4 rounded-full m-2 cursor-pointer',
+        'flex items-center w-full h-full px-4 rounded-full my-2 cursor-pointer',
         {
           'text-gray-700': !active,
           'text-green-700': active,
