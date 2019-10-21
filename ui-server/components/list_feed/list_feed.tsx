@@ -30,8 +30,9 @@ const ListFeed: React.SFC<Props> = (props) => {
         {feed.map((episode) => (
           <>
             <img
-              className="w-24 h-24 flex-none object-contain rounded-lg cursor-pointer"
+              className="w-24 h-24 flex-none object-contain rounded-lg border cursor-default"
               src={getImageUrl(episode.podcastId, 'md')}
+              onClick={() => showEpisodeModal(episode.id)}
             />
             <div className="flex-auto flex flex-col justify-between pl-3">
               <div>

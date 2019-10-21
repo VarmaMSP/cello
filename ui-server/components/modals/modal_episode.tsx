@@ -46,17 +46,17 @@ const ModalEpisode: React.SFC<Props> = (props) => {
       <ModalContainer handleClose={closeModal} closeUponClicking="OVERLAY">
         <div className="flex">
           <img
-            className="w-24 h-24 flex-none object-contain rounded-lg cursor-pointer"
+            className="w-24 h-24 flex-none object-contain rounded-lg cursor-pointer border"
             src={getImageUrl(episode.podcastId, 'sm')}
           />
           <div className="flex flex-col justify-between md:pl-4 pl-3">
-            <div>
-              <h1 className="md:text-base text-sm font-medium text-gray-800 leading-tight pb-1 line-clamp-3">
+            <div className="text-sm leading-tight cursor-default">
+              <h1 className="md:text-base font-medium text-gray-800 leading-tight pb-1 line-clamp-3">
                 {episode.title}
               </h1>
-              <h2 className="text-sm text-gray-700 line-clamp-2">
+              <h3 className="text-gray-700 line-clamp-2">
                 {`by ${podcast.title}`}
-              </h2>
+              </h3>
             </div>
           </div>
         </div>
