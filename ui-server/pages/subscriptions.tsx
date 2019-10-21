@@ -5,6 +5,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { RequestState } from 'reducers/requests/utils'
 import { AppState } from 'store'
+import { SET_CURRENT_URL_PATH } from 'types/actions'
+import { PageContext } from 'types/utilities'
 import { logPageView } from 'utils/analytics'
 
 interface StateToProps {
@@ -16,6 +18,13 @@ interface OwnProps {
 }
 
 class SubscriptionsPage extends React.Component<StateToProps & OwnProps> {
+  static async getInitialProps(ctx: PageContext): Promise<void> {
+    ctx.store.dispatch({
+      type: SET_CURRENT_URL_PATH,
+      urlPath: '/subscriptions',
+    })
+  }
+
   componentDidMount() {
     logPageView()
 

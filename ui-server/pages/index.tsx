@@ -7,7 +7,8 @@ import { connect } from 'react-redux'
 import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
-import { AppActions } from 'types/actions'
+import { AppActions, SET_CURRENT_URL_PATH } from 'types/actions'
+import { PageContext } from 'types/utilities'
 import { logPageView } from 'utils/analytics'
 
 interface StateToProps {
@@ -25,6 +26,10 @@ interface OwnProps {
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
 class IndexPage extends React.Component<Props> {
+  static async getInitialProps(ctx: PageContext): Promise<void> {
+    ctx.store.dispatch({ type: SET_CURRENT_URL_PATH, urlPath: '/' })
+  }
+
   componentDidMount() {
     logPageView()
     this.props.loadTrendingPodcasts()

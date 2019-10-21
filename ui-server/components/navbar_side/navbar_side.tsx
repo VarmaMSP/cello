@@ -14,18 +14,18 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
   const LogoIcon = iconMap['phenopod']
 
   return (
-    <div className="fixed left-0 top-0 lg:flex flex-col hidden h-screen w-56 px-3 bg-white shadow">
+    <div className="fixed left-0 top-0 lg:flex flex-col hidden h-screen w-56 px-3 bg-white border-r">
       <LogoIcon className="w-14 h-14 mx-auto mt-2 mb-5" />
       <ul>
         <Link href="/" scroll={false}>
-          <li className="h-10 my-1">
+          <li className="h-8">
             <MenuItem icon="home" name="home" active={currentUrlPath === '/'} />
           </li>
         </Link>
         {userSignedIn && (
           <>
             <Link href="/feed" scroll={false}>
-              <li className="h-10 my-1">
+              <li className="h-8">
                 <MenuItem
                   icon="feed"
                   name="feed"
@@ -34,7 +34,7 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
               </li>
             </Link>
             <Link href="/subscriptions" scroll={false}>
-              <li className="h-10 my-1">
+              <li className="h-8">
                 <MenuItem
                   icon="heart"
                   name="subscriptions"

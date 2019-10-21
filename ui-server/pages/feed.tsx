@@ -7,7 +7,8 @@ import { connect } from 'react-redux'
 import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
-import { AppActions } from 'types/actions'
+import { AppActions, SET_CURRENT_URL_PATH } from 'types/actions'
+import { PageContext } from 'types/utilities'
 import { logPageView } from 'utils/analytics'
 
 interface StateToProps {
@@ -25,7 +26,9 @@ interface OwnProps {
 class FeedPage extends React.Component<
   StateToProps & DispatchToProps & OwnProps
 > {
-  static async getInitialProps(): Promise<void> {}
+  static async getInitialProps(ctx: PageContext): Promise<void> {
+    ctx.store.dispatch({ type: SET_CURRENT_URL_PATH, urlPath: '/feed' })
+  }
 
   componentDidMount() {
     logPageView()

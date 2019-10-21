@@ -83,7 +83,7 @@ export default class TopNavbar extends Component<Props, State> {
         <div className="lg:hidden">
           <AppLogo />
         </div>
-        <div className="lg:block hidden mx-3 ">
+        <div className="lg:block hidden xl:ml-24 ml-6">
           <SearchBar
             searchText={searchText}
             handleSearchTextChange={this.handleSearchTextChange}

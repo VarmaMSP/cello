@@ -14,12 +14,15 @@ const MenuItem: React.SFC<Props> = ({ icon, name, active }) => {
   return (
     <a
       className={classnames(
-        'flex items-center w-full h-full px-4 rounded-full',
-        'hover:bg-gray-200 cursor-pointer',
-        { 'text-gray-700': !active, 'text-green-600': active },
+        'flex items-center w-full h-full px-4 rounded-full m-2 cursor-pointer',
+        {
+          'text-gray-700': !active,
+          'text-green-700': active,
+          'bg-gray-200': active,
+        },
       )}
     >
-      <Icon className="w-5 h-5 mr-3 fill-current" />
+      <Icon className="w-4 h-4 mr-3 fill-current" />
       <h4 className="capitalize text-base leading-loose tracking-wide">
         {name}
       </h4>
