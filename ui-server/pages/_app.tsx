@@ -62,7 +62,15 @@ export default withRedux(makeStore)(
       })
 
       Router.beforePopState(({ as: toUrlPath }) => {
-        const stack = getState().browser.previousPage.stack
+        const state = getState()
+
+        // Close modal id opened and prevent route change
+        if (state.ui.showModal) {
+          dispatch({ type: T.CLOSE_MODAL })
+          return false
+        }
+
+        const stack = state.browser.previousPage.stack
         // Preventing pop_state when user is going to next page
         if (stack.length > 0 && stack[0].urlPath === toUrlPath) {
           dispatch({ type: T.SET_PREVIOUS_PAGE, page: stack[0] })
