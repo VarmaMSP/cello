@@ -27,6 +27,7 @@ const ListFeed: React.SFC<Props> = (props) => {
         classNameChild="flex my-2 lg:px-2 py-2 rounded-lg md:hover:bg-gray-200"
         totalRowSpacing={{ LG: 2, MD: 10, SM: 0 }}
       >
+        {/* TODO: Add keys */}
         {feed.map((episode) => (
           <>
             <img

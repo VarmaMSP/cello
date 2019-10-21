@@ -1,7 +1,9 @@
 import ButtonWithIcon from 'components/button_with_icon'
+import Router from 'next/router'
 import { useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+import { getCurrentUrlPath } from 'selectors/browser/urlPath'
 import { getEpisodeById } from 'selectors/entities/episodes'
 import { getPodcastById } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
@@ -15,6 +17,7 @@ import Overlay from './components/overlay'
 interface StateToProps {
   episode: Episode
   podcast: Podcast
+  currentUrlPath: string
 }
 
 interface DispatchToProps {
@@ -30,7 +33,7 @@ interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
 const ModalEpisode: React.SFC<Props> = (props) => {
   const ref = useRef(null) as React.RefObject<HTMLDivElement>
-  const { episode, podcast, closeModal, playEpisode } = props
+  const { episode, podcast, currentUrlPath, closeModal, playEpisode } = props
 
   useEffect(() => {
     if (ref.current) {
@@ -40,6 +43,20 @@ const ModalEpisode: React.SFC<Props> = (props) => {
       }
     }
   })
+
+  const handleClickPodcastTitle = (e: React.SyntheticEvent<HTMLElement>) => {
+    e.preventDefault()
+    if (currentUrlPath !== `/podcasts/${podcast.id}`) {
+      closeModal()
+      Router.push(
+        {
+          pathname: '/podcasts',
+          query: { podcastId: podcast.id },
+        },
+        `/podcasts/${podcast.id}`,
+      )
+    }
+  }
 
   return (
     <Overlay background="rgba(0, 0, 0, 0.75)">
@@ -54,7 +71,10 @@ const ModalEpisode: React.SFC<Props> = (props) => {
               <h1 className="md:text-base font-medium text-gray-800 leading-tight pb-1 line-clamp-3">
                 {episode.title}
               </h1>
-              <h3 className="text-gray-700 line-clamp-2">
+              <h3
+                className="text-gray-700 line-clamp-2"
+                onClick={handleClickPodcastTitle}
+              >
                 {`by ${podcast.title}`}
               </h3>
             </div>
@@ -92,7 +112,7 @@ function mapStateToProps(state: AppState, props: OwnProps): StateToProps {
   const episode = getEpisodeById(state, props.episodeId)
   const podcast = getPodcastById(state, episode.podcastId)
 
-  return { episode, podcast }
+  return { episode, podcast, currentUrlPath: getCurrentUrlPath(state) }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
