@@ -47,7 +47,6 @@ const ModalEpisode: React.SFC<Props> = (props) => {
   const handleClickPodcastTitle = (e: React.SyntheticEvent<HTMLElement>) => {
     e.preventDefault()
     if (currentUrlPath !== `/podcasts/${podcast.id}`) {
-      closeModal()
       Router.push(
         {
           pathname: '/podcasts',
@@ -55,6 +54,7 @@ const ModalEpisode: React.SFC<Props> = (props) => {
         },
         `/podcasts/${podcast.id}`,
       )
+      closeModal()
     }
   }
 
