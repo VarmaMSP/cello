@@ -36,11 +36,12 @@ const ListEpisodes: React.SFC<Props> = ({
         >
           <div className="flex-auto w-11/12 pr-3">
             <EpisodeMeta episode={episode} />
-
-            <p className="pb-1 font-medium md:text-base text-sm text-gray-800 tracking-wide truncate">
-              <span onClick={() => showEpisodeModal(episode.id)}>
-                {episode.title}
-              </span>
+            <p
+              className="font-medium md:text-base text-sm text-gray-800 tracking-wide truncate"
+              onClick={() => showEpisodeModal(episode.id)}
+              style={{ marginTop: '1px' }}
+            >
+              {episode.title}
             </p>
           </div>
           <ButtonPlay className="md:w-8 w-6" episodeId={episode.id} />
