@@ -8,7 +8,7 @@ export default class PrivacyPage extends React.Component<{}> {
         <div className="text-gray-700 tracking-wide font-normal">
           <p className="pb-2">
             {
-              'The site uses cookies to save your preferences and sync your playbacks and'
+              'This site uses cookies to save your preferences and playback progress'
             }
             <br />
             {
