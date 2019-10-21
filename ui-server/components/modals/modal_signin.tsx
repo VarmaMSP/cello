@@ -28,7 +28,7 @@ const ModalSignin: React.SFC<Props> = (props) => {
           />
           <ButtonSocialSignin
             icon="facebook-color"
-            text="Sign in with Faceebook"
+            text="Sign in with Facebook"
             onClick={() => {
               window.location.href = `/api/signin/facebook`
             }}
