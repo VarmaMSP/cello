@@ -1,0 +1,22 @@
+import React from 'react'
+
+export default class PrivacyPage extends React.Component<{}> {
+  render() {
+    return (
+      <>
+        <h1 className="text-xl text-gray-900 pb-4">{'Privacy'}</h1>
+        <div className="text-gray-700 tracking-wide font-normal">
+          <p className="pb-2">
+            {
+              'The site uses cookies to save your preferences and sync your playbacks and'
+            }
+            <br />
+            {
+              'We collect your basic information (name, username and email) when you sign in using your social account.'
+            }
+          </p>
+        </div>
+      </>
+    )
+  }
+}
