@@ -65,7 +65,7 @@ export default withRedux(makeStore)(
         const state = getState()
 
         // Close modal id opened and prevent route change
-        if (state.ui.showModal) {
+        if (state.ui.showModal.type !== 'NONE') {
           dispatch({ type: T.CLOSE_MODAL })
           return false
         }
