@@ -23,16 +23,16 @@ const EpisodeMeta: React.SFC<Props> = ({ episode, playback }) => {
       </div>
       <div
         className={classNames(
-          'relative flex-auto lg:w-1/3 w-2/5 bg-gray-400 rounded-full',
+          'relative flex-initial lg:w-1/3 w-2/5 bg-gray-400 rounded-full',
           { hidden: !!!playback },
         )}
-        style={{ height: '0.18rem' }}
+        style={{ height: '0.20rem' }}
       >
         <div
           className="absolute top-0 left-0 md:h-0.8 h-0.6 bg-red-500 rounded-full"
           style={{
             transition: 'ease-in 0.4s',
-            height: '0.18rem',
+            height: '0.20rem',
             width: playback
               ? `${(playback.currentTime / episode.duration) * 100}%`
               : `0`,

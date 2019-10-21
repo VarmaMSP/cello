@@ -32,16 +32,13 @@ const ListEpisodes: React.SFC<Props> = ({
       {episodes.map((episode) => (
         <div
           key={episode.id}
-          className="flex mb-3 lg:px-6 py-2 rounded-full lg:hover:bg-gray-200"
+          className="flex mb-3 lg:px-6 py-2 rounded-full lg:hover:bg-gray-200 cursor-default"
         >
           <div className="flex-auto w-11/12 pr-3">
             <EpisodeMeta episode={episode} />
 
             <p className="pb-1 font-medium md:text-base text-sm text-gray-800 tracking-wide truncate">
-              <span
-                className="cursor-pointer hover:underline"
-                onClick={() => showEpisodeModal(episode.id)}
-              >
+              <span onClick={() => showEpisodeModal(episode.id)}>
                 {episode.title}
               </span>
             </p>
