@@ -5,7 +5,7 @@ interface GtagEvent {
   value: number
 }
 
-export const GA_TRACKING_ID = ''
+export const GA_TRACKING_ID = 'UA-149726196-1'
 
 export function pageview(url: string) {
   ;(window as any).gtag('config', GA_TRACKING_ID, {
