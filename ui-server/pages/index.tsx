@@ -9,7 +9,7 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
 import { AppActions, SET_CURRENT_URL_PATH } from 'types/actions'
 import { PageContext } from 'types/utilities'
-import { logPageView } from 'utils/analytics'
+import * as gtag from 'utils/gtag'
 
 interface StateToProps {
   reqState: RequestState
@@ -31,9 +31,9 @@ class IndexPage extends React.Component<Props> {
   }
 
   componentDidMount() {
-    logPageView()
-    this.props.loadTrendingPodcasts()
+    gtag.pageview('/')
 
+    this.props.loadTrendingPodcasts()
     window.window.scrollTo(0, this.props.scrollY)
   }
 

@@ -6,7 +6,6 @@ import NavbarTop from 'components/navbar_top'
 import withRedux from 'next-redux-wrapper'
 import { DefaultSeo } from 'next-seo'
 import { AppProps, Container } from 'next/app'
-import Head from 'next/head'
 import Router from 'next/router'
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
@@ -15,7 +14,6 @@ import { makeStore } from 'store'
 import * as T from 'types/actions'
 import { ViewportSize } from 'types/app'
 import { AppContext, PageContext } from 'types/utilities'
-import { initGA } from 'utils/analytics'
 import '../styles/index.css'
 
 export default withRedux(makeStore)(
@@ -96,11 +94,6 @@ export default withRedux(makeStore)(
        * Try to get signed in user session details
        */
       bindActionCreators(getCurrentUser, dispatch)()
-
-      /*
-       * Initialize Google analytics
-       */
-      initGA('UA-149726196-1')
     }
 
     handleViewportSizeChange = () => {
@@ -121,16 +114,6 @@ export default withRedux(makeStore)(
       const { Component, pageProps, store } = this.props
       return (
         <Container>
-          {/* Override viewport meta tag set by next js */}
-          <Head>
-            <link rel="icon" href="favicon.ico" type="image/x-icon" />
-            <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-            <meta
-              name="viewport"
-              content="width=device-width,minimum-scale=1,initial-scale=0,user-scalable=no"
-            />
-          </Head>
-
           {/* Default seo that can be overidden by individual pages */}
           <DefaultSeo
             openGraph={{

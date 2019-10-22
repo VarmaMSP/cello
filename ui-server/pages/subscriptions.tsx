@@ -7,7 +7,7 @@ import { RequestState } from 'reducers/requests/utils'
 import { AppState } from 'store'
 import { SET_CURRENT_URL_PATH } from 'types/actions'
 import { PageContext } from 'types/utilities'
-import { logPageView } from 'utils/analytics'
+import * as gtag from 'utils/gtag'
 
 interface StateToProps {
   reqState: RequestState
@@ -26,7 +26,7 @@ class SubscriptionsPage extends React.Component<StateToProps & OwnProps> {
   }
 
   componentDidMount() {
-    logPageView()
+    gtag.pageview('/subscriptions')
 
     window.window.scrollTo(0, this.props.scrollY)
   }

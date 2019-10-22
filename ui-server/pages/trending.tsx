@@ -7,7 +7,7 @@ import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators } from 'redux'
 import { AppState } from 'store'
 import { PageContext } from 'types/utilities'
-import { logPageView } from 'utils/analytics'
+import * as gtag from 'utils/gtag'
 
 interface StateToProps {
   reqState: RequestState
@@ -31,7 +31,7 @@ class TrendingPage extends React.Component<StateToProps & OwnProps> {
   }
 
   componentDidMount() {
-    logPageView()
+    gtag.pageview('/trending')
 
     window.window.scrollTo(0, this.props.scrollY)
   }

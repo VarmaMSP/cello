@@ -8,7 +8,7 @@ import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators } from 'redux'
 import { AppState } from 'store'
 import { PageContext } from 'types/utilities'
-import { logPageView } from 'utils/analytics'
+import * as gtag from 'utils/gtag'
 
 interface StateToProps {
   reqState: RequestState
@@ -32,7 +32,7 @@ class ResultsPage extends Component<StateToProps & OwnProps> {
   }
 
   componentDidMount() {
-    logPageView()
+    gtag.pageview(`/results?query=${this.props.query}`)
 
     window.window.scrollTo(0, this.props.scrollY)
   }
