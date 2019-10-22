@@ -32,6 +32,7 @@ class ResultsPage extends Component<StateToProps & OwnProps> {
   }
 
   componentDidMount() {
+    gtag.search(this.props.query)
     gtag.pageview(`/results?query=${this.props.query}`)
 
     window.window.scrollTo(0, this.props.scrollY)
