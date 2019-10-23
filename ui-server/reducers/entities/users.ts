@@ -40,6 +40,7 @@ const playback: Reducer<
   T.AppActions
 > = (state = {}, action) => {
   switch (action.type) {
+    case T.RECEIVED_HISTORY_PLAYBACKS:
     case T.RECEIVED_EPISODE_PLAYBACKS:
       return {
         ...state,

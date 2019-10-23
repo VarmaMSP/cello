@@ -17,9 +17,7 @@ interface Props extends StateToProps, DispatchToProps {}
 const ListHistory: React.SFC<Props> = ({ history }) => {
   return (
     <>
-      <h1 className="text-xl text-gray-900 mb-5">
-        {'Your Feed for last week'}
-      </h1>
+      <h1 className="text-xl text-gray-900 mb-5">{'History'}</h1>
       <Grid
         cols={{ LG: 3, MD: 1, SM: 1 }}
         classNameChild="flex my-2 lg:px-2 py-2 rounded-lg md:hover:bg-gray-200"
