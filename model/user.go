@@ -162,3 +162,9 @@ func (t *TwitterAccount) PreSave() {
 		t.UpdatedAt = Now()
 	}
 }
+
+func (u *User) Sanitize() {
+	u.IsAdmin = 0
+	u.CreatedAt = 0
+	u.UpdatedAt = 0
+}

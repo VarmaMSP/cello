@@ -32,6 +32,7 @@ func Me(c *Context, w http.ResponseWriter) {
 		c.err = err
 		return
 	}
+	user.Sanitize()
 
 	subscriptions, err := c.app.GetUserSubscriptions(c.session.UserId)
 	if err != nil {

@@ -32,6 +32,9 @@ func GetFeed(c *Context, w http.ResponseWriter) {
 		c.err = err
 		return
 	}
+	for _, episode := range episodes {
+		episode.Sanitize()
+	}
 
 	episodeIds := make([]string, len(episodes))
 	for i, episode := range episodes {
@@ -41,6 +44,9 @@ func GetFeed(c *Context, w http.ResponseWriter) {
 	if err != nil {
 		c.err = err
 		return
+	}
+	for _, playback := range playbacks {
+		playback.Sanitize()
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -65,6 +71,9 @@ func GetEpisodePlaybacks(c *Context, w http.ResponseWriter) {
 	if err != nil {
 		c.err = err
 		return
+	}
+	for _, playback := range playbacks {
+		playback.Sanitize()
 	}
 
 	w.Header().Set("Content-Type", "application/json")

@@ -8,7 +8,7 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (app *App) GetPodcastInfo(podcastId string) (*model.Podcast, *model.AppError) {
+func (app *App) GetPodcast(podcastId string) (*model.Podcast, *model.AppError) {
 	return app.Store.Podcast().Get(podcastId)
 }
 

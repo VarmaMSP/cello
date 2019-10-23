@@ -63,15 +63,20 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 		}
 	}
 
-	podcast, err := c.app.GetPodcastInfo(podcastId)
+	podcast, err := c.app.GetPodcast(podcastId)
 	if err != nil {
 		c.err = err
 		return
 	}
+	podcast.Sanitize()
+
 	episodes, err := c.app.GetEpisodes(podcastId, 1000, 0)
 	if err != nil {
 		c.err = err
 		return
+	}
+	for _, episode := range episodes {
+		episode.Sanitize()
 	}
 
 	w.Header().Set("Content-Type", "application/json")

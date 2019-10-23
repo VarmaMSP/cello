@@ -246,3 +246,9 @@ func (e *Episode) Sanitize() {
 	e.CreatedAt = 0
 	e.UpdatedAt = 0
 }
+
+func (e *EpisodePlayback) Sanitize() {
+	e.PlayedBy = ""
+	e.CreatedAt = 0
+	e.UpdatedAt = 0
+}
