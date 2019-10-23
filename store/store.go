@@ -45,9 +45,11 @@ type EpisodeStore interface {
 	Save(episode *model.Episode) *model.AppError
 	SavePlayback(playback *model.EpisodePlayback) *model.AppError
 	Get(episodeId string) (*model.Episode, *model.AppError)
+	GetAllByIds(episodeIds []string) ([]*model.Episode, *model.AppError)
 	GetAllByPodcast(podcastId string, limit, offset int) ([]*model.Episode, *model.AppError)
 	GetAllPublishedBetween(from, to *time.Time, podcastIds []string) ([]*model.Episode, *model.AppError)
 	GetAllPlaybacks(episodeIds []string, userId string) ([]*model.EpisodePlayback, *model.AppError)
+	GetAllPlaybacksByUser(userId string) ([]*model.EpisodePlayback, *model.AppError)
 	SetPlaybackCurrentTime(episodeId, userId string, currentTime int) *model.AppError
 	Block(podcastId, episodeGuid string) *model.AppError
 }

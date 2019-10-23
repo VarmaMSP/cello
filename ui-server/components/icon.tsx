@@ -11,6 +11,7 @@ export type Icon =
   | 'feed'
   | 'google-color'
   | 'heart'
+  | 'history'
   | 'home'
   | 'logo-lg'
   | 'logo-md'
@@ -98,6 +99,12 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
   heart: (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M10 3.22l-.61-.6a5.5 5.5 0 00-7.78 7.77L10 18.78l8.39-8.4a5.5 5.5 0 00-7.78-7.77l-.61.61z" />
+    </svg>
+  ),
+
+  history: (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M3 18a7 7 0 014-6.33V8.33A7 7 0 013 2H1V0h18v2h-2a7 7 0 01-4 6.33v3.34A7 7 0 0117 18h2v2H1v-2h2zM5 2a5 5 0 004 4.9V10h2V6.9A5 5 0 0015 2H5z" />
     </svg>
   ),
 

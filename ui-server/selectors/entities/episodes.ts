@@ -36,3 +36,13 @@ export function makeGetUserFeed() {
     },
   )
 }
+
+export function makeGetUserHistory() {
+  return createSelector<AppState, $Id<Episode>[], MapById<Episode>, Episode[]>(
+    (state) => state.entities.episodes.currentUserHistory,
+    getAllEpisodes,
+    (ids, episodes) => {
+      return ids.map((id) => episodes[id])
+    },
+  )
+}

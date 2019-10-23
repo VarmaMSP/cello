@@ -4,6 +4,7 @@ import { getIsUserSignedIn } from 'selectors/entities/users'
 import { getPlayingEpisodeId } from 'selectors/ui/player'
 import { AppState } from 'store'
 import * as T from 'types/actions'
+import { requestAction } from './utils'
 
 export function beginPlayback(episodeId: string, currentTime: number) {
   return async (dispatch: Dispatch<T.AppActions>, getState: () => AppState) => {
@@ -30,6 +31,19 @@ export function syncPlayback(episodeId: string, currentTime: number) {
       await client.syncPlaybackProgress(episodeId, currentTime)
     } catch (err) {}
   }
+}
+
+export function getEpisodePlaybackHistory() {
+  return requestAction(
+    () => client.getUserPlaybackHistory(),
+    (dispatch, { history, playbacks }) => {
+      dispatch({ type: T.RECEIVED_EPISODES, episodes: history })
+      dispatch({ type: T.RECEIVED_HISTORY_PLAYBACKS, playbacks })
+    },
+    { type: T.GET_PLAYBACK_HISTORY_REQUEST },
+    { type: T.GET_PLAYBACK_HISTORY_SUCCESS },
+    { type: T.GET_PLAYBACK_HISTORY_FAILURE },
+  )
 }
 
 export function getEpisodePlaybacks(episodeIds: string[]) {

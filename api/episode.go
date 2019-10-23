@@ -9,6 +9,7 @@ import (
 
 func (api *Api) RegisterEpisodeHandlers() {
 	api.router.Handler("GET", "/feed", api.NewHandlerSessionRequired(GetFeed))
+	api.router.Handler("GET", "/history", api.NewHandlerSessionRequired(GetHistory))
 	api.router.Handler("PUT", "/playback", api.NewHandlerSessionRequired(GetEpisodePlaybacks))
 	api.router.Handler("POST", "/sync/:episodeId", api.NewHandlerSessionRequired(SyncPlayback))
 	api.router.Handler("POST", "/sync/:episodeId/progress", api.NewHandlerSessionRequired(SyncPlaybackProgress))
@@ -32,15 +33,13 @@ func GetFeed(c *Context, w http.ResponseWriter) {
 		c.err = err
 		return
 	}
-	for _, episode := range episodes {
-		episode.Sanitize()
-	}
 
 	episodeIds := make([]string, len(episodes))
 	for i, episode := range episodes {
+		episode.Sanitize()
 		episodeIds[i] = episode.Id
 	}
-	playbacks, err := c.app.GetAllEpisodePlayabacks(episodeIds, c.session.UserId)
+	playbacks, err := c.app.GetAllEpisodePlaybacks(episodeIds, c.session.UserId)
 	if err != nil {
 		c.err = err
 		return
@@ -57,6 +56,35 @@ func GetFeed(c *Context, w http.ResponseWriter) {
 	}))
 }
 
+func GetHistory(c *Context, w http.ResponseWriter) {
+	playbacks, err := c.app.GetAllEpisodePlaybacksByUser(c.session.UserId)
+	if err != nil {
+		c.err = err
+		return
+	}
+
+	episodeIds := make([]string, len(playbacks))
+	for i, playback := range playbacks {
+		playback.Sanitize()
+		episodeIds[i] = playback.EpisodeId
+	}
+	episodes, err := c.app.GetEpisodesByIds(episodeIds)
+	if err != nil {
+		c.err = err
+		return
+	}
+	for _, episode := range episodes {
+		episode.Sanitize()
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(model.EncodeToJson(map[string]interface{}{
+		"history":   episodes,
+		"playbacks": playbacks,
+	}))
+}
+
 type GetEpisodePlaybacksReq struct {
 	EpisodeIds []string `json:"episode_ids"`
 }
@@ -67,7 +95,7 @@ func GetEpisodePlaybacks(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	playbacks, err := c.app.GetAllEpisodePlayabacks(body.EpisodeIds, c.session.UserId)
+	playbacks, err := c.app.GetAllEpisodePlaybacks(body.EpisodeIds, c.session.UserId)
 	if err != nil {
 		c.err = err
 		return

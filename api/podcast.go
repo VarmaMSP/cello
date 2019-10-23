@@ -70,7 +70,7 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 	}
 	podcast.Sanitize()
 
-	episodes, err := c.app.GetEpisodes(podcastId, 1000, 0)
+	episodes, err := c.app.GetEpisodesInPodcast(podcastId, 1000, 0)
 	if err != nil {
 		c.err = err
 		return
