@@ -57,30 +57,17 @@ const podcastsInCuration: Reducer<
   }
 }
 
-const podcastsSubscribedByUser: Reducer<
-  { [userId: string]: string[] },
-  T.AppActions
-> = (state = {}, action) => {
+const currentUserSubscriptions: Reducer<string[], T.AppActions> = (
+  state = [],
+  action,
+) => {
   switch (action.type) {
     case T.RECEIVED_SIGNED_IN_USER:
-      return {
-        ...state,
-        [action.user.id]: action.subscriptions.map((p) => p.id),
-      }
+      return action.subscriptions.map((p) => p.id)
     case T.SUBSCRIBED_TO_PODCAST:
-      return {
-        ...state,
-        [action.userId]: [
-          ...new Set([action.podcastId, ...(state[action.userId] || [])]),
-        ],
-      }
+      return [...new Set([action.podcastId, ...state])]
     case T.UNSUBSCRIBED_TO_PODCAST:
-      return {
-        ...state,
-        [action.userId]: (state[action.userId] || []).filter(
-          (id) => id !== action.podcastId,
-        ),
-      }
+      return state.filter((id) => id !== action.podcastId)
     default:
       return state
   }
@@ -90,5 +77,5 @@ export default combineReducers({
   podcasts,
   podcastsTrending,
   podcastsInCuration,
-  podcastsSubscribedByUser,
+  currentUserSubscriptions,
 })

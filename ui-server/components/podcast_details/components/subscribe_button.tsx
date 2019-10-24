@@ -3,12 +3,12 @@ import classNames from 'classnames'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import { getIsUserSubscribedToPodcast } from 'selectors/entities/users'
+import { getIsCurrentUserSubscribedToPodcast } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 
 interface StateToProps {
-  subscribed: boolean
+  isSubscribed: boolean
 }
 
 interface DispatchToProps {
@@ -24,22 +24,22 @@ interface OwnProps {
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
 const SubscribeButton: React.SFC<Props> = (props) => {
-  const { subscribed, unsubscribe, subscribe, podcastId } = props
+  const { isSubscribed, unsubscribe, subscribe, podcastId } = props
   return (
     <button
       className={classNames(
         props.className,
         'rounded tracking-tight focus:outline-none focus:shadow-outline',
         {
-          'bg-indigo-500 text-white': !subscribed,
-          'bg-gray-300 text-gray-700': subscribed,
+          'bg-indigo-500 text-white': !isSubscribed,
+          'bg-gray-300 text-gray-700': isSubscribed,
         },
       )}
       onClick={() =>
-        subscribed ? unsubscribe(podcastId) : subscribe(podcastId)
+        isSubscribed ? unsubscribe(podcastId) : subscribe(podcastId)
       }
     >
-      {!subscribed ? 'SUBSCRIBE' : 'SUBSCRIBED'}
+      {!isSubscribed ? 'SUBSCRIBE' : 'SUBSCRIBED'}
     </button>
   )
 }
@@ -49,7 +49,7 @@ function mapStateToProps(
   { podcastId }: OwnProps,
 ): StateToProps {
   return {
-    subscribed: getIsUserSubscribedToPodcast(state, podcastId),
+    isSubscribed: getIsCurrentUserSubscribedToPodcast(state, podcastId),
   }
 }
 

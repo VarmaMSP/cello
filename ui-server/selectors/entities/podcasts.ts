@@ -26,6 +26,33 @@ export function makeGetPodcastsInCuration() {
   )
 }
 
+/*
+ * SUBSCRIPTIONS
+ */
+
+export function getIsCurrentUserSubscribedToPodcast(
+  state: AppState,
+  podcastId: string,
+) {
+  return state.entities.podcasts.currentUserSubscriptions.some(
+    (id) => id === podcastId,
+  )
+}
+
+export function makeGetCurrentUserSubscriptions() {
+  return createSelector<AppState, $Id<Podcast>[], MapById<Podcast>, Podcast[]>(
+    (state) => state.entities.podcasts.currentUserSubscriptions,
+    (state) => state.entities.podcasts.podcasts,
+    (subscriptions, podcasts) => {
+      return subscriptions.map((id) => podcasts[id])
+    },
+  )
+}
+
+/*
+ * TRENDING
+ */
+
 export function makeGetTrendingPodcasts() {
   return createSelector<AppState, $Id<Podcast>[], MapById<Podcast>, Podcast[]>(
     (state) => state.entities.podcasts.podcastsTrending,

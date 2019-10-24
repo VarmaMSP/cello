@@ -1,14 +1,16 @@
 import { connect } from 'react-redux'
-import { makeGetUserSubscriptions } from 'selectors/entities/users'
+import { makeGetCurrentUserSubscriptions } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
 import ListSubscriptions, { StateToProps } from './list_subscriptions'
 
-function mapStateToProps(state: AppState): StateToProps {
-  return {
-    subscriptions: makeGetUserSubscriptions()(state),
-  }
+function makeMapStateToProps() {
+  const getCurrentUserSubscriptions = makeGetCurrentUserSubscriptions()
+
+  return (state: AppState): StateToProps => ({
+    subscriptions: getCurrentUserSubscriptions(state),
+  })
 }
 
-export default connect<StateToProps, {}, {}, AppState>(mapStateToProps)(
+export default connect<StateToProps, {}, {}, AppState>(makeMapStateToProps())(
   ListSubscriptions,
 )
