@@ -27,9 +27,13 @@ export function makeGetEpisodesInPodcast() {
   )
 }
 
-export function makeGetUserFeed() {
+/*
+ * FEED
+ */
+
+export function makeGetCurrentUserFeed() {
   return createSelector<AppState, $Id<Episode>[], MapById<Episode>, Episode[]>(
-    (state) => state.entities.user.feed,
+    (state) => state.entities.episodes.currentUserFeed,
     getAllEpisodes,
     (ids, episodes) => {
       return ids.map((id) => episodes[id])
@@ -37,7 +41,11 @@ export function makeGetUserFeed() {
   )
 }
 
-export function makeGetUserHistory() {
+/*
+ * HISTORY
+ */
+
+export function makeGetCurrentUserHistory() {
   return createSelector<AppState, $Id<Episode>[], MapById<Episode>, Episode[]>(
     (state) => state.entities.episodes.currentUserHistory,
     getAllEpisodes,
@@ -45,4 +53,12 @@ export function makeGetUserHistory() {
       return ids.map((id) => episodes[id])
     },
   )
+}
+
+/*
+ * PLAYBACK
+ */
+
+export function getCurrentUserPlayback(state: AppState, episodeId: string) {
+  return state.entities.episodes.currentUserPlayback[episodeId]
 }

@@ -2,14 +2,14 @@ import { beginPlayback } from 'actions/episode'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import { getEpisodePlayback } from 'selectors/entities/users'
+import { getCurrentUserPlayback } from 'selectors/entities/episodes'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 import { EpisodePlayback } from 'types/app'
 import ButtonWithIcon from './button_with_icon'
 
 interface StateToProps {
-  playback: EpisodePlayback | undefined
+  playback?: EpisodePlayback
 }
 
 interface DispatchToProps {
@@ -41,7 +41,7 @@ function mapStateToProps(
   { episodeId }: OwnProps,
 ): StateToProps {
   return {
-    playback: getEpisodePlayback(state, episodeId),
+    playback: getCurrentUserPlayback(state, episodeId),
   }
 }
 

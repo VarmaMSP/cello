@@ -1,15 +1,15 @@
 import { Dispatch } from 'react'
 import { connect } from 'react-redux'
-import { makeGetUserFeed } from 'selectors/entities/episodes'
+import { makeGetCurrentUserFeed } from 'selectors/entities/episodes'
 import { AppState } from 'store'
 import { AppActions, SHOW_EPISODE_MODAL } from 'types/actions'
 import ListFeed, { DispatchToProps, StateToProps } from './list_feed'
 
 function makeMapStateToProps() {
-  const getUserFeed = makeGetUserFeed()
+  const getCurrentUserFeed = makeGetCurrentUserFeed()
 
   return (state: AppState): StateToProps => ({
-    feed: getUserFeed(state),
+    feed: getCurrentUserFeed(state),
   })
 }
 

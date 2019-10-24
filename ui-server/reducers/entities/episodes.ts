@@ -1,6 +1,6 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { Episode } from 'types/app'
+import { Episode, EpisodePlayback } from 'types/app'
 
 const episodes: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
   state = {},
@@ -36,6 +36,18 @@ const episodesInPodcast: Reducer<
   }
 }
 
+const currentUserFeed: Reducer<string[], T.AppActions> = (
+  state = [],
+  action,
+) => {
+  switch (action.type) {
+    case T.RECEIVED_USER_FEED:
+      return action.episodes.map((e) => e.id)
+    default:
+      return state
+  }
+}
+
 const currentUserHistory: Reducer<string[], T.AppActions> = (
   state = [],
   action,
@@ -48,8 +60,28 @@ const currentUserHistory: Reducer<string[], T.AppActions> = (
   }
 }
 
+const currentUserPlayback: Reducer<
+  { [episodeId: string]: EpisodePlayback },
+  T.AppActions
+> = (state = {}, action) => {
+  switch (action.type) {
+    case T.RECEIVED_HISTORY_PLAYBACKS:
+    case T.RECEIVED_EPISODE_PLAYBACKS:
+      return {
+        ...state,
+        ...action.playbacks.reduce<{
+          [episodeId: string]: EpisodePlayback
+        }>((acc, playback) => ({ ...acc, [playback.episodeId]: playback }), {}),
+      }
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   episodes,
   episodesInPodcast,
+  currentUserFeed,
   currentUserHistory,
+  currentUserPlayback,
 })
