@@ -1,6 +1,6 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { EpisodePlayback, User } from 'types/app'
+import { User } from 'types/app'
 
 const currentUserId: Reducer<string, T.AppActions> = (state = '', action) => {
   switch (action.type) {
@@ -26,26 +26,7 @@ const users: Reducer<{ [userId: string]: User }, T.AppActions> = (
   }
 }
 
-const playback: Reducer<
-  { [episodeId: string]: EpisodePlayback },
-  T.AppActions
-> = (state = {}, action) => {
-  switch (action.type) {
-    case T.RECEIVED_HISTORY_PLAYBACKS:
-    case T.RECEIVED_EPISODE_PLAYBACKS:
-      return {
-        ...state,
-        ...action.playbacks.reduce<{
-          [episodeId: string]: EpisodePlayback
-        }>((acc, playback) => ({ ...acc, [playback.episodeId]: playback }), {}),
-      }
-    default:
-      return state
-  }
-}
-
 export default combineReducers({
   currentUserId,
   users,
-  playback,
 })
