@@ -23,7 +23,7 @@ interface OwnProps {
 
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
-const SubscribeButton: React.SFC<Props> = (props) => {
+const ButtonSubscribe: React.SFC<Props> = (props) => {
   const { isSubscribed, unsubscribe, subscribe, podcastId } = props
   return (
     <button
@@ -63,4 +63,4 @@ function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
 export default connect<StateToProps, DispatchToProps, OwnProps, AppState>(
   mapStateToProps,
   mapDispatchToProps,
-)(SubscribeButton)
+)(ButtonSubscribe)

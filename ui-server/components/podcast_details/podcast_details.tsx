@@ -1,8 +1,8 @@
+import ButtonSubscribe from 'components/button_subscribe'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 import { Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
-import SubscribeButton from './components/subscribe_button'
 
 export interface StateToProps {
   podcast: Podcast
@@ -49,7 +49,7 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
               {podcast.description}
             </p>
           </div>
-          <SubscribeButton
+          <ButtonSubscribe
             className="md:w-32 w-24 md:h-10 h-8 md:text-base text-sm"
             podcastId={podcast.id}
           />
