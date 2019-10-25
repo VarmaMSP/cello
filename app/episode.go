@@ -18,8 +18,8 @@ func (app *App) GetEpisodesInPodcast(podcastId string, offset, limit int) ([]*mo
 	return app.Store.Episode().GetAllByPodcast(podcastId, limit, offset)
 }
 
-func (app *App) GetAllEpisodesPubblishedBetween(from, to *time.Time, podcastIds []string) ([]*model.Episode, *model.AppError) {
-	return app.Store.Episode().GetAllPublishedBetween(from, to, podcastIds)
+func (app *App) GetAllEpisodesPubblishedBefore(podcastIds []string, before *time.Time, limit int) ([]*model.Episode, *model.AppError) {
+	return app.Store.Episode().GetAllPublishedBefore(podcastIds, before, limit)
 }
 
 func (app *App) GetAllEpisodePlaybacks(episodeIds []string, userId string) ([]*model.EpisodePlayback, *model.AppError) {

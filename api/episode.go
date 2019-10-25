@@ -22,13 +22,20 @@ func GetFeed(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	now := time.Now().UTC()
-	weekAgo := now.AddDate(0, 0, -7)
+	limit := model.IntFromStr(c.Query("limit"))
+	if limit == 0 {
+		limit = 20
+	}
+	publishedBefore := model.ParseDateTime(c.Query("published_before"))
+	if publishedBefore == nil {
+		now := time.Now()
+		publishedBefore = &now
+	}
 	podcastIds := make([]string, len(subscriptions))
 	for i, podcast := range subscriptions {
 		podcastIds[i] = podcast.Id
 	}
-	episodes, err := c.app.GetAllEpisodesPubblishedBetween(&weekAgo, &now, podcastIds)
+	episodes, err := c.app.GetAllEpisodesPubblishedBefore(podcastIds, publishedBefore, 20)
 	if err != nil {
 		c.err = err
 		return

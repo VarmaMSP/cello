@@ -95,6 +95,14 @@ func SecondsSince(t *time.Time) int {
 	return int(time.Since(*t).Seconds())
 }
 
+// ParseDateTime parses mysql date time string
+func ParseDateTime(s string) *time.Time {
+	if res, err := time.Parse(MYSQL_DATETIME, s); err == nil {
+		return &res
+	}
+	return nil
+}
+
 var (
 	regexpUrlWithQuery    = regexp.MustCompile(`(https?:\/\/.+)\?.*`)
 	regexpUrlWithFragment = regexp.MustCompile(`(https?:\/\/.+)#.*`)

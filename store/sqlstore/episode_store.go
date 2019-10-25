@@ -97,17 +97,17 @@ func (s *SqlEpisodeStore) GetAllByPodcast(podcastId string, limit, offset int) (
 	return
 }
 
-func (s *SqlEpisodeStore) GetAllPublishedBetween(from, to *time.Time, podcastIds []string) (res []*model.Episode, appE *model.AppError) {
+func (s *SqlEpisodeStore) GetAllPublishedBefore(podcastIds []string, before *time.Time, limit int) (res []*model.Episode, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Episode{}) + ` FROM episode
-		WHERE podcast_id IN (` + strings.Join(Replicate("?", len(podcastIds)), ",") + `) AND
-			  pub_date BETWEEN ? AND ?
-		ORDER BY pub_date DESC`
+		WHERE podcast_id IN (` + strings.Join(Replicate("?", len(podcastIds)), ",") + `) AND pub_date < ?
+		ORDER BY pub_date DESC
+		LIMIT ?`
 
 	var values []interface{}
 	for _, podcastId := range podcastIds {
 		values = append(values, podcastId)
 	}
-	values = append(values, from.Format(model.MYSQL_DATETIME), to.Format(model.MYSQL_DATETIME))
+	values = append(values, before.Format(model.MYSQL_DATETIME), limit)
 
 	copyTo := func() []interface{} {
 		tmp := &model.Episode{}
