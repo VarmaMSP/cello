@@ -4,7 +4,7 @@ import thunk, { ThunkMiddleware } from 'redux-thunk'
 import { AppActions } from 'types/actions'
 
 // NOTE: Do not export this as type
-// doing so will make the editor to show to entire AppState in suggestions
+// doing so will make the editor show the entire AppState in suggestions
 export interface AppState extends ReturnType<typeof rootReducer> {}
 
 export const makeStore = (initalState?: object) => {
