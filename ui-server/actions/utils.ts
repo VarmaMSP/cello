@@ -1,12 +1,7 @@
 import { RequestException } from 'client/client'
 import { Dispatch } from 'redux'
-import { getIsUserSignedIn } from 'selectors/entities/users'
 import { AppState } from 'store'
-import {
-  AppActions,
-  SHOW_SIGNIN_MODAL,
-  SIGN_OUT_USER_FORCEFULLY,
-} from 'types/actions'
+import { AppActions, SIGN_OUT_USER_FORCEFULLY } from 'types/actions'
 
 type ResolveData<T> = T extends Promise<infer U> ? U : T
 
@@ -29,9 +24,6 @@ export function requestAction<T extends Promise<any>>(
       dispatch(onSuccessAction)
     } catch (err) {
       if ((err as RequestException).statusCode === 401) {
-        if (!getIsUserSignedIn(getState())) {
-          dispatch({ type: SHOW_SIGNIN_MODAL })
-        }
         dispatch({ type: SIGN_OUT_USER_FORCEFULLY })
       }
       dispatch(onFailureAction)
