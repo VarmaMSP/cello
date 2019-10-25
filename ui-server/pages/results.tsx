@@ -21,14 +21,10 @@ interface OwnProps {
 
 class ResultsPage extends Component<StateToProps & OwnProps> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
-    const { query, store, isServer } = ctx
-    const loadResults = bindActionCreators(searchPodcasts, store.dispatch)(
-      query['query'] as string,
-    )
-
-    if (isServer) {
-      await loadResults
-    }
+    const { query, store } = ctx
+    await bindActionCreators(searchPodcasts, store.dispatch)(query[
+      'query'
+    ] as string)
   }
 
   componentDidMount() {

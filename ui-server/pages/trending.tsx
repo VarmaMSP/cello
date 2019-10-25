@@ -19,15 +19,8 @@ interface OwnProps {
 
 class TrendingPage extends React.Component<StateToProps & OwnProps> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
-    const { store, isServer } = ctx
-    const loadTrendingPodcasts = bindActionCreators(
-      getTrendingPodcasts,
-      store.dispatch,
-    )()
-
-    if (isServer) {
-      await loadTrendingPodcasts
-    }
+    const { store } = ctx
+    await bindActionCreators(getTrendingPodcasts, store.dispatch)()
   }
 
   componentDidMount() {
