@@ -27,38 +27,34 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
               />
             </li>
           </Link>
-          {userSignedIn && (
-            <>
-              <Link href="/feed" scroll={false}>
-                <li className="h-8">
-                  <MenuItem
-                    icon="feed"
-                    name="feed"
-                    active={currentUrlPath === '/feed'}
-                  />
-                </li>
-              </Link>
-              <Link href="/subscriptions" scroll={false}>
-                <li className="h-8">
-                  <MenuItem
-                    icon="heart"
-                    name="subscriptions"
-                    active={currentUrlPath === '/subscriptions'}
-                  />
-                </li>
-              </Link>
-              <hr className="my-4" />
-              <Link href="/history" scroll={false}>
-                <li className="h-8">
-                  <MenuItem
-                    icon="history"
-                    name="history"
-                    active={currentUrlPath === '/history'}
-                  />
-                </li>
-              </Link>
-            </>
-          )}
+          <Link href="/feed" scroll={false}>
+            <li className="h-8">
+              <MenuItem
+                icon="feed"
+                name="feed"
+                active={currentUrlPath === '/feed'}
+              />
+            </li>
+          </Link>
+          <Link href="/subscriptions" scroll={false}>
+            <li className="h-8">
+              <MenuItem
+                icon="heart"
+                name="subscriptions"
+                active={currentUrlPath === '/subscriptions'}
+              />
+            </li>
+          </Link>
+          <hr className="my-4" />
+          <Link href="/history" scroll={false}>
+            <li className="h-8">
+              <MenuItem
+                icon="history"
+                name="history"
+                active={currentUrlPath === '/history'}
+              />
+            </li>
+          </Link>
         </ul>
 
         {!userSignedIn && (
