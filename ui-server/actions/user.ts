@@ -28,9 +28,9 @@ export function signOutUser() {
   )
 }
 
-export function getUserFeed() {
+export function getUserFeed(publishedBefore?: string) {
   return requestAction(
-    () => client.getUserFeed(),
+    () => client.getUserFeed(publishedBefore),
     (dispatch, { episodes, playbacks }, getState) => {
       dispatch({
         type: T.RECEIVED_USER_FEED,

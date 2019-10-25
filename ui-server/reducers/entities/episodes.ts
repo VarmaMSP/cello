@@ -42,7 +42,7 @@ const currentUserFeed: Reducer<string[], T.AppActions> = (
 ) => {
   switch (action.type) {
     case T.RECEIVED_USER_FEED:
-      return action.episodes.map((e) => e.id)
+      return [...state, ...action.episodes.map((e) => e.id)]
     default:
       return state
   }

@@ -21,14 +21,12 @@ interface OwnProps {
 
 class PodcastsPage extends Component<StateToProps & OwnProps> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
-    const { query, store, isServer } = ctx
+    const { query, store } = ctx
     const loadPodcast = bindActionCreators(getPodcast, store.dispatch)(query[
       'podcastId'
     ] as string)
 
-    if (isServer) {
-      await loadPodcast
-    }
+    await loadPodcast
   }
 
   componentDidMount() {

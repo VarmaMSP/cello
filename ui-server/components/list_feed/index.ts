@@ -1,5 +1,6 @@
-import { Dispatch } from 'react'
+import { getUserFeed } from 'actions/user'
 import { connect } from 'react-redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { makeGetCurrentUserFeed } from 'selectors/entities/episodes'
 import { AppState } from 'store'
 import { AppActions, SHOW_EPISODE_MODAL } from 'types/actions'
@@ -15,6 +16,9 @@ function makeMapStateToProps() {
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
+    loadMore: (publishedBefore: string) => {
+      bindActionCreators(getUserFeed, dispatch)(publishedBefore)
+    },
     showEpisodeModal: (episodeId: string) =>
       dispatch({
         type: SHOW_EPISODE_MODAL,

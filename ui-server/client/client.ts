@@ -123,11 +123,17 @@ export default class Client {
     await this.doFetch('GET', `${this.url()}/signout`)
   }
 
-  async getUserFeed(): Promise<{
+  async getUserFeed(
+    publishedBefore?: string,
+  ): Promise<{
     episodes: Episode[]
     playbacks: EpisodePlayback[]
   }> {
-    const res = await this.doFetch('GET', `${this.url()}/feed`)
+    let url = `${this.url()}/feed`
+    if (!!publishedBefore) {
+      url = `${url}?published_before=${publishedBefore}`
+    }
+    const res = await this.doFetch('GET', url)
     return {
       episodes: (res.episodes || []).map(unmarshalEpisode),
       playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),

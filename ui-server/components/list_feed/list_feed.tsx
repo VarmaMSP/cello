@@ -9,13 +9,14 @@ export interface StateToProps {
 }
 
 export interface DispatchToProps {
+  loadMore: (publishedBefore: string) => void
   showEpisodeModal: (episodeId: string) => void
 }
 
 interface Props extends StateToProps, DispatchToProps {}
 
 const ListFeed: React.SFC<Props> = (props) => {
-  const { feed, showEpisodeModal } = props
+  const { feed, loadMore, showEpisodeModal } = props
 
   return (
     <>
@@ -52,6 +53,12 @@ const ListFeed: React.SFC<Props> = (props) => {
           </>
         ))}
       </Grid>
+      <button
+        className="block mx-auto my-4 py-2 px-5 bg-purple-100 rounded-full focus:outline-none focus:shadow-outline"
+        onClick={() => loadMore(feed[feed.length - 1].pubDate)}
+      >
+        SHOW MORE
+      </button>
     </>
   )
 }
