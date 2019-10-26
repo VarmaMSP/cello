@@ -1,11 +1,18 @@
 import { connect } from 'react-redux'
-import { getCurrentUserPlayback } from 'selectors/entities/episodes'
+import {
+  getCurrentUserPlayback,
+  getEpisodeById,
+} from 'selectors/entities/episodes'
 import { AppState } from 'store'
 import EpisodeMeta, { OwnProps, StateToProps } from './episode_meta'
 
-function mapStateToProps(state: AppState, { episode }: OwnProps): StateToProps {
+function mapStateToProps(
+  state: AppState,
+  { episodeId }: OwnProps,
+): StateToProps {
   return {
-    playback: getCurrentUserPlayback(state, episode.id),
+    episode: getEpisodeById(state, episodeId),
+    playback: getCurrentUserPlayback(state, episodeId),
   }
 }
 

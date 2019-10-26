@@ -1,25 +1,46 @@
 import classNames from 'classnames'
+import format from 'date-fns/format'
 import React from 'react'
 import { Episode, EpisodePlayback } from 'types/app'
-import { formatEpisodeDuration, formatEpisodePubDate } from 'utils/format'
+import { formatEpisodeDuration } from 'utils/format'
 
 export interface StateToProps {
+  episode: Episode
   playback?: EpisodePlayback
 }
 
 export interface OwnProps {
-  episode: Episode
+  episodeId: string
+  displayPubDate?: boolean
+  displayDuration?: boolean
 }
 
 interface Props extends StateToProps, OwnProps {}
 
-const EpisodeMeta: React.SFC<Props> = ({ episode, playback }) => {
+const EpisodeMeta: React.SFC<Props> = ({
+  episode,
+  displayPubDate = true,
+  displayDuration = true,
+  playback,
+}) => {
+  let pubDate: string | undefined
+  try {
+    pubDate = format(new Date(`${episode.pubDate} +0000`), 'PP')
+  } catch (err) {}
+
+  let duration: string | undefined
+  if (episode.duration > 0) {
+    duration = formatEpisodeDuration(episode.duration)
+  }
+
   return (
     <div className="flex items-center">
       <div className="flex-none w-40 mr-2 text-xs text-gray-700">
-        {formatEpisodePubDate(episode.pubDate)}
-        <span className="mx-2 font-extrabold">&middot;</span>
-        {formatEpisodeDuration(episode.duration)}
+        {displayPubDate && pubDate}
+        {(displayPubDate || displayDuration) && !!pubDate && !!duration && (
+          <span className="mx-2 font-extrabold">&middot;</span>
+        )}
+        {displayDuration && duration}
       </div>
       <div
         className={classNames(
