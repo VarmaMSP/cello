@@ -24,9 +24,9 @@ interface OwnProps {
   scrollY: number
 }
 
-class FeedPage extends React.Component<
-  StateToProps & DispatchToProps & OwnProps
-> {
+interface Props extends StateToProps, DispatchToProps, OwnProps {}
+
+class FeedPage extends React.Component<Props> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
     const { store } = ctx
 
@@ -36,10 +36,15 @@ class FeedPage extends React.Component<
     store.dispatch({ type: SET_CURRENT_URL_PATH, urlPath: '/feed' })
   }
 
+  componentDidUpdate(prevProps: Props) {
+    const { isUserSignedIn } = this.props
+    if (isUserSignedIn && !prevProps.isUserSignedIn) {
+      this.props.loadFeed()
+    }
+  }
+
   componentDidMount() {
     gtag.pageview('/feed')
-
-    this.props.loadFeed()
     window.window.scrollTo(0, this.props.scrollY)
   }
 
