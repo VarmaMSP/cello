@@ -76,7 +76,9 @@ class FeedPage extends React.Component<Props> {
           description="History"
           canonical="https://phenopod.com/feed"
         />
-        <ListHistory />
+        <div className="lg:w-4/6 w-full">
+          <ListHistory />
+        </div>
       </>
     )
   }

@@ -19,7 +19,7 @@ const ListHistory: React.SFC<Props> = ({ history }) => {
     <>
       <h1 className="text-xl text-gray-900 mb-5">{'History'}</h1>
       <Grid
-        cols={{ LG: 3, MD: 1, SM: 1 }}
+        cols={{ LG: 2, MD: 1, SM: 1 }}
         classNameChild="flex my-2 lg:px-2 py-2 rounded-lg md:hover:bg-gray-200"
         totalRowSpacing={{ LG: 2, MD: 10, SM: 0 }}
       >
@@ -40,7 +40,7 @@ const ListHistory: React.SFC<Props> = ({ history }) => {
                   {episode.title}
                 </h1>
                 <div className="mt-2">
-                  <EpisodeMeta episode={episode} />
+                  <EpisodeMeta displayPubDate={false} episodeId={episode.id} />
                 </div>
               </div>
               <ButtonPlay className="w-5" episodeId={episode.id} />
