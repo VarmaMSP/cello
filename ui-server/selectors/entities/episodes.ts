@@ -33,10 +33,15 @@ export function makeGetEpisodesInPodcast() {
 
 export function makeGetCurrentUserFeed() {
   return createSelector<AppState, $Id<Episode>[], MapById<Episode>, Episode[]>(
-    (state) => state.entities.episodes.currentUserFeed,
+    (state) =>
+      Object.values(
+        state.entities.episodes.currentUserFeedPublishedBefore,
+      ).reduce<string[]>((acc, x) => [...acc, ...x], []),
     getAllEpisodes,
     (ids, episodes) => {
-      return ids.map((id) => episodes[id])
+      return [...new Set(ids)]
+        .map((id) => episodes[id])
+        .sort((a, b) => +new Date(b.pubDate) - +new Date(a.pubDate))
     },
   )
 }

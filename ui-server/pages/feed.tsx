@@ -10,6 +10,7 @@ import { getIsUserSignedIn } from 'selectors/entities/users'
 import { AppState } from 'store'
 import { AppActions, SET_CURRENT_URL_PATH } from 'types/actions'
 import { PageContext } from 'types/utilities'
+import { now } from 'utils/format'
 import * as gtag from 'utils/gtag'
 
 interface StateToProps {
@@ -17,7 +18,7 @@ interface StateToProps {
 }
 
 interface DispatchToProps {
-  loadFeed: () => void
+  loadFeed: (publishedBefore: string) => void
 }
 
 interface OwnProps {
@@ -31,7 +32,7 @@ class FeedPage extends React.Component<Props> {
     const { store } = ctx
 
     if (getIsUserSignedIn(store.getState())) {
-      await bindActionCreators(getUserFeed, store.dispatch)()
+      await bindActionCreators(getUserFeed, store.dispatch)(now())
     }
     store.dispatch({ type: SET_CURRENT_URL_PATH, urlPath: '/feed' })
   }
@@ -39,7 +40,7 @@ class FeedPage extends React.Component<Props> {
   componentDidUpdate(prevProps: Props) {
     const { isUserSignedIn } = this.props
     if (isUserSignedIn && !prevProps.isUserSignedIn) {
-      this.props.loadFeed()
+      this.props.loadFeed(now())
     }
   }
 
@@ -92,7 +93,8 @@ function mapStateToProps(state: AppState): StateToProps {
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
-    loadFeed: bindActionCreators(getUserFeed, dispatch),
+    loadFeed: (publishedBefore: string) =>
+      bindActionCreators(getUserFeed, dispatch)(publishedBefore),
   }
 }
 

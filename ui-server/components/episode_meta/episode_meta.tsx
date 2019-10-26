@@ -37,7 +37,7 @@ const EpisodeMeta: React.SFC<Props> = ({
     <div className="flex items-center">
       <div className="flex-none w-40 mr-2 text-xs text-gray-700">
         {displayPubDate && pubDate}
-        {!(displayPubDate || displayDuration) && !!pubDate && !!duration && (
+        {displayPubDate && displayDuration && pubDate && duration && (
           <span className="mx-2 font-extrabold">&middot;</span>
         )}
         {displayDuration && duration}

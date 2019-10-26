@@ -1,3 +1,9 @@
+import format from 'date-fns/format'
+
+export function now(): string {
+  return format(new Date(), 'yyyy-MM-dd HH:mm:ss')
+}
+
 export function formatEpisodeDuration(d: number): string {
   const [h, s] = [Math.floor(d / (60 * 60)), d % (60 * 60)]
   const m = Math.ceil(s / 60)

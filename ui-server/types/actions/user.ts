@@ -25,6 +25,8 @@ export const RECEIVED_SIGNED_IN_USER = 'RECEIVED_SIGNED_IN_USER'
 export const SUBSCRIBED_TO_PODCAST = 'SUBSCRIBED_TO_PODCAST'
 export const UNSUBSCRIBED_TO_PODCAST = 'UNSUBSCRIBED_TO_PODCAST'
 export const RECEIVED_USER_FEED = 'RECEIVED_USER_FEED'
+export const RECEIVED_USER_FEED_PUBLISHED_BEFORE =
+  'RECEIVED_USER_FEED_PUBLISHED_BEFORE'
 
 export interface GetSignedInUserRequestAction {
   type: typeof GET_SIGNED_IN_USER_REQUEST
@@ -110,8 +112,13 @@ export interface GetUserFeedFailureAction {
 
 export interface ReceivedUserFeedAction {
   type: typeof RECEIVED_USER_FEED
-  userId: string
   episodes: Episode[]
+}
+
+export interface ReceivedUserFeedPublishedBeforeAction {
+  type: typeof RECEIVED_USER_FEED_PUBLISHED_BEFORE
+  episodes: Episode[]
+  publishedBefore: string
 }
 
 export type UserActionTypes =
@@ -135,3 +142,4 @@ export type UserActionTypes =
   | GetUserFeedSuccessAction
   | GetUserFeedFailureAction
   | ReceivedUserFeedAction
+  | ReceivedUserFeedPublishedBeforeAction
