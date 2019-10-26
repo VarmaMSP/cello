@@ -11,6 +11,7 @@ function makeMapStateToProps() {
 
   return (state: AppState): StateToProps => ({
     feed: getCurrentUserFeed(state),
+    isLoadingMore: state.requests.user.getUserFeed.status === 'STARTED',
   })
 }
 

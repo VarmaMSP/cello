@@ -71,7 +71,9 @@ class FeedPage extends React.Component<
           description="Feed"
           canonical="https://phenopod.com/feed"
         />
-        <ListFeed />
+        <div className="lg:w-4/6 w-full">
+          <ListFeed />
+        </div>
       </>
     )
   }

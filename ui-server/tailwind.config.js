@@ -425,7 +425,7 @@ module.exports = {
     },
     spinner: (theme) => ({
       default: {
-        color: '#dae1e7',
+        color: theme('colors.gray.800', 'gray'),
         size: '1em',
         border: '2px',
         speed: '500ms',

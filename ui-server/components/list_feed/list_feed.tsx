@@ -1,4 +1,5 @@
 import ButtonPlay from 'components/button_play'
+import ButtonShowMore from 'components/button_show_more'
 import EpisodeMeta from 'components/episode_meta'
 import Grid from 'components/grid'
 import { Episode } from 'types/app'
@@ -6,6 +7,7 @@ import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {
   feed: Episode[]
+  isLoadingMore: boolean
 }
 
 export interface DispatchToProps {
@@ -16,7 +18,7 @@ export interface DispatchToProps {
 interface Props extends StateToProps, DispatchToProps {}
 
 const ListFeed: React.SFC<Props> = (props) => {
-  const { feed, loadMore, showEpisodeModal } = props
+  const { feed, loadMore, isLoadingMore, showEpisodeModal } = props
 
   return (
     <>
@@ -24,7 +26,7 @@ const ListFeed: React.SFC<Props> = (props) => {
         {'Your Feed for last week'}
       </h1>
       <Grid
-        cols={{ LG: 3, MD: 1, SM: 1 }}
+        cols={{ LG: 2, MD: 1, SM: 1 }}
         classNameChild="flex my-2 lg:px-2 py-2 rounded-lg md:hover:bg-gray-200"
         totalRowSpacing={{ LG: 2, MD: 10, SM: 0 }}
       >
@@ -53,12 +55,12 @@ const ListFeed: React.SFC<Props> = (props) => {
           </>
         ))}
       </Grid>
-      <button
-        className="block mx-auto my-4 py-2 px-5 bg-purple-100 rounded-full focus:outline-none focus:shadow-outline"
-        onClick={() => loadMore(feed[feed.length - 1].pubDate)}
-      >
-        SHOW MORE
-      </button>
+      <div className="mx-auto w-32 h-10 my-6">
+        <ButtonShowMore
+          isLoading={isLoadingMore}
+          loadMore={() => loadMore(feed[feed.length - 1].pubDate)}
+        />
+      </div>
     </>
   )
 }
