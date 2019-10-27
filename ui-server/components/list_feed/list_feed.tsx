@@ -86,7 +86,7 @@ const ListFeed: React.SFC<Props> = (props) => {
         </div>
       ))}
 
-      <div className="mx-auto w-32 h-10 my-6">
+      <div className="w-28 h-10 mx-auto my-6">
         <ButtonShowMore
           isLoading={isLoadingMore}
           loadMore={() => loadMore(feed[feed.length - 1].pubDate)}
