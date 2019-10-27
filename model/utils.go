@@ -21,7 +21,7 @@ const (
 	StateActive   = "ACTIVE"
 	StateInactive = "INACTIVE"
 
-	MYSQL_DATETIME      = "2006-01-02 15:04:05"
+	MYSQL_DATETIME      = "2006-01-02 15:04:05 -0700"
 	MYSQL_BLOB_MAX_SIZE = 65535
 
 	secondsInHour  = 60 * 60
@@ -85,14 +85,14 @@ func Now() int64 {
 	return time.Now().UTC().Unix()
 }
 
-// NowDateTime returns UTC time in Mysql datetime format
-func NowDateTime() string {
-	return time.Now().UTC().Format(MYSQL_DATETIME)
-}
-
 // SecondsSince returns number of seconds elapsed since t
 func SecondsSince(t *time.Time) int {
 	return int(time.Since(*t).Seconds())
+}
+
+// NowDateTime returns UTC time in Mysql datetime format
+func NowDateTime() string {
+	return time.Now().UTC().Format(MYSQL_DATETIME)
 }
 
 // ParseDateTime parses mysql date time string
@@ -101,6 +101,17 @@ func ParseDateTime(s string) *time.Time {
 		return &res
 	}
 	return nil
+}
+
+// FormatDateTime formats time to mysql datetime
+func FormatDateTime(t *time.Time) string {
+	return t.UTC().Format(MYSQL_DATETIME)
+}
+
+// TimeFromTimestamp converts timestamp to time
+func TimeFromTimestamp(t int64) *time.Time {
+	res := time.Unix(t, 0)
+	return &res
 }
 
 var (
