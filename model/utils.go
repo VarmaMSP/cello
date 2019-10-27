@@ -21,7 +21,7 @@ const (
 	StateActive   = "ACTIVE"
 	StateInactive = "INACTIVE"
 
-	MYSQL_DATETIME      = "2006-01-02 15:04:05 -0700"
+	MYSQL_DATETIME      = "2006-01-02 15:04:05"
 	MYSQL_BLOB_MAX_SIZE = 65535
 
 	secondsInHour  = 60 * 60
