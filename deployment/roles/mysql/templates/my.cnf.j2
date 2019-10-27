@@ -4,6 +4,8 @@
 [mysqld]
 bind-address = {{ hostvars[inventory_hostname]['private_ip'] }}
 
+default_time_zone = '+00:00'
+
 max_connections   = 300
 
 long_query_time   = 1
