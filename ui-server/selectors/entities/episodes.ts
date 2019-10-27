@@ -35,7 +35,7 @@ export function makeGetCurrentUserFeed() {
   return createSelector<AppState, $Id<Episode>[], MapById<Episode>, Episode[]>(
     (state) =>
       Object.values(
-        state.entities.episodes.currentUserFeedPublishedBefore,
+        state.entities.episodes.currentUserFeed.publishedBefore,
       ).reduce<string[]>((acc, x) => [...acc, ...x], []),
     getAllEpisodes,
     (ids, episodes) => {
