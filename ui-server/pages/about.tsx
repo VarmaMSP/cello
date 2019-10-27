@@ -20,7 +20,7 @@ export default class AboutPage extends React.Component<{}> {
             >
               {'Pavan Varma'}
             </a>
-            {". I'am the developer behind Phenopod and nice to meet you."}
+            {". I'am the developer of Phenopod and nice to meet you."}
           </p>
           <br />
           <p className="text-gray-700">
