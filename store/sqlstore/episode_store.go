@@ -107,7 +107,7 @@ func (s *SqlEpisodeStore) GetAllPublishedBefore(podcastIds []string, before *tim
 	for _, podcastId := range podcastIds {
 		values = append(values, podcastId)
 	}
-	values = append(values, before.Format(model.MYSQL_DATETIME), limit)
+	values = append(values, model.FormatDateTime(before), limit)
 
 	copyTo := func() []interface{} {
 		tmp := &model.Episode{}

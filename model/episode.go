@@ -110,7 +110,7 @@ func (e *Episode) LoadDetails(rssItem *rss.Item) *AppError {
 
 	// Pub Date
 	if rssItem.PubDateParsed != nil {
-		e.PubDate = rssItem.PubDateParsed.UTC().Format(MYSQL_DATETIME)
+		e.PubDate = FormatDateTime(rssItem.PubDateParsed)
 	} else {
 		return appErrorC("No pubdate found")
 	}
