@@ -64,6 +64,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		c.app.Log.Error().
 			Str("from", c.err.Id).
 			Str("error", c.err.DetailedError).
+			Str("params", string(model.MapToJson(c.err.Params))).
 			Msg("")
 
 		w.WriteHeader(c.err.StatusCode)
