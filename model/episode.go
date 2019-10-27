@@ -36,12 +36,13 @@ type Episode struct {
 }
 
 type EpisodePlayback struct {
-	EpisodeId   string `json:"episode_id,omitempty"`
-	PlayedBy    string `json:"played_by,omitempty"`
-	Count       int    `json:"count,omitempty"`
-	CurrentTime int    `json:"current_time,omitempty"`
-	CreatedAt   int64  `json:"created_at,omitempty"`
-	UpdatedAt   int64  `json:"updated_at,omitempty"`
+	EpisodeId    string `json:"episode_id,omitempty"`
+	PlayedBy     string `json:"played_by,omitempty"`
+	Count        int    `json:"count,omitempty"`
+	CurrentTime  int    `json:"current_time,omitempty"`
+	LastPlayedAt string `json:"last_played_at,omitempty"`
+	CreatedAt    int64  `json:"created_at,omitempty"`
+	UpdatedAt    int64  `json:"updated_at,omitempty"`
 }
 
 func (e *Episode) DbColumns() []string {
@@ -67,14 +68,14 @@ func (e *Episode) FieldAddrs() []interface{} {
 func (e *EpisodePlayback) DbColumns() []string {
 	return []string{
 		"episode_id", "played_by", "count_", "current_time_",
-		"created_at", "updated_at",
+		"last_played_at", "created_at", "updated_at",
 	}
 }
 
 func (e *EpisodePlayback) FieldAddrs() []interface{} {
 	return []interface{}{
 		&e.EpisodeId, &e.PlayedBy, &e.Count, &e.CurrentTime,
-		&e.CreatedAt, &e.UpdatedAt,
+		&e.LastPlayedAt, &e.CreatedAt, &e.UpdatedAt,
 	}
 }
 
@@ -226,6 +227,10 @@ func (e *Episode) PreSave() {
 func (e *EpisodePlayback) PreSave() {
 	if e.Count == 0 {
 		e.Count = 1
+	}
+
+	if e.LastPlayedAt == "" {
+		e.LastPlayedAt = NowDateTime()
 	}
 
 	if e.CreatedAt == 0 {

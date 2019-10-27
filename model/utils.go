@@ -194,7 +194,14 @@ func MapFromJson(data io.Reader) map[string]string {
 	return map[string]string{}
 }
 
-// toResponseBody will encode given map to valid json
+func MapToJson(data map[string]string) []byte {
+	if res, err := json.Marshal(data); err == nil {
+		return res
+	}
+	return []byte{}
+}
+
+//EncodeToJson will encode given map to valid json
 func EncodeToJson(data map[string]interface{}) []byte {
 	if res, err := json.Marshal(data); err == nil {
 		return res
