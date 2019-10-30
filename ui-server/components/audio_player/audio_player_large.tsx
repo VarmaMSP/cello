@@ -1,4 +1,5 @@
 import ButtonWithIcon from 'components/button_with_icon'
+import Link from 'next/link'
 import React from 'react'
 import { AudioState, Episode, Podcast } from 'types/app'
 import { formatPlaybackRate, formatVolume } from 'utils/format'
@@ -64,9 +65,15 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
           <div className="text-base font-semibold text-gray-800 leading-wide tracking-wide truncate">
             {episode.title}
           </div>
-          <div className="text-xs font-semibold text-gray-700 leading-loose tracking-tight truncate">
-            {podcast.title}
-          </div>
+          <Link
+            href={{ pathname: '/podcasts', query: { podcastId: podcast.id } }}
+            as={`/podcasts/${podcast.id}`}
+            key={podcast.id}
+          >
+            <a className="block text-xs font-semibold text-gray-700 leading-loose tracking-tight truncate">
+              {podcast.title}
+            </a>
+          </Link>
         </div>
         <div className="w-full">
           <SeekBar
@@ -80,7 +87,7 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
         <RangeControl
           icon="volume"
           value={volume}
-          min={0.1}
+          min={0}
           max={1}
           step={0.1}
           onChange={handleVolumeChange}
