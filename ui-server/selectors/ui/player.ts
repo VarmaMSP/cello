@@ -21,6 +21,14 @@ export function getAudioCurrentTime(state: AppState) {
   return state.ui.player.currentTime
 }
 
+export function getAudioVolume(state: AppState) {
+  return state.ui.player.volume
+}
+
+export function getAudioPlaybackSpeed(state: AppState) {
+  return state.ui.player.playbackSpeed
+}
+
 export function getExpandOnMobile(state: AppState) {
   return state.ui.player.expandOnMobile
 }

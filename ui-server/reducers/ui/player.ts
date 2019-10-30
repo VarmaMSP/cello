@@ -35,9 +35,26 @@ const audioState: Reducer<AudioState, T.AppActions> = (
 const currentTime: Reducer<number, T.AppActions> = (state = 0, action) => {
   switch (action.type) {
     case T.PLAY_EPISODE:
-      return action.currentTime
     case T.SET_CURRENT_TIME:
       return action.currentTime
+    default:
+      return state
+  }
+}
+
+const volume: Reducer<number, T.AppActions> = (state = 1, action) => {
+  switch (action.type) {
+    case T.SET_VOLUME:
+      return action.volume
+    default:
+      return state
+  }
+}
+
+const playbackSpeed: Reducer<number, T.AppActions> = (state = 1, action) {
+  switch (action.type) {
+    case T.SET_PLAYBACK_SPEED: 
+      return action.playbackSpeed
     default:
       return state
   }
@@ -60,5 +77,7 @@ export default combineReducers({
   duration,
   audioState,
   currentTime,
+  volume,
+  playbackSpeed,
   expandOnMobile,
 })
