@@ -45,7 +45,6 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
               />
             </li>
           </Link>
-          <hr className="my-4" />
           <Link href="/history" scroll={false}>
             <li className="h-8">
               <MenuItem
