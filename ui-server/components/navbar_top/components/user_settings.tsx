@@ -1,6 +1,7 @@
 import { signOutUser } from 'actions/user'
 import ButtonWithIcon from 'components/button_with_icon'
-import React, { useEffect, useState } from 'react'
+import Dropdown from 'components/dropdown'
+import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { getCurrenUser } from 'selectors/entities/users'
@@ -17,41 +18,25 @@ interface DispatchToProps {
 }
 
 const UserSettings: React.SFC<StateToProps & DispatchToProps> = (props) => {
-  const dropdown = React.createRef<HTMLDivElement>()
-  const [showDropDown, setShowDropdown] = useState(false)
-
-  useEffect(() => {
-    document.addEventListener('mousedown', (e) => {
-      if (dropdown.current && !dropdown.current.contains(e.target as any)) {
-        setShowDropdown(false)
-      }
-    })
-  })
-
   const { signOutUser } = props
 
   return (
-    <div className="relative w-full h-full">
-      <ButtonWithIcon
-        icon="user-solid-circle"
-        className="absolute right-0 w-8 h-auto text-gray-700"
-        onClick={() => setShowDropdown(!showDropDown)}
-      />
-      {showDropDown && (
+    <Dropdown
+      button={
+        <ButtonWithIcon
+          icon="user-solid-circle"
+          className="w-8 h-auto text-gray-700"
+        />
+      }
+      dropdown={
         <div
-          className="absolute right-0 w-36 z-50 py-5 bg-white border border-gray-400 shadow rounded"
-          style={{ top: '130%' }}
-          ref={dropdown}
+          className="w-32 px-4 py-2 hover:bg-gray-200 text-gray-800 cursor-pointer"
+          onClick={signOutUser}
         >
-          <div
-            className="px-4 py-2 hover:bg-gray-200 text-gray-800 cursor-pointer"
-            onClick={signOutUser}
-          >
-            Sign Out
-          </div>
+          Sign Out
         </div>
-      )}
-    </div>
+      }
+    />
   )
 }
 
