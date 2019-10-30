@@ -25,8 +25,8 @@ export function getAudioVolume(state: AppState) {
   return state.ui.player.volume
 }
 
-export function getAudioPlaybackSpeed(state: AppState) {
-  return state.ui.player.playbackSpeed
+export function getAudioPlaybackRate(state: AppState) {
+  return state.ui.player.playbackRate
 }
 
 export function getExpandOnMobile(state: AppState) {

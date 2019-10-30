@@ -32,7 +32,7 @@ export const SET_DURATION = 'SET_DURATION'
 export const SET_AUDIO_STATE = 'SET_AUDIO_STATE'
 export const SET_CURRENT_TIME = 'SET_CURRENT_TIME'
 export const SET_VOLUME = 'SET_VOLUME'
-export const SET_PLAYBACK_SPEED = 'SET_PLAYBACK_SPEED'
+export const SET_PLAYBACK_RATE = 'SET_PLAYBACK_RATE'
 export const TOGGLE_EXPAND_ON_MOBILE = 'TOGGLE_MOBILE_PLAYER' // TODO: The UI change has to be depricated
 
 export interface PlayEpisodeAction {
@@ -61,9 +61,9 @@ export interface SetVolumeAction {
   volume: number
 }
 
-export interface SetPlaybackSpeedAction {
-  type: typeof SET_PLAYBACK_SPEED
-  playbackSpeed: number
+export interface SetPlaybackRateAction {
+  type: typeof SET_PLAYBACK_RATE
+  playbackRate: number
 }
 
 export interface ToggleExpandOnMobileAction {
@@ -83,5 +83,5 @@ export type UiActionTypes =
   | SetAudioStateAction
   | SetCurrentTimeAction
   | SetVolumeAction
-  | SetPlaybackSpeedAction
+  | SetPlaybackRateAction
   | ToggleExpandOnMobileAction
