@@ -18,7 +18,7 @@ interface DispatchToProps {
 }
 
 const UserSettings: React.SFC<StateToProps & DispatchToProps> = (props) => {
-  const { signOutUser } = props
+  const { user, signOutUser } = props
 
   return (
     <Dropdown
@@ -29,11 +29,19 @@ const UserSettings: React.SFC<StateToProps & DispatchToProps> = (props) => {
         />
       }
       dropdown={
-        <div
-          className="w-32 px-4 py-2 hover:bg-gray-200 text-gray-800 cursor-pointer"
-          onClick={signOutUser}
-        >
-          Sign Out
+        <div className="w-64 px-4">
+          <div className="text-center">
+            <div className="text-base text-gray-700">{user.name}</div>
+            <div className="text-sm text-gray-700">{user.email}</div>
+          </div>
+          <hr className="mt-4 mb-2" />
+
+          <button
+            className="w-full py-2 hover:bg-gray-200 text-gray-800 rounded-full cursor-pointer"
+            onClick={signOutUser}
+          >
+            Sign Out
+          </button>
         </div>
       }
     />

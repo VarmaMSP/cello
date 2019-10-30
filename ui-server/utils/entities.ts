@@ -4,6 +4,7 @@ export function unmarshalUser(j: any): User {
   return {
     id: j.id,
     name: j.name,
+    email: j.email,
   }
 }
 

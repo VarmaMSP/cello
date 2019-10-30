@@ -13,6 +13,7 @@ export interface Entity {
 
 export interface User extends Entity {
   name: string
+  email: string
 }
 
 export interface Curation extends Entity {
