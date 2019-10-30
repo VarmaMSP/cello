@@ -5,7 +5,9 @@ import { getViewportSize } from 'selectors/browser/viewport'
 import {
   getAudioCurrentTime,
   getAudioDuration,
+  getAudioPlaybackRate,
   getAudioState,
+  getAudioVolume,
   getExpandOnMobile,
   getPlayingEpisodeId,
   makeGetPlayingEpisode,
@@ -27,6 +29,8 @@ function makeMapStateToProps() {
     duration: getAudioDuration(state),
     audioState: getAudioState(state),
     currentTime: getAudioCurrentTime(state),
+    volume: getAudioVolume(state),
+    playbackRate: getAudioPlaybackRate(state),
     viewportSize: getViewportSize(state),
     expandOnMobile: getExpandOnMobile(state),
   })
@@ -40,6 +44,9 @@ function mapDispatchToProps(dispatch: Dispatch<T.AppActions>): DispatchToProps {
       dispatch({ type: T.SET_AUDIO_STATE, state: s }),
     setCurrentTime: (t: number) =>
       dispatch({ type: T.SET_CURRENT_TIME, currentTime: t }),
+    setVolume: (v: number) => dispatch({ type: T.SET_VOLUME, volume: v }),
+    setPlaybackRate: (r: number) =>
+      dispatch({ type: T.SET_PLAYBACK_RATE, playbackRate: r }),
     toggleExpandOnMobile: () => dispatch({ type: T.TOGGLE_EXPAND_ON_MOBILE }),
   }
 }

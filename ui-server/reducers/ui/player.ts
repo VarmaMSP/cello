@@ -51,9 +51,9 @@ const volume: Reducer<number, T.AppActions> = (state = 1, action) => {
   }
 }
 
-const playbackRate: Reducer<number, T.AppActions> = (state = 1, action) {
+const playbackRate: Reducer<number, T.AppActions> = (state = 1, action) => {
   switch (action.type) {
-    case T.SET_PLAYBACK_RATE: 
+    case T.SET_PLAYBACK_RATE:
       return action.playbackRate
     default:
       return state

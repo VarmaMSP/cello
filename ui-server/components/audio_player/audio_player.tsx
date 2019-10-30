@@ -11,6 +11,8 @@ export interface StateToProps {
   duration: number
   audioState: AudioState
   currentTime: number
+  volume: number
+  playbackRate: number
   viewportSize: ViewportSize
   expandOnMobile: boolean
 }
@@ -20,22 +22,14 @@ export interface DispatchToProps {
   setDuration: (t: number) => void
   setAudioState: (s: AudioState) => void
   setCurrentTime: (t: number) => void
+  setVolume: (v: number) => void
+  setPlaybackRate: (p: number) => void
   toggleExpandOnMobile: () => void
 }
 
 interface Props extends StateToProps, DispatchToProps {}
 
-interface State {
-  volume: number
-  playbackRate: number
-}
-
-export default class AudioPlayer extends Component<Props, State> {
-  state = {
-    volume: 1,
-    playbackRate: 1,
-  }
-
+export default class AudioPlayer extends Component<Props> {
   // Avoid creating audio element in the constructor
   // Because document obect is not available on the server
   audio: HTMLAudioElement = {} as any
@@ -53,9 +47,8 @@ export default class AudioPlayer extends Component<Props, State> {
     this.audio = document.createElement('audio')
     this.audio.preload = 'auto'
     this.audio.autoplay = true
-    this.audio.volume = this.state.volume
-    this.audio.playbackRate = this.state.playbackRate
-    // this.audio.muted = true
+    this.audio.volume = this.props.volume
+    this.audio.playbackRate = this.props.playbackRate
 
     // Can Play
     this.audio.addEventListener('canplay', () => {
@@ -127,12 +120,12 @@ export default class AudioPlayer extends Component<Props, State> {
 
   handleVolumeChange = (v: number) => {
     this.audio.volume = v
-    this.setState({ volume: v })
+    this.props.setVolume(v)
   }
 
   handlePlaybackRateChange = (r: number) => {
     this.audio.playbackRate = r
-    this.setState({ playbackRate: r })
+    this.props.setPlaybackRate(r)
   }
 
   render() {
@@ -142,11 +135,11 @@ export default class AudioPlayer extends Component<Props, State> {
       duration,
       audioState,
       currentTime,
+      volume,
+      playbackRate,
       viewportSize,
       expandOnMobile,
     } = this.props
-
-    const { volume, playbackRate } = this.state
 
     if (viewportSize === 'SM') {
       return (
