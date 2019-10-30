@@ -1,6 +1,7 @@
 import React from 'react'
 
 export type Icon =
+  | 'add-outline'
   | 'arrow-left'
   | 'arrow-right'
   | 'cheveron-up'
@@ -15,6 +16,7 @@ export type Icon =
   | 'home'
   | 'logo-lg'
   | 'logo-md'
+  | 'minus-outline'
   | 'pause'
   | 'phenopod'
   | 'play'
@@ -22,8 +24,16 @@ export type Icon =
   | 'search'
   | 'twitter-color'
   | 'user-solid-circle'
+  | 'volume'
+  | 'walk'
 
 export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
+  'add-outline': (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M11 9h4v2h-4v4H9v-4H5V9h4V5h2v4zm-1 11a10 10 0 110-20 10 10 0 010 20zm0-2a8 8 0 100-16 8 8 0 000 16z" />
+    </svg>
+  ),
+
   'arrow-left': (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M3.828 9l6.071-6.071-1.414-1.414L0 10l.707.707 7.778 7.778 1.414-1.414L3.828 11H20V9H3.828z" />
@@ -132,6 +142,12 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
     </svg>
   ),
 
+  'minus-outline': (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M10 20a10 10 0 110-20 10 10 0 010 20zm0-2a8 8 0 100-16 8 8 0 000 16zm5-9v2H5V9h10z" />
+    </svg>
+  ),
+
   pause: (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M5 4h3v12H5V4zm7 0h3v12h-3V4z" />
@@ -185,6 +201,18 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
   'user-solid-circle': (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M10 20a10 10 0 110-20 10 10 0 010 20zM7 6v2a3 3 0 106 0V6a3 3 0 10-6 0zm-3.65 8.44a8 8 0 0013.3 0 15.94 15.94 0 00-13.3 0z" />
+    </svg>
+  ),
+
+  volume: (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M5 7H1v6h4l5 5V2L5 7zm11.36 9.36l-1.41-1.41a6.98 6.98 0 000-9.9l1.41-1.41a8.97 8.97 0 010 12.72zm-2.82-2.82l-1.42-1.42a3 3 0 000-4.24l1.42-1.42a4.98 4.98 0 010 7.08z" />
+    </svg>
+  ),
+
+  walk: (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M11 7l1.44 2.16c.31.47 1.01.84 1.57.84H17V8h-3l-1.44-2.16a5.94 5.94 0 00-1.4-1.4l-1.32-.88a1.72 1.72 0 00-1.7-.04L4 6v5h2V7l2-1-3 14h2l2.35-7.65L11 14v6h2v-8l-2.7-2.7L11 7zm1-3a2 2 0 100-4 2 2 0 000 4z" />
     </svg>
   ),
 }
