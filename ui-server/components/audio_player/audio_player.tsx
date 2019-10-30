@@ -25,7 +25,17 @@ export interface DispatchToProps {
 
 interface Props extends StateToProps, DispatchToProps {}
 
-export default class AudioPlayer extends Component<Props> {
+interface State {
+  volume: number
+  playbackRate: number
+}
+
+export default class AudioPlayer extends Component<Props, State> {
+  state = {
+    volume: 1,
+    playbackRate: 1,
+  }
+
   // Avoid creating audio element in the constructor
   // Because document obect is not available on the server
   audio: HTMLAudioElement = {} as any
@@ -43,6 +53,9 @@ export default class AudioPlayer extends Component<Props> {
     this.audio = document.createElement('audio')
     this.audio.preload = 'auto'
     this.audio.autoplay = true
+    this.audio.volume = this.state.volume
+    this.audio.playbackRate = this.state.playbackRate
+    // this.audio.muted = true
 
     // Can Play
     this.audio.addEventListener('canplay', () => {
@@ -112,6 +125,16 @@ export default class AudioPlayer extends Component<Props> {
     setCurrentTime(currentTime)
   }
 
+  handleVolumeChange = (v: number) => {
+    this.audio.volume = v
+    this.setState({ volume: v })
+  }
+
+  handlePlaybackRateChange = (r: number) => {
+    this.audio.playbackRate = r
+    this.setState({ playbackRate: r })
+  }
+
   render() {
     const {
       podcast,
@@ -122,6 +145,8 @@ export default class AudioPlayer extends Component<Props> {
       viewportSize,
       expandOnMobile,
     } = this.props
+
+    const { volume, playbackRate } = this.state
 
     if (viewportSize === 'SM') {
       return (
@@ -163,8 +188,12 @@ export default class AudioPlayer extends Component<Props> {
           audioState={audioState}
           duration={duration}
           currentTime={currentTime}
+          volume={volume}
+          playbackRate={playbackRate}
           handleSeek={this.handleSeek}
           handleFastForward={this.handleFastForward}
+          handleVolumeChange={this.handleVolumeChange}
+          handlePlaybackRateChange={this.handlePlaybackRateChange}
           handleActionButtonPress={this.handleActionButtonPress}
         />
       )

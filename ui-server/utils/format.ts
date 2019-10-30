@@ -4,6 +4,14 @@ export function now(): string {
   return format(new Date(), 'yyyy-MM-dd HH:mm:ss')
 }
 
+export function formatVolume(value: number): string {
+  return `${Math.trunc(roundTo(value, 2) * 100)}%`
+}
+
+export function formatPlaybackRate(rate: number): string {
+  return `${roundTo(rate, 2)}x`
+}
+
 export function formatEpisodeDuration(d: number): string {
   const [h, s] = [Math.floor(d / (60 * 60)), d % (60 * 60)]
   const m = Math.ceil(s / 60)
@@ -60,4 +68,11 @@ export function formatPlayerDuration(
     new Date(0, 0, 0, 0, 0, current).toTimeString().match(regex)![1],
     new Date(0, 0, 0, 0, 0, total)!.toTimeString().match(regex)![1],
   ]
+}
+
+function roundTo(n: number, digits: number) {
+  var multiplicator = Math.pow(10, digits)
+  n = parseFloat((n * multiplicator).toFixed(11))
+  var test = Math.round(n) / multiplicator
+  return +test.toFixed(digits)
 }

@@ -1,7 +1,9 @@
 import ButtonWithIcon from 'components/button_with_icon'
 import React from 'react'
 import { AudioState, Episode, Podcast } from 'types/app'
+import { formatPlaybackRate, formatVolume } from 'utils/format'
 import ActionButton from './components/action_button'
+import RangeControl from './components/range_control'
 import SeekBar from './components/seek_bar'
 
 interface Props {
@@ -10,8 +12,12 @@ interface Props {
   audioState: AudioState
   duration: number
   currentTime: number
+  volume: number
+  playbackRate: number
   handleSeek: (t: number) => void
   handleFastForward: (t: number) => void
+  handleVolumeChange: (v: number) => void
+  handlePlaybackRateChange: (r: number) => void
   handleActionButtonPress: () => void
 }
 
@@ -22,9 +28,13 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
     audioState,
     duration,
     currentTime,
+    volume,
+    playbackRate,
     handleSeek,
-    handleActionButtonPress,
     handleFastForward,
+    handleVolumeChange,
+    handlePlaybackRateChange,
+    handleActionButtonPress,
   } = props
 
   if (!episode) {
@@ -65,6 +75,27 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
             handleSeek={handleSeek}
           />
         </div>
+      </div>
+      <div className="mx-4">
+        <RangeControl
+          icon="volume"
+          value={volume}
+          min={0.1}
+          max={1}
+          step={0.1}
+          onChange={handleVolumeChange}
+          formatValue={formatVolume}
+        />
+        <div className="my-4" />
+        <RangeControl
+          icon="walk"
+          value={playbackRate}
+          min={0.25}
+          max={2.0}
+          step={0.1}
+          onChange={handlePlaybackRateChange}
+          formatValue={formatPlaybackRate}
+        />
       </div>
     </div>
   )
