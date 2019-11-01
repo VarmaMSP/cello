@@ -47,7 +47,8 @@ const ListFeed: React.SFC<Props> = (props) => {
     <>
       {feedList.map(({ title, episodes }) => (
         <div key={title}>
-          <h1 className="text-xl text-gray-900 mt-5 mb-2">{title}</h1>
+          <h1 className="text-xl text-gray-900 mt-5">{title}</h1>
+          <hr className="mt-1 mb-3" />
           {episodes.length > 0 ? (
             <Grid
               cols={{ LG: 2, MD: 1, SM: 1 }}

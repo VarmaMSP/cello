@@ -72,11 +72,11 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
       </div>
       <div className="px-2 py-6 text-sm text-gray-800">
         <p className="leading-tight">
-          <Link href="/about">
+          <Link href="/about" prefetch={false}>
             <a>{'about'}</a>
           </Link>{' '}
           <span className="font-extrabold">&middot;</span>{' '}
-          <Link href="/privacy">
+          <Link href="/privacy" prefetch={false}>
             <a>{'privacy'}</a>
           </Link>
         </p>
