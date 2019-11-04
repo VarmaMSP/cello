@@ -1,6 +1,7 @@
 import ButtonPlay from 'components/button_play'
 import EpisodeMeta from 'components/episode_meta'
 import React, { useEffect } from 'react'
+import striptags from 'striptags'
 import { Episode } from 'types/app'
 
 export interface StateToProps {
@@ -30,21 +31,24 @@ const ListEpisodes: React.SFC<Props> = ({
   return (
     <>
       {episodes.map((episode) => (
-        <div
-          key={episode.id}
-          className="flex mb-3 lg:px-6 py-2 rounded-full lg:hover:bg-gray-200 cursor-default"
-        >
-          <div className="flex-auto w-11/12 pr-3">
-            <EpisodeMeta episodeId={episode.id} />
-            <p
-              className="font-medium md:text-base text-sm text-gray-800 tracking-wide truncate"
-              onClick={() => showEpisodeModal(episode.id)}
-              style={{ marginTop: '1px' }}
-            >
-              {episode.title}
-            </p>
+        <div>
+          <div key={episode.id} className="flex mb-3 py-2 cursor-default">
+            <div className="flex-auto w-11/12 pr-3">
+              <EpisodeMeta episodeId={episode.id} />
+              <p
+                className="md:text-base text-sm text-gray-900 tracking-wide truncate"
+                onClick={() => showEpisodeModal(episode.id)}
+                style={{ marginTop: '1px' }}
+              >
+                {episode.title}
+              </p>
+              <p className="mt-1 text-sm text-gray-600 line-clamp-3">
+                {striptags(episode.description)}
+              </p>
+            </div>
+            <ButtonPlay className="md:w-8 w-6" episodeId={episode.id} />
           </div>
-          <ButtonPlay className="md:w-8 w-6" episodeId={episode.id} />
+          <hr className="my-3" />
         </div>
       ))}
     </>

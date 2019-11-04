@@ -34,7 +34,7 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
       />
       <div className="flex">
         <img
-          className="lg:h-56 h-36 lg:w-56 w-36 flex-none object-contain object-center rounded-lg border"
+          className="lg:h-36 h-24 lg:w-36 w-24 flex-none object-contain object-center rounded-lg border"
           src={getImageUrl(podcast.id, 'md')}
         />
         <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
@@ -45,12 +45,9 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
             <h3 className="md:text-base text-sm text-gray-800 leading-loose truncate">
               {podcast.author}
             </h3>
-            <p className="hidden mt-1 text-sm leading-snug text-gray-600 lg:line-clamp-3">
-              {podcast.description}
-            </p>
           </div>
           <ButtonSubscribe
-            className="md:w-32 w-24 md:h-10 h-8 md:text-base text-sm"
+            className="w-28 px-4 py-2 text-sm"
             podcastId={podcast.id}
           />
         </div>

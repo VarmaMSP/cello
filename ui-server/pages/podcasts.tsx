@@ -43,10 +43,15 @@ class PodcastsPage extends Component<StateToProps & OwnProps> {
     if (reqState.status == 'SUCCESS') {
       return (
         <div>
-          <PodcastDetails podcastId={podcastId} />
-          <div className="flex mt-8 mb-2">
-            <div className="bg-green-200 px-3 py-1 md:text-base text-sm rounded-full">
+          <div className="lg:w-4/6 w-full">
+            <PodcastDetails podcastId={podcastId} />
+          </div>
+          <div className="flex mt-8 mb-4 ">
+            <div className="bg-green-200 mr-4 px-3 py-1 text-sm rounded-full">
               Episodes
+            </div>
+            <div className="bg-green-200 px-3 py-1 text-sm rounded-full">
+              About
             </div>
           </div>
           <div className="lg:w-4/6 w-full">
