@@ -12,9 +12,11 @@ interface OwnProps {
 }
 
 export default class PodcastsPage extends Component<OwnProps> {
-  static async getInitialProps(ctx: PageContext): Promise<void> {
-    const { query, store } = ctx
-    console.log(query)
+  static async getInitialProps({ query, store }: PageContext): Promise<void> {
+    if (!!query['skipLoad']) {
+      return
+    }
+
     await bindActionCreators(getPodcast, store.dispatch)(query[
       'podcastId'
     ] as string)
@@ -26,6 +28,11 @@ export default class PodcastsPage extends Component<OwnProps> {
   }
 
   render() {
-    return <PodcastView podcastId={this.props.podcastId} activeTab={this.props.activeTab} />
+    return (
+      <PodcastView
+        podcastId={this.props.podcastId}
+        activeTab={this.props.activeTab}
+      />
+    )
   }
 }
