@@ -1,19 +1,6 @@
 import fetch from 'isomorphic-unfetch'
-import {
-  Curation,
-  Episode,
-  EpisodePlayback,
-  Playlist,
-  Podcast,
-  User,
-} from 'types/app'
-import {
-  unmarshalEpisode,
-  unmarshalEpisodePlayback,
-  unmarshalPlaylist,
-  unmarshalPodcast,
-  unmarshalUser,
-} from 'utils/entities'
+import { Curation, Episode, EpisodePlayback, Playlist, Podcast, User } from 'types/app'
+import { unmarshalEpisode, unmarshalEpisodePlayback, unmarshalPlaylist, unmarshalPodcast, unmarshalUser } from 'utils/entities'
 
 export interface RequestException {
   url: string
@@ -185,6 +172,13 @@ export default class Client {
     })
     return {
       playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),
+    }
+  }
+
+  async getCurrentUserPlaylists(): Promise<{ playlists: Playlist[] }> {
+    const res = await this.doFetch('GET', `${this.url()}/playlists`)
+    return {
+      playlists: (res.playlists || []).map(unmarshalPlaylist),
     }
   }
 

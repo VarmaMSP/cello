@@ -7,6 +7,10 @@ export function getIsUserSignedIn(state: AppState) {
   return !!state.entities.user.currentUserId
 }
 
+export function getCurrentUserId(state: AppState) {
+  return state.entities.user.currentUserId
+}
+
 export function getCurrenUser() {
   return createSelector<AppState, $Id<User>, MapById<User>, User>(
     (state) => state.entities.user.currentUserId,
