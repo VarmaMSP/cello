@@ -66,8 +66,8 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
             {episode.title}
           </div>
           <Link
-            href={{ pathname: '/podcasts', query: { podcastId: podcast.id } }}
-            as={`/podcasts/${podcast.id}`}
+            href={{ pathname: '/podcasts', query: { podcastId: podcast.id, activeTab: 'episodes' } }}
+            as={`/podcasts/${podcast.id}/episodes`}
             key={podcast.id}
           >
             <a className="block text-xs font-semibold text-gray-700 leading-loose tracking-tight truncate">
