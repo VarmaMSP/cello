@@ -15,9 +15,9 @@ const ListTrendingPodcasts: React.SFC<StateToProps> = (props) => {
     Router.push(
       {
         pathname: '/podcasts',
-        query: { podcastId },
+        query: { podcastId, activeTab: 'episodes' },
       },
-      `/podcasts/${podcastId}`,
+      `/podcasts/${podcastId}/episodes`,
     )
 
   return (

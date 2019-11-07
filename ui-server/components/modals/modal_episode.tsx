@@ -50,9 +50,9 @@ const ModalEpisode: React.SFC<Props> = (props) => {
       Router.push(
         {
           pathname: '/podcasts',
-          query: { podcastId: podcast.id },
+          query: { podcastId: podcast.id, activeTab: 'episodes' },
         },
-        `/podcasts/${podcast.id}`,
+        `/podcasts/${podcast.id}/episodes`,
       )
       closeModal()
     }

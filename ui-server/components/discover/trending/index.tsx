@@ -11,8 +11,7 @@ export interface StateToProps {
   trendingPodcasts: Podcast[]
 }
 
-const Trending: React.SFC<StateToProps> = (props) => {
-  const { trendingPodcasts } = props
+const Trending: React.SFC<StateToProps> = ({ trendingPodcasts }) => {
   return (
     <div className="w-full pb-8">
       <div className="flex justify-between pb-4">
@@ -35,8 +34,11 @@ const Trending: React.SFC<StateToProps> = (props) => {
       >
         {trendingPodcasts.map((podcast) => (
           <Link
-            href={{ pathname: '/podcasts', query: { podcastId: podcast.id } }}
-            as={`/podcasts/${podcast.id}`}
+            href={{
+              pathname: '/podcasts',
+              query: { podcastId: podcast.id, activeTab: 'episodes' },
+            }}
+            as={`/podcasts/${podcast.id}/episodes`}
             key={podcast.id}
           >
             <a>
