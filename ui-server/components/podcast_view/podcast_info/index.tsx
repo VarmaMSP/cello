@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { getPodcastById } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
-import PodcastDetails, { OwnProps, StateToProps } from './podcast_details'
+import PodcastInfo, { OwnProps, StateToProps } from './podcast_info'
 
 function mapStateToProps(state: AppState, props: OwnProps): StateToProps {
   return {
@@ -10,5 +10,5 @@ function mapStateToProps(state: AppState, props: OwnProps): StateToProps {
 }
 
 export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
-  PodcastDetails,
+  PodcastInfo,
 )

@@ -14,7 +14,7 @@ export interface OwnProps {
 
 interface Props extends StateToProps, OwnProps {}
 
-const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
+const PodcastInfo: React.SFC<Props> = ({ podcast }) => {
   return (
     <>
       <NextSeo
@@ -56,4 +56,4 @@ const PodcastDetails: React.SFC<Props> = ({ podcast }) => {
   )
 }
 
-export default PodcastDetails
+export default PodcastInfo

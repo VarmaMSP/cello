@@ -36,7 +36,7 @@ const ListEpisodes: React.SFC<Props> = ({
             <div className="flex-auto w-11/12 pr-3">
               <EpisodeMeta episodeId={episode.id} />
               <p
-                className="md:text-base text-sm text-gray-900 tracking-wide truncate"
+                className="md:text-base text-sm text-black tracking-wide truncate"
                 onClick={() => showEpisodeModal(episode.id)}
                 style={{ marginTop: '1px' }}
               >

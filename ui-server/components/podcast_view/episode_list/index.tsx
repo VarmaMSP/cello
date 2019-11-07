@@ -4,11 +4,7 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { makeGetEpisodesInPodcast } from 'selectors/entities/episodes'
 import { AppState } from 'store'
 import * as T from 'types/actions'
-import ListEpisodes, {
-  DispatchToProps,
-  OwnProps,
-  StateToProps,
-} from './list_episodes'
+import ListEpisodes, { DispatchToProps, OwnProps, StateToProps } from './episode_list'
 
 function makeMapStateToProps() {
   const getEpisodesInPodcast = makeGetEpisodesInPodcast()
