@@ -20,8 +20,11 @@ export type Icon =
   | 'pause'
   | 'phenopod'
   | 'play'
+  | 'playlist'
+  | 'playlist-add'
   | 'play-outline'
   | 'search'
+  | 'share'
   | 'twitter-color'
   | 'user-solid-circle'
   | 'volume'
@@ -177,6 +180,18 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
     </svg>
   ),
 
+  'playlist': (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M0 3h20v2H0V3zm0 4h20v2H0V7zm0 4h20v2H0v-2zm0 4h20v2H0v-2z" />
+    </svg>
+  ),
+
+  'playlist-add': (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M15 9h-3v2h3v3h2v-3h3V9h-3V6h-2v3zM0 3h10v2H0V3zm0 8h10v2H0v-2zm0-4h10v2H0V7zm0 8h10v2H0v-2z" />
+    </svg>
+  ),
+
   'play-outline': (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M2.93 17.07A10 10 0 1117.07 2.93 10 10 0 012.93 17.07zm12.73-1.41A8 8 0 104.34 4.34a8 8 0 0011.32 11.32zM7 6l8 4-8 4V6z" />
@@ -186,6 +201,12 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
   search: (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M12.9 14.32a8 8 0 111.41-1.41l5.35 5.33-1.42 1.42-5.33-5.34zM8 14A6 6 0 108 2a6 6 0 000 12z" />
+    </svg>
+  ),
+
+  share: (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M5.08 12.16A2.99 2.99 0 010 10a3 3 0 015.08-2.16l8.94-4.47a3 3 0 11.9 1.79L5.98 9.63a3.03 3.03 0 010 .74l8.94 4.47A2.99 2.99 0 0120 17a3 3 0 11-5.98-.37l-8.94-4.47z" />
     </svg>
   ),
 
