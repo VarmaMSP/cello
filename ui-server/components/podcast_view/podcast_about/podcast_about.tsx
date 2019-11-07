@@ -14,7 +14,7 @@ interface Props extends StateToProps, OwnProps {}
 const PodcastAbout: React.FC<Props> = ({ podcast }) => {
   return (
     <div
-      className="text-gray-900 tracking-wide leading-snug"
+      className="mt-5 text-gray-800 leading-snug"
       style={{ hyphens: 'auto' }}
     >
       {podcast.description}
