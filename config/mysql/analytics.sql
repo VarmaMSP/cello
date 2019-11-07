@@ -7,5 +7,8 @@ SELECT user.name, COUNT(podcast_subscription.podcast_id) AS subscriptions FROM u
 SELECT podcast.title FROM podcast INNER JOIN podcast_subscription ON podcast_subscription.podcast_id = podcast.id WHERE podcast_subscription.subscribed_by = '';
 
 -- EPISODE PLAYBACK
-SELECT episode.title, user.name AS played_by, episode_playback.current_time_ AS played_till, CONVERT_TZ(episode_playback.last_played_at, "+00:00", "+05:30") AS played_at FROM episode_playback INNER JOIN episode ON episode.id = episode_playback.episode_id INNER JOIN user ON user.id = episode_playback.played_by WHERE user.id = 'bmrehemmvp8d04rmsg60' ORDER BY played_at;
+SELECT episode.title, user.name AS played_by, episode_playback.current_time_ AS played_til, CONVERT_TZ(episode_playback.last_played_at, "+00:00", "+05:30") AS played_at FROM episode_playback INNER JOIN episode ON episode.id = episode_playback.episode_id INNER JOIN user ON user.id = episode_playback.played_by WHERE user.id = 'bmmmhhmmvp8f674e1d00' ORDER BY played_at;
 SELECT user.name, COUNT(episode_playback.episode_id) AS playbacks FROM user INNER JOIN episode_playback ON episode_playback.played_by = user.id GROUP BY user.name ORDER BY playbacks;
+
+-- TASKS
+SELECT name, type, `interval`, CONVERT_TZ(FROM_UNIXTIME(next_run_at), "+00:00", "+05:30") AS next_run_at, CONVERT_TZ(FROM_UNIXTIME(updated_at), "+00:00", "+05:30") AS updated_at from task; 
