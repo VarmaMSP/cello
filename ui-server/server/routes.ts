@@ -24,9 +24,10 @@ export function registerRoutes(app: NextServer, router: Router) {
 
   // Podcast Page
   router.get(
-    '/podcasts/:podcastId',
+    '/podcasts/:podcastId/:activeTab*',
     servePage('/podcasts', 'public,max-age=3600,must-revalidate', (ctx) => ({
       podcastId: ctx.params['podcastId'],
+      activeTab: ctx.params['activeTab'] || 'episodes',
     })),
   )
 
