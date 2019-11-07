@@ -13,6 +13,7 @@ type SqlSupplier struct {
 	feed     store.FeedStore
 	podcast  store.PodcastStore
 	episode  store.EpisodeStore
+	playlist store.PlaylistStore
 	category store.CategoryStore
 	curation store.CurationStore
 	task     store.TaskStore
@@ -34,6 +35,7 @@ func NewSqlStore(config *model.Config) (SqlStore, error) {
 	supplier.feed = NewSqlFeedStore(supplier)
 	supplier.podcast = NewSqlPodcastStore(supplier)
 	supplier.episode = NewSqlEpisodeStore(supplier)
+	supplier.playlist = NewSqlPlaylistStore(supplier)
 	supplier.category = NewSqlCategoryStore(supplier)
 	supplier.curation = NewSqlCurationStore(supplier)
 	supplier.task = NewSqlTaskStore(supplier)
@@ -100,6 +102,10 @@ func (s *SqlSupplier) Podcast() store.PodcastStore {
 
 func (s *SqlSupplier) Episode() store.EpisodeStore {
 	return s.episode
+}
+
+func (s *SqlSupplier) Playlist() store.PlaylistStore {
+	return s.playlist
 }
 
 func (s *SqlSupplier) Category() store.CategoryStore {

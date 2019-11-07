@@ -11,6 +11,7 @@ type Store interface {
 	Feed() FeedStore
 	Podcast() PodcastStore
 	Episode() EpisodeStore
+	Playlist() PlaylistStore
 	Category() CategoryStore
 	Curation() CurationStore
 	Task() TaskStore
@@ -52,6 +53,14 @@ type EpisodeStore interface {
 	GetAllPlaybacksByUser(userId string) ([]*model.EpisodePlayback, *model.AppError)
 	SetPlaybackCurrentTime(episodeId, userId string, currentTime int) *model.AppError
 	Block(podcastId, episodeGuid string) *model.AppError
+}
+
+type PlaylistStore interface {
+	Save(playlist *model.Playlist) *model.AppError
+	SaveItem(playlistItem *model.PlaylistItem) *model.AppError
+	Get(playlistId string) (*model.Playlist, *model.AppError)
+	GetAllByUser(userId string) ([]*model.Playlist, *model.AppError)
+	GetAllEpisodesInPlaylist(playlistId string) ([]*model.Episode, *model.AppError)
 }
 
 type CategoryStore interface {

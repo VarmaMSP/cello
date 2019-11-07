@@ -20,6 +20,7 @@ type SqlStore interface {
 	Feed() store.FeedStore
 	Podcast() store.PodcastStore
 	Episode() store.EpisodeStore
+	Playlist() store.PlaylistStore
 	Category() store.CategoryStore
 	Curation() store.CurationStore
 	Task() store.TaskStore
