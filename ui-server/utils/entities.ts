@@ -1,4 +1,4 @@
-import { Episode, EpisodePlayback, Podcast, User } from 'types/app'
+import { Episode, EpisodePlayback, Playlist, Podcast, User } from 'types/app'
 
 export function unmarshalUser(j: any): User {
   return {
@@ -40,5 +40,14 @@ export function unmarshalEpisodePlayback(j: any): EpisodePlayback {
     episodeId: j.episode_id,
     count: j.count || 0,
     currentTime: j.current_time || 0,
+  }
+}
+
+export function unmarshalPlaylist(j: any): Playlist {
+  return {
+    id: j.id,
+    title: j.title,
+    privacy: j.privacy,
+    createdBy: j.created_by,
   }
 }

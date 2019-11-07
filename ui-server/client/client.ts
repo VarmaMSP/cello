@@ -1,8 +1,16 @@
 import fetch from 'isomorphic-unfetch'
-import { Curation, Episode, EpisodePlayback, Podcast, User } from 'types/app'
+import {
+  Curation,
+  Episode,
+  EpisodePlayback,
+  Playlist,
+  Podcast,
+  User,
+} from 'types/app'
 import {
   unmarshalEpisode,
   unmarshalEpisodePlayback,
+  unmarshalPlaylist,
   unmarshalPodcast,
   unmarshalUser,
 } from 'utils/entities'
@@ -177,6 +185,19 @@ export default class Client {
     })
     return {
       playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),
+    }
+  }
+
+  async createPlaylist(
+    title: string,
+    privacy: string,
+  ): Promise<{ playlist: Playlist }> {
+    const res = await this.doFetch('POST', `${this.url()}/playlists`, {
+      title,
+      privacy,
+    })
+    return {
+      playlist: unmarshalPlaylist(res.playlist),
     }
   }
 }
