@@ -25,5 +25,5 @@
         sync_episode_playback_enable: false
 
         import_podcast_concurrency: 20
-        refresh_podcast_concurrency: 20
+        refresh_podcast_concurrency: 10
       when: skip_api == false
