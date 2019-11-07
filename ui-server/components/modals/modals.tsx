@@ -1,4 +1,5 @@
 import { Modal } from 'types/app'
+import ModalAddToPlaylist from './modal_add_to_playlist'
 import ModalEpisode from './modal_episode'
 import ModalSignin from './modal_signin'
 
@@ -20,6 +21,10 @@ const Modals: React.SFC<Props> = ({ modalToShow, closeModal }) => {
   if (modalToShow.type === 'EPISODE_MODAL') {
     const { episodeId } = modalToShow
     return <ModalEpisode closeModal={closeModal} episodeId={episodeId} />
+  }
+
+  if (modalToShow.type === 'ADD_TO_PLAYLIST_MODAL') {
+    return <ModalAddToPlaylist closeModal={closeModal} />
   }
 
   return <></>
