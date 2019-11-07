@@ -1,4 +1,5 @@
 import ButtonPlay from 'components/button_play'
+import ButtonWithIcon from 'components/button_with_icon'
 import EpisodeMeta from 'components/episode_meta'
 import React, { useEffect } from 'react'
 import striptags from 'striptags'
@@ -31,8 +32,8 @@ const ListEpisodes: React.SFC<Props> = ({
   return (
     <>
       {episodes.map((episode) => (
-        <div>
-          <div key={episode.id} className="flex mb-3 py-2 cursor-default">
+        <div key={episode.id}>
+          <div className="flex group mb-3 py-2 cursor-default">
             <div className="flex-auto w-11/12 pr-3">
               <EpisodeMeta episodeId={episode.id} />
               <p
@@ -42,11 +43,24 @@ const ListEpisodes: React.SFC<Props> = ({
               >
                 {episode.title}
               </p>
-              <p className="mt-1 text-sm text-gray-600 line-clamp-3">
+              <p
+                className="mt-1 text-sm text-gray-600 line-clamp-3"
+                style={{ hyphens: 'auto' }}
+              >
                 {striptags(episode.description)}
               </p>
             </div>
-            <ButtonPlay className="md:w-8 w-6" episodeId={episode.id} />
+            <div className="flex flex-col items-center justify-end ml-4">
+              <ButtonPlay className="w-6" episodeId={episode.id} />
+              <ButtonWithIcon
+                className="group-hover:block text-gray-600 w-5 my-4"
+                icon="playlist-add"
+              />
+              <ButtonWithIcon
+                className="group-hover:block text-gray-600 w-4"
+                icon="share"
+              />
+            </div>
           </div>
           <hr className="my-3" />
         </div>
