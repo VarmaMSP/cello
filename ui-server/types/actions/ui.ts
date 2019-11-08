@@ -4,6 +4,7 @@ import { AudioState } from 'types/app'
 export const SHOW_SIGNIN_MODAL = 'SHOW_SIGNIN_MODAL'
 export const SHOW_EPISODE_MODAL = 'SHOW_EPISODE_MODAL'
 export const SHOW_ADD_TO_PLAYLIST_MODAL = 'SHOW_ADD_TO_PLAYLIST_MODAL'
+export const SHOW_CREATE_PLAYLIST_MODAL = 'SHOW_CREATE_PLAYLIST_MODAL'
 export const CLOSE_MODAL = 'CLOSE_MODAL'
 
 export interface ShowSigninModalAction {
@@ -18,6 +19,10 @@ export interface ShowEpisodeModalAction {
 export interface ShowAddToPlaylistModalAction {
   type: typeof SHOW_ADD_TO_PLAYLIST_MODAL
   episodeId: string
+}
+
+export interface ShowCreatePlaylistModalAction {
+  type: typeof SHOW_CREATE_PLAYLIST_MODAL
 }
 
 export interface CloseModalAction {
@@ -81,6 +86,7 @@ export type UiActionTypes =
   | ShowSigninModalAction
   | ShowEpisodeModalAction
   | ShowAddToPlaylistModalAction
+  | ShowCreatePlaylistModalAction
   | CloseModalAction
   // Searchbar
   | SearchBarTextChangeAction
