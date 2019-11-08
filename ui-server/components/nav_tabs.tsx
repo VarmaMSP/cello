@@ -18,7 +18,7 @@ const NavTabs: React.FC<OwnProps> = ({ tabs, active }) => {
   return (
     <div className="flex mt-8 mb-4 ">
       {tabs.map((t) => (
-        <Link href={{ pathname: t.pathname, query: t.query }} as={t.as}>
+        <Link href={{ pathname: t.pathname, query: t.query }} as={t.as} key={t.name}>
           <a
             className={classNames('block mr-4 px-3 py-1 text-sm rounded-full', {
               'bg-green-300': t.name === active,
