@@ -4,9 +4,9 @@ import EpisodeMeta from 'components/episode_meta'
 import Grid from 'components/grid'
 import isToday from 'date-fns/isToday'
 import isYesterday from 'date-fns/isYesterday'
+import striptags from 'striptags'
 import { Episode } from 'types/app'
 import { getImageUrl } from 'utils/dom'
-
 export interface StateToProps {
   feed: Episode[]
   isLoadingMore: boolean
@@ -47,34 +47,43 @@ const ListFeed: React.SFC<Props> = (props) => {
     <>
       {feedList.map(({ title, episodes }) => (
         <div key={title}>
-          <h1 className="text-xl text-gray-900 mt-5">{title}</h1>
-          <hr className="mt-1 mb-3" />
+          <h1 className="text-2xl  text-gray-900 mt-5">{title}</h1>
+          <hr className="mt-2 mb-3" />
           {episodes.length > 0 ? (
             <Grid
-              cols={{ LG: 2, MD: 1, SM: 1 }}
-              classNameChild="flex my-2 lg:px-2 py-2 rounded-lg md:hover:bg-gray-200"
+              cols={{ LG: 1, MD: 1, SM: 1 }}
+              className="mb-1"
+              classNameChild="flex my-2 py-2"
               totalRowSpacing={{ LG: 2, MD: 10, SM: 0 }}
             >
               {episodes.map((episode) => (
                 <>
                   <img
-                    className="w-24 h-24 flex-none object-contain rounded-lg border cursor-default"
+                    className="w-30 h-30 flex-none object-contain rounded-lg border cursor-default"
                     src={getImageUrl(episode.podcastId, 'md')}
                     onClick={() => showEpisodeModal(episode.id)}
                   />
                   <div className="flex-auto flex flex-col justify-between pl-3">
-                    <div>
+                    <div className="flex-auto">
                       <h1
                         className="text-sm leading-tight line-clamp-2 cursor-default"
                         onClick={() => showEpisodeModal(episode.id)}
                       >
                         {episode.title}
                       </h1>
-                      <div className="mt-2">
+                      <div className="mt-2 mb-2">
                         <EpisodeMeta episodeId={episode.id} />
                       </div>
+                      <p
+                        className="text-sm text-gray-600 leading-tight line-clamp-2"
+                        style={{ hyphens: 'auto' }}
+                      >
+                        {striptags(episode.description)}
+                      </p>
                     </div>
-                    <ButtonPlay className="w-5" episodeId={episode.id} />
+                    <div className="flex-none">
+                      <ButtonPlay className="w-5" episodeId={episode.id} />
+                    </div>
                   </div>
                 </>
               ))}
