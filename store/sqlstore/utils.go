@@ -3,6 +3,7 @@ package sqlstore
 import (
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/varmamsp/cello/model"
@@ -98,6 +99,8 @@ func MakeMysqlDSN(config *model.Config) string {
 	c.Passwd = config.Mysql.Password
 	c.AllowNativePasswords = true
 	c.Params = map[string]string{"collation": "utf8mb4_unicode_ci"}
+	c.ReadTimeout = 2 * time.Minute
+	c.WriteTimeout = 2 * time.Minute
 
 	return c.FormatDSN()
 }
