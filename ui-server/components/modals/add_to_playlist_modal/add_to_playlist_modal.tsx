@@ -11,17 +11,25 @@ export interface StateToProps {
 }
 
 export interface DispatchToProps {
+  showCreatePlaylistModal: () => void
   loadPlaylists: () => void
   closeModal: () => void
 }
 
 export interface OwnProps {
   skipLoad?: boolean
+  episodeId: string
 }
 
 const AddToPlaylistModal: React.FC<
   StateToProps & DispatchToProps & OwnProps
-> = ({ playlists, closeModal, loadPlaylists, reqState }) => {
+> = ({
+  playlists,
+  closeModal,
+  showCreatePlaylistModal,
+  loadPlaylists,
+  reqState,
+}) => {
   const [selected, setSelected] = useState<string>('')
 
   useEffect(() => {
@@ -44,13 +52,16 @@ const AddToPlaylistModal: React.FC<
               />
             )}
           </div>
-          <div className="flex flex-none justify-end items-center mb-4">
-            <div className="w-32 text-sm font-medium text-center text-purple-400 py-1 mr-6 border-2 border-purple-400 rounded-lg">
+          <div className="flex flex-none md:justify-end justify-center items-center mb-4">
+            <button
+              className="w-32 text-sm font-medium text-center text-purple-400 py-1 mr-6 border-2 border-purple-400 rounded-lg"
+              onClick={() => showCreatePlaylistModal()}
+            >
               New Playlist
-            </div>
-            <div className="w-32 px-4 py-1 text-sm text-center text-gray-100  bg-purple-500 rounded-lg">
+            </button>
+            <button className="w-32 px-4 py-1 text-sm text-center text-gray-100 bg-purple-500 rounded-lg">
               Add
-            </div>
+            </button>
           </div>
         </div>
       </ModalContainer>

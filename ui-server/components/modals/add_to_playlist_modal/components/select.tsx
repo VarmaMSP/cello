@@ -11,22 +11,23 @@ interface Props {
 
 const Select: React.FC<Props> = ({ options, selected, handleSelect }) => {
   return (
-    <>
+    <div>
       {options.map((o) => (
-        <div
-          className="flex items-center cursor-pointer"
-          onClick={() => handleSelect(o.id)}
-        >
-          <div className="w-4 h-4 mx-3 rounded-full border-2 border-blue-600">
-            {o.id === selected && (
-              <div className="w-full h-full bg-blue-400 rounded-full" />
-            )}
-          </div>
-          {o.display}
+        <div key={o.id}>
+          <label className="inline-flex items-center">
+            <input
+              type="checkbox"
+              className="form-checkbox"
+              checked={o.id === selected}
+              onClick={() => handleSelect(o.id)}
+            />
+            <span className="ml-2">{o.display}</span>
+          </label>
         </div>
       ))}
-    </>
+    </div>
   )
 }
 
 export default Select
+  
