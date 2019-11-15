@@ -10,7 +10,7 @@ export interface StateToProps {
 }
 
 export interface DispatchToProps {
-  showEpisodeModal: (episodeId: string) => void
+  showAddToPlaylistModal: (episode: string) => void
   loadEpisodePlaybacks: (episodeIds: string[]) => void
 }
 
@@ -20,11 +20,9 @@ export interface OwnProps {
 
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
-const ListEpisodes: React.SFC<Props> = ({
-  episodes,
-  showEpisodeModal,
-  loadEpisodePlaybacks,
-}) => {
+const ListEpisodes: React.SFC<Props> = (props) => {
+  const { episodes, showAddToPlaylistModal, loadEpisodePlaybacks } = props
+
   useEffect(() => {
     loadEpisodePlaybacks(episodes.map((e) => e.id))
   }, [])
@@ -34,11 +32,10 @@ const ListEpisodes: React.SFC<Props> = ({
       {episodes.map((episode) => (
         <div key={episode.id}>
           <div className="flex group mb-3 py-2 cursor-default">
-            <div className="flex-auto w-11/12 pr-3">
+            <div className="flex-auto w-11/12">
               <EpisodeMeta episodeId={episode.id} />
               <p
                 className="md:text-base text-sm text-black tracking-wide truncate"
-                onClick={() => showEpisodeModal(episode.id)}
                 style={{ marginTop: '1px' }}
               >
                 {episode.title}
@@ -55,6 +52,7 @@ const ListEpisodes: React.SFC<Props> = ({
               <ButtonWithIcon
                 className="group-hover:block text-gray-600 w-5 my-4"
                 icon="playlist-add"
+                onClick={() => showAddToPlaylistModal(episode.id)}
               />
               <ButtonWithIcon
                 className="group-hover:block text-gray-600 w-4"
