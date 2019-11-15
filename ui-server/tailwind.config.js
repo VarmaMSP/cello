@@ -511,5 +511,8 @@ module.exports = {
     zIndex: ['responsive'],
   },
   corePlugins: {},
-  plugins: [require('tailwindcss-spinner')()],
+  plugins: [
+    require('@tailwindcss/custom-forms'),
+    require('tailwindcss-spinner')(),
+  ],
 }
