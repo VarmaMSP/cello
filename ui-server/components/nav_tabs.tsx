@@ -16,20 +16,32 @@ interface OwnProps {
 
 const NavTabs: React.FC<OwnProps> = ({ tabs, active }) => {
   return (
-    <div className="flex mt-8 mb-4 ">
+    <div className="flex">
       {tabs.map((t) => (
-        <Link href={{ pathname: t.pathname, query: t.query }} as={t.as} key={t.name}>
-          <a
-            className={classNames('block mr-4 px-3 py-1 text-sm rounded-full', {
-              'bg-green-300': t.name === active,
-              'bg-gray-200': t.name !== active,
-              'cursor-default': t.name === active,
-              'cursor-pointer': t.name !== active,
-            })}
+        <div className="w-20 mr-2 text-center">
+          <Link
+            href={{ pathname: t.pathname, query: t.query }}
+            as={t.as}
+            key={t.name}
           >
-            {t.name}
-          </a>
-        </Link>
+            <a
+              className={classNames(
+                'block px-3 py-1 text-sm capitalize rounded-br-lg rounded-bl-lg',
+                {
+                  'cursor-default': t.name === active,
+                  'cursor-pointer': t.name !== active,
+                },
+              )}
+            >
+              {t.name}
+            </a>
+          </Link>
+          <div
+            className={classNames('h-1 w-20 rounded-full', {
+              'bg-green-500': t.name === active,
+            })}
+          />
+        </div>
       ))}
     </div>
   )

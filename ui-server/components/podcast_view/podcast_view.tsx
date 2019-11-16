@@ -14,7 +14,7 @@ const PodcastView: React.FC<OwnProps> = ({ podcastId, activeTab }) => {
     <div className="flex md:flex-row flex-col">
       <div className="lg:w-4/6 w-full">
         <PodcastInfo podcastId={podcastId} />
-        <div className="mt-8 mb-4">
+        <div className="mt-6 mb-4">
           <NavTabs
             tabs={[
               {
