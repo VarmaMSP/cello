@@ -1,5 +1,6 @@
+import { createPlaylist } from 'actions/playlist'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
 import { AppActions, CLOSE_MODAL } from 'types/actions'
 import CreatePlaylistModal, {
@@ -16,7 +17,10 @@ function mapStateToProps(state: AppState): StateToProps {
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
     closeModal: () => dispatch({ type: CLOSE_MODAL }),
-    showAddToPlaylistModal: () => dispatch({ type: CLOSE_MODAL }),
+    createPlaylist: (
+      title: string,
+      privacy: 'PUBLIC' | 'PRIVATE' | 'ANONYMOUS',
+    ) => bindActionCreators(createPlaylist, dispatch)(title, privacy),
   }
 }
 

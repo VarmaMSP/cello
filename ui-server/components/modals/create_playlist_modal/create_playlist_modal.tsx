@@ -10,23 +10,29 @@ export interface StateToProps {
 
 export interface DispatchToProps {
   closeModal: () => void
-  showAddToPlaylistModal: () => void
+  createPlaylist: (
+    title: string,
+    privacy: 'PUBLIC' | 'PRIVATE' | 'ANONYMOUS',
+  ) => void
 }
 
-const CreatePlaylistModal: React.FC<DispatchToProps> = ({ closeModal }) => {
+const CreatePlaylistModal: React.FC<DispatchToProps> = ({
+  closeModal,
+  createPlaylist,
+}) => {
   return (
     <Overlay background="rgba(0, 0, 0, 0.8)">
       <ModalContainer handleClose={closeModal} closeUponClicking="CROSS">
         <div className="flex flex-col h-full">
           <h4 className="flex-none block text-2xl mb-6">{'Create Playlist'}</h4>
           <Formik
-            initialValues={{ title: '', privacy: 'public' }}
+            initialValues={{ title: '', privacy: 'PUBLIC' }}
             validate={() => ({})}
-            onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2))
-                setSubmitting(false)
-              }, 400)
+            onSubmit={(values) => {
+              createPlaylist(
+                values.title,
+                values.privacy as 'PUBLIC' | 'PRIVATE',
+              )
             }}
           >
             {({ values, isSubmitting, handleChange, handleSubmit }) => (
@@ -56,7 +62,7 @@ const CreatePlaylistModal: React.FC<DispatchToProps> = ({ closeModal }) => {
                   </label>
                 </div>
 
-                <div className="relative flex-nonew h-6 my-4">
+                <div className="relative flex-none h-6 my-4">
                   <button
                     type="submit"
                     className="block absolute right-0 top-0 md:w-32 w-full py-1 text-sm text-center text-gray-100 bg-purple-500 rounded-lg"
