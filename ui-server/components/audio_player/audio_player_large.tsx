@@ -1,12 +1,10 @@
 import ButtonWithIcon from 'components/button_with_icon'
-import Link from 'next/link'
 import React from 'react'
 import { AudioState, Episode, Podcast } from 'types/app'
 import { formatPlaybackRate, formatVolume } from 'utils/format'
 import ActionButton from './components/action_button'
 import RangeControl from './components/range_control'
 import SeekBar from './components/seek_bar'
-
 interface Props {
   episode: Episode
   podcast: Podcast
@@ -65,15 +63,9 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
           <div className="text-base font-semibold text-gray-800 leading-wide tracking-wide truncate">
             {episode.title}
           </div>
-          <Link
-            href={{ pathname: '/podcasts', query: { podcastId: podcast.id, activeTab: 'episodes' } }}
-            as={`/podcasts/${podcast.id}/episodes`}
-            key={podcast.id}
-          >
-            <a className="block text-xs font-semibold text-gray-700 leading-loose tracking-tight truncate">
-              {podcast.title}
-            </a>
-          </Link>
+          <span className="block text-xs font-semibold text-gray-700 leading-loose tracking-tight truncate">
+            {podcast.title}
+          </span>
         </div>
         <div className="w-full">
           <SeekBar
