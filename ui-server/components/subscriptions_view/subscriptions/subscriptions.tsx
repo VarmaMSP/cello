@@ -1,5 +1,6 @@
 import Grid from 'components/grid'
 import Link from 'next/link'
+import React, { useState } from 'react'
 import { Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
 
@@ -7,13 +8,17 @@ export interface StateToProps {
   subscriptions: Podcast[]
 }
 
-const ListSubscriptions: React.SFC<StateToProps> = ({ subscriptions }) => {
+const Subscriptions: React.FC<StateToProps> = ({ subscriptions }) => {
+  const [showAll, setShowAll] = useState(false)
+
+  console.log('rendering')
   return (
-    <>
-      <h2 className="text-xl text-gray-900 pb-8">{'Your subscriptions'}</h2>
+    <div className="bg-gray-200 py-3 px-2 rounded-xl">
+      <h2 className="text-xl text-gray-700 pb-4">{"You're subscribed to"}</h2>
       <Grid
-        cols={{ LG: 8, MD: 6, SM: 3 }}
-        totalRowSpacing={{ LG: 12, MD: 10, SM: 10 }}
+        rows={showAll ? undefined : 3}
+        cols={{ LG: 4, MD: 4, SM: 4 }}
+        totalRowSpacing={{ LG: 10, MD: 10, SM: 10 }}
         className="md:mb-4 mb-2"
       >
         {subscriptions.map((podcast) => (
@@ -34,8 +39,22 @@ const ListSubscriptions: React.SFC<StateToProps> = ({ subscriptions }) => {
           </Link>
         ))}
       </Grid>
-    </>
+      {!showAll && (
+        <>
+          <hr className="my-1" />
+          <button
+            className="w-full text-center text-gray-700"
+            onClick={(e) => {
+              e.preventDefault()
+              setShowAll(true)
+            }}
+          >
+            SHOW ALL
+          </button>
+        </>
+      )}
+    </div>
   )
 }
 
-export default ListSubscriptions
+export default Subscriptions

@@ -1,31 +1,47 @@
+import { getUserFeed } from 'actions/user'
 import ButtonSignin from 'components/button_signin'
 import { iconMap } from 'components/icon'
-import ListSubscriptions from 'components/list_subscriptions'
+import SubscriptionsView from 'components/subscriptions_view/subscriptions_view'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { getIsUserSignedIn } from 'selectors/entities/users'
 import { AppState } from 'store'
-import { SET_CURRENT_URL_PATH } from 'types/actions'
+import { AppActions, SET_CURRENT_URL_PATH } from 'types/actions'
 import { PageContext } from 'types/utilities'
+import { now } from 'utils/format'
 import * as gtag from 'utils/gtag'
 
 interface StateToProps {
   isUserSignedIn: boolean
 }
 
+interface DispatchToProps {
+  loadFeed: (publishedBefore: string) => void
+}
+
 interface OwnProps {
   scrollY: number
 }
 
-interface Props extends StateToProps, OwnProps {}
+type Props = StateToProps & DispatchToProps & OwnProps
 
 class SubscriptionsPage extends React.Component<Props> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
-    ctx.store.dispatch({
-      type: SET_CURRENT_URL_PATH,
-      urlPath: '/subscriptions',
-    })
+    const { store } = ctx
+
+    if (getIsUserSignedIn(store.getState())) {
+      await bindActionCreators(getUserFeed, store.dispatch)(now())
+    }
+    store.dispatch({ type: SET_CURRENT_URL_PATH, urlPath: '/subscriptions' })
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const { isUserSignedIn } = this.props
+    if (isUserSignedIn && !prevProps.isUserSignedIn) {
+      this.props.loadFeed(now())
+    }
   }
 
   componentDidMount() {
@@ -37,7 +53,7 @@ class SubscriptionsPage extends React.Component<Props> {
     const { isUserSignedIn } = this.props
 
     if (!isUserSignedIn) {
-      const SubscribeIcon = iconMap['history']
+      const SubscribeIcon = iconMap['heart']
       return (
         <>
           <div className="mx-auto mt-24">
@@ -61,7 +77,7 @@ class SubscriptionsPage extends React.Component<Props> {
           description="Subscriptions"
           canonical="https://phenopod.com/subscripitions"
         />
-        <ListSubscriptions />
+        <SubscriptionsView />
       </>
     )
   }
@@ -73,6 +89,14 @@ function mapStateToProps(state: AppState): StateToProps {
   }
 }
 
-export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
-  SubscriptionsPage,
-)
+function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
+  return {
+    loadFeed: (publishedBefore: string) =>
+      bindActionCreators(getUserFeed, dispatch)(publishedBefore),
+  }
+}
+
+export default connect<StateToProps, DispatchToProps, OwnProps, AppState>(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SubscriptionsPage)
