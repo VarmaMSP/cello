@@ -31,6 +31,10 @@ export function createPlaylist(
         playlists: [playlist],
         userId: getCurrentUserId(getState()),
       })
+      dispatch({
+        type: T.SHOW_ADD_TO_PLAYLIST_MODAL,
+        episodeId: '',
+      })
     },
     { type: T.CREATE_PLAYLIST_REQUEST },
     { type: T.CREATE_PLAYLIST_SUCCESS },

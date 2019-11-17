@@ -1,8 +1,8 @@
 import { Formik } from 'formik'
 import React from 'react'
 import { RequestState } from 'reducers/requests/utils'
-import ModalContainer from '../components/modal_container'
-import Overlay from '../components/overlay'
+import ModalContainer from '../modals/components/modal_container'
+import Overlay from '../modals/components/overlay'
 
 export interface StateToProps {
   reqState: RequestState

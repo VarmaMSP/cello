@@ -2,8 +2,8 @@ import { Formik } from 'formik'
 import React, { useEffect } from 'react'
 import { RequestState } from 'reducers/requests/utils'
 import { Playlist } from 'types/app'
-import ModalContainer from '../components/modal_container'
-import Overlay from '../components/overlay'
+import ModalContainer from '../modals/components/modal_container'
+import Overlay from '../modals/components/overlay'
 
 export interface StateToProps {
   playlists: Playlist[]
@@ -54,7 +54,7 @@ const AddToPlaylistModal: React.FC<StateToProps &
                   className="block flex-1 flex flex-col h-full"
                   onSubmit={handleSubmit}
                 >
-                  <div className="flex-1">
+                  <div className="flex-1 overflow-y-auto">
                     {playlists.map(({ id, title }) => (
                       <div className="mb-1">
                         <label className="inline-flex items-center">
@@ -79,7 +79,7 @@ const AddToPlaylistModal: React.FC<StateToProps &
                       </div>
                     ))}
                   </div>
-                  <div className="flex flex-none md:justify-end justify-center items-center mb-4">
+                  <div className="flex flex-none md:justify-end justify-center items-center mt-1 mb-4">
                     <button
                       className="w-32 text-sm font-medium text-center text-purple-400 py-1 mr-6 border-2 border-purple-400 rounded-lg"
                       onClick={() => showCreatePlaylistModal()}

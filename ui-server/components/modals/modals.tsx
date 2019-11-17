@@ -1,6 +1,6 @@
+import ModalAddToPlaylist from 'components/add_to_playlist_modal'
+import CreatePlaylistModal from 'components/create_playlist_modal'
 import { Modal } from 'types/app'
-import ModalAddToPlaylist from './add_to_playlist_modal'
-import CreatePlaylistModal from './create_playlist_modal'
 import ModalEpisode from './modal_episode'
 import ModalSignin from './modal_signin'
 
