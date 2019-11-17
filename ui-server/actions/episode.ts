@@ -23,6 +23,11 @@ export function beginPlayback(episodeId: string, currentTime: number) {
 
 export function syncPlayback(episodeId: string, currentTime: number) {
   return async (_: Dispatch<T.AppActions>, getState: () => AppState) => {
+    if (episodeId.length === 0) {
+      // THIS WILL PREVENT WRONG API CALLS
+      return
+    }
+
     if (!getIsUserSignedIn(getState())) {
       return
     }
