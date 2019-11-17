@@ -10,6 +10,8 @@ require (
 	github.com/dghubble/gologin/v2 v2.2.0
 	github.com/dghubble/oauth1 v0.6.0
 	github.com/go-http-utils/headers v0.0.0-20161116095340-dd89efed1674
+	github.com/go-playground/validator v9.30.0+incompatible
+	github.com/go-playground/validator/v10 v10.0.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
 	github.com/gomodule/redigo v2.0.0+incompatible
@@ -33,4 +35,5 @@ require (
 	golang.org/x/sys v0.0.0-20190812172437-4e8604ab3aff // indirect
 	google.golang.org/api v0.7.0
 	google.golang.org/appengine v1.6.0 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )

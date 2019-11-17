@@ -14,7 +14,13 @@ func (api *Api) RegisterPlaylistHandlers() {
 }
 
 func GetPlaylist(c *Context, w http.ResponseWriter) {
-	playlist, err := c.app.GetPlaylist(c.Param("playlistId"))
+	req := &GetPlaylistReq{}
+	if err := req.Load(c); err != nil {
+		c.err = err
+		return
+	}
+
+	playlist, err := c.app.GetPlaylist(req.PlaylistId)
 	if err != nil {
 		c.err = err
 		return
@@ -67,11 +73,13 @@ func GetCurrentUserPlaylists(c *Context, w http.ResponseWriter) {
 }
 
 func CreatePlaylist(c *Context, w http.ResponseWriter) {
-	requestBody := c.Body()
-	title := requestBody["title"]
-	privacy := requestBody["privacy"]
+	req := &CreatePlaylistReq{}
+	if err := req.Load(c); err != nil {
+		c.err = err
+		return
+	}
 
-	playlist, err := c.app.CreatePlaylist(title, privacy, c.session.UserId)
+	playlist, err := c.app.CreatePlaylist(req.Title, req.Privacy, req.CurrentUserId)
 	if err != nil {
 		c.err = err
 		return
@@ -85,10 +93,13 @@ func CreatePlaylist(c *Context, w http.ResponseWriter) {
 }
 
 func AddEpisodeToPlaylist(c *Context, w http.ResponseWriter) {
-	playlistId := c.Param("playlistId")
-	episodeId := c.Param("episodeId")
+	req := &AddEpisodeToPlaylistReq{}
+	if err := req.Load(c); err != nil {
+		c.err = err
+		return
+	}
 
-	if _, err := c.app.AddEpsiodeToPlaylist(episodeId, playlistId); err != nil {
+	if _, err := c.app.AddEpsiodeToPlaylist(req.EpisodeId, req.PlaylistId); err != nil {
 		c.err = err
 		return
 	}
