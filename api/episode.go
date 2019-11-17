@@ -2,7 +2,6 @@ package api
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/varmamsp/cello/model"
 )
@@ -16,26 +15,23 @@ func (api *Api) RegisterEpisodeHandlers() {
 }
 
 func GetFeed(c *Context, w http.ResponseWriter) {
-	subscriptions, err := c.app.GetUserSubscriptions(c.session.UserId)
+	req := &GetFeedReq{}
+	if err := req.Load(c); err != nil {
+		c.err = err
+		return
+	}
+
+	subscriptions, err := c.app.GetUserSubscriptions(req.CurrentUserId)
 	if err != nil {
 		c.err = err
 		return
 	}
 
-	limit := model.IntFromStr(c.Query("limit"))
-	if limit == 0 {
-		limit = 20
-	}
-	publishedBefore := model.ParseDateTime(c.Query("published_before"))
-	if publishedBefore == nil {
-		now := time.Now()
-		publishedBefore = &now
-	}
 	podcastIds := make([]string, len(subscriptions))
 	for i, podcast := range subscriptions {
 		podcastIds[i] = podcast.Id
 	}
-	episodes, err := c.app.GetAllEpisodesPubblishedBefore(podcastIds, publishedBefore, 20)
+	episodes, err := c.app.GetAllEpisodesPubblishedBefore(podcastIds, req.PublishedBefore, req.Limit)
 	if err != nil {
 		c.err = err
 		return
@@ -92,17 +88,14 @@ func GetHistory(c *Context, w http.ResponseWriter) {
 	}))
 }
 
-type GetEpisodePlaybacksReq struct {
-	EpisodeIds []string `json:"episode_ids"`
-}
-
 func GetEpisodePlaybacks(c *Context, w http.ResponseWriter) {
-	var body GetEpisodePlaybacksReq
-	if err := c.DecodeBody(&body); err != nil {
+	req := &GetEpisodePlaybacksReq{}
+	if err := req.Load(c); err != nil {
+		c.err = err
 		return
 	}
 
-	playbacks, err := c.app.GetAllEpisodePlaybacks(body.EpisodeIds, c.session.UserId)
+	playbacks, err := c.app.GetAllEpisodePlaybacks(req.EpisodeIds, req.CurrentUserId)
 	if err != nil {
 		c.err = err
 		return
@@ -119,7 +112,13 @@ func GetEpisodePlaybacks(c *Context, w http.ResponseWriter) {
 }
 
 func SyncPlayback(c *Context, w http.ResponseWriter) {
-	if err := c.app.SaveEpisodePlayback(c.Param("episodeId"), c.session.UserId); err != nil {
+	req := &SyncPlaybackReq{}
+	if err := req.Load(c); err != nil {
+		c.err = err
+		return
+	}
+
+	if err := c.app.SaveEpisodePlayback(req.EpisodeId, req.CurrentUserId); err != nil {
 		c.err = err
 		return
 	}
@@ -128,11 +127,13 @@ func SyncPlayback(c *Context, w http.ResponseWriter) {
 }
 
 func SyncPlaybackProgress(c *Context, w http.ResponseWriter) {
-	c.app.SaveEpisodeProgress(
-		c.Param("episodeId"),
-		c.session.UserId,
-		model.IntFromStr(c.Body()["current_time"]),
-	)
+	req := &SyncPlaybackProgressReq{}
+	if err := req.Load(c); err != nil {
+		c.err = err
+		return
+	}
+
+	c.app.SaveEpisodeProgress(req.EpisodeId, req.CurrentUserId, req.CurrentTime)
 
 	w.WriteHeader(http.StatusOK)
 }
