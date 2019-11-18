@@ -1,5 +1,6 @@
 import EpisodeMeta from 'components/episode_meta'
 import { iconMap } from 'components/icon'
+import Link from 'next/link'
 import React from 'react'
 import striptags from 'striptags'
 import { Episode, EpisodePlayback, Podcast } from 'types/app'
@@ -41,9 +42,19 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
         <h5 className="md:text-base text-sm line-clamp-2 cursor-default">
           {episode.title}
         </h5>
-        <h6 className="text-xs text-gray-800 leading-relaxed">
-          {podcast.title}
-        </h6>
+        <Link
+            href={{
+              pathname: '/podcasts',
+              query: { podcastId: podcast.id, activeTab: 'episodes' },
+            }}
+            as={`/podcasts/${podcast.id}/episodes`}
+            key={podcast.id}
+          >
+          <a className="text-xs text-gray-800 leading-relaxed">
+            {podcast.title}
+          </a>
+        </Link>
+        
         <EpisodeMeta episodeId={episode.id} />
         <p
           className="mt-2 text-xs text-gray-700 leading-snug tracking-wide line-clamp-2"
