@@ -108,7 +108,7 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId string, rssFeed *rss.Feed
 		map[string]string{"podcast_id": podcastId},
 	)
 
-	episodes, err := job.Store.Episode().GetAllByPodcast(podcastId, 0, 5000)
+	episodes, err := job.Store.Episode().GetAllByPodcast(podcastId, "pub_date_desc", 10000, 0)
 	if err != nil {
 		return appErrorC(err.Error())
 	}

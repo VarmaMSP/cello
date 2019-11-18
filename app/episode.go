@@ -14,8 +14,8 @@ func (app *App) GetEpisodesByIds(episodeIds []string) ([]*model.Episode, *model.
 	return app.Store.Episode().GetAllByIds(episodeIds)
 }
 
-func (app *App) GetEpisodesInPodcast(podcastId string, offset, limit int) ([]*model.Episode, *model.AppError) {
-	return app.Store.Episode().GetAllByPodcast(podcastId, limit, offset)
+func (app *App) GetEpisodesInPodcast(podcastId, order string, offset, limit int) ([]*model.Episode, *model.AppError) {
+	return app.Store.Episode().GetAllByPodcast(podcastId, order, offset, limit)
 }
 
 func (app *App) GetAllEpisodesPubblishedBefore(podcastIds []string, before *time.Time, limit int) ([]*model.Episode, *model.AppError) {
