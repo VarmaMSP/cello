@@ -149,6 +149,8 @@ module.exports = {
       '32': '8rem',
       '36': '9rem',
       '40': '10rem',
+      '42': '10.5rem',
+      '44': '11rem',
       '48': '12rem',
       '56': '14rem',
       '60': '15rem',
@@ -257,7 +259,8 @@ module.exports = {
       ],
     },
     fontSize: {
-      xs: '0.75rem',
+      '2xs': '0.75rem',
+      xs: '0.82rem',
       sm: '0.875rem',
       base: '1rem',
       lg: '1.125rem',
