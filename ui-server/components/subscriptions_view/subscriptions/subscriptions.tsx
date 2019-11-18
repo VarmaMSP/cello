@@ -14,7 +14,7 @@ const Subscriptions: React.FC<StateToProps> = ({ subscriptions }) => {
   console.log('rendering')
   return (
     <div className="bg-gray-200 py-3 px-2 rounded-xl">
-      <h2 className="text-xl text-gray-700 pb-4">{"You're subscribed to"}</h2>
+      <h2 className="text-lg text-gray-700 mb-4 px-2">{"You're subscribed to"}</h2>
       <Grid
         rows={showAll ? undefined : 3}
         cols={{ LG: 4, MD: 4, SM: 4 }}
