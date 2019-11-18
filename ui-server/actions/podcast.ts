@@ -7,7 +7,7 @@ export function getPodcast(podcastId: string) {
     () => client.getPodcastById(podcastId),
     (dispatch, { podcast, episodes }) => {
       dispatch({ type: T.RECEIVED_PODCAST, podcast })
-      dispatch({ type: T.RECEIVED_EPISODES, podcastId: podcast.id, episodes })
+      dispatch({ type: T.RECEIVED_PODCAST_EPISODES, podcastId: podcast.id, offset: 0, order: 'PUB_DATE_DESC', episodes })
     },
     { type: T.GET_PODCAST_REQUEST },
     { type: T.GET_PODCAST_SUCCESS },

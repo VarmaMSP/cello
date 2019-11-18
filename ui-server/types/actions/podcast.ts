@@ -14,6 +14,7 @@ export const SEARCH_PODCASTS_FAILURE = 'SEARCH_PODCASTS_FAILURE'
 
 export const RECEIVED_PODCAST = 'RECEIVED_PODCAST'
 export const RECEIVED_EPISODES = 'RECEIVED_EPISODES'
+export const RECEIVED_PODCAST_EPISODES = 'RECEIVED_PODCAST_EPISODES'
 export const RECEIVED_TRENDING_PODCASTS = 'RECEIVED_TRENDING_PODCASTS'
 export const RECEIVED_SEARCH_PODCASTS = 'RECEIVED_SEARCH_PODCASTS'
 
@@ -69,6 +70,14 @@ export interface ReceivedEpisodesAction {
   episodes: Episode[]
 }
 
+export interface ReceivedPodcastEpisodesAction {
+  type: typeof RECEIVED_PODCAST_EPISODES
+  podcastId: string
+  order: 'PUB_DATE_DESC' | 'PUB_DATE_ASC'
+  offset: string
+  episodes: Episode[]
+}
+
 export interface ReceivedSearchPodcastsAction {
   type: typeof RECEIVED_SEARCH_PODCASTS
   query: string
@@ -88,4 +97,5 @@ export type PodcastActionTypes =
   | ReceivedPodcastAction
   | ReceivedTrendingPodcastsAction
   | ReceivedEpisodesAction
+  | ReceivedPodcastEpisodesAction
   | ReceivedSearchPodcastsAction

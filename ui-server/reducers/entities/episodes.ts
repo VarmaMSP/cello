@@ -8,6 +8,7 @@ const episodes: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
 ) => {
   switch (action.type) {
     case T.RECEIVED_EPISODES:
+    case T.RECEIVED_PODCAST_EPISODES:
     case T.RECEIVED_USER_FEED:
     case T.RECEIVED_USER_FEED_PUBLISHED_BEFORE:
       return {
@@ -23,14 +24,39 @@ const episodes: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
 }
 
 const episodesInPodcast: Reducer<
-  { [podcastId: string]: string[] },
+  {
+    [podcastId: string]: {
+      byPubDateDesc: { [offset: string]: string[] }
+      byPubDateAsc: { [offset: string]: string[] }
+    }
+  },
   T.AppActions
 > = (state = {}, action) => {
   switch (action.type) {
-    case T.RECEIVED_EPISODES:
-      return {
-        ...state,
-        [action.podcastId]: action.episodes.map((e) => e.id),
+    case T.RECEIVED_PODCAST_EPISODES:
+      switch (action.order) {
+        case 'PUB_DATE_DESC':
+          return {
+            ...state,
+            [action.podcastId]: {
+              ...(state[action.podcastId] || {}),
+              byPubDateDesc: {
+                ...((state[action.podcastId] || {}).byPubDateDesc || {}),
+                [action.offset.toString()]: action.episodes.map((e) => e.id),
+              },
+            },
+          }
+        case 'PUB_DATE_DESC':
+          return {
+            ...state,
+            [action.podcastId]: {
+              ...(state[action.podcastId] || {}),
+              byPubDateAsc: {
+                ...((state[action.podcastId] || {}).byPubDateAsc || {}),
+                [action.offset.toString()]: action.episodes.map((e) => e.id),
+              },
+            },
+          }
       }
     default:
       return state

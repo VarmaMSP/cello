@@ -15,13 +15,18 @@ export function makeGetEpisodesInPodcast() {
   return createSelector<
     AppState,
     $Id<Podcast>,
-    MapById<Episode>,
     $Id<Episode>[],
+    MapById<Episode>,
     Episode[]
   >(
+    (state, id) =>
+      Object.values(
+        (state.entities.episodes.episodesInPodcast[id] || {})[
+          'byPubDateDesc'
+        ] || {},
+      ).reduce<string[]>((acc, ids) => [...acc, ...ids], []),
     (state, _) => getAllEpisodes(state),
-    (state, id) => state.entities.episodes.episodesInPodcast[id] || [],
-    (episodes, ids) => {
+    (ids, episodes) => {
       return ids.map((id) => episodes[id])
     },
   )
