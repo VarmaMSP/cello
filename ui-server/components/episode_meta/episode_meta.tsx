@@ -35,7 +35,7 @@ const EpisodeMeta: React.SFC<Props> = ({
 
   return (
     <div className="flex items-center">
-      <div className="flex-none w-42 mr-2 text-2xs text-gray-800">
+      <div className="flex-none w-42 mr-2 text-2xs leading-relaxed text-gray-800">
         {displayPubDate && pubDate}
         {displayPubDate && displayDuration && pubDate && duration && (
           <span className="mx-2 font-extrabold">&middot;</span>
