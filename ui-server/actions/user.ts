@@ -18,6 +18,8 @@ export function getCurrentUser() {
 export function signOutUser() {
   return requestAction(
     () => client.signOutUser(),
-    () => {},
+    (dispatch) => {
+      dispatch({ type: T.SIGN_OUT_USER })
+    },
   )
 }
