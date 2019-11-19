@@ -32,6 +32,13 @@ export function makeGetEpisodesInPodcast() {
   )
 }
 
+export function makeGetReceivedAllEpisodes() {
+  return createSelector<AppState, $Id<Podcast>, ("pub_date_desc" | "pub_date_asc")[], boolean>(
+    (state, id) => (state.entities.episodes.episodesInPodcast[id] || {}).receivedAll || [],
+    (x) => x.includes("pub_date_desc"),
+  )
+}
+
 /*
  * FEED
  */

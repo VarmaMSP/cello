@@ -1,4 +1,5 @@
 import ButtonPlay from 'components/button_play'
+import ButtonShowMore from 'components/button_show_more'
 import ButtonWithIcon from 'components/button_with_icon'
 import EpisodeMeta from 'components/episode_meta'
 import React, { useEffect } from 'react'
@@ -7,11 +8,14 @@ import { Episode } from 'types/app'
 
 export interface StateToProps {
   episodes: Episode[]
+  receivedAllEpisodes: boolean
+  isLoadingMore: boolean
 }
 
 export interface DispatchToProps {
   showAddToPlaylistModal: (episode: string) => void
   loadEpisodePlaybacks: (episodeIds: string[]) => void
+  loadEpisodes: (offset: number) => void
 }
 
 export interface OwnProps {
@@ -20,9 +24,14 @@ export interface OwnProps {
 
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
-const ListEpisodes: React.SFC<Props> = (props) => {
-  const { episodes, showAddToPlaylistModal, loadEpisodePlaybacks } = props
-
+const ListEpisodes: React.SFC<Props> = ({
+  episodes,
+  showAddToPlaylistModal,
+  loadEpisodePlaybacks,
+  loadEpisodes,
+  receivedAllEpisodes,
+  isLoadingMore,
+}) => {
   useEffect(() => {
     loadEpisodePlaybacks(episodes.map((e) => e.id))
   }, [])
@@ -63,6 +72,16 @@ const ListEpisodes: React.SFC<Props> = (props) => {
           <hr className="my-3" />
         </div>
       ))}
+      {!receivedAllEpisodes && (
+        <div className="w-28 h-10 mx-auto my-6">
+          <ButtonShowMore
+            isLoading={isLoadingMore}
+            loadMore={() =>
+              episodes.length > 0 && loadEpisodes(episodes.length)
+            }
+          />
+        </div>
+      )}
     </>
   )
 }

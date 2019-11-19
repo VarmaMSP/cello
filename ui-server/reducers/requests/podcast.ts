@@ -8,6 +8,12 @@ const getPodcast = defaultRequestReducer(
   T.GET_PODCAST_FAILURE,
 )
 
+const getPodcastEpisodes = defaultRequestReducer(
+  T.GET_PODCAST_EPISODES_REQUEST,
+  T.GET_PODCAST_EPISODES_SUCCESS,
+  T.GET_PODCAST_EPISODES_FAILURE,
+)
+
 const getTrendingPodcasts = defaultRequestReducer(
   T.GET_TRENDING_PODCASTS_REQUEST,
   T.GET_TRENDING_PODCASTS_SUCCESS,
@@ -16,5 +22,6 @@ const getTrendingPodcasts = defaultRequestReducer(
 
 export default combineReducers({
   getPodcast,
+  getPodcastEpisodes,
   getTrendingPodcasts,
 })
