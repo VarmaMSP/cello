@@ -41,13 +41,10 @@ export function syncPlayback(episodeId: string, currentTime: number) {
 export function getEpisodePlaybackHistory() {
   return requestAction(
     () => client.getUserPlaybackHistory(),
-    (dispatch, { history, playbacks }) => {
-      dispatch({ type: T.RECEIVED_EPISODES, episodes: history })
+    (dispatch, _, { history, playbacks }) => {
+      dispatch({ type: T.RECEIVED_EPISODES, podcastId: '', episodes: history }) //FIXME
       dispatch({ type: T.RECEIVED_HISTORY_PLAYBACKS, playbacks })
     },
-    { type: T.GET_PLAYBACK_HISTORY_REQUEST },
-    { type: T.GET_PLAYBACK_HISTORY_SUCCESS },
-    { type: T.GET_PLAYBACK_HISTORY_FAILURE },
   )
 }
 

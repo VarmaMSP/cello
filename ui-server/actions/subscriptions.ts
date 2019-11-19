@@ -1,10 +1,10 @@
 import client from 'client'
 import * as T from 'types/actions'
 import * as RequestId from 'utils/request_id'
-import { requestAction_ } from './utils'
+import { requestAction } from './utils'
 
 export function getSubscriptionsFeed(publishedBefore: string) {
-  return requestAction_(
+  return requestAction(
     () => client.getUserFeed(publishedBefore),
     (dispatch, _, { episodes, playbacks }) => {
       dispatch({

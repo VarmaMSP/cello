@@ -1,7 +1,12 @@
 import { RequestException } from 'client/client'
 import { Dispatch } from 'redux'
 import { AppState } from 'store'
-import { AppActions, REQUEST_COMPLETE, REQUEST_IN_PROGRESS, SIGN_OUT_USER_FORCEFULLY } from 'types/actions'
+import {
+  AppActions,
+  REQUEST_COMPLETE,
+  REQUEST_IN_PROGRESS,
+  SIGN_OUT_USER_FORCEFULLY,
+} from 'types/actions'
 
 interface RequestActionOpts {
   requestId: string
@@ -10,14 +15,14 @@ interface RequestActionOpts {
 
 type ResolveData<T> = T extends Promise<infer U> ? U : T
 
-export function requestAction_<T extends Promise<any>>(
+export function requestAction<T extends Promise<any>>(
   makeRequest: () => T,
   processData: (
     dispatch: Dispatch<AppActions>,
     getState: () => AppState,
     data: ResolveData<T>,
   ) => void,
-  { requestId }: Partial<RequestActionOpts>,
+  { requestId }: Partial<RequestActionOpts> = {},
 ) {
   return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
     !!requestId && dispatch({ type: REQUEST_IN_PROGRESS, requestId })
@@ -30,31 +35,5 @@ export function requestAction_<T extends Promise<any>>(
       }
     }
     !!requestId && dispatch({ type: REQUEST_COMPLETE, requestId })
-  }
-}
-
-export function requestAction<T extends Promise<any>>(
-  getData: (getState: () => AppState) => T,
-  processData: (
-    dispatch: Dispatch,
-    data: ResolveData<T>,
-    getState: () => AppState,
-  ) => void,
-  onRequestAction: AppActions,
-  onSuccessAction: AppActions,
-  onFailureAction: AppActions,
-) {
-  return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
-    dispatch(onRequestAction)
-    try {
-      const res = await getData(getState)
-      processData(dispatch, res, getState)
-      dispatch(onSuccessAction)
-    } catch (err) {
-      if ((err as RequestException).statusCode === 401) {
-        dispatch({ type: SIGN_OUT_USER_FORCEFULLY })
-      }
-      dispatch(onFailureAction)
-    }
   }
 }
