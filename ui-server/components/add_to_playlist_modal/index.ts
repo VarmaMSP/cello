@@ -12,7 +12,7 @@ function makeMapStateToProps() {
 
   return (state: AppState): StateToProps => ({
     playlists: getUserPlaylists(state, getCurrentUserId(state)),
-    reqState: state.requests.playlist.getUserPlaylists,
+    isLoading: false
   })
 }
 

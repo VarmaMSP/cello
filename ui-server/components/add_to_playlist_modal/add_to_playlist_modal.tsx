@@ -1,13 +1,12 @@
 import { Formik } from 'formik'
 import React, { useEffect } from 'react'
-import { RequestState } from 'reducers/requests/utils'
 import { Playlist } from 'types/app'
 import ModalContainer from '../modals/components/modal_container'
 import Overlay from '../modals/components/overlay'
 
 export interface StateToProps {
   playlists: Playlist[]
-  reqState: RequestState
+  isLoading: boolean // FIXME
 }
 
 export interface DispatchToProps {
@@ -28,7 +27,7 @@ const AddToPlaylistModal: React.FC<StateToProps &
   closeModal,
   showCreatePlaylistModal,
   loadPlaylists,
-  reqState,
+  isLoading,
 }) => {
   useEffect(() => {
     loadPlaylists()
@@ -39,7 +38,7 @@ const AddToPlaylistModal: React.FC<StateToProps &
       <ModalContainer handleClose={closeModal} closeUponClicking="CROSS">
         <div className="flex flex-col h-full">
           <h4 className="flex-none block text-lg mb-4">{'Add to Playlist'}</h4>
-          {reqState.status === 'STARTED' ? (
+          {isLoading ? (
             'LOADING ...'
           ) : (
             <Formik

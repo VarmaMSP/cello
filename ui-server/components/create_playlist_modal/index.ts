@@ -8,9 +8,9 @@ import CreatePlaylistModal, {
   StateToProps,
 } from './create_playlist_modal'
 
-function mapStateToProps(state: AppState): StateToProps {
+function mapStateToProps(): StateToProps {
   return {
-    reqState: state.requests.playlist.createPlaylist,
+    isLoading: false,
   }
 }
 

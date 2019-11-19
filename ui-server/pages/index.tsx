@@ -4,7 +4,6 @@ import LoadingPage from 'components/loading_page'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 import { connect } from 'react-redux'
-import { RequestState } from 'reducers/requests/utils'
 import { bindActionCreators, Dispatch } from 'redux'
 import { AppState } from 'store'
 import { AppActions, SET_CURRENT_URL_PATH } from 'types/actions'
@@ -12,7 +11,7 @@ import { PageContext } from 'types/utilities'
 import * as gtag from 'utils/gtag'
 
 interface StateToProps {
-  reqState: RequestState
+  isLoading: boolean // FIXME
 }
 
 interface DispatchToProps {
@@ -38,36 +37,34 @@ class IndexPage extends React.Component<Props> {
   }
 
   render() {
-    const { reqState } = this.props
+    const { isLoading } = this.props
 
-    if (reqState.status == 'STARTED') {
+    if (isLoading) {
       return <LoadingPage />
     }
-    if (reqState.status == 'SUCCESS') {
-      return (
-        <>
-          <NextSeo
-            title="Phenopod"
-            description="Podcast Player for Web"
-            canonical="https://phenopod.com"
-            openGraph={{
-              url: 'https://phenopod.com',
-              type: 'website',
-              title: 'Phenopod',
-              description: 'Podcast Player for Web',
-            }}
-          />
-          <Discover />
-        </>
-      )
-    }
-    return <></>
+
+    return (
+      <>
+        <NextSeo
+          title="Phenopod"
+          description="Podcast Player for Web"
+          canonical="https://phenopod.com"
+          openGraph={{
+            url: 'https://phenopod.com',
+            type: 'website',
+            title: 'Phenopod',
+            description: 'Podcast Player for Web',
+          }}
+        />
+        <Discover />
+      </>
+    )
   }
 }
 
-function mapStateToProps(state: AppState): StateToProps {
+function mapStateToProps(): StateToProps {
   return {
-    reqState: state.requests.podcast.getTrendingPodcasts,
+    isLoading: false,
   }
 }
 
