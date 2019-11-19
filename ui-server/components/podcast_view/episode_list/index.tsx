@@ -6,6 +6,7 @@ import {
   makeGetEpisodesInPodcast,
   makeGetReceivedAllEpisodes,
 } from 'selectors/entities/episodes'
+import { getPodcastEpisodesStatus } from 'selectors/request'
 import { AppState } from 'store'
 import * as T from 'types/actions'
 import ListEpisodes, {
@@ -21,8 +22,7 @@ function makeMapStateToProps() {
   return (state: AppState, { podcastId }: OwnProps): StateToProps => ({
     episodes: getEpisodesInPodcast(state, podcastId),
     receivedAllEpisodes: getReceivedAllEpisodes(state, podcastId),
-    isLoadingMore:
-      state.requests.podcast.getPodcastEpisodes.status === 'STARTED',
+    isLoadingMore: getPodcastEpisodesStatus(state, podcastId) === 'IN_PROGRESS',
   })
 }
 

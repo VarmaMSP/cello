@@ -91,7 +91,7 @@ export interface ReceivedPodcastEpisodesAction {
   type: typeof RECEIVED_PODCAST_EPISODES
   podcastId: string
   order: 'pub_date_desc' | 'pub_date_asc'
-  offset: string
+  offset: number
   episodes: Episode[]
 }
 

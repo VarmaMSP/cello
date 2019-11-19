@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import browser from './browser'
 import entities from './entities'
 import requests from './requests'
+import requests_ from './requests-test'
 import ui from './ui'
 
 export default combineReducers({
@@ -9,4 +10,5 @@ export default combineReducers({
   entities,
   requests,
   browser,
+  requests_,
 })

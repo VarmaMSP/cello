@@ -1,6 +1,7 @@
 import client from 'client'
 import * as T from 'types/actions'
-import { requestAction } from './utils'
+import * as RequestId from 'utils/request_id'
+import { requestAction, requestAction_ } from './utils'
 
 export function getPodcast(podcastId: string) {
   return requestAction(
@@ -27,9 +28,9 @@ export function getPodcastEpisodes(
   offset: number,
   order: 'pub_date_desc' | 'pub_date_asc',
 ) {
-  return requestAction(
+  return requestAction_(
     () => client.getPodcastEpisodes(podcastId, limit, offset, order),
-    (dispatch, { episodes, playbacks }) => {
+    (dispatch, _, { episodes, playbacks }) => {
       dispatch({
         type: T.RECEIVED_PODCAST_EPISODES,
         podcastId: podcastId,
@@ -50,9 +51,7 @@ export function getPodcastEpisodes(
         })
       }
     },
-    { type: T.GET_PODCAST_EPISODES_REQUEST },
-    { type: T.GET_PODCAST_EPISODES_SUCCESS },
-    { type: T.GET_PODCAST_EPISODES_FAILURE },
+    { requestId: RequestId.getPodcastEpisodes(podcastId) },
   )
 }
 
