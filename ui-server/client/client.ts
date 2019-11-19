@@ -86,6 +86,25 @@ export default class Client {
     }
   }
 
+  async getPodcastEpisodes(
+    podcastId: string,
+    limit: number,
+    offset: number,
+    order: 'pub_date_desc' | 'pub_date_asc',
+  ): Promise<{
+    episodes: Episode[]
+    playbacks: EpisodePlayback[]
+  }> {
+    const res = await this.doFetch(
+      'GET',
+      `${this.url()}/podcasts/${podcastId}/episodes?limit=${limit}&offset=${offset}&order=${order}`,
+    )
+    return {
+      episodes: (res.episodes || []).map(unmarshalEpisode),
+      playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),
+    }
+  }
+
   async subscribeToPodcast(podcastId: string): Promise<void> {
     await this.doFetch('PUT', `${this.url()}/podcasts/${podcastId}/subscribe`)
   }

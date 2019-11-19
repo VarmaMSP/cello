@@ -28,6 +28,7 @@ const episodesInPodcast: Reducer<
     [podcastId: string]: {
       byPubDateDesc: { [offset: string]: string[] }
       byPubDateAsc: { [offset: string]: string[] }
+      receivedAll: ('pub_date_desc' | 'pub_date_asc')[]
     }
   },
   T.AppActions
@@ -35,7 +36,7 @@ const episodesInPodcast: Reducer<
   switch (action.type) {
     case T.RECEIVED_PODCAST_EPISODES:
       switch (action.order) {
-        case 'PUB_DATE_DESC':
+        case 'pub_date_desc':
           return {
             ...state,
             [action.podcastId]: {
@@ -46,7 +47,7 @@ const episodesInPodcast: Reducer<
               },
             },
           }
-        case 'PUB_DATE_DESC':
+        case 'pub_date_asc':
           return {
             ...state,
             [action.podcastId]: {
@@ -57,6 +58,17 @@ const episodesInPodcast: Reducer<
               },
             },
           }
+      }
+    case T.RECEIVED_ALL_PODCAST_EPISODES:
+      return {
+        ...state,
+        [action.podcastId]: {
+          ...(state[action.podcastId] || {}),
+          receivedAll: [
+            ...((state[action.podcastId] || {}).receivedAll || []),
+            action.order,
+          ]
+        }
       }
     default:
       return state
