@@ -1,7 +1,8 @@
-import { getUserFeed } from 'actions/user'
+import { getSubscriptionsFeed } from 'actions/subscriptions'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { makeGetCurrentUserFeed } from 'selectors/entities/episodes'
+import { getSubscriptionsFeedStatus } from 'selectors/request'
 import { AppState } from 'store'
 import { AppActions, SHOW_EPISODE_MODAL } from 'types/actions'
 import Feed, { DispatchToProps, StateToProps } from './feed'
@@ -11,15 +12,13 @@ function makeMapStateToProps() {
 
   return (state: AppState): StateToProps => ({
     feed: getCurrentUserFeed(state),
-    isLoadingMore: state.requests.user.getUserFeed.status === 'STARTED',
+    isLoadingMore: getSubscriptionsFeedStatus(state) === 'IN_PROGRESS',
   })
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
-    loadMore: (publishedBefore: string) => {
-      bindActionCreators(getUserFeed, dispatch)(publishedBefore)
-    },
+    loadMore: bindActionCreators(getSubscriptionsFeed, dispatch),
     showEpisodeModal: (episodeId: string) =>
       dispatch({
         type: SHOW_EPISODE_MODAL,

@@ -27,23 +27,3 @@ export function signOutUser() {
     { type: T.SIGN_OUT_USER_FAILURE },
   )
 }
-
-export function getUserFeed(publishedBefore: string) {
-  return requestAction(
-    () => client.getUserFeed(publishedBefore),
-    (dispatch, { episodes, playbacks }) => {
-      dispatch({
-        type: T.RECEIVED_USER_FEED_PUBLISHED_BEFORE,
-        publishedBefore,
-        episodes,
-      })
-      dispatch({
-        type: T.RECEIVED_EPISODE_PLAYBACKS,
-        playbacks,
-      })
-    },
-    { type: T.GET_USER_FEED_REQUEST },
-    { type: T.GET_USER_FEED_SUCCESS },
-    { type: T.GET_USER_FEED_FAILURE },
-  )
-}

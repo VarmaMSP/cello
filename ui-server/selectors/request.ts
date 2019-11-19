@@ -8,3 +8,7 @@ export function requestStatus(state: AppState, requestId: string) {
 export function getPodcastEpisodesStatus(state: AppState, podcastId: string) {
   return requestStatus(state, RequestId.getPodcastEpisodes(podcastId))
 }
+
+export function getSubscriptionsFeedStatus(state: AppState) {
+  return requestStatus(state, RequestId.getSubscriptionsFeed())
+}
