@@ -67,8 +67,8 @@ const episodesInPodcast: Reducer<
           receivedAll: [
             ...((state[action.podcastId] || {}).receivedAll || []),
             action.order,
-          ]
-        }
+          ],
+        },
       }
     default:
       return state
