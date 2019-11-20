@@ -130,6 +130,10 @@ func (s *SqlEpisodeStore) GetAllPublishedBefore(podcastIds []string, before *tim
 }
 
 func (s *SqlEpisodeStore) GetAllPlaybacks(episodeIds []string, userId string) (res []*model.EpisodePlayback, appE *model.AppError) {
+	if len(episodeIds) == 0 {
+		return
+	}
+
 	sql := "SELECT " + Cols(&model.EpisodePlayback{}, "episode_playback") + ` FROM episode_playback
 		WHERE episode_id IN (` + strings.Join(Replicate("?", len(episodeIds)), ",") + `) AND played_by = ?`
 
