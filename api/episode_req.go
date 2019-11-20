@@ -6,6 +6,19 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
+type GetEpisodeReq struct {
+	EpisodeId string `validate:"required"`
+}
+
+func (o *GetEpisodeReq) Load(c *Context) *model.AppError {
+	o.EpisodeId = c.Param("episodeId")
+
+	if err := c.app.Validate.Struct(o); err != nil {
+		return model.NewAppError("api.get_episode_req.laod", err.Error(), 400, nil)
+	}
+	return nil
+}
+
 type GetPodcastEpisodesReq struct {
 	PodcastId string `validate:"required"`
 	Limit     int    `validate:"min=5"`

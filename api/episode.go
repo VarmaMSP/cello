@@ -8,11 +8,41 @@ import (
 
 func (api *Api) RegisterEpisodeHandlers() {
 	api.router.Handler("GET", "/podcasts/:podcastId/episodes", api.NewHandler(GetPodcastEpisodes))
+	api.router.Handler("GET", "/episodes/:episodeId", api.NewHandler(GetEpisode))
 	api.router.Handler("GET", "/feed", api.NewHandlerSessionRequired(GetFeed))
 	api.router.Handler("GET", "/history", api.NewHandlerSessionRequired(GetHistory))
 	api.router.Handler("PUT", "/playback", api.NewHandlerSessionRequired(GetEpisodePlaybacks))
 	api.router.Handler("POST", "/sync/:episodeId", api.NewHandlerSessionRequired(SyncPlayback))
 	api.router.Handler("POST", "/sync/:episodeId/progress", api.NewHandlerSessionRequired(SyncPlaybackProgress))
+}
+
+func GetEpisode(c *Context, w http.ResponseWriter) {
+	req := &GetEpisodeReq{}
+	if err := req.Load(c); err != nil {
+		c.err = err
+		return
+	}
+
+	episode, err := c.app.GetEpisode(req.EpisodeId)
+	if err != nil {
+		c.err = err
+		return
+	}
+	episode.Sanitize()
+
+	podcast, err := c.app.GetPodcast(episode.PodcastId)
+	if err != nil {
+		c.err = err
+		return
+	}
+	podcast.Sanitize()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(model.EncodeToJson(map[string]interface{}{
+		"episode": episode,
+		"podcast": podcast,
+	}))
 }
 
 func GetPodcastEpisodes(c *Context, w http.ResponseWriter) {
