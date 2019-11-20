@@ -50,7 +50,7 @@ const ListEpisodes: React.SFC<Props> = ({
                 {episode.title}
               </p>
               <p
-                className="mt-1 text-sm text-gray-600 line-clamp-3"
+                className="mt-1 text-sm text-gray-700 line-clamp-2 tracking-wide"
                 style={{ hyphens: 'auto' }}
               >
                 {striptags(episode.description)}
