@@ -33,7 +33,7 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
   const ShareIcon = iconMap['share']
 
   return (
-    <div className="flex my-6 py-3">
+    <div className="flex mb-12">
       <img
         className="w-24 h-24 mr-2 flex-none object-contain rounded-lg border cursor-default"
         src={getImageUrl(episode.podcastId, 'md')}
@@ -43,18 +43,16 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
           {episode.title}
         </h5>
         <Link
-            href={{
-              pathname: '/podcasts',
-              query: { podcastId: podcast.id, activeTab: 'episodes' },
-            }}
-            as={`/podcasts/${podcast.id}/episodes`}
-            key={podcast.id}
-          >
-          <a className="text-xs text-gray-800 leading-relaxed">
-            {podcast.title}
-          </a>
+          href={{
+            pathname: '/podcasts',
+            query: { podcastId: podcast.id, activeTab: 'episodes' },
+          }}
+          as={`/podcasts/${podcast.id}/episodes`}
+          key={podcast.id}
+        >
+          <a className="text-xs text-gray-800 my-1">{podcast.title}</a>
         </Link>
-        
+
         <EpisodeMeta episodeId={episode.id} />
         <p
           className="mt-2 text-xs text-gray-700 leading-snug tracking-wide line-clamp-2"

@@ -42,8 +42,8 @@ const Feed: React.SFC<StateToProps & DispatchToProps> = (props) => {
     <>
       {feedList.map(({ title, episodes }) => (
         <div key={title}>
-          <h1 className="text-xl  text-gray-900 mt-5">{title}</h1>
-          <hr className="mt-2" />
+          <h1 className="text-xl text-gray-900">{title}</h1>
+          <hr className="mt-2 mb-6 border-gray-500" />
           {episodes.length > 0 ? (
             <div>
               {episodes.map((episode) => (
