@@ -25,6 +25,14 @@ export function registerRoutes(app: NextServer, router: Router) {
     })),
   )
 
+  // Episode Page
+  router.get(
+    '/episodes/:episodeId',
+    servePage('/episodes', 'public,max-age=7200,must-revalidate', (ctx) => ({
+      episodeId: ctx.params['episodeId'],
+    })),
+  )
+
   // Results Page
   router.get(
     '/results',

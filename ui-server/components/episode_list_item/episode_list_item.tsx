@@ -39,9 +39,15 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
         src={getImageUrl(episode.podcastId, 'md')}
       />
       <div className="pl-3">
-        <h5 className="md:text-base text-sm line-clamp-2 cursor-default">
-          {episode.title}
-        </h5>
+        <Link
+          href={{
+            pathname: '/episodes',
+            query: { episodeId: episode.id, skipLoad: true },
+          }}
+          as={`/episodes/${episode.id}`}
+        >
+          <a className="md:text-base text-sm line-clamp-2">{episode.title}</a>
+        </Link>
         <Link
           href={{
             pathname: '/podcasts',
@@ -50,7 +56,9 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
           as={`/podcasts/${podcast.id}/episodes`}
           key={podcast.id}
         >
-          <a className="text-xs text-gray-800 my-1">{podcast.title}</a>
+          <a className="text-xs text-gray-800 hover:text-black my-1">
+            {podcast.title}
+          </a>
         </Link>
 
         <EpisodeMeta episodeId={episode.id} />
