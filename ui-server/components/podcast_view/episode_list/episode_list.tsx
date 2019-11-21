@@ -2,6 +2,7 @@ import ButtonPlay from 'components/button_play'
 import ButtonShowMore from 'components/button_show_more'
 import ButtonWithIcon from 'components/button_with_icon'
 import EpisodeMeta from 'components/episode_meta'
+import { EpisodeLink } from 'components/link'
 import React, { useEffect } from 'react'
 import striptags from 'striptags'
 import { Episode } from 'types/app'
@@ -43,18 +44,22 @@ const ListEpisodes: React.SFC<Props> = ({
           <div className="flex group mb-3 py-2 cursor-default">
             <div className="flex-auto w-11/12">
               <EpisodeMeta episodeId={episode.id} />
-              <p
-                className="md:text-base text-sm text-black tracking-wide truncate"
-                style={{ marginTop: '1px' }}
-              >
-                {episode.title}
-              </p>
-              <p
-                className="mt-1 text-sm text-gray-700 line-clamp-2 tracking-wide"
-                style={{ hyphens: 'auto' }}
-              >
-                {striptags(episode.description)}
-              </p>
+              <EpisodeLink episodeId={episode.id}>
+                <a
+                  className="md:text-base text-sm text-black tracking-wide truncate"
+                  style={{ marginTop: '1px' }}
+                >
+                  {episode.title}
+                </a>
+              </EpisodeLink>
+              <EpisodeLink episodeId={episode.id}>
+                <a
+                  className="mt-1 text-sm text-gray-700 line-clamp-2 tracking-wide"
+                  style={{ hyphens: 'auto' }}
+                >
+                  {striptags(episode.description)}
+                </a>
+              </EpisodeLink>
             </div>
             <div className="flex flex-col items-center justify-end ml-4">
               <ButtonPlay className="w-6" episodeId={episode.id} />

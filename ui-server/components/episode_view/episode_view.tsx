@@ -42,10 +42,10 @@ const EpisodeView: React.FC<StateToProps & OwnProps> = ({
           />
           <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
             <div className="w-full">
-              <div className="w-16 mb-1 text-center text-2xs leading-relaxed tracking-wider bg-gray-300 rounded-full">
+              <div className="w-16 mb-2 text-center text-2xs leading-relaxed tracking-wider bg-gray-300 rounded-full">
                 Episode
               </div>
-              <h2 className="md:text-2xl text-lg text-gray-900 leading-tight line-clamp-2">
+              <h2 className="text-lg text-gray-900 leading-tight line-clamp-2">
                 {episode.title}
               </h2>
               <Link

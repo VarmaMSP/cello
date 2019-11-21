@@ -1,11 +1,10 @@
 import EpisodeMeta from 'components/episode_meta'
 import { iconMap } from 'components/icon'
-import Link from 'next/link'
+import { EpisodeLink, PodcastLink } from 'components/link'
 import React from 'react'
 import striptags from 'striptags'
 import { Episode, EpisodePlayback, Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
-
 export interface StateToProps {
   episode: Episode
   podcast: Podcast
@@ -39,35 +38,25 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
         src={getImageUrl(episode.podcastId, 'md')}
       />
       <div className="pl-3">
-        <Link
-          href={{
-            pathname: '/episodes',
-            query: { episodeId: episode.id, skipLoad: true },
-          }}
-          as={`/episodes/${episode.id}`}
-        >
+        <EpisodeLink episodeId={episode.id}>
           <a className="md:text-base text-sm line-clamp-2">{episode.title}</a>
-        </Link>
-        <Link
-          href={{
-            pathname: '/podcasts',
-            query: { podcastId: podcast.id, activeTab: 'episodes' },
-          }}
-          as={`/podcasts/${podcast.id}/episodes`}
-          key={podcast.id}
-        >
+        </EpisodeLink>
+        <PodcastLink podcastId={podcast.id}>
           <a className="text-xs text-gray-800 hover:text-black my-1">
             {podcast.title}
           </a>
-        </Link>
+        </PodcastLink>
 
         <EpisodeMeta episodeId={episode.id} />
-        <p
-          className="mt-2 text-xs text-gray-700 leading-snug tracking-wide line-clamp-2"
-          style={{ hyphens: 'auto' }}
-        >
-          {striptags(episode.description)}
-        </p>
+        <EpisodeLink episodeId={episode.id}>
+          <a
+            className="mt-2 text-xs text-gray-700 leading-snug tracking-wide line-clamp-2"
+            style={{ hyphens: 'auto' }}
+          >
+            {striptags(episode.description)}
+          </a>
+        </EpisodeLink>
+
         <div className="flex mt-4">
           <button
             className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-purple-900 bg-gray-300 border hover:border-2 rounded-lg"
