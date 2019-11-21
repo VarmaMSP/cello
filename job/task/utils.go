@@ -13,8 +13,9 @@ import (
 var (
 	itunesLookupUrl = "https://itunes.apple.com/lookup?id="
 
-	regexpItunesGenrePageUrl   = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/genre\/.*`)
-	regexpItunesPodcastPageUrl = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/podcast\/.+\/id([0-9]+).*`)
+	regexpItunesGenrePageUrl      = regexp.MustCompile(`https?:\/\/podcasts.apple.com\/[a-z]+\/genre\/.*`)
+	regexpItunesPodcastPageUrl    = regexp.MustCompile(`https?:\/\/(?:\bpodcasts\b|\bitunes\b).apple.com\/[a-z]+\/podcast(?:\/.+)?\/id([0-9]+).*`)
+	regexpChartablePodcastPageUrl = regexp.MustCompile(`https?:\/\/chartable.com\/podcasts\/(.+)`)
 )
 
 type Frontier struct {
@@ -72,6 +73,17 @@ func isGenrePage(url string) (bool, string) {
 	url = model.RemoveFragmentFromUrl(url)
 	if regexpItunesGenrePageUrl.MatchString(url) {
 		return true, url
+	}
+	return false, ""
+}
+
+// Check if given link points to chartable podcast page
+// and return podcast id if true
+func isChartablePodcastPage(url string) (bool, string) {
+	url = model.RemoveQueryFromUrl(url)
+	if regexpChartablePodcastPageUrl.MatchString(url) {
+		res := regexpChartablePodcastPageUrl.FindStringSubmatch(url)
+		return true, res[1]
 	}
 	return false, ""
 }
