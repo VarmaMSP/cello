@@ -130,11 +130,11 @@ func (s *ScrapeItunesDirectory) pollAndProcessPages() {
 				if !exist {
 					continue
 				}
-				if ok, itunesId := isPodcastPage(link); ok {
+				if ok, itunesId := isItunesPodcastPage(link); ok {
 					s.itunesIdF.I <- itunesId
 					continue
 				}
-				if ok, link := isGenrePage(link); ok {
+				if ok, link := isItunesGenrePage(link); ok {
 					s.urlF.I <- link
 					continue
 				}

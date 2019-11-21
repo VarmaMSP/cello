@@ -3,10 +3,7 @@ package task
 import (
 	"encoding/json"
 	"io/ioutil"
-	"net/http"
-	"time"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/golang-collections/go-datastructures/set"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
@@ -58,24 +55,7 @@ func (s *ScrapeCategories) GetChartablePodcastIds(seedUrl string) []string {
 	podcastIdSet := set.New()
 
 	for {
-	RETRY:
-		res, err := http.Get(url)
-		if err != nil {
-			s.Log.Error().Msg(err.Error())
-			continue
-		}
-		if res.StatusCode != http.StatusOK {
-			if res.StatusCode == 503 {
-				time.Sleep(2 * time.Minute)
-				s.Log.Info().Msg("Wake up and restart")
-				goto RETRY
-			}
-			s.Log.Error().Msg(url + " - " + res.Status)
-			continue
-		}
-
-		doc, err := goquery.NewDocumentFromReader(res.Body)
-		res.Body.Close()
+		doc, err := fetchAndParseHtml(url, true)
 		if err != nil {
 			s.Log.Error().Msg(err.Error())
 			continue
@@ -110,25 +90,7 @@ func (s *ScrapeCategories) GetChartablePodcastIds(seedUrl string) []string {
 func (s *ScrapeCategories) GetItunesPodcastIds(chartableIds []string) []string {
 	var podcastIds []string
 	for _, chartableId := range chartableIds {
-		url := CHARTABLE_PODCAST_BASE_URL + "/" + chartableId
-
-	RETRY:
-		res, err := http.Get(url)
-		if err != nil {
-			s.Log.Error().Msg(err.Error())
-			continue
-		}
-		if res.StatusCode != http.StatusOK {
-			if res.StatusCode == 503 {
-				time.Sleep(2 * time.Minute)
-				goto RETRY
-			}
-			s.Log.Error().Msg(url + " - " + res.Status)
-			continue
-		}
-
-		doc, err := goquery.NewDocumentFromReader(res.Body)
-		res.Body.Close()
+		doc, err := fetchAndParseHtml(CHARTABLE_PODCAST_BASE_URL+"/"+chartableId, true)
 		if err != nil {
 			s.Log.Error().Msg(err.Error())
 			continue
@@ -141,7 +103,7 @@ func (s *ScrapeCategories) GetItunesPodcastIds(chartableIds []string) []string {
 				continue
 			}
 
-			if ok, podcastId := isPodcastPage(link); ok {
+			if ok, podcastId := isItunesPodcastPage(link); ok {
 				podcastIds = append(podcastIds, podcastId)
 			}
 		}

@@ -1,19 +1,19 @@
 all:
   hosts:
     hal:
-      ansible_host:
-      private_ip:
-      ansible_user:
-      ansible_ssh_pass:
+      ansible_host: 152.44.42.65
+      private_ip: 10.3.9.113
+      ansible_user: root
+      ansible_ssh_pass: 7w349ew4
 
     anton:
-      ansible_host:
-      private_ip:
-      ansible_user:
-      ansible_ssh_pass:
+      ansible_host: 209.50.48.250
+      private_ip: 10.3.5.34
+      ansible_user: root
+      ansible_ssh_pass: z7nd43zg
 
     keyser:
-      ansible_host:
-      private_ip:
-      ansible_user:
-      ansible_ssh_pass:
+      ansible_host: 152.44.33.16
+      private_ip: 10.3.6.183
+      ansible_user: root
+      ansible_ssh_pass: 2wy45zp6

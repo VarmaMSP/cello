@@ -2,10 +2,13 @@ package task
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/golang-collections/go-datastructures/set"
 	"github.com/varmamsp/cello/model"
 )
@@ -58,7 +61,7 @@ func (f *Frontier) Clear() {
 
 // Check if given link points to itunes podcast page
 // and return podcast id if true
-func isPodcastPage(url string) (bool, string) {
+func isItunesPodcastPage(url string) (bool, string) {
 	url = model.RemoveQueryFromUrl(url)
 	if regexpItunesPodcastPageUrl.MatchString(url) {
 		res := regexpItunesPodcastPageUrl.FindStringSubmatch(url)
@@ -69,7 +72,7 @@ func isPodcastPage(url string) (bool, string) {
 
 // Check if given link points to itunes genre page
 // and return url with fragment removed
-func isGenrePage(url string) (bool, string) {
+func isItunesGenrePage(url string) (bool, string) {
 	url = model.RemoveFragmentFromUrl(url)
 	if regexpItunesGenrePageUrl.MatchString(url) {
 		return true, url
@@ -118,4 +121,25 @@ func itunesLookup(podcastIds []string, httpClient *http.Client) ([]ItunesLookupR
 	}
 
 	return lookupResp.Results, nil
+}
+
+func fetchAndParseHtml(url string, retryIfThrottled bool) (*goquery.Document, error) {
+	res, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	if res.StatusCode == 503 && retryIfThrottled {
+		<-(time.NewTimer(2 * time.Minute)).C
+		return fetchAndParseHtml(url, false)
+	}
+	if res.StatusCode != http.StatusOK {
+		return nil, errors.New(res.Status)
+	}
+	defer res.Body.Close()
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	return doc, nil
 }

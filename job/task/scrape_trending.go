@@ -3,10 +3,8 @@ package task
 import (
 	"encoding/json"
 	"io/ioutil"
-	"net/http"
 	"time"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
 )
@@ -27,18 +25,7 @@ func (s *ScrapeTrending) Call() {
 	s.Log.Info().Msg("Scrape Itunes charts started")
 
 	go func() {
-		res, err := http.Get(ITUNES_CHART_URL + "/" + time.Now().AddDate(0, 0, -1).Format("2006/01/02"))
-		if err != nil {
-			s.Log.Error().Msg(err.Error())
-			return
-		}
-		if res.StatusCode != http.StatusOK {
-			s.Log.Error().Msg("Invalid status code")
-			return
-		}
-
-		doc, err := goquery.NewDocumentFromReader(res.Body)
-		res.Body.Close()
+		doc, err := fetchAndParseHtml(ITUNES_CHART_URL+"/"+time.Now().AddDate(0, 0, -1).Format("2006/01/02"), false)
 		if err != nil {
 			s.Log.Error().Msg(err.Error())
 			return
@@ -52,7 +39,7 @@ func (s *ScrapeTrending) Call() {
 				continue
 			}
 
-			if ok, itunesId := isPodcastPage(link); ok {
+			if ok, itunesId := isItunesPodcastPage(link); ok {
 				feed, err := s.Store.Feed().GetBySource("ITUNES_SCRAPER", itunesId)
 				if err != nil {
 					continue
