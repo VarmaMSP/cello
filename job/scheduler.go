@@ -11,33 +11,38 @@ import (
 
 type SchedulerJob struct {
 	*app.App
-	scrapeItunes           *task.ScrapeItunes
-	scrapeItunesCharts     *task.ScrapeItunesCharts
+	scrapeTrending         *task.ScrapeTrending
+	scrapeCategories       *task.ScrapeCategories
+	scrapeItunesDirectory  *task.ScrapeItunesDirectory
 	schedulePodcastRefresh *task.SchedulePodcastRefresh
 }
 
 func NewSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
-	scrapeItunes, err := task.NewScrapeItunes(app, config)
+	var err error
+
+	s := &SchedulerJob{App: app}
+
+	s.scrapeTrending, err = task.NewScrapeTrending(app)
 	if err != nil {
 		return nil, err
 	}
 
-	scrapeItunesCharts, err := task.NewScrapeItunesCharts(app)
+	s.scrapeCategories, err = task.NewScrapeCategories(app)
 	if err != nil {
 		return nil, err
 	}
 
-	schedulePodcastRefresh, err := task.NewSchedulePodcastRefresh(app, config)
+	s.scrapeItunesDirectory, err = task.NewScrapeItunesDirectory(app, config)
 	if err != nil {
 		return nil, err
 	}
 
-	return &SchedulerJob{
-		App:                    app,
-		scrapeItunes:           scrapeItunes,
-		scrapeItunesCharts:     scrapeItunesCharts,
-		schedulePodcastRefresh: schedulePodcastRefresh,
-	}, nil
+	s.schedulePodcastRefresh, err = task.NewSchedulePodcastRefresh(app, config)
+	if err != nil {
+		return nil, err
+	}
+
+	return s, nil
 }
 
 func (job *SchedulerJob) Run() {
@@ -101,6 +106,7 @@ func (job *SchedulerJob) oneoff(task *model.Task) {
 
 func (job *SchedulerJob) immediate(task *model.Task) {
 	now := model.Now()
+
 	taskU := *task
 	taskU.Active = 0
 	taskU.UpdatedAt = now
@@ -112,10 +118,15 @@ func (job *SchedulerJob) immediate(task *model.Task) {
 
 func (job *SchedulerJob) callTask(task *model.Task) {
 	switch task.Name {
-	case model.TASK_NAME_SCRAPE_ITUNES:
-		job.scrapeItunes.Call()
-	case model.TASK_NAME_SCRAPE_ITUNES_CHARTS:
-		job.scrapeItunesCharts.Call()
+	case model.TASK_NAME_SCRAPE_TRENDING:
+		job.scrapeTrending.Call()
+
+	case model.TASK_NAME_SCRAPE_CATEGORIES:
+		job.scrapeCategories.Call()
+
+	case model.TASK_NAME_SCRAPE_ITUNES_DIRECTORY:
+		job.scrapeItunesDirectory.Call()
+
 	case model.TASK_NAME_SCHEDULE_PODCAST_REFRESH:
 		job.schedulePodcastRefresh.Call()
 	}

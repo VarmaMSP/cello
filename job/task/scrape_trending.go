@@ -15,15 +15,15 @@ const (
 	ITUNES_CHART_URL = "http://www.itunescharts.net/us/charts/podcasts/"
 )
 
-type ScrapeItunesCharts struct {
+type ScrapeTrending struct {
 	*app.App
 }
 
-func NewScrapeItunesCharts(app *app.App) (*ScrapeItunesCharts, error) {
-	return &ScrapeItunesCharts{app}, nil
+func NewScrapeTrending(app *app.App) (*ScrapeTrending, error) {
+	return &ScrapeTrending{app}, nil
 }
 
-func (s *ScrapeItunesCharts) Call() {
+func (s *ScrapeTrending) Call() {
 	s.Log.Info().Msg("Scrape Itunes charts started")
 
 	go func() {

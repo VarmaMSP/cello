@@ -25,7 +25,7 @@ const (
 // 2 - Use Itunes lookup API to fetch feed urls for above ids.
 // 3 - Push this data into rabbitmq queue to process later.
 
-type ScrapeItunes struct {
+type ScrapeItunesDirectory struct {
 	*app.App
 	// url frontier
 	urlF *Frontier
@@ -41,7 +41,7 @@ type ScrapeItunes struct {
 	rateLimiter chan struct{}
 }
 
-func NewScrapeItunes(app *app.App, config *model.Config) (*ScrapeItunes, error) {
+func NewScrapeItunesDirectory(app *app.App, config *model.Config) (*ScrapeItunesDirectory, error) {
 	importPodcastP, err := rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
 		ExchangeName: rabbitmq.DefaultExchange,
 		QueueName:    model.QUEUE_NAME_IMPORT_PODCAST,
@@ -53,7 +53,7 @@ func NewScrapeItunes(app *app.App, config *model.Config) (*ScrapeItunes, error) 
 
 	workerLimit := config.Jobs.Scheduler.WorkerLimit
 
-	scrapeItunes := &ScrapeItunes{
+	scrapeItunesDirectory := &ScrapeItunesDirectory{
 		App:            app,
 		urlF:           NewFrontier(10000),
 		itunesIdF:      NewFrontier(10000),
@@ -70,32 +70,32 @@ func NewScrapeItunes(app *app.App, config *model.Config) (*ScrapeItunes, error) 
 	}
 
 	for off, lim := 0, 10000; ; off += lim {
-		feeds, err := scrapeItunes.Store.Feed().GetAllBySource("ITUNES_SCRAPER", off, lim)
+		feeds, err := scrapeItunesDirectory.Store.Feed().GetAllBySource("ITUNES_SCRAPER", off, lim)
 		if err != nil {
 			return nil, err
 		}
 		for _, feed := range feeds {
-			scrapeItunes.itunesIdF.Ignore(feed.SourceId)
+			scrapeItunesDirectory.itunesIdF.Ignore(feed.SourceId)
 		}
 		if len(feeds) < lim {
 			break
 		}
 	}
 
-	go scrapeItunes.pollAndFetchPages()
-	go scrapeItunes.pollAndProcessPages()
-	go scrapeItunes.pollAndSaveFeedDetails()
+	go scrapeItunesDirectory.pollAndFetchPages()
+	go scrapeItunesDirectory.pollAndProcessPages()
+	go scrapeItunesDirectory.pollAndSaveFeedDetails()
 
-	return scrapeItunes, nil
+	return scrapeItunesDirectory, nil
 }
 
-func (s *ScrapeItunes) Call() {
+func (s *ScrapeItunesDirectory) Call() {
 	s.Log.Info().Msg("Scrape Itunes started")
 	s.urlF.Clear()
 	s.urlF.I <- ITUNES_SEED_URL
 }
 
-func (s *ScrapeItunes) pollAndFetchPages() {
+func (s *ScrapeItunesDirectory) pollAndFetchPages() {
 	for {
 		s.rateLimiter <- struct{}{}
 		go func(url string) {
@@ -115,7 +115,7 @@ func (s *ScrapeItunes) pollAndFetchPages() {
 	}
 }
 
-func (s *ScrapeItunes) pollAndProcessPages() {
+func (s *ScrapeItunesDirectory) pollAndProcessPages() {
 	for {
 		go func(page io.ReadCloser) {
 			doc, err := goquery.NewDocumentFromReader(page)
@@ -143,7 +143,7 @@ func (s *ScrapeItunes) pollAndProcessPages() {
 	}
 }
 
-func (s *ScrapeItunes) pollAndSaveFeedDetails() {
+func (s *ScrapeItunesDirectory) pollAndSaveFeedDetails() {
 	timeout := time.NewTimer(time.Minute)
 	batchSize := 190
 
