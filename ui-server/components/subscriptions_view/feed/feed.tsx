@@ -11,7 +11,6 @@ export interface StateToProps {
 
 export interface DispatchToProps {
   loadMore: (publishedBefore: string) => void
-  showEpisodeModal: (episodeId: string) => void
 }
 
 const Feed: React.SFC<StateToProps & DispatchToProps> = (props) => {

@@ -8,13 +8,7 @@ export interface StateToProps {
   history: Episode[]
 }
 
-export interface DispatchToProps {
-  showEpisodeModal: (episodeId: string) => void
-}
-
-interface Props extends StateToProps, DispatchToProps {}
-
-const ListHistory: React.SFC<Props> = ({ history }) => {
+const ListHistory: React.SFC<StateToProps> = ({ history }) => {
   return (
     <>
       <h1 className="text-xl text-gray-900 mb-5">{'History'}</h1>

@@ -2,18 +2,12 @@ import { AudioState } from 'types/app'
 
 // Modal Actions
 export const SHOW_SIGNIN_MODAL = 'SHOW_SIGNIN_MODAL'
-export const SHOW_EPISODE_MODAL = 'SHOW_EPISODE_MODAL'
 export const SHOW_ADD_TO_PLAYLIST_MODAL = 'SHOW_ADD_TO_PLAYLIST_MODAL'
 export const SHOW_CREATE_PLAYLIST_MODAL = 'SHOW_CREATE_PLAYLIST_MODAL'
 export const CLOSE_MODAL = 'CLOSE_MODAL'
 
 export interface ShowSigninModalAction {
   type: typeof SHOW_SIGNIN_MODAL
-}
-
-export interface ShowEpisodeModalAction {
-  type: typeof SHOW_EPISODE_MODAL
-  episodeId: string
 }
 
 export interface ShowAddToPlaylistModalAction {
@@ -84,7 +78,6 @@ export interface ToggleExpandOnMobileAction {
 export type UiActionTypes =
   // Modal
   | ShowSigninModalAction
-  | ShowEpisodeModalAction
   | ShowAddToPlaylistModalAction
   | ShowCreatePlaylistModalAction
   | CloseModalAction

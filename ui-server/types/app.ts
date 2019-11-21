@@ -5,7 +5,6 @@ export type ViewportSize = 'SM' | 'MD' | 'LG'
 export type Modal =
   | { type: 'NONE' }
   | { type: 'SIGNIN_MODAL' }
-  | { type: 'EPISODE_MODAL'; episodeId: string }
   | { type: 'ADD_TO_PLAYLIST_MODAL'; episodeId: string }
   | { type: 'CREATE_PLAYLIST_MODAL' }
 

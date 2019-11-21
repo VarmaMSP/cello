@@ -19,8 +19,6 @@ const showModal: Reducer<Modal, T.AppActions> = (
   switch (action.type) {
     case T.SHOW_SIGNIN_MODAL:
       return { type: 'SIGNIN_MODAL' }
-    case T.SHOW_EPISODE_MODAL:
-      return { type: 'EPISODE_MODAL', episodeId: action.episodeId }
     case T.SHOW_ADD_TO_PLAYLIST_MODAL:
       return { type: 'ADD_TO_PLAYLIST_MODAL', episodeId: action.episodeId }
     case T.SHOW_CREATE_PLAYLIST_MODAL:
