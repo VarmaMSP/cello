@@ -12,7 +12,7 @@ interface OwnProps {
 const PodcastView: React.FC<OwnProps> = ({ podcastId, activeTab }) => {
   return (
     <div className="flex md:flex-row flex-col">
-      <div className="lg:w-4/6 w-full">
+      <div className="lg:w-2/3 w-full">
         <PodcastInfo podcastId={podcastId} />
         <div className="mt-6 mb-4">
           <NavTabs
