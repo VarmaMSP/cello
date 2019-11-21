@@ -46,7 +46,7 @@ const ListEpisodes: React.SFC<Props> = ({
               <EpisodeMeta episodeId={episode.id} />
               <EpisodeLink episodeId={episode.id}>
                 <a
-                  className="md:text-base text-sm text-black tracking-wide truncate"
+                  className="md:text-base text-sm text-black tracking-wide line-clamp-1"
                   style={{ marginTop: '1px' }}
                 >
                   {episode.title}
