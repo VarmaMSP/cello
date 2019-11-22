@@ -10,6 +10,7 @@ require (
 	github.com/dghubble/gologin/v2 v2.2.0
 	github.com/dghubble/oauth1 v0.6.0
 	github.com/go-http-utils/headers v0.0.0-20161116095340-dd89efed1674
+	github.com/go-ini/ini v1.51.0 // indirect
 	github.com/go-playground/validator v9.30.0+incompatible
 	github.com/go-playground/validator/v10 v10.0.0
 	github.com/go-sql-driver/mysql v1.4.1
@@ -18,6 +19,8 @@ require (
 	github.com/grokify/html-strip-tags-go v0.0.0-20190424092004-025bd760b278
 	github.com/julienschmidt/httprouter v1.2.0
 	github.com/magiconair/properties v1.8.1 // indirect
+	github.com/minio/minio-go v6.0.14+incompatible
+	github.com/minio/minio-go/v6 v6.0.43
 	github.com/mmcdole/gofeed v0.0.0-20190202050737-d62d841d7427
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/olivere/elastic v6.2.22+incompatible

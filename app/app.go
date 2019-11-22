@@ -10,6 +10,7 @@ import (
 	twitterOAuth "github.com/dghubble/oauth1/twitter"
 	"github.com/go-playground/validator/v10"
 	"github.com/gomodule/redigo/redis"
+	"github.com/minio/minio-go/v6"
 	"github.com/olivere/elastic/v7"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -17,6 +18,7 @@ import (
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/elasticsearch"
 	"github.com/varmamsp/cello/service/rabbitmq"
+	"github.com/varmamsp/cello/service/s3"
 	"github.com/varmamsp/cello/store"
 	"github.com/varmamsp/cello/store/sqlstore"
 	"golang.org/x/oauth2"
@@ -30,6 +32,7 @@ type App struct {
 	Validate *validator.Validate
 
 	Store                store.Store
+	S3                   *minio.Client
 	Redis                *redis.Pool
 	ElasticSearch        *elastic.Client
 	RabbitmqProducerConn *amqp.Connection
@@ -62,6 +65,12 @@ func NewApp(config model.Config) (*App, error) {
 
 	app.Log.Info().Msg("Connecting to Mysql ...")
 	app.Store, err = sqlstore.NewSqlStore(&config)
+	if err != nil {
+		return nil, err
+	}
+
+	app.Log.Info().Msg("Connecting to S3 ...")
+	app.S3, err = s3.NewS3Client(&config)
 	if err != nil {
 		return nil, err
 	}
