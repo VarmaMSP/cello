@@ -1,8 +1,6 @@
 package store
 
 import (
-	"time"
-
 	"github.com/varmamsp/cello/model"
 )
 
@@ -48,7 +46,7 @@ type EpisodeStore interface {
 	Get(episodeId string) (*model.Episode, *model.AppError)
 	GetAllByIds(episodeIds []string) ([]*model.Episode, *model.AppError)
 	GetAllByPodcast(podcastId, order string, offset, limit int) ([]*model.Episode, *model.AppError)
-	GetAllPublishedBefore(podcastIds []string, before *time.Time, limit int) ([]*model.Episode, *model.AppError)
+	GetAllPublishedBefore(podcastIds []string, offset, limit int) ([]*model.Episode, *model.AppError)
 	GetAllPlaybacks(episodeIds []string, userId string) ([]*model.EpisodePlayback, *model.AppError)
 	GetAllPlaybacksByUser(userId string) ([]*model.EpisodePlayback, *model.AppError)
 	SetPlaybackCurrentTime(episodeId, userId string, currentTime int) *model.AppError

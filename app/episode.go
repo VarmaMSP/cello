@@ -1,8 +1,6 @@
 package app
 
 import (
-	"time"
-
 	"github.com/varmamsp/cello/model"
 )
 
@@ -18,8 +16,8 @@ func (app *App) GetEpisodesInPodcast(podcastId, order string, offset, limit int)
 	return app.Store.Episode().GetAllByPodcast(podcastId, order, offset, limit)
 }
 
-func (app *App) GetAllEpisodesPubblishedBefore(podcastIds []string, before *time.Time, limit int) ([]*model.Episode, *model.AppError) {
-	return app.Store.Episode().GetAllPublishedBefore(podcastIds, before, limit)
+func (app *App) GetAllEpisodesPublishedBefore(podcastIds []string, offset, limit int) ([]*model.Episode, *model.AppError) {
+	return app.Store.Episode().GetAllPublishedBefore(podcastIds, offset, limit)
 }
 
 func (app *App) GetAllEpisodePlaybacks(episodeIds []string, userId string) ([]*model.EpisodePlayback, *model.AppError) {

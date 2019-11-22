@@ -9,7 +9,7 @@ import (
 func (api *Api) RegisterEpisodeHandlers() {
 	api.router.Handler("GET", "/podcasts/:podcastId/episodes", api.NewHandler(GetPodcastEpisodes))
 	api.router.Handler("GET", "/episodes/:episodeId", api.NewHandler(GetEpisode))
-	api.router.Handler("GET", "/feed", api.NewHandlerSessionRequired(GetFeed))
+	api.router.Handler("GET", "/subscriptions/feed", api.NewHandlerSessionRequired(GetFeed))
 	api.router.Handler("GET", "/history", api.NewHandlerSessionRequired(GetHistory))
 	api.router.Handler("PUT", "/playback", api.NewHandlerSessionRequired(GetEpisodePlaybacks))
 	api.router.Handler("POST", "/sync/:episodeId", api.NewHandlerSessionRequired(SyncPlayback))
@@ -97,7 +97,7 @@ func GetFeed(c *Context, w http.ResponseWriter) {
 	for i, podcast := range subscriptions {
 		podcastIds[i] = podcast.Id
 	}
-	episodes, err := c.app.GetAllEpisodesPubblishedBefore(podcastIds, req.PublishedBefore, req.Limit)
+	episodes, err := c.app.GetAllEpisodesPublishedBefore(podcastIds, req.Offset, req.Limit)
 	if err != nil {
 		c.err = err
 		return

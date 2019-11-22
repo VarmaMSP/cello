@@ -3,7 +3,6 @@ package sqlstore
 import (
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
@@ -103,17 +102,17 @@ func (s *SqlEpisodeStore) GetAllByPodcast(podcastId, order string, offset, limit
 	return
 }
 
-func (s *SqlEpisodeStore) GetAllPublishedBefore(podcastIds []string, before *time.Time, limit int) (res []*model.Episode, appE *model.AppError) {
+func (s *SqlEpisodeStore) GetAllPublishedBefore(podcastIds []string, offset, limit int) (res []*model.Episode, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Episode{}) + ` FROM episode
-		WHERE podcast_id IN (` + strings.Join(Replicate("?", len(podcastIds)), ",") + `) AND pub_date < ?
+		WHERE podcast_id IN (` + strings.Join(Replicate("?", len(podcastIds)), ",") + `)
 		ORDER BY pub_date DESC
-		LIMIT ?`
+		LIMIT ?, ?`
 
 	var values []interface{}
 	for _, podcastId := range podcastIds {
 		values = append(values, podcastId)
 	}
-	values = append(values, model.FormatDateTime(before), limit)
+	values = append(values, offset, limit)
 
 	copyTo := func() []interface{} {
 		tmp := &model.Episode{}

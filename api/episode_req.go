@@ -1,8 +1,6 @@
 package api
 
 import (
-	"time"
-
 	"github.com/varmamsp/cello/model"
 )
 
@@ -46,24 +44,23 @@ func (o *GetPodcastEpisodesReq) Load(c *Context) *model.AppError {
 }
 
 type GetFeedReq struct {
-	Limit           int        `validate:"min=5"`
-	PublishedBefore *time.Time `validate:"-"`
-	CurrentUserId   string     `validate:"-"`
+	Offset        int    `validate:"min=0"`
+	Limit         int    `validate:"min=5"`
+	CurrentUserId string `validate:"-"`
 }
 
 func (o *GetFeedReq) Load(c *Context) *model.AppError {
+	o.Offset = model.IntFromStr(c.Query("offset"))
 	o.Limit = model.IntFromStr(c.Query("limit"))
 	o.CurrentUserId = c.session.UserId
-	o.PublishedBefore = model.ParseDateTime(c.Query("published_before"))
 
 	if o.Limit == 0 {
 		o.Limit = 20
 	}
-	if o.PublishedBefore == nil {
-		now := time.Now()
-		o.PublishedBefore = &now
-	}
 
+	if err := c.app.Validate.Struct(o); err != nil {
+		return model.NewAppError("api.get_feed_req.load", err.Error(), 400, nil)
+	}
 	return nil
 }
 
