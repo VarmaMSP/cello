@@ -6,6 +6,7 @@ type Config struct {
 	Rabbitmq      Rabbitmq      `mapstructure:"rabbitmq"`
 	Elasticsearch Elasticsearch `mapstructure:"elasticsearch"`
 	Redis         Redis         `mapstructure:"redis"`
+	Minio         Minio         `mapstructure:"minio"`
 	Queues        Queues        `mapstructure:"queues"`
 	Jobs          Jobs          `mapstructure:"jobs"`
 	OAuth         OAuth         `mapstructure:"oauth"`
@@ -37,6 +38,13 @@ type Elasticsearch struct {
 type Redis struct {
 	Address     string `mapstructure:"address"`
 	MaxIdleConn int    `mapstructure:"max_idle_conn"`
+}
+
+// MINIO CONFIGURATION
+type Minio struct {
+	Address         string `mapstructure:"address"`
+	AccessKeyId     string `mapstructure:"access_key_id"`
+	SecretAccessKey string `mapstructure:"secret_access_key"`
 }
 
 // Queue
