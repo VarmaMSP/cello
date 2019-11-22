@@ -1,18 +1,29 @@
 package task
 
 import (
+	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"fmt"
+	"strings"
 
+	"github.com/golang-collections/go-datastructures/queue"
 	"github.com/golang-collections/go-datastructures/set"
+	"github.com/minio/minio-go/v6"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
 )
 
 const (
-	CHARTABLE_BASE_URL         = "https://chartable.com"
-	CHARTABLE_PODCAST_BASE_URL = "https://chartable.com/podcasts"
+	CHARTABLE_BASE_URL = "https://chartable.com"
 )
+
+var chartableSeedUrls = []string{
+	"https://chartable.com/charts/itunes/us",
+	"https://chartable.com/charts/itunes/ca",
+	"https://chartable.com/charts/itunes/gb",
+	"https://chartable.com/charts/itunes/au",
+	"https://chartable.com/charts/itunes/in",
+}
 
 type ScrapeCategories struct {
 	*app.App
@@ -23,38 +34,110 @@ func NewScrapeCategories(app *app.App) (*ScrapeCategories, error) {
 }
 
 func (s *ScrapeCategories) Call() {
+	fmt.Println("Scrapping Categories started")
+
 	go func() {
-		url := "https://chartable.com/charts/itunes/us-arts-podcasts"
+		categoryLinks := s.GetCategoryLinks(chartableSeedUrls)
 
-		chartableIds := s.GetChartablePodcastIds(url)
-		itunesIds := s.GetItunesPodcastIds(chartableIds)
+		for category, categoryLinks := range categoryLinks {
+			podcastPageLinks := s.GetPodcastPageLinks(categoryLinks)
+			podcastItunesIds := s.GetPodcastItunesIds(podcastPageLinks)
 
-		podcasts := []*model.Podcast{}
-		for _, itunesId := range itunesIds {
-			feed, err := s.Store.Feed().GetBySource("ITUNES_SCRAPER", itunesId)
-			if err != nil {
-				continue
+			podcasts := []*model.Podcast{}
+			for _, itunesId := range podcastItunesIds {
+				feed, err := s.Store.Feed().GetBySource("ITUNES_SCRAPER", itunesId)
+				if err != nil {
+					continue
+				}
+				podcast, err := s.Store.Podcast().Get(feed.Id)
+				if err != nil {
+					continue
+				}
+				podcast.Sanitize()
+				podcasts = append(podcasts, podcast)
 			}
-			podcast, err := s.Store.Podcast().Get(feed.Id)
-			if err != nil {
-				continue
-			}
-			podcast.Sanitize()
-			podcasts = append(podcasts, podcast)
-		}
 
-		file, _ := json.MarshalIndent(podcasts, "", " ")
-		if err := ioutil.WriteFile("/var/www/static/something.json", file, 0644); err != nil {
-			s.Log.Error().Msg(err.Error())
+			file, err := json.MarshalIndent(map[string][]*model.Podcast{"podcasts": podcasts}, "", " ")
+			if err != nil {
+				s.Log.Error().Msg(err.Error())
+			}
+
+			if _, err := s.S3.PutObject("charts", category+".json", bytes.NewReader(file), -1, minio.PutObjectOptions{
+				ContentType: "application/json",
+			}); err != nil {
+				s.Log.Error().Msg(err.Error())
+			}
 		}
 	}()
 }
 
-func (s *ScrapeCategories) GetChartablePodcastIds(seedUrl string) []string {
-	url := seedUrl
-	podcastIdSet := set.New()
+func (s *ScrapeCategories) GetCategoryLinks(seedUrls []string) map[string][]string {
+	categoryLinks := map[string][]string{}
 
-	for {
+	for _, seedUrl := range seedUrls {
+		doc, err := fetchAndParseHtml(seedUrl, true)
+		if err != nil {
+			s.Log.Error().Msg(err.Error())
+			return nil
+		}
+
+		formatCategoryName := func(x string) string {
+			return strings.ToLower(
+				strings.ReplaceAll(
+					strings.ReplaceAll(x, "& ", ""),
+					" ", "-",
+				),
+			)
+		}
+
+		sel := doc.Find(`div.flex-ns.flex-wrap div:first-child a`)
+		category := ""
+		for i := range sel.Nodes {
+			link, exist := sel.Eq(i).Attr("href")
+			if !exist {
+				continue
+			}
+			className, exist := sel.Eq(i).Attr("class")
+			if !exist {
+				continue
+			}
+
+			var name string
+			if className == "link blue " {
+				category = sel.Eq(i).Text()
+				name = formatCategoryName(category)
+			} else {
+				name = formatCategoryName(category + " " + sel.Eq(i).Text())
+			}
+
+			if name == "all-podcasts" {
+				continue
+			}
+			if _, ok := categoryLinks[name]; !ok {
+				categoryLinks[name] = []string{}
+			}
+			categoryLinks[name] = append(categoryLinks[name], link)
+		}
+	}
+	return categoryLinks
+}
+
+func (s *ScrapeCategories) GetPodcastPageLinks(seedUrls []string) []string {
+	podcastPageLinksSet := set.New()
+	seedUrlsQ := queue.New(20)
+
+	for _, seedUrl := range seedUrls {
+		seedUrlsQ.Put(seedUrl)
+	}
+
+	for !seedUrlsQ.Empty() {
+		x, err := seedUrlsQ.Get(1)
+		if err != nil {
+			s.Log.Error().Msg(err.Error())
+			break
+		}
+
+		url := x[0].(string)
 		doc, err := fetchAndParseHtml(url, true)
 		if err != nil {
 			s.Log.Error().Msg(err.Error())
@@ -68,29 +151,28 @@ func (s *ScrapeCategories) GetChartablePodcastIds(seedUrl string) []string {
 				continue
 			}
 
-			if ok, podcastId := isChartablePodcastPage(link); ok && !podcastIdSet.Exists(podcastId) {
-				podcastIdSet.Add(podcastId)
+			if ok, nLink := isChartablePodcastPage(link); ok && !podcastPageLinksSet.Exists(nLink) {
+				podcastPageLinksSet.Add(nLink)
 			}
 		}
 
 		if nextPageLink, exists := doc.Find(`span.next a`).Attr("href"); exists {
-			url = CHARTABLE_BASE_URL + nextPageLink
-		} else {
-			break
+			seedUrlsQ.Put(CHARTABLE_BASE_URL + nextPageLink)
 		}
 	}
 
-	podcastIds := make([]string, podcastIdSet.Len())
-	for i, val := range podcastIdSet.Flatten() {
+	podcastIds := make([]string, podcastPageLinksSet.Len())
+	for i, val := range podcastPageLinksSet.Flatten() {
 		podcastIds[i] = val.(string)
 	}
 	return podcastIds
 }
 
-func (s *ScrapeCategories) GetItunesPodcastIds(chartableIds []string) []string {
+func (s *ScrapeCategories) GetPodcastItunesIds(seedUrls []string) []string {
 	var podcastIds []string
-	for _, chartableId := range chartableIds {
-		doc, err := fetchAndParseHtml(CHARTABLE_PODCAST_BASE_URL+"/"+chartableId, true)
+
+	for _, seedUrl := range seedUrls {
+		doc, err := fetchAndParseHtml(seedUrl, true)
 		if err != nil {
 			s.Log.Error().Msg(err.Error())
 			continue
@@ -108,6 +190,5 @@ func (s *ScrapeCategories) GetItunesPodcastIds(chartableIds []string) []string {
 			}
 		}
 	}
-
 	return podcastIds
 }
