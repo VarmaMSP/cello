@@ -42,7 +42,7 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
           <a className="md:text-base text-sm line-clamp-2">{episode.title}</a>
         </EpisodeLink>
         <PodcastLink podcastId={podcast.id}>
-          <a className="text-xs text-gray-800 hover:text-black my-1">
+          <a className="text-sm text-grey-800 hover:text-black my-1">
             {podcast.title}
           </a>
         </PodcastLink>
@@ -50,7 +50,7 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
         <EpisodeMeta episodeId={episode.id} />
         <EpisodeLink episodeId={episode.id}>
           <a
-            className="mt-2 text-xs text-gray-700 leading-snug tracking-wide line-clamp-2"
+            className="mt-1 text-xs text-gray-700 leading-snug tracking-wide line-clamp-2"
             style={{ hyphens: 'auto' }}
           >
             {striptags(episode.description)}

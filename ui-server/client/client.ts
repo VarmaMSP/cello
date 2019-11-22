@@ -73,14 +73,15 @@ export default class Client {
     }
   }
 
-  async getEpisode(episodeId: string): Promise<{ podcast: Podcast, episode: Episode }> {
+  async getEpisode(
+    episodeId: string,
+  ): Promise<{ podcast: Podcast; episode: Episode }> {
     const res = await this.doFetch('GET', `${this.url()}/episodes/${episodeId}`)
     return {
       podcast: unmarshalPodcast(res.podcast),
       episode: unmarshalEpisode(res.episode),
     }
-    
-  } 
+  }
 
   async getPodcastEpisodes(
     podcastId: string,
@@ -157,6 +158,20 @@ export default class Client {
       url = `${url}?published_before=${publishedBefore}`
     }
     const res = await this.doFetch('GET', url)
+    return {
+      episodes: (res.episodes || []).map(unmarshalEpisode),
+      playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),
+    }
+  }
+
+  async getSubscriptionsFeed(
+    offset: number,
+    limit: number,
+  ): Promise<{
+    episodes: Episode[]
+    playbacks: EpisodePlayback[]
+  }> {
+    const res = await this.doFetch('GET', `${this.url()}/subscriptions/feed?limit=${limit}&offset=${offset}`)
     return {
       episodes: (res.episodes || []).map(unmarshalEpisode),
       playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),
