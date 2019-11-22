@@ -1,6 +1,19 @@
 import fetch from 'isomorphic-unfetch'
-import { Curation, Episode, EpisodePlayback, Playlist, Podcast, User } from 'types/app'
-import { unmarshalEpisode, unmarshalEpisodePlayback, unmarshalPlaylist, unmarshalPodcast, unmarshalUser } from 'utils/entities'
+import {
+  Curation,
+  Episode,
+  EpisodePlayback,
+  Playlist,
+  Podcast,
+  User,
+} from 'types/app'
+import {
+  unmarshalEpisode,
+  unmarshalEpisodePlayback,
+  unmarshalPlaylist,
+  unmarshalPodcast,
+  unmarshalUser,
+} from 'utils/entities'
 
 export interface RequestException {
   url: string
@@ -147,23 +160,6 @@ export default class Client {
     await this.doFetch('GET', `${this.url()}/signout`)
   }
 
-  async getUserFeed(
-    publishedBefore?: string,
-  ): Promise<{
-    episodes: Episode[]
-    playbacks: EpisodePlayback[]
-  }> {
-    let url = `${this.url()}/feed`
-    if (!!publishedBefore) {
-      url = `${url}?published_before=${publishedBefore}`
-    }
-    const res = await this.doFetch('GET', url)
-    return {
-      episodes: (res.episodes || []).map(unmarshalEpisode),
-      playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),
-    }
-  }
-
   async getSubscriptionsFeed(
     offset: number,
     limit: number,
@@ -171,7 +167,10 @@ export default class Client {
     episodes: Episode[]
     playbacks: EpisodePlayback[]
   }> {
-    const res = await this.doFetch('GET', `${this.url()}/subscriptions/feed?limit=${limit}&offset=${offset}`)
+    const res = await this.doFetch(
+      'GET',
+      `${this.url()}/subscriptions/feed?limit=${limit}&offset=${offset}`,
+    )
     return {
       episodes: (res.episodes || []).map(unmarshalEpisode),
       playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),

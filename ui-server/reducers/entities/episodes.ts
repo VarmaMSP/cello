@@ -8,10 +8,8 @@ const episodes: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
 ) => {
   switch (action.type) {
     case T.RECEIVED_EPISODES:
-    case T.RECEIVED_SUBSCRIPTION_FEED:
     case T.RECEIVED_PODCAST_EPISODES:
-    case T.RECEIVED_USER_FEED:
-    case T.RECEIVED_USER_FEED_PUBLISHED_BEFORE:
+    case T.RECEIVED_SUBSCRIPTION_FEED:
       return {
         ...state,
         ...action.episodes.reduce<{ [id: string]: Episode }>(
@@ -76,21 +74,6 @@ const episodesInPodcast: Reducer<
   }
 }
 
-const currentUserFeedPublishedBefore: Reducer<
-  { [publishedBefore: string]: string[] },
-  T.AppActions
-> = (state = {}, action) => {
-  switch (action.type) {
-    case T.RECEIVED_USER_FEED_PUBLISHED_BEFORE:
-      return {
-        ...state,
-        [action.publishedBefore]: action.episodes.map((e) => e.id),
-      }
-    default:
-      return state
-  }
-}
-
 const currentUserHistory: Reducer<string[], T.AppActions> = (
   state = [],
   action,
@@ -124,9 +107,6 @@ const currentUserPlayback: Reducer<
 export default combineReducers({
   episodes,
   episodesInPodcast,
-  currentUserFeed: combineReducers({
-    publishedBefore: currentUserFeedPublishedBefore,
-  }),
   currentUserHistory,
   currentUserPlayback,
 })

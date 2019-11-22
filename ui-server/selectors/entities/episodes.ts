@@ -33,28 +33,15 @@ export function makeGetEpisodesInPodcast() {
 }
 
 export function makeGetReceivedAllEpisodes() {
-  return createSelector<AppState, $Id<Podcast>, ("pub_date_desc" | "pub_date_asc")[], boolean>(
-    (state, id) => (state.entities.episodes.episodesInPodcast[id] || {}).receivedAll || [],
-    (x) => x.includes("pub_date_desc"),
-  )
-}
-
-/*
- * FEED
- */
-
-export function makeGetCurrentUserFeed() {
-  return createSelector<AppState, $Id<Episode>[], MapById<Episode>, Episode[]>(
-    (state) =>
-      Object.values(
-        state.entities.episodes.currentUserFeed.publishedBefore,
-      ).reduce<string[]>((acc, x) => [...acc, ...x], []),
-    getAllEpisodes,
-    (ids, episodes) => {
-      return [...new Set(ids)]
-        .map((id) => episodes[id])
-        .sort((a, b) => +new Date(b.pubDate) - +new Date(a.pubDate))
-    },
+  return createSelector<
+    AppState,
+    $Id<Podcast>,
+    ('pub_date_desc' | 'pub_date_asc')[],
+    boolean
+  >(
+    (state, id) =>
+      (state.entities.episodes.episodesInPodcast[id] || {}).receivedAll || [],
+    (x) => x.includes('pub_date_desc'),
   )
 }
 
