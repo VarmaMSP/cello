@@ -5,3 +5,5 @@ logs/
 /ui-server/dist/
 /ui-server/node_modules/
 /ui-server/components/icons/
+
+/deployment/hosts/
