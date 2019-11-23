@@ -24,8 +24,8 @@ func (app *App) GetAllEpisodePlaybacks(episodeIds []string, userId string) ([]*m
 	return app.Store.Episode().GetAllPlaybacks(episodeIds, userId)
 }
 
-func (app *App) GetAllEpisodePlaybacksByUser(userId string) ([]*model.EpisodePlayback, *model.AppError) {
-	return app.Store.Episode().GetAllPlaybacksByUser(userId)
+func (app *App) GetAllEpisodePlaybacksByUser(userId string, offset, limit int) ([]*model.EpisodePlayback, *model.AppError) {
+	return app.Store.Episode().GetAllPlaybacksByUser(userId, offset, limit)
 }
 
 func (app *App) SaveEpisodePlayback(episodeId, userId string) *model.AppError {

@@ -93,6 +93,7 @@ func NewApi(config model.Config) (*Api, error) {
 	api.RegisterPlaylistHandlers()
 	api.RegisterCurationRoutes()
 	api.RegisterUserHandlers()
+	api.RegisterFeedHandlers()
 
 	return api, nil
 }
