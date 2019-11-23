@@ -196,17 +196,6 @@ export default class Client {
     }
   }
 
-  async getUserPlaybackHistory(): Promise<{
-    history: Episode[]
-    playbacks: EpisodePlayback[]
-  }> {
-    const res = await this.doFetch('GET', `${this.url()}/history`)
-    return {
-      history: (res.history || []).map(unmarshalEpisode),
-      playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),
-    }
-  }
-
   async getTrendingPodcasts(): Promise<Podcast[]> {
     const res = await this.doFetch('GET', `${this.url()}/trending`)
     return res.map(unmarshalPodcast)

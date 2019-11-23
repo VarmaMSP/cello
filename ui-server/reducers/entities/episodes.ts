@@ -75,24 +75,11 @@ const episodesInPodcast: Reducer<
   }
 }
 
-const currentUserHistory: Reducer<string[], T.AppActions> = (
-  state = [],
-  action,
-) => {
-  switch (action.type) {
-    case T.RECEIVED_HISTORY_PLAYBACKS:
-      return action.playbacks.map((e) => e.id)
-    default:
-      return state
-  }
-}
-
 const currentUserPlayback: Reducer<
   { [episodeId: string]: EpisodePlayback },
   T.AppActions
 > = (state = {}, action) => {
   switch (action.type) {
-    case T.RECEIVED_HISTORY_PLAYBACKS:
     case T.RECEIVED_EPISODE_PLAYBACKS:
       return {
         ...state,
@@ -108,6 +95,5 @@ const currentUserPlayback: Reducer<
 export default combineReducers({
   episodes,
   episodesInPodcast,
-  currentUserHistory,
   currentUserPlayback,
 })

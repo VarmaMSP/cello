@@ -42,18 +42,12 @@ export function getEpisode(episodeId: string) {
   return requestAction(
     () => client.getEpisode(episodeId),
     (dispatch, _, { podcast, episode }) => {
-      dispatch({ type: T.RECEIVED_EPISODES, episodes: [episode], podcastId: podcast.id })
+      dispatch({
+        type: T.RECEIVED_EPISODES,
+        episodes: [episode],
+        podcastId: podcast.id,
+      })
       dispatch({ type: T.RECEIVED_PODCAST, podcast })
-    },
-  )
-}
-
-export function getEpisodePlaybackHistory() {
-  return requestAction(
-    () => client.getUserPlaybackHistory(),
-    (dispatch, _, { history, playbacks }) => {
-      dispatch({ type: T.RECEIVED_EPISODES, podcastId: '', episodes: history }) //FIXME
-      dispatch({ type: T.RECEIVED_HISTORY_PLAYBACKS, playbacks })
     },
   )
 }
