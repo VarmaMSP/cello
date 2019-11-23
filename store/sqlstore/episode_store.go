@@ -156,8 +156,8 @@ func (s *SqlEpisodeStore) GetAllPlaybacks(episodeIds []string, userId string) (r
 	return
 }
 
-func (s *SqlEpisodeStore) GetAllPlaybacksByUser(userId string) (res []*model.EpisodePlayback, appE *model.AppError) {
-	sql := "SELECT " + Cols(&model.EpisodePlayback{}) + ` FROM episode_playback WHERE played_by = ? ORDER by updated_at DESC`
+func (s *SqlEpisodeStore) GetAllPlaybacksByUser(userId string, offset, limit int) (res []*model.EpisodePlayback, appE *model.AppError) {
+	sql := "SELECT " + Cols(&model.EpisodePlayback{}) + ` FROM episode_playback WHERE played_by = ? ORDER by updated_at DESC LIMIT ?, ?`
 
 	copyTo := func() []interface{} {
 		tmp := &model.EpisodePlayback{}
@@ -165,7 +165,7 @@ func (s *SqlEpisodeStore) GetAllPlaybacksByUser(userId string) (res []*model.Epi
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.Query(copyTo, sql, userId); err != nil {
+	if err := s.Query(copyTo, sql, userId, offset, limit); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_episode_store.get_all_playbacks_by_user", err.Error(), http.StatusInternalServerError,
 			map[string]string{"user_id": userId},

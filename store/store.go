@@ -48,7 +48,7 @@ type EpisodeStore interface {
 	GetAllByPodcast(podcastId, order string, offset, limit int) ([]*model.Episode, *model.AppError)
 	GetAllPublishedBefore(podcastIds []string, offset, limit int) ([]*model.Episode, *model.AppError)
 	GetAllPlaybacks(episodeIds []string, userId string) ([]*model.EpisodePlayback, *model.AppError)
-	GetAllPlaybacksByUser(userId string) ([]*model.EpisodePlayback, *model.AppError)
+	GetAllPlaybacksByUser(userId string, offset, limit int) ([]*model.EpisodePlayback, *model.AppError)
 	SetPlaybackCurrentTime(episodeId, userId string, currentTime int) *model.AppError
 	Block(podcastId, episodeGuid string) *model.AppError
 }
