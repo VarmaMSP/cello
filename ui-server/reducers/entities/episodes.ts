@@ -10,6 +10,7 @@ const episodes: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
     case T.RECEIVED_EPISODES:
     case T.RECEIVED_PODCAST_EPISODES:
     case T.RECEIVED_SUBSCRIPTION_FEED:
+    case T.RECEIVED_HISTORY_FEED:
       return {
         ...state,
         ...action.episodes.reduce<{ [id: string]: Episode }>(

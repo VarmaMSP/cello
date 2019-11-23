@@ -1,25 +1,25 @@
-import { getSubscriptionsFeed } from 'actions/subscriptions'
+import { getHistoryFeed } from 'actions/history'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import { makeGetSubscriptionsFeed } from 'selectors/entities/feed'
-import { getSubscriptionsFeedStatus } from 'selectors/request'
+import { makeGetHistoryFeed } from 'selectors/entities/feed'
+import { getHistoryFeedStatus } from 'selectors/request'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 import Feed, { DispatchToProps, StateToProps } from './feed'
 
 function makeMapStateToProps() {
-  const getSubscriptionsFeed = makeGetSubscriptionsFeed()
+  const getHistoryFeed = makeGetHistoryFeed()
 
   return (state: AppState): StateToProps => ({
-    feed: getSubscriptionsFeed(state),
-    isLoadingMore: getSubscriptionsFeedStatus(state) === 'IN_PROGRESS',
+    history: getHistoryFeed(state),
+    isLoadingMore: getHistoryFeedStatus(state) === 'IN_PROGRESS',
   })
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
     loadMore: (offset: number) =>
-      bindActionCreators(getSubscriptionsFeed, dispatch)(offset, 20),
+      bindActionCreators(getHistoryFeed, dispatch)(offset, 20),
   }
 }
 

@@ -5,3 +5,7 @@ export function getPodcastEpisodes(podcastId: string) {
 export function getSubscriptionsFeed() {
   return '2'
 }
+
+export function getHistoryFeed() {
+  return '3'
+}

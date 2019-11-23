@@ -177,6 +177,25 @@ export default class Client {
     }
   }
 
+  async getHistoryFeed(
+    offset: number,
+    limit: number,
+  ): Promise<{
+    podcasts: Podcast[]
+    episodes: Episode[]
+    playbacks: EpisodePlayback[]
+  }> {
+    const res = await this.doFetch(
+      'GET',
+      `${this.url()}/history/feed?limit=${limit}&offset=${offset}`,
+    )
+    return {
+      podcasts: (res.podcasts || []).map(unmarshalPodcast),
+      episodes: (res.episodes || []).map(unmarshalEpisode),
+      playbacks: (res.playbacks || []).map(unmarshalEpisodePlayback),
+    }
+  }
+
   async getUserPlaybackHistory(): Promise<{
     history: Episode[]
     playbacks: EpisodePlayback[]

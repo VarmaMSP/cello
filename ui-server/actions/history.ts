@@ -3,13 +3,12 @@ import * as T from 'types/actions'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
-export function getSubscriptionsFeed(offset: number, limit: number) {
-  console.log('requesting')
+export function getHistoryFeed(offset: number, limit: number) {
   return requestAction(
-    () => client.getSubscriptionsFeed(offset, limit),
+    () => client.getHistoryFeed(offset, limit),
     (dispatch, _, { episodes, playbacks }) => {
       dispatch({
-        type: T.RECEIVED_SUBSCRIPTION_FEED,
+        type: T.RECEIVED_HISTORY_FEED,
         offset,
         episodes,
       })
@@ -20,10 +19,10 @@ export function getSubscriptionsFeed(offset: number, limit: number) {
 
       if (episodes.length < limit) {
         dispatch({
-          type: T.RECEIVED_ALL_SUBSCRIPTION_FEED,
+          type: T.RECEIVED_ALL_HISTORY_FEED,
         })
       }
     },
-    { requestId: RequestId.getSubscriptionsFeed() },
+    { requestId: RequestId.getHistoryFeed() },
   )
 }

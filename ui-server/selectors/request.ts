@@ -12,3 +12,7 @@ export function getPodcastEpisodesStatus(state: AppState, podcastId: string) {
 export function getSubscriptionsFeedStatus(state: AppState) {
   return requestStatus(state, RequestId.getSubscriptionsFeed())
 }
+
+export function getHistoryFeedStatus(state: AppState) {
+  return requestStatus(state, RequestId.getHistoryFeed())
+}

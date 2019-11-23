@@ -1,7 +1,7 @@
-import { getEpisodePlaybackHistory } from 'actions/episode'
+import { getHistoryFeed } from 'actions/history'
 import ButtonSignin from 'components/button_signin'
+import HistoryView from 'components/history_view/history_view'
 import { iconMap } from 'components/icon'
-import ListHistory from 'components/list_history'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -31,7 +31,7 @@ class FeedPage extends React.Component<Props> {
     const { store } = ctx
 
     if (getIsUserSignedIn(store.getState())) {
-      await bindActionCreators(getEpisodePlaybackHistory, store.dispatch)()
+      await bindActionCreators(getHistoryFeed, store.dispatch)(0, 20)
     }
     store.dispatch({ type: SET_CURRENT_URL_PATH, urlPath: '/history' })
   }
@@ -77,7 +77,7 @@ class FeedPage extends React.Component<Props> {
           canonical="https://phenopod.com/feed"
         />
         <div className="lg:w-4/6 w-full">
-          <ListHistory />
+          <HistoryView />
         </div>
       </>
     )
@@ -92,7 +92,7 @@ function mapStateToProps(state: AppState): StateToProps {
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
-    loadHistory: bindActionCreators(getEpisodePlaybackHistory, dispatch),
+    loadHistory: () => bindActionCreators(getHistoryFeed, dispatch)(0, 20),
   }
 }
 

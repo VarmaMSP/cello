@@ -1,4 +1,4 @@
-import { getSubscriptionsFeed_ } from 'actions/subscriptions'
+import { getSubscriptionsFeed } from 'actions/subscriptions'
 import ButtonSignin from 'components/button_signin'
 import { iconMap } from 'components/icon'
 import SubscriptionsView from 'components/subscriptions_view/subscriptions_view'
@@ -31,7 +31,7 @@ class SubscriptionsPage extends React.Component<Props> {
     const { store } = ctx
 
     if (getIsUserSignedIn(store.getState())) {
-      await bindActionCreators(getSubscriptionsFeed_, store.dispatch)(0, 20)
+      await bindActionCreators(getSubscriptionsFeed, store.dispatch)(0, 20)
     }
     store.dispatch({ type: SET_CURRENT_URL_PATH, urlPath: '/subscriptions' })
   }
@@ -91,7 +91,7 @@ function mapStateToProps(state: AppState): StateToProps {
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
     loadFeed: (offset: number) =>
-      bindActionCreators(getSubscriptionsFeed_, dispatch)(offset, 20),
+      bindActionCreators(getSubscriptionsFeed, dispatch)(offset, 20),
   }
 }
 
