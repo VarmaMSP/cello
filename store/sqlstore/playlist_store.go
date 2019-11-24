@@ -18,24 +18,28 @@ func NewSqlPlaylistStore(store SqlStore) store.PlaylistStore {
 func (s *SqlPlaylistStore) Save(playlist *model.Playlist) *model.AppError {
 	playlist.PreSave()
 
-	if _, err := s.Insert("playlist", []model.DbModel{playlist}); err != nil {
+	id, err := s.InsertWithoutPK("playlist", playlist)
+	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_playlist_store.save", err.Error(), http.StatusInternalServerError,
-			map[string]string{"title": playlist.Title, "user_id": playlist.CreatedBy},
+			map[string]interface{}{"title": playlist.Title, "user_id": playlist.CreatedBy},
 		)
 	}
+	playlist.Id = id
 	return nil
 }
 
 func (s *SqlPlaylistStore) SaveItem(playlistItem *model.PlaylistItem) *model.AppError {
 	playlistItem.PreSave()
 
-	if _, err := s.Insert("playlist_item", []model.DbModel{playlistItem}); err != nil {
+	id, err := s.Insert("playlist_item", []model.DbModel{playlistItem})
+	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_playlist_store.save_item", err.Error(), http.StatusInternalServerError,
-			map[string]string{"playlist_id": playlistItem.PlaylistId, "episode_id": playlistItem.EpisodeId},
+			map[string]interface{}{"playlist_id": playlistItem.PlaylistId, "episode_id": playlistItem.EpisodeId},
 		)
 	}
+	playlistItem.Id = id
 	return nil
 }
 
@@ -46,7 +50,7 @@ func (s *SqlPlaylistStore) Get(playlistId string) (*model.Playlist, *model.AppEr
 	if err := s.GetMaster().QueryRow(sql, playlistId).Scan(playlist.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
 			"store.sqlstore.sql_playlist_store.get", err.Error(), http.StatusInternalServerError,
-			map[string]string{"playlist_id": playlistId},
+			map[string]interface{}{"playlist_id": playlistId},
 		)
 	}
 	return playlist, nil
@@ -64,7 +68,7 @@ func (s *SqlPlaylistStore) GetAllByUser(userId string) (res []*model.Playlist, a
 	if err := s.Query(copyTo, sql, userId); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_playlist_store.get_all_by_user", err.Error(), http.StatusInternalServerError,
-			map[string]string{"user_id": userId},
+			map[string]interface{}{"user_id": userId},
 		)
 	}
 	return
@@ -85,7 +89,7 @@ func (s *SqlPlaylistStore) GetAllEpisodesInPlaylist(playlistId string) (res []*m
 	if err := s.Query(copyTo, sql, playlistId); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_playlist_store.get_all_episodes_in_playlist", err.Error(), http.StatusInternalServerError,
-			map[string]string{"playlist_id": playlistId},
+			map[string]interface{}{"playlist_id": playlistId},
 		)
 	}
 	return

@@ -11,6 +11,7 @@ type SqlStore interface {
 	GetMaster() *sql.DB
 
 	Insert(tableName string, models []model.DbModel) (sql.Result, error)
+	InsertWithoutPK(tableName string, item model.DbModel) (int64, error)
 	InsertOrUpdate(tableName string, m model.DbModel, updateSql string, updateValues ...interface{}) (sql.Result, error)
 
 	UpdateChanges(tableName string, old, new model.DbModel, where string, values ...interface{}) (sql.Result, error)
@@ -22,6 +23,5 @@ type SqlStore interface {
 	Episode() store.EpisodeStore
 	Playlist() store.PlaylistStore
 	Category() store.CategoryStore
-	Curation() store.CurationStore
 	Task() store.TaskStore
 }

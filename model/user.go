@@ -1,26 +1,26 @@
 package model
 
-import "github.com/rs/xid"
+import "encoding/json"
 
 type User struct {
-	Id        string `json:"id,omitempty"`
-	Name      string `json:"name,omitempty"`
-	Email     string `json:"email,omitempty"`
-	Gender    string `json:"gender,omitempty"`
-	IsAdmin   int    `json:"is_admin,omitempty"`
-	CreatedAt int64  `json:"created_at"`
-	UpdatedAt int64  `json:"updated_at"`
+	Id        int64
+	Name      string
+	Email     string
+	Gender    string
+	IsAdmin   int
+	CreatedAt int64
+	UpdatedAt int64
 }
 
 type Session struct {
-	UserId  string
+	UserId  int64
 	IsAdmin int
 }
 
 // google.golang.org/api/oauth2/v2
 type GoogleAccount struct {
 	Id         string
-	UserId     string
+	UserId     int64
 	Email      string
 	FamilyName string
 	Gender     string
@@ -35,7 +35,7 @@ type GoogleAccount struct {
 
 type FacebookAccount struct {
 	Id        string
-	UserId    string
+	UserId    int64
 	Name      string
 	Email     string
 	CreatedAt int64
@@ -44,7 +44,7 @@ type FacebookAccount struct {
 
 type TwitterAccount struct {
 	Id             string
-	UserId         string
+	UserId         int64
 	Name           string
 	ScreenName     string
 	Location       string
@@ -56,6 +56,18 @@ type TwitterAccount struct {
 	ProfileImage   string
 	CreatedAt      int64
 	UpdatedAt      int64
+}
+
+func (u *User) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Id    string `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+	}{
+		Id:    HashIdFromInt64(u.Id),
+		Name:  u.Name,
+		Email: u.Email,
+	})
 }
 
 func (u *User) DbColumns() []string {
@@ -120,10 +132,6 @@ func (t *TwitterAccount) FieldAddrs() []interface{} {
 }
 
 func (u *User) PreSave() {
-	if u.Id == "" {
-		u.Id = xid.New().String()
-	}
-
 	if u.CreatedAt == 0 {
 		u.CreatedAt = Now()
 	}

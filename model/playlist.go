@@ -1,22 +1,37 @@
 package model
 
-import "github.com/rs/xid"
+import "encoding/json"
 
 type Playlist struct {
-	Id        string `json:"id"`
-	Title     string `json:"title"`
-	CreatedBy string `json:"created_by"`
-	Privacy   string `json:"privacy"`
-	CreatedAt int64  `json:"created_at"`
-	UpdatedAt int64  `json:"updated_at"`
+	Id          int64
+	CreatedBy   int64
+	Title       string
+	Description string
+	Privacy     string
+	CreatedAt   int64
+	UpdatedAt   int64
 }
 
 type PlaylistItem struct {
-	PlaylistId string `json:"playlist_id"`
-	EpisodeId  string `json:"episode_id"`
-	Active     int    `json:"active"`
-	CreatedAt  int64  `json:"created_at"`
-	UpdatedAt  int64  `json:"updated_at"`
+	PlaylistId int64
+	EpisodeId  int64
+	Active     int
+	CreatedAt  int64
+	UpdatedAt  int64
+}
+
+func (p *Playlist) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Id          string `json:"id"`
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		Privacy     string `json:"privacy"`
+	}{
+		Id:          HashIdFromInt64(p.Id),
+		Title:       p.Title,
+		Description: p.Description,
+		Privacy:     p.Privacy,
+	})
 }
 
 func (p *Playlist) DbColumns() []string {
@@ -48,10 +63,6 @@ func (p *PlaylistItem) FieldAddrs() []interface{} {
 }
 
 func (p *Playlist) PreSave() {
-	if p.Id == "" {
-		p.Id = xid.New().String()
-	}
-
 	if p.Privacy == "" {
 		p.Privacy = "PUBLIC"
 	}

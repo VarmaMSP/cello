@@ -17,23 +17,25 @@ func NewSqlFeedStore(store SqlStore) *SqlFeedStore {
 func (s *SqlFeedStore) Save(feed *model.Feed) *model.AppError {
 	feed.PreSave()
 
-	if _, err := s.Insert("feed", []model.DbModel{feed}); err != nil {
+	id, err := s.InsertWithoutPK("feed", feed)
+	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_feed_store.save", err.Error(), http.StatusInternalServerError,
-			map[string]string{"source": feed.Source, "source_id": feed.SourceId},
+			map[string]interface{}{"source": feed.Source, "source_id": feed.SourceId},
 		)
 	}
+	feed.Id = id
 	return nil
 }
 
-func (s *SqlFeedStore) Get(id string) (*model.Feed, *model.AppError) {
+func (s *SqlFeedStore) Get(feedId int64) (*model.Feed, *model.AppError) {
 	feed := &model.Feed{}
 	sql := "SELECT " + Cols(feed) + " FROM feed WHERE id = ?"
 
-	if err := s.GetMaster().QueryRow(sql, id).Scan(feed.FieldAddrs()...); err != nil {
+	if err := s.GetMaster().QueryRow(sql, feedId).Scan(feed.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
 			"store.sqlstore.sql_feed_store.get", err.Error(), http.StatusInternalServerError,
-			map[string]string{"id": id},
+			map[string]interface{}{"id": feed},
 		)
 	}
 	return feed, nil
@@ -46,7 +48,7 @@ func (s *SqlFeedStore) GetBySource(source, sourceId string) (*model.Feed, *model
 	if err := s.GetMaster().QueryRow(sql, source, sourceId).Scan(feed.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
 			"store.sqlstore.sql_feed_store.get_by_source", err.Error(), http.StatusInternalServerError,
-			map[string]string{"source": source, "source_id": sourceId},
+			map[string]interface{}{"source": source, "source_id": sourceId},
 		)
 	}
 	return feed, nil
@@ -64,7 +66,7 @@ func (s *SqlFeedStore) GetAllBySource(source string, offset, limit int) (res []*
 	if err := s.Query(copyTo, sql, source, offset, limit); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_feed_store.get", err.Error(), http.StatusInternalServerError,
-			map[string]string{"source": source},
+			map[string]interface{}{"source": source},
 		)
 	}
 	return
@@ -94,7 +96,7 @@ func (s *SqlFeedStore) Update(old, new *model.Feed) *model.AppError {
 	if _, err := s.UpdateChanges("feed", old, new, "id = ?", new.Id); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_feed_store.update", err.Error(), http.StatusInternalServerError,
-			map[string]string{"id": new.Id},
+			map[string]interface{}{"id": new.Id},
 		)
 	}
 	return nil

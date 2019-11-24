@@ -1,14 +1,14 @@
 package model
 
 type Category struct {
-	Id       int
+	Id       int64
 	Name     string
-	ParentId int
+	ParentId int64
 }
 
 type PodcastCategory struct {
-	PodcastId  string
-	CategoryId int
+	PodcastId  int64
+	CategoryId int64
 }
 
 func (pc *PodcastCategory) DbColumns() []string {

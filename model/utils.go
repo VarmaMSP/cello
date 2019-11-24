@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/speps/go-hashids"
 	"github.com/varmamsp/gofeed/rss"
 )
 
@@ -38,21 +39,21 @@ type DbModel interface {
 }
 
 type AppError struct {
-	Id            string            `json:"id"`          // Function at which the error occured
-	DetailedError string            `json:"error"`       // Internal Error string
-	StatusCode    int               `json:"status_code"` // Http status code
-	Params        map[string]string `json:"parmas"`
+	Id            string                 `json:"id"`          // Function at which the error occured
+	DetailedError string                 `json:"error"`       // Internal Error string
+	StatusCode    int                    `json:"status_code"` // Http status code
+	Params        map[string]interface{} `json:"parmas"`
 }
 
 func (e *AppError) Error() string {
 	return e.Id + ": " + e.DetailedError
 }
 
-func NewAppError(where string, details string, statusCode int, params map[string]string) *AppError {
+func NewAppError(where string, details string, statusCode int, params map[string]interface{}) *AppError {
 	return &AppError{where, details, statusCode, params}
 }
 
-func NewAppErrorC(where string, statusCode int, params map[string]string) func(details string) *AppError {
+func NewAppErrorC(where string, statusCode int, params map[string]interface{}) func(details string) *AppError {
 	return func(details string) *AppError {
 		return &AppError{where, details, statusCode, params}
 	}
@@ -215,4 +216,11 @@ func MinInt(x, y int) int {
 		return x
 	}
 	return y
+}
+
+var hashid, _ = hashids.New()
+
+func HashIdFromInt64(i int64) string {
+	hid, _ := hashid.EncodeInt64(([]int64{i}))
+	return hid
 }

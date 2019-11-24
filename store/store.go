@@ -11,20 +11,19 @@ type Store interface {
 	Episode() EpisodeStore
 	Playlist() PlaylistStore
 	Category() CategoryStore
-	Curation() CurationStore
 	Task() TaskStore
 }
 
 type UserStore interface {
 	Save(user *model.User) *model.AppError
 	SaveSocialAccount(accountType string, account model.DbModel) *model.AppError
-	Get(userId string) (*model.User, *model.AppError)
+	Get(userId int64) (*model.User, *model.AppError)
 	GetSocialAccount(accountType, id string) (model.DbModel, *model.AppError)
 }
 
 type FeedStore interface {
 	Save(feed *model.Feed) *model.AppError
-	Get(id string) (*model.Feed, *model.AppError)
+	Get(feedId int64) (*model.Feed, *model.AppError)
 	GetBySource(source, sourceId string) (*model.Feed, *model.AppError)
 	GetAllBySource(source string, offset, limit int) ([]*model.Feed, *model.AppError)
 	GetAllToBeRefreshed(createdAfter int64, limit int) ([]*model.Feed, *model.AppError)
@@ -34,10 +33,9 @@ type FeedStore interface {
 type PodcastStore interface {
 	Save(podcast *model.Podcast) *model.AppError
 	SaveSubscription(subscription *model.PodcastSubscription) *model.AppError
-	Get(podcastId string) (*model.Podcast, *model.AppError)
-	GetAllByCuration(curationId string, offset, limit int) ([]*model.Podcast, *model.AppError)
-	GetAllSubscribedBy(userId string) ([]*model.Podcast, *model.AppError)
-	DeleteSubscription(userId, podcastId string) *model.AppError
+	Get(podcastId int64) (*model.Podcast, *model.AppError)
+	GetAllSubscribedBy(userId int64) ([]*model.Podcast, *model.AppError)
+	DeleteSubscription(userId, podcastId int64) *model.AppError
 }
 
 type EpisodeStore interface {
@@ -65,15 +63,7 @@ type CategoryStore interface {
 	SavePodcastCategory(category *model.PodcastCategory) *model.AppError
 }
 
-type CurationStore interface {
-	Save(curation *model.Curation) *model.AppError
-	SavePodcastCuration(item *model.PodcastCuration) *model.AppError
-	Get(curationId string) (*model.Curation, *model.AppError)
-	GetAll() ([]*model.Curation, *model.AppError)
-	Delete(curationId string) *model.AppError
-}
-
 type TaskStore interface {
-	GetAllActive() ([]*model.Task, *model.AppError)
+	GetAll() ([]*model.Task, *model.AppError)
 	Update(old, new *model.Task) *model.AppError
 }

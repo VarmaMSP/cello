@@ -1,10 +1,10 @@
 package model
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
-	"github.com/rs/xid"
 	"github.com/varmamsp/gofeed/rss"
 )
 
@@ -14,35 +14,73 @@ const (
 )
 
 type Episode struct {
-	Id          string `json:"id,omitempty"`
-	PodcastId   string `json:"podcast_id,omitempty"`
-	Guid        string `json:"guid,omitempty"`
-	Title       string `json:"title,omitempty"`
-	MediaUrl    string `json:"media_url,omitempty"`
-	MediaType   string `json:"media_type,omitempty"`
-	MediaSize   int64  `json:"media_size,omitempty"`
-	PubDate     string `json:"pub_date,omitempty"`
-	Description string `json:"description,omitempty"`
-	Duration    int    `json:"duration,omitempty"`
-	Link        string `json:"link,omitempty"`
-	ImageLink   string `json:"image_link,omitempty"`
-	Explicit    int    `json:"explicit,omitempty"`
-	Episode     int    `json:"episode,omitempty"`
-	Season      int    `json:"season,omitempty"`
-	Type        string `json:"type,omitempty"`
-	Block       int    `json:"block,omitempty"`
-	CreatedAt   int64  `json:"created_at,omitempty"`
-	UpdatedAt   int64  `json:"updated_at,omitempty"`
+	Id          int64
+	PodcastId   int64
+	Guid        string
+	Title       string
+	MediaUrl    string
+	MediaType   string
+	MediaSize   int64
+	PubDate     string
+	Description string
+	Duration    int
+	Link        string
+	ImageLink   string
+	Explicit    int
+	Episode     int
+	Season      int
+	Type        string
+	Block       int
+	CreatedAt   int64
+	UpdatedAt   int64
 }
 
 type EpisodePlayback struct {
-	EpisodeId    string `json:"episode_id,omitempty"`
-	PlayedBy     string `json:"played_by,omitempty"`
-	Count        int    `json:"count,omitempty"`
-	CurrentTime  int    `json:"current_time,omitempty"`
-	LastPlayedAt string `json:"last_played_at,omitempty"`
-	CreatedAt    int64  `json:"created_at,omitempty"`
-	UpdatedAt    int64  `json:"updated_at,omitempty"`
+	EpisodeId    int64
+	PlayedBy     int64
+	Count        int
+	CurrentTime  int
+	LastPlayedAt string
+	CreatedAt    int64
+	UpdatedAt    int64
+}
+
+func (e *Episode) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Id          string `json:"id"`
+		PodcastId   string `json:"podcast_id"`
+		Title       string `json:"title"`
+		MediaUrl    string `json:"media_url"`
+		PubDate     string `json:"pub_date"`
+		Description string `json:"description"`
+		Duration    int    `json:"duration"`
+		Explicit    int    `json:"explicit"`
+		Episode     int    `json:"episode"`
+		Season      int    `json:"season"`
+		Type        string `json:"type"`
+	}{
+		Id:          HashIdFromInt64(e.Id),
+		PodcastId:   HashIdFromInt64(e.PodcastId),
+		Title:       e.Title,
+		MediaUrl:    e.MediaUrl,
+		PubDate:     e.PubDate,
+		Description: e.Description,
+		Duration:    e.Duration,
+		Explicit:    e.Explicit,
+		Episode:     e.Episode,
+		Season:      e.Season,
+		Type:        e.Type,
+	})
+}
+
+func (e *EpisodePlayback) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		EpisodeId   string `json:"episode_id"`
+		CurrentTime int    `json:"current_time"`
+	}{
+		EpisodeId:   HashIdFromInt64(e.EpisodeId),
+		CurrentTime: e.CurrentTime,
+	})
 }
 
 func (e *Episode) DbColumns() []string {
@@ -83,7 +121,7 @@ func (e *Episode) LoadDetails(rssItem *rss.Item) *AppError {
 	appErrorC := NewAppErrorC(
 		"model.epsiode.load_details",
 		http.StatusBadRequest,
-		map[string]string{"title": rssItem.Title},
+		map[string]interface{}{"title": rssItem.Title},
 	)
 
 	// Title
@@ -185,10 +223,6 @@ func (e *Episode) LoadDetails(rssItem *rss.Item) *AppError {
 }
 
 func (e *Episode) PreSave() {
-	if e.Id == "" {
-		e.Id = xid.New().String()
-	}
-
 	title := []rune(e.Title)
 	if len(title) > EPISODE_TITLE_MAX_LENGTH {
 		e.Title = string(title[0:EPISODE_TITLE_MAX_LENGTH-10]) + "..."
@@ -253,7 +287,7 @@ func (e *Episode) Sanitize() {
 }
 
 func (e *EpisodePlayback) Sanitize() {
-	e.PlayedBy = ""
+	e.PlayedBy = 0
 	e.CreatedAt = 0
 	e.UpdatedAt = 0
 }

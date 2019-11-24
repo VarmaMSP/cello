@@ -2,6 +2,7 @@ package sqlstore
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
@@ -15,7 +16,6 @@ type SqlSupplier struct {
 	episode  store.EpisodeStore
 	playlist store.PlaylistStore
 	category store.CategoryStore
-	curation store.CurationStore
 	task     store.TaskStore
 }
 
@@ -37,7 +37,6 @@ func NewSqlStore(config *model.Config) (SqlStore, error) {
 	supplier.episode = NewSqlEpisodeStore(supplier)
 	supplier.playlist = NewSqlPlaylistStore(supplier)
 	supplier.category = NewSqlCategoryStore(supplier)
-	supplier.curation = NewSqlCurationStore(supplier)
 	supplier.task = NewSqlTaskStore(supplier)
 
 	return supplier, nil
@@ -47,13 +46,26 @@ func (s *SqlSupplier) GetMaster() *sql.DB {
 	return s.db
 }
 
-func (s *SqlSupplier) Insert(tableName string, models []model.DbModel) (sql.Result, error) {
-	query, insertValues, noValues := InsertQuery(tableName, models)
+func (s *SqlSupplier) Insert(tableName string, items []model.DbModel) (sql.Result, error) {
+	query, insertValues, noValues := InsertQuery(tableName, items)
 	if noValues {
 		return nil, nil
 	}
 
 	return s.db.Exec(query, insertValues...)
+}
+
+func (s *SqlSupplier) InsertWithoutPK(tableName string, item model.DbModel) (int64, error) {
+	query, insertValues, noValues := InsertQueryWithoutPK(tableName, item)
+	if noValues {
+		return 0, errors.New("no values in provided item")
+	}
+
+	res, err := s.db.Exec(query, insertValues...)
+	if err != nil {
+		return 0, err
+	}
+	return res.LastInsertId()
 }
 
 func (s *SqlSupplier) InsertOrUpdate(tableName string, m model.DbModel, updateSql string, updateValues ...interface{}) (sql.Result, error) {
@@ -110,10 +122,6 @@ func (s *SqlSupplier) Playlist() store.PlaylistStore {
 
 func (s *SqlSupplier) Category() store.CategoryStore {
 	return s.category
-}
-
-func (s *SqlSupplier) Curation() store.CurationStore {
-	return s.curation
 }
 
 func (s *SqlSupplier) Task() store.TaskStore {

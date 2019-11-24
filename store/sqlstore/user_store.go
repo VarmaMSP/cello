@@ -18,12 +18,14 @@ func NewSqlUserStore(store SqlStore) store.UserStore {
 func (s *SqlUserStore) Save(user *model.User) *model.AppError {
 	user.PreSave()
 
-	if _, err := s.Insert("user", []model.DbModel{user}); err != nil {
+	id, err := s.Insert("user", []model.DbModel{user})
+	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_user_store.save", err.Error(), http.StatusInternalServerError,
-			map[string]string{"name": user.Name},
+			map[string]interface{}{"name": user.Name},
 		)
 	}
+	user.Id = id
 	return nil
 }
 
@@ -37,20 +39,20 @@ func (s *SqlUserStore) SaveSocialAccount(accountType string, account model.DbMod
 	if _, err := s.Insert(accountType+"_account", []model.DbModel{account}); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_user_store.save_google_account", err.Error(), http.StatusInternalServerError,
-			map[string]string{"account_type": accountType},
+			map[string]interface{}{"account_type": accountType},
 		)
 	}
 	return nil
 }
 
-func (s *SqlUserStore) Get(userId string) (*model.User, *model.AppError) {
+func (s *SqlUserStore) Get(userId int64) (*model.User, *model.AppError) {
 	user := &model.User{}
 	sql := "SELECT " + Cols(user) + " FROM user WHERE id = ?"
 
 	if err := s.GetMaster().QueryRow(sql, userId).Scan(user.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
 			"store.sqlstore.sql_user_store.get", err.Error(), http.StatusInternalServerError,
-			map[string]string{"user_id": userId},
+			map[string]interface{}{"user_id": userId},
 		)
 	}
 	return user, nil
@@ -74,7 +76,7 @@ func (s *SqlUserStore) GetSocialAccount(accountType, id string) (model.DbModel, 
 	if err := s.GetMaster().QueryRow(sql, id).Scan(account.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
 			"store.sqlstore.sql_user_store.get_social_account", err.Error(), http.StatusInternalServerError,
-			map[string]string{"account_type": accountType, "id": id},
+			map[string]interface{}{"account_type": accountType, "id": id},
 		)
 	}
 	return account, nil

@@ -5,19 +5,15 @@ import (
 	"time"
 
 	"github.com/varmamsp/gofeed/rss"
-	"github.com/rs/xid"
 )
 
 type Feed struct {
-	// Ids
-	Id       string `json:"id,omitempty"`
-	Source   string `json:"source,omitempty"`
-	SourceId string `json:"source_id,omitempty"`
-	// Feed details
-	Url          string `json:"feed,omitempty"`
-	ETag         string `json:"etag,omitempty"`
-	LastModified string `json:"last_modified,omitempty"`
-	// Refresh details
+	Id                 int64  `json:"id,omitempty"`
+	Source             string `json:"source,omitempty"`
+	SourceId           string `json:"source_id,omitempty"`
+	Url                string `json:"feed,omitempty"`
+	ETag               string `json:"etag,omitempty"`
+	LastModified       string `json:"last_modified,omitempty"`
 	RefreshEnabled     int    `json:"refresh_enabled,omitempty"`
 	RefreshInterval    int    `json:"refresh_interval,omitempty"`
 	LastRefreshAt      int64  `json:"last_refresh_at,omitempty"`
@@ -46,10 +42,6 @@ func (f *Feed) FieldAddrs() []interface{} {
 }
 
 func (f *Feed) PreSave() {
-	if f.Id == "" {
-		f.Id = xid.New().String()
-	}
-
 	if f.CreatedAt == 0 {
 		f.CreatedAt = Now()
 	}

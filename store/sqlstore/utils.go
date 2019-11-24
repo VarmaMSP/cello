@@ -36,6 +36,18 @@ func InsertQuery(
 	return
 }
 
+func InsertQueryWithoutPK(
+	tableName string,
+	item model.DbModel,
+) (sql string, insertValues []interface{}, noValues bool) {
+	cols := "(" + strings.Join(item.DbColumns()[1:], ",") + ")"
+	placeholders := "(" + strings.Join(Replicate("?", len(item.DbColumns())-1), ",") + ")"
+
+	sql = "INSERT INTO " + tableName + cols + " VALUES " + placeholders
+	insertValues = item.FieldAddrs()[1:]
+	return
+}
+
 func UpdateQuery(
 	tableName string,
 	old, new model.DbModel,

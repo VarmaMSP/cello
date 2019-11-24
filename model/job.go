@@ -26,6 +26,7 @@ type Job interface {
 }
 
 type Task struct {
+	Id        int64
 	Name      string
 	Type      string
 	Interval  int
@@ -37,15 +38,15 @@ type Task struct {
 
 func (t *Task) DbColumns() []string {
 	return []string{
-		"name", "type", "task.interval", "next_run_at",
-		"active", "created_at", "updated_at",
+		"id", "name", "type", "task.interval",
+		"next_run_at", "active", "created_at", "updated_at",
 	}
 }
 
 func (t *Task) FieldAddrs() []interface{} {
 	return []interface{}{
-		&t.Name, &t.Type, &t.Interval, &t.NextRunAt,
-		&t.Active, &t.CreatedAt, &t.UpdatedAt,
+		&t.Id, &t.Name, &t.Type, &t.Interval,
+		&t.NextRunAt, &t.Active, &t.CreatedAt, &t.UpdatedAt,
 	}
 }
 

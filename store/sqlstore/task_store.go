@@ -15,7 +15,7 @@ func NewSqlTaskStore(store SqlStore) store.TaskStore {
 	return &SqlTaskStore{store}
 }
 
-func (s *SqlTaskStore) GetAllActive() (res []*model.Task, appE *model.AppError) {
+func (s *SqlTaskStore) GetAll() (res []*model.Task, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Task{}) + " FROM task WHERE active = 1"
 
 	copyTo := func() []interface{} {

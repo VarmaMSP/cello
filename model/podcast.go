@@ -1,11 +1,11 @@
 package model
 
 import (
+	"encoding/json"
 	"net/http"
 
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/varmamsp/gofeed/rss"
-	"github.com/rs/xid"
 )
 
 const (
@@ -13,42 +13,55 @@ const (
 )
 
 // https://help.apple.com/itc/podcasts_connect/#/itcb54353390
-
 type Podcast struct {
-	Id          string `json:"id,omitempty"`
-	Title       string `json:"title,omitempty"`
-	Description string `json:"description,omitempty"`
-	ImagePath   string `json:"image_path,omitempty"`
-	Language    string `json:"language,omitempty"`
-	Explicit    int    `json:"explicit,omitempty"`
-	Author      string `json:"author,omitempty"`
-	Type        string `json:"type,omitempty"`
-	Block       int    `json:"block,omitempty"`
-	Complete    int    `json:"complete,omitempty"`
-	Link        string `json:"link,omitempty"`
-	OwnerName   string `json:"owner_name,omitempty"`
-	OwnerEmail  string `json:"owner_email,omitempty"`
-	Copyright   string `json:"copyright,omitempty"`
-	CreatedAt   int64  `json:"created_at,omitempty"`
-	UpdatedAt   int64  `json:"updated_at,omitempty"`
+	Id          int64
+	Title       string
+	Description string
+	ImagePath   string
+	Language    string
+	Explicit    int
+	Author      string
+	Type        string
+	Block       int
+	Complete    int
+	Link        string
+	OwnerName   string
+	OwnerEmail  string
+	Copyright   string
+	CreatedAt   int64
+	UpdatedAt   int64
 }
 
 type PodcastSubscription struct {
-	PodcastId    string
-	SubscribedBy string
+	PodcastId    int64
+	SubscribedBy int64
 	Active       int
 	CreatedAt    int64
 	UpdatedAt    int64
 }
 
-// Elasticsearch podcast index type
-type PodcastIndex struct {
-	Id          string `json:"id,omitempty"`
-	Title       string `json:"title,omitempty"`
-	Author      string `json:"author,omitempty"`
-	Description string `json:"description,omitempty"`
-	Type        string `json:"type,omitempty"`
-	Complete    int    `json:"complete,omitempty"`
+func (p *Podcast) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Id          string `json:"id"`
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		Language    string `json:"language"`
+		Explicit    int    `json:"explicit"`
+		Author      string `json:"author"`
+		Type        string `json:"type"`
+		Block       int    `json:"block"`
+		Complete    int    `json:"complete"`
+	}{
+		Id:          HashIdFromInt64(p.Id),
+		Title:       p.Title,
+		Description: p.Description,
+		Language:    p.Language,
+		Explicit:    p.Explicit,
+		Author:      p.Author,
+		Type:        p.Type,
+		Block:       p.Block,
+		Complete:    p.Complete,
+	})
 }
 
 func (p *Podcast) DbColumns() []string {
@@ -87,7 +100,7 @@ func (p *Podcast) LoadDetails(rssFeed *rss.Feed) *AppError {
 	appErrorC := NewAppErrorC(
 		"model.podcast.load_details",
 		http.StatusBadRequest,
-		map[string]string{"title": p.Title},
+		map[string]interface{}{"title": p.Title},
 	)
 
 	// Title
@@ -179,10 +192,6 @@ func (p *Podcast) LoadDetails(rssFeed *rss.Feed) *AppError {
 }
 
 func (p *Podcast) PreSave() {
-	if p.Id == "" {
-		p.Id = xid.New().String()
-	}
-
 	title := []rune(p.Title)
 	if len(title) > PODCAST_TITLE_MAX_LENGTH {
 		p.Title = string(title[0:PODCAST_TITLE_MAX_LENGTH-10]) + "..."
