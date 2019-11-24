@@ -28,6 +28,7 @@ require (
 	github.com/pelletier/go-toml v1.4.0 // indirect
 	github.com/rs/xid v1.2.1
 	github.com/rs/zerolog v1.15.0
+	github.com/speps/go-hashids v2.0.0+incompatible
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.4.0
