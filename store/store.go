@@ -41,22 +41,22 @@ type PodcastStore interface {
 type EpisodeStore interface {
 	Save(episode *model.Episode) *model.AppError
 	SavePlayback(playback *model.EpisodePlayback) *model.AppError
-	Get(episodeId string) (*model.Episode, *model.AppError)
-	GetAllByIds(episodeIds []string) ([]*model.Episode, *model.AppError)
-	GetAllByPodcast(podcastId, order string, offset, limit int) ([]*model.Episode, *model.AppError)
-	GetAllPublishedBefore(podcastIds []string, offset, limit int) ([]*model.Episode, *model.AppError)
-	GetAllPlaybacks(episodeIds []string, userId string) ([]*model.EpisodePlayback, *model.AppError)
-	GetAllPlaybacksByUser(userId string, offset, limit int) ([]*model.EpisodePlayback, *model.AppError)
-	SetPlaybackCurrentTime(episodeId, userId string, currentTime int) *model.AppError
-	Block(podcastId, episodeGuid string) *model.AppError
+	Get(episodeId int64) (*model.Episode, *model.AppError)
+	GetAllByIds(episodeIds []int64) ([]*model.Episode, *model.AppError)
+	GetAllByPodcast(podcastId int64, order string, offset, limit int) ([]*model.Episode, *model.AppError)
+	GetAllPublishedBefore(podcastIds []int64, offset, limit int) ([]*model.Episode, *model.AppError)
+	GetAllPlaybacks(episodeIds []int64, userId int64) ([]*model.EpisodePlayback, *model.AppError)
+	GetAllPlaybacksByUser(userId int64, offset, limit int) ([]*model.EpisodePlayback, *model.AppError)
+	SetPlaybackCurrentTime(episodeId, userId int64, currentTime int) *model.AppError
+	Block(podcastId int64, episodeGuid string) *model.AppError
 }
 
 type PlaylistStore interface {
 	Save(playlist *model.Playlist) *model.AppError
 	SaveItem(playlistItem *model.PlaylistItem) *model.AppError
-	Get(playlistId string) (*model.Playlist, *model.AppError)
-	GetAllByUser(userId string) ([]*model.Playlist, *model.AppError)
-	GetAllEpisodesInPlaylist(playlistId string) ([]*model.Episode, *model.AppError)
+	Get(playlistId int64) (*model.Playlist, *model.AppError)
+	GetAllByUser(userId int64) ([]*model.Playlist, *model.AppError)
+	GetAllEpisodesInPlaylist(playlistId int64) ([]*model.Episode, *model.AppError)
 }
 
 type CategoryStore interface {

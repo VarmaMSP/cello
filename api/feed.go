@@ -24,7 +24,7 @@ func GetSubscriptionsFeed(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	podcastIds := make([]string, len(subscriptions))
+	podcastIds := make([]int64, len(subscriptions))
 	for i, podcast := range subscriptions {
 		podcastIds[i] = podcast.Id
 	}
@@ -34,7 +34,7 @@ func GetSubscriptionsFeed(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	episodeIds := make([]string, len(episodes))
+	episodeIds := make([]int64, len(episodes))
 	for i, episode := range episodes {
 		episode.Sanitize()
 		episodeIds[i] = episode.Id
@@ -69,7 +69,7 @@ func GetHistoryFeed(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	episodeIds := make([]string, len(playbacks))
+	episodeIds := make([]int64, len(playbacks))
 	for i, playback := range playbacks {
 		playback.Sanitize()
 		episodeIds[i] = playback.EpisodeId

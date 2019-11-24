@@ -5,91 +5,109 @@ import (
 )
 
 type GetEpisodeReq struct {
-	EpisodeId string `validate:"required"`
+	EpisodeId int64 `validate:"required"`
 }
 
-func (o *GetEpisodeReq) Load(c *Context) *model.AppError {
-	o.EpisodeId = c.Param("episodeId")
-
-	if err := c.app.Validate.Struct(o); err != nil {
-		return model.NewAppError("api.get_episode_req.laod", err.Error(), 400, nil)
+func (o *GetEpisodeReq) Load(c *Context) (err error) {
+	if o.EpisodeId, err = model.Int64FromHashId(c.Param("epsiodeId")); err != nil {
+		return
 	}
-	return nil
+	if err = c.app.Validate.Struct(o); err != nil {
+		return
+	}
+	return
 }
 
 type GetPodcastEpisodesReq struct {
-	PodcastId string `validate:"required"`
+	PodcastId int64  `validate:"required"`
 	Limit     int    `validate:"min=5"`
 	Offset    int    `validate:"min=0"`
 	Order     string `validate:"required,oneof=pub_date_desc pub_date_asc"`
 }
 
-func (o *GetPodcastEpisodesReq) Load(c *Context) *model.AppError {
-	o.PodcastId = c.Param("podcastId")
-	o.Limit = model.IntFromStr(c.Query("limit"))
-	o.Offset = model.IntFromStr(c.Query("offset"))
-	o.Order = c.Query("order")
-
-	if o.Limit == 0 {
+func (o *GetPodcastEpisodesReq) Load(c *Context) (err error) {
+	if o.PodcastId, err = model.Int64FromHashId(c.Param("podcastId")); err != nil {
+		return
+	}
+	if o.Limit = model.IntFromStr(c.Query("limit")); o.Limit == 0 {
 		o.Limit = 10
 	}
-	if o.Order == "" {
+	if o.Order = c.Query("order"); o.Order == "" {
 		o.Order = "pub_date_desc"
 	}
+	o.Offset = model.IntFromStr(c.Query("offset"))
 
-	if err := c.app.Validate.Struct(o); err != nil {
-		return model.NewAppError("api.get_podcast_episodes_req.load", err.Error(), 400, nil)
+	if err = c.app.Validate.Struct(o); err != nil {
+		return
 	}
-	return nil
+	return
 }
 
 type GetEpisodePlaybacksReq struct {
-	EpisodeIds    []string `json:"episode_ids" validate:"gt=0,dive,required"`
-	CurrentUserId string   `json:"-" validate:"required"`
+	EpisodeIds    []int64 `json:"episode_ids" validate:"gt=0,dive,required"`
+	CurrentUserId int64   `json:"-" validate:"required"`
 }
 
-func (o *GetEpisodePlaybacksReq) Load(c *Context) *model.AppError {
+type GetEpisodePlaybacksReq_ struct {
+	EpisodeIds []string `json:"episode_ids"`
+}
+
+func (o *GetEpisodePlaybacksReq) Load(c *Context) (err error) {
+	var tmp GetEpisodePlaybacksReq_
+	if err = c.DecodeBody(tmp); err != nil {
+		return
+	}
+
+	episodeIds := make([]int64, len(tmp.EpisodeIds))
+	for i, id := range tmp.EpisodeIds {
+		if episodeIds[i], err = model.Int64FromHashId(id); err != nil {
+			return
+		}
+	}
+
+	o.EpisodeIds = episodeIds
 	o.CurrentUserId = c.session.UserId
 
-	if err := c.DecodeBody(o); err != nil {
-		return model.NewAppError("api.get_episode_playbacks_req.load", err.Error(), 400, nil)
+	if err = c.app.Validate.Struct(o); err != nil {
+		return
 	}
-	if err := c.app.Validate.Struct(o); err != nil {
-		return model.NewAppError("api.get_episode_playbacks_req.load", err.Error(), 400, nil)
-	}
-	return nil
+	return
 }
 
 type SyncPlaybackReq struct {
-	EpisodeId     string `validate:"required"`
-	CurrentUserId string `validate:"required"`
+	EpisodeId     int64 `validate:"required"`
+	CurrentUserId int64 `validate:"required"`
 }
 
-func (o *SyncPlaybackReq) Load(c *Context) *model.AppError {
-	o.EpisodeId = c.Param("episodeId")
+func (o *SyncPlaybackReq) Load(c *Context) (err error) {
+	if o.EpisodeId, err = model.Int64FromHashId(c.Param("episodeId")); err != nil {
+		return
+	}
 	o.CurrentUserId = c.session.UserId
 
-	if err := c.app.Validate.Struct(o); err != nil {
-		return model.NewAppError("api.sync_playback_req.load", err.Error(), 400, nil)
+	if err = c.app.Validate.Struct(o); err != nil {
+		return
 	}
-	return nil
+	return
 }
 
 type SyncPlaybackProgressReq struct {
-	EpisodeId     string `json:"-" validate:"required"`
-	CurrentTime   int    `json:"current_time" validate:"-"`
-	CurrentUserId string `json:"-" validate:"required"`
+	EpisodeId     int64 `json:"-" validate:"required"`
+	CurrentTime   int   `json:"current_time" validate:"-"`
+	CurrentUserId int64 `json:"-" validate:"required"`
 }
 
-func (o *SyncPlaybackProgressReq) Load(c *Context) *model.AppError {
-	o.EpisodeId = c.Param("episodeId")
+func (o *SyncPlaybackProgressReq) Load(c *Context) (err error) {
+	if o.EpisodeId, err = model.Int64FromHashId(c.Param("episodeId")); err != nil {
+		return
+	}
+	if err = c.DecodeBody(o); err != nil {
+		return
+	}
 	o.CurrentUserId = c.session.UserId
 
-	if err := c.DecodeBody(o); err != nil {
-		return model.NewAppError("api.sync_playback_progress_req.load", err.Error(), 400, nil)
+	if err = c.app.Validate.Struct(o); err != nil {
+		return
 	}
-	if err := c.app.Validate.Struct(o); err != nil {
-		return model.NewAppError("api.sync_playback_progress_req.load", err.Error(), 400, nil)
-	}
-	return nil
+	return
 }

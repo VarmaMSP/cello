@@ -91,7 +91,6 @@ func NewApi(config model.Config) (*Api, error) {
 	api.RegisterPodcastHandlers()
 	api.RegisterEpisodeHandlers()
 	api.RegisterPlaylistHandlers()
-	api.RegisterCurationRoutes()
 	api.RegisterUserHandlers()
 	api.RegisterFeedHandlers()
 

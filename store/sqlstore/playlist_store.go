@@ -32,18 +32,16 @@ func (s *SqlPlaylistStore) Save(playlist *model.Playlist) *model.AppError {
 func (s *SqlPlaylistStore) SaveItem(playlistItem *model.PlaylistItem) *model.AppError {
 	playlistItem.PreSave()
 
-	id, err := s.Insert("playlist_item", []model.DbModel{playlistItem})
-	if err != nil {
+	if _, err := s.Insert("playlist_item", []model.DbModel{playlistItem}); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_playlist_store.save_item", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"playlist_id": playlistItem.PlaylistId, "episode_id": playlistItem.EpisodeId},
 		)
 	}
-	playlistItem.Id = id
 	return nil
 }
 
-func (s *SqlPlaylistStore) Get(playlistId string) (*model.Playlist, *model.AppError) {
+func (s *SqlPlaylistStore) Get(playlistId int64) (*model.Playlist, *model.AppError) {
 	playlist := &model.Playlist{}
 	sql := "SELECT " + Cols(playlist) + " FROM playlist WHERE id = ?"
 
@@ -56,7 +54,7 @@ func (s *SqlPlaylistStore) Get(playlistId string) (*model.Playlist, *model.AppEr
 	return playlist, nil
 }
 
-func (s *SqlPlaylistStore) GetAllByUser(userId string) (res []*model.Playlist, appE *model.AppError) {
+func (s *SqlPlaylistStore) GetAllByUser(userId int64) (res []*model.Playlist, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Playlist{}) + ` FROM playlist WHERE created_by = ?`
 
 	copyTo := func() []interface{} {
@@ -74,7 +72,7 @@ func (s *SqlPlaylistStore) GetAllByUser(userId string) (res []*model.Playlist, a
 	return
 }
 
-func (s *SqlPlaylistStore) GetAllEpisodesInPlaylist(playlistId string) (res []*model.Episode, appE *model.AppError) {
+func (s *SqlPlaylistStore) GetAllEpisodesInPlaylist(playlistId int64) (res []*model.Episode, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Episode{}, "episode") + `FROM episode
 		INNER JOIN playlist_item ON playlist_item.episode_id = episode.id
 		WHERE playlist_item.playlist_id = ?

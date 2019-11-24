@@ -38,9 +38,13 @@ func SearchPodcasts(c *Context, w http.ResponseWriter) {
 }
 
 func GetPodcast(c *Context, w http.ResponseWriter) {
-	podcastId := c.Param("podcastId")
+	req := &GetPodcastReq{}
+	if err := req.Load(c); err != nil {
+		c.err = model.NewAppError("api.get_podcast_req.load", err.Error(), 400, nil)
+		return
+	}
 
-	feed, err := c.app.GetFeed(podcastId)
+	feed, err := c.app.GetFeed(req.PodcastId)
 	if err != nil {
 		c.err = err
 		return
@@ -63,14 +67,14 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 		}
 	}
 
-	podcast, err := c.app.GetPodcast(podcastId)
+	podcast, err := c.app.GetPodcast(req.PodcastId)
 	if err != nil {
 		c.err = err
 		return
 	}
 	podcast.Sanitize()
 
-	episodes, err := c.app.GetEpisodesInPodcast(podcastId, "pub_date_desc", 0, 20)
+	episodes, err := c.app.GetEpisodesInPodcast(req.PodcastId, "pub_date_desc", 0, 20)
 	if err != nil {
 		c.err = err
 		return
@@ -114,10 +118,12 @@ func GetTrendingPodcastsByCategory(c *Context, w http.ResponseWriter) {
 }
 
 func SubscribeToPodcast(c *Context, w http.ResponseWriter) {
-	userId := c.session.UserId
-	podcastId := c.Param("podcastId")
-
-	if err := c.app.CreateSubscription(userId, podcastId); err != nil {
+	req := &SubscribeToPodcastReq{}
+	if err := req.Load(c); err != nil {
+		c.err = model.NewAppError("api.subscribe_to_podcast_req.load", err.Error(), 400, nil)
+		return
+	}
+	if err := c.app.CreateSubscription(req.CurrentUserId, req.PodcastId); err != nil {
 		c.err = err
 		return
 	}
@@ -125,10 +131,13 @@ func SubscribeToPodcast(c *Context, w http.ResponseWriter) {
 }
 
 func UnsubscribeToPodcast(c *Context, w http.ResponseWriter) {
-	userId := c.session.UserId
-	podcastId := c.Param("podcastId")
+	req := &UnsubscribeToPodcastReq{}
+	if err := req.Load(c); err != nil {
+		c.err = model.NewAppError("api.unsubscribe_to_podcast_req.load", err.Error(), 400, nil)
+		return
+	}
 
-	if err := c.app.DeleteSubscription(userId, podcastId); err != nil {
+	if err := c.app.DeleteSubscription(req.CurrentUserId, req.PodcastId); err != nil {
 		c.err = err
 		return
 	}

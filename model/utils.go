@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/mail"
 	"net/url"
@@ -223,4 +224,15 @@ var hashid, _ = hashids.New()
 func HashIdFromInt64(i int64) string {
 	hid, _ := hashid.EncodeInt64(([]int64{i}))
 	return hid
+}
+
+func Int64FromHashId(h string) (int64, error) {
+	res, err := hashid.DecodeInt64WithError(h)
+	if err != nil {
+		return 0, err
+	}
+	if len(res) != 1 {
+		return 0, errors.New("Hashid invalid")
+	}
+	return res[0], nil
 }

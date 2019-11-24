@@ -17,7 +17,7 @@ func (api *Api) RegisterEpisodeHandlers() {
 func GetEpisode(c *Context, w http.ResponseWriter) {
 	req := &GetEpisodeReq{}
 	if err := req.Load(c); err != nil {
-		c.err = err
+		c.err = model.NewAppError("api.get_episode_req.load", err.Error(), 400, nil)
 		return
 	}
 
@@ -46,7 +46,7 @@ func GetEpisode(c *Context, w http.ResponseWriter) {
 func GetPodcastEpisodes(c *Context, w http.ResponseWriter) {
 	req := &GetPodcastEpisodesReq{}
 	if err := req.Load(c); err != nil {
-		c.err = err
+		c.err = model.NewAppError("api.get_podcast_episodes_req.load", err.Error(), 400, nil)
 		return
 	}
 
@@ -56,7 +56,7 @@ func GetPodcastEpisodes(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	episodeIds := make([]string, len(episodes))
+	episodeIds := make([]int64, len(episodes))
 	for i, episode := range episodes {
 		episode.Sanitize()
 		episodeIds[i] = episode.Id
@@ -81,7 +81,7 @@ func GetPodcastEpisodes(c *Context, w http.ResponseWriter) {
 func GetEpisodePlaybacks(c *Context, w http.ResponseWriter) {
 	req := &GetEpisodePlaybacksReq{}
 	if err := req.Load(c); err != nil {
-		c.err = err
+		c.err = model.NewAppError("api.get_podcast_episode_playbacks_req.load", err.Error(), 400, nil)
 		return
 	}
 
@@ -104,7 +104,7 @@ func GetEpisodePlaybacks(c *Context, w http.ResponseWriter) {
 func SyncPlayback(c *Context, w http.ResponseWriter) {
 	req := &SyncPlaybackReq{}
 	if err := req.Load(c); err != nil {
-		c.err = err
+		c.err = model.NewAppError("api.sync_playback_req.load", err.Error(), 400, nil)
 		return
 	}
 
@@ -119,7 +119,7 @@ func SyncPlayback(c *Context, w http.ResponseWriter) {
 func SyncPlaybackProgress(c *Context, w http.ResponseWriter) {
 	req := &SyncPlaybackProgressReq{}
 	if err := req.Load(c); err != nil {
-		c.err = err
+		c.err = model.NewAppError("api.sync_playback_progress_req.load", err.Error(), 400, nil)
 		return
 	}
 

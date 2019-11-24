@@ -8,15 +8,11 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (app *App) GetPodcast(podcastId string) (*model.Podcast, *model.AppError) {
+func (app *App) GetPodcast(podcastId int64) (*model.Podcast, *model.AppError) {
 	return app.Store.Podcast().Get(podcastId)
 }
 
-func (app *App) GetPodcastsInCuration(curationId string) ([]*model.Podcast, *model.AppError) {
-	return app.Store.Podcast().GetAllByCuration(curationId, 0, 7)
-}
-
-func (app *App) GetUserSubscriptions(userId string) ([]*model.Podcast, *model.AppError) {
+func (app *App) GetUserSubscriptions(userId int64) ([]*model.Podcast, *model.AppError) {
 	return app.Store.Podcast().GetAllSubscribedBy(userId)
 }
 
@@ -40,7 +36,7 @@ func (app *App) SearchPodcasts(searchQuery string) ([]*model.PodcastIndex, *mode
 	return podcasts, nil
 }
 
-func (app *App) CreateSubscription(userId, podcastId string) *model.AppError {
+func (app *App) CreateSubscription(userId, podcastId int64) *model.AppError {
 	m := &model.PodcastSubscription{
 		PodcastId:    podcastId,
 		SubscribedBy: userId,
@@ -49,6 +45,6 @@ func (app *App) CreateSubscription(userId, podcastId string) *model.AppError {
 	return app.Store.Podcast().SaveSubscription(m)
 }
 
-func (app *App) DeleteSubscription(userId, podcastId string) *model.AppError {
+func (app *App) DeleteSubscription(userId, podcastId int64) *model.AppError {
 	return app.Store.Podcast().DeleteSubscription(userId, podcastId)
 }

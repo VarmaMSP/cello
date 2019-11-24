@@ -9,8 +9,8 @@ import (
 	"net/http"
 
 	h "github.com/go-http-utils/headers"
-	"github.com/varmamsp/gofeed/rss"
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/gofeed/rss"
 )
 
 // Fetch Image from url
@@ -18,7 +18,7 @@ func fetchImage(imageUrl string, httpClient *http.Client) (image.Image, *model.A
 	appErrorC := model.NewAppErrorC(
 		"jobs.job.utils.fetch_image",
 		http.StatusInternalServerError,
-		map[string]string{"image_url": imageUrl},
+		map[string]interface{}{"image_url": imageUrl},
 	)
 
 	req, err := http.NewRequest("GET", imageUrl, nil)
@@ -44,7 +44,7 @@ func fetchRssFeed(feedUrl string, headers map[string]string, httpClient *http.Cl
 	appErrorC := model.NewAppErrorC(
 		"jobs.job.utils.fetch_rss_feed",
 		http.StatusInternalServerError,
-		map[string]string{"feed_url": feedUrl},
+		map[string]interface{}{"feed_url": feedUrl},
 	)
 
 	// request

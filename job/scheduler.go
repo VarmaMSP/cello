@@ -49,7 +49,7 @@ func (job *SchedulerJob) Run() {
 	ticker := time.NewTicker(10 * time.Second)
 
 	for _ = range ticker.C {
-		tasks, err := job.Store.Task().GetAllActive()
+		tasks, err := job.Store.Task().GetAll()
 		if err != nil {
 			job.Log.Error().
 				Str("at", "Scheduler Job").

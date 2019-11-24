@@ -134,16 +134,16 @@ func (app *App) CreateSession(ctx context.Context, user *model.User) *model.Sess
 	return session
 }
 
-func (app *App) GetUser(userId string) (*model.User, *model.AppError) {
+func (app *App) GetUser(userId int64) (*model.User, *model.AppError) {
 	return app.Store.User().Get(userId)
 }
 
 func (app *App) GetSession(ctx context.Context) *model.Session {
 	session := &model.Session{}
-	session.UserId = app.SessionManager.GetString(ctx, "user_id")
-	session.IsAdmin = app.SessionManager.GetInt(ctx, "is_admin")
+	session.UserId = app.SessionManager.Get(ctx, "user_id").(int64)
+	session.IsAdmin = app.SessionManager.Get(ctx, "is_admin").(int)
 
-	if session.UserId == "" {
+	if session.UserId == 0 {
 		return nil
 	}
 	return session

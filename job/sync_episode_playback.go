@@ -62,7 +62,7 @@ func (job *SyncEpisodePlaybackJob) Run() {
 }
 
 func (job *SyncEpisodePlaybackJob) Call(deliveries []amqp.Delivery) {
-	progress := map[string]*model.EpisodePlayback{}
+	progress := map[int64]*model.EpisodePlayback{}
 	for _, delivery := range deliveries {
 		var playback model.EpisodePlayback
 		if err := json.Unmarshal(delivery.Body, &playback); err != nil {

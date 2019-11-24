@@ -101,11 +101,11 @@ func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 	}()
 }
 
-func (job *RefreshPodcastJob) updateEpisodes(podcastId string, rssFeed *rss.Feed) *model.AppError {
+func (job *RefreshPodcastJob) updateEpisodes(podcastId int64, rssFeed *rss.Feed) *model.AppError {
 	appErrorC := model.NewAppErrorC(
 		"job.refresh_podcast.update_episodes",
 		http.StatusInternalServerError,
-		map[string]string{"podcast_id": podcastId},
+		map[string]interface{}{"podcast_id": podcastId},
 	)
 
 	episodes, err := job.Store.Episode().GetAllByPodcast(podcastId, "pub_date_desc", 0, 10000)

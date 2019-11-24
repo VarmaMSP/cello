@@ -16,7 +16,7 @@ func (api *Api) RegisterPlaylistHandlers() {
 func GetPlaylist(c *Context, w http.ResponseWriter) {
 	req := &GetPlaylistReq{}
 	if err := req.Load(c); err != nil {
-		c.err = err
+		c.err = model.NewAppError("api.get_playlist_req.load", err.Error(), 400, nil)
 		return
 	}
 
@@ -32,7 +32,7 @@ func GetPlaylist(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	episodeIds := make([]string, len(episodes))
+	episodeIds := make([]int64, len(episodes))
 	for i, episode := range episodes {
 		episode.Sanitize()
 		episodeIds[i] = episode.Id
@@ -75,7 +75,7 @@ func GetCurrentUserPlaylists(c *Context, w http.ResponseWriter) {
 func CreatePlaylist(c *Context, w http.ResponseWriter) {
 	req := &CreatePlaylistReq{}
 	if err := req.Load(c); err != nil {
-		c.err = err
+		c.err = model.NewAppError("api.create_playlist_req.load", err.Error(), 400, nil)
 		return
 	}
 
@@ -95,7 +95,7 @@ func CreatePlaylist(c *Context, w http.ResponseWriter) {
 func AddEpisodeToPlaylist(c *Context, w http.ResponseWriter) {
 	req := &AddEpisodeToPlaylistReq{}
 	if err := req.Load(c); err != nil {
-		c.err = err
+		c.err = model.NewAppError("api.add_episode_to_playlist_req.load", err.Error(), 400, nil)
 		return
 	}
 

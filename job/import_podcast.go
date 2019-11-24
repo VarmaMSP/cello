@@ -109,11 +109,11 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 	}()
 }
 
-func (job *ImportPodcastJob) savePodcast(podcastId string, rssFeed *rss.Feed) *model.AppError {
+func (job *ImportPodcastJob) savePodcast(podcastId int64, rssFeed *rss.Feed) *model.AppError {
 	appErrorC := model.NewAppErrorC(
 		"jobs.podcast_import_job.save_podcast",
 		http.StatusInternalServerError,
-		map[string]string{"title": rssFeed.Title},
+		map[string]interface{}{"title": rssFeed.Title},
 	)
 
 	// Save podcast
@@ -126,7 +126,7 @@ func (job *ImportPodcastJob) savePodcast(podcastId string, rssFeed *rss.Feed) *m
 	}
 
 	// Offload creation of podcast thumbnail
-	job.createThumbnailP.D <- map[string]string{
+	job.createThumbnailP.D <- map[string]interface{}{
 		"id":        podcast.Id,
 		"image_src": podcast.ImagePath,
 		"type":      "PODCAST",
@@ -135,9 +135,9 @@ func (job *ImportPodcastJob) savePodcast(podcastId string, rssFeed *rss.Feed) *m
 	// Index podcast
 	job.ElasticSearch.Index().
 		Index(elasticsearch.PodcastIndexName).
-		Id(podcast.Id).
+		Id(model.HashIdFromInt64(podcast.Id)).
 		BodyJson(&model.PodcastIndex{
-			Id:          podcast.Id,
+			Id:          model.HashIdFromInt64(podcast.Id),
 			Title:       podcast.Title,
 			Author:      podcast.Author,
 			Description: podcast.Description,
@@ -158,7 +158,7 @@ func (job *ImportPodcastJob) savePodcast(podcastId string, rssFeed *rss.Feed) *m
 	}
 
 	// Save Categories
-	var categoryIds []int
+	var categoryIds []int64
 	if rssFeed.ITunesExt != nil {
 		for _, c := range rssFeed.ITunesExt.Categories {
 			if c.Subcategory != nil {

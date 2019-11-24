@@ -18,7 +18,7 @@ func NewSqlUserStore(store SqlStore) store.UserStore {
 func (s *SqlUserStore) Save(user *model.User) *model.AppError {
 	user.PreSave()
 
-	id, err := s.Insert("user", []model.DbModel{user})
+	id, err := s.InsertWithoutPK("user", user)
 	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_user_store.save", err.Error(), http.StatusInternalServerError,

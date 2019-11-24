@@ -37,7 +37,7 @@ func (s *SqlTaskStore) Update(old, new *model.Task) *model.AppError {
 	if _, err := s.UpdateChanges("task", old, new, "name = ?", new.Name); err != nil {
 		return model.NewAppError(
 			"sqlstore.sql_task_store.update", err.Error(), http.StatusInternalServerError,
-			map[string]string{"name": new.Name},
+			map[string]interface{}{"name": new.Name},
 		)
 	}
 	return nil

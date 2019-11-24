@@ -3,9 +3,9 @@ package api
 import "github.com/varmamsp/cello/model"
 
 type GetFeedReq struct {
-	Offset        int    `validate:"min=0"`
-	Limit         int    `validate:"min=5"`
-	CurrentUserId string `validate:"-"`
+	Offset        int   `validate:"min=0"`
+	Limit         int   `validate:"min=5"`
+	CurrentUserId int64 `validate:"-"`
 }
 
 func (o *GetFeedReq) Load(c *Context) *model.AppError {
