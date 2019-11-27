@@ -33,88 +33,55 @@ type Episode struct {
 	Block       int
 	CreatedAt   int64
 	UpdatedAt   int64
-}
-
-type EpisodePlayback struct {
-	EpisodeId    int64
-	PlayedBy     int64
-	Count        int
-	CurrentTime  int
+	// Fields from other models
+	Progress     float32
 	LastPlayedAt string
-	CreatedAt    int64
-	UpdatedAt    int64
-}
-
-func (e *Episode) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&struct {
-		Id          string `json:"id"`
-		PodcastId   string `json:"podcast_id"`
-		Title       string `json:"title"`
-		MediaUrl    string `json:"media_url"`
-		PubDate     string `json:"pub_date"`
-		Description string `json:"description"`
-		Duration    int    `json:"duration"`
-		Explicit    int    `json:"explicit"`
-		Episode     int    `json:"episode"`
-		Season      int    `json:"season"`
-		Type        string `json:"type"`
-	}{
-		Id:          HashIdFromInt64(e.Id),
-		PodcastId:   HashIdFromInt64(e.PodcastId),
-		Title:       e.Title,
-		MediaUrl:    e.MediaUrl,
-		PubDate:     e.PubDate,
-		Description: e.Description,
-		Duration:    e.Duration,
-		Explicit:    e.Explicit,
-		Episode:     e.Episode,
-		Season:      e.Season,
-		Type:        e.Type,
-	})
-}
-
-func (e *EpisodePlayback) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&struct {
-		EpisodeId   string `json:"episode_id"`
-		CurrentTime int    `json:"current_time"`
-	}{
-		EpisodeId:   HashIdFromInt64(e.EpisodeId),
-		CurrentTime: e.CurrentTime,
-	})
 }
 
 func (e *Episode) DbColumns() []string {
 	return []string{
-		"id", "podcast_id", "guid", "title",
-		"media_url", "media_type", "media_size", "pub_date",
-		"description", "duration", "link", "image_link",
-		"explicit", "episode", "season", "type",
-		"block", "created_at", "updated_at",
+		"id", "podcast_id", "guid", "title", "media_url", "media_type", "media_size", "pub_date", "description", "duration",
+		"link", "image_link", "explicit", "episode", "season", "type", "block", "created_at", "updated_at",
 	}
 }
 
 func (e *Episode) FieldAddrs() []interface{} {
 	return []interface{}{
-		&e.Id, &e.PodcastId, &e.Guid, &e.Title,
-		&e.MediaUrl, &e.MediaType, &e.MediaSize, &e.PubDate,
-		&e.Description, &e.Duration, &e.Link, &e.ImageLink,
-		&e.Explicit, &e.Episode, &e.Season, &e.Type,
-		&e.Block, &e.CreatedAt, &e.UpdatedAt,
+		&e.Id, &e.PodcastId, &e.Guid, &e.Title, &e.MediaUrl, &e.MediaType, &e.MediaSize, &e.PubDate, &e.Description, &e.Duration,
+		&e.Link, &e.ImageLink, &e.Explicit, &e.Episode, &e.Season, &e.Type, &e.Block, &e.CreatedAt, &e.UpdatedAt,
 	}
 }
 
-func (e *EpisodePlayback) DbColumns() []string {
-	return []string{
-		"episode_id", "played_by", "count_", "current_time_",
-		"last_played_at", "created_at", "updated_at",
-	}
-}
-
-func (e *EpisodePlayback) FieldAddrs() []interface{} {
-	return []interface{}{
-		&e.EpisodeId, &e.PlayedBy, &e.Count, &e.CurrentTime,
-		&e.LastPlayedAt, &e.CreatedAt, &e.UpdatedAt,
-	}
+func (e *Episode) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Id           string  `json:"id"`
+		PodcastId    string  `json:"podcast_id"`
+		Title        string  `json:"title"`
+		MediaUrl     string  `json:"media_url"`
+		PubDate      string  `json:"pub_date"`
+		Description  string  `json:"description"`
+		Duration     int     `json:"duration"`
+		Explicit     int     `json:"explicit,omitempty"`
+		Episode      int     `json:"episode,omitempty"`
+		Season       int     `json:"season,omitempty"`
+		Type         string  `json:"type,omitempty"`
+		Progress     float32 `json:"progress,omitempty"`
+		LastPlayedAt string  `json:"last_played_at,omitempty"`
+	}{
+		Id:           HashIdFromInt64(e.Id),
+		PodcastId:    HashIdFromInt64(e.PodcastId),
+		Title:        e.Title,
+		MediaUrl:     e.MediaUrl,
+		PubDate:      e.PubDate,
+		Description:  e.Description,
+		Duration:     e.Duration,
+		Explicit:     e.Explicit,
+		Episode:      e.Episode,
+		Season:       e.Season,
+		Type:         e.Type,
+		Progress:     e.Progress,
+		LastPlayedAt: e.LastPlayedAt,
+	})
 }
 
 func (e *Episode) LoadDetails(rssItem *rss.Item) *AppError {
@@ -223,13 +190,11 @@ func (e *Episode) LoadDetails(rssItem *rss.Item) *AppError {
 }
 
 func (e *Episode) PreSave() {
-	title := []rune(e.Title)
-	if len(title) > EPISODE_TITLE_MAX_LENGTH {
+	if title := []rune(e.Title); len(title) > EPISODE_TITLE_MAX_LENGTH {
 		e.Title = string(title[0:EPISODE_TITLE_MAX_LENGTH-10]) + "..."
 	}
 
-	mediaUrl := []rune(e.MediaUrl)
-	if len(mediaUrl) > EPISODE_MEDIA_URL_MAX_LENGTH {
+	if mediaUrl := []rune(e.MediaUrl); len(mediaUrl) > EPISODE_MEDIA_URL_MAX_LENGTH {
 		e.MediaUrl = RemoveQueryFromUrl(e.MediaUrl)
 	}
 
@@ -258,36 +223,12 @@ func (e *Episode) PreSave() {
 	}
 }
 
-func (e *EpisodePlayback) PreSave() {
-	if e.Count == 0 {
-		e.Count = 1
-	}
-
-	if e.LastPlayedAt == "" {
-		e.LastPlayedAt = NowDateTime()
-	}
-
-	if e.CreatedAt == 0 {
-		e.CreatedAt = Now()
-	}
-
-	if e.UpdatedAt == 0 {
-		e.UpdatedAt = Now()
-	}
-}
-
 func (e *Episode) Sanitize() {
 	e.Guid = ""
 	e.MediaType = ""
 	e.MediaSize = 0
 	e.Link = ""
 	e.ImageLink = ""
-	e.CreatedAt = 0
-	e.UpdatedAt = 0
-}
-
-func (e *EpisodePlayback) Sanitize() {
-	e.PlayedBy = 0
 	e.CreatedAt = 0
 	e.UpdatedAt = 0
 }

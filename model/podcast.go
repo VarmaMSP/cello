@@ -14,43 +14,37 @@ const (
 
 // https://help.apple.com/itc/podcasts_connect/#/itcb54353390
 type Podcast struct {
-	Id          int64
-	Title       string
-	Description string
-	ImagePath   string
-	Language    string
-	Explicit    int
-	Author      string
-	Type        string
-	Block       int
-	Complete    int
-	Link        string
-	OwnerName   string
-	OwnerEmail  string
-	Copyright   string
-	CreatedAt   int64
-	UpdatedAt   int64
-}
-
-type PodcastSubscription struct {
-	PodcastId    int64
-	SubscribedBy int64
-	Active       int
-	CreatedAt    int64
-	UpdatedAt    int64
+	Id            int64
+	Title         string
+	Description   string
+	ImagePath     string
+	Language      string
+	Explicit      int
+	Author        string
+	TotalEpisodes int
+	Type          string
+	Block         int
+	Complete      int
+	Link          string
+	OwnerName     string
+	OwnerEmail    string
+	Copyright     string
+	CreatedAt     int64
+	UpdatedAt     int64
 }
 
 func (p *Podcast) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
-		Id          string `json:"id"`
-		Title       string `json:"title"`
-		Description string `json:"description"`
-		Language    string `json:"language"`
-		Explicit    int    `json:"explicit"`
-		Author      string `json:"author"`
-		Type        string `json:"type"`
-		Block       int    `json:"block"`
-		Complete    int    `json:"complete"`
+		Id            string `json:"id"`
+		Title         string `json:"title"`
+		Description   string `json:"description"`
+		Language      string `json:"language"`
+		Explicit      int    `json:"explicit"`
+		Author        string `json:"author"`
+		TotalEpisodes int    `json:"total_episodes"`
+		Type          string `json:"type"`
+		Block         int    `json:"block"`
+		Complete      int    `json:"complete"`
 	}{
 		Id:          HashIdFromInt64(p.Id),
 		Title:       p.Title,
@@ -66,33 +60,15 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 
 func (p *Podcast) DbColumns() []string {
 	return []string{
-		"id", "title", "description", "image_path",
-		"language", "explicit", "author", "type",
-		"block", "complete", "link", "owner_name",
-		"owner_email", "copyright", "created_at", "updated_at",
+		"id", "title", "description", "image_path", "language", "explicit", "author", "type", "block", "complete",
+		"link", "owner_name", "owner_email", "copyright", "created_at", "updated_at",
 	}
 }
 
 func (p *Podcast) FieldAddrs() []interface{} {
 	return []interface{}{
-		&p.Id, &p.Title, &p.Description, &p.ImagePath,
-		&p.Language, &p.Explicit, &p.Author, &p.Type,
-		&p.Block, &p.Complete, &p.Link, &p.OwnerName,
-		&p.OwnerEmail, &p.Copyright, &p.CreatedAt, &p.UpdatedAt,
-	}
-}
-
-func (p *PodcastSubscription) DbColumns() []string {
-	return []string{
-		"podcast_id", "subscribed_by", "active", "created_at",
-		"updated_at",
-	}
-}
-
-func (p *PodcastSubscription) FieldAddrs() []interface{} {
-	return []interface{}{
-		&p.PodcastId, &p.SubscribedBy, &p.Active, &p.CreatedAt,
-		&p.UpdatedAt,
+		&p.Id, &p.Title, &p.Description, &p.ImagePath, &p.Language, &p.Explicit, &p.Author, &p.Type, &p.Block, &p.Complete,
+		&p.Link, &p.OwnerName, &p.OwnerEmail, &p.Copyright, &p.CreatedAt, &p.UpdatedAt,
 	}
 }
 
@@ -192,13 +168,11 @@ func (p *Podcast) LoadDetails(rssFeed *rss.Feed) *AppError {
 }
 
 func (p *Podcast) PreSave() {
-	title := []rune(p.Title)
-	if len(title) > PODCAST_TITLE_MAX_LENGTH {
+	if title := []rune(p.Title); len(title) > PODCAST_TITLE_MAX_LENGTH {
 		p.Title = string(title[0:PODCAST_TITLE_MAX_LENGTH-10]) + "..."
 	}
 
-	p.Description = strip.StripTags(p.Description)
-	if len(p.Description) > MYSQL_BLOB_MAX_SIZE {
+	if p.Description = strip.StripTags(p.Description); len(p.Description) > MYSQL_BLOB_MAX_SIZE {
 		p.Description = p.Description[0:MYSQL_BLOB_MAX_SIZE]
 	}
 
@@ -214,16 +188,6 @@ func (p *Podcast) PreSave() {
 		p.OwnerEmail = ""
 	}
 
-	if p.CreatedAt == 0 {
-		p.CreatedAt = Now()
-	}
-
-	if p.UpdatedAt == 0 {
-		p.UpdatedAt = Now()
-	}
-}
-
-func (p *PodcastSubscription) PreSave() {
 	if p.CreatedAt == 0 {
 		p.CreatedAt = Now()
 	}

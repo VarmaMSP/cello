@@ -8,36 +8,32 @@ import (
 )
 
 type Feed struct {
-	Id                 int64  `json:"id,omitempty"`
-	Source             string `json:"source,omitempty"`
-	SourceId           string `json:"source_id,omitempty"`
-	Url                string `json:"feed,omitempty"`
-	ETag               string `json:"etag,omitempty"`
-	LastModified       string `json:"last_modified,omitempty"`
-	RefreshEnabled     int    `json:"refresh_enabled,omitempty"`
-	RefreshInterval    int    `json:"refresh_interval,omitempty"`
-	LastRefreshAt      int64  `json:"last_refresh_at,omitempty"`
-	LastRefreshComment string `json:"last_refresh_comment,omitempty"`
-	NextRefreshAt      int64  `json:"next_refresh_at,omitempty"`
-	CreatedAt          int64  `json:"created_at,omitempty"`
-	UpdatedAt          int64  `json:"updated_at,omitempty"`
+	Id                 int64
+	Source             string
+	SourceId           string
+	Url                string
+	ETag               string
+	LastModified       string
+	RefreshEnabled     int
+	RefreshInterval    int
+	LastRefreshAt      int64
+	LastRefreshComment string
+	NextRefreshAt      int64
+	CreatedAt          int64
+	UpdatedAt          int64
 }
 
 func (f *Feed) DbColumns() []string {
 	return []string{
-		"id", "source", "source_id", "url",
-		"etag", "last_modified", "refresh_enabled", "refresh_interval",
-		"last_refresh_at", "last_refresh_comment", "next_refresh_at", "created_at",
-		"updated_at",
+		"id", "source", "source_id", "url", "etag", "last_modified", "refresh_enabled", "refresh_interval", "last_refresh_at", "last_refresh_comment",
+		"next_refresh_at", "created_at", "updated_at",
 	}
 }
 
 func (f *Feed) FieldAddrs() []interface{} {
 	return []interface{}{
-		&f.Id, &f.Source, &f.SourceId, &f.Url,
-		&f.ETag, &f.LastModified, &f.RefreshEnabled, &f.RefreshInterval,
-		&f.LastRefreshAt, &f.LastRefreshComment, &f.NextRefreshAt, &f.CreatedAt,
-		&f.UpdatedAt,
+		&f.Id, &f.Source, &f.SourceId, &f.Url, &f.ETag, &f.LastModified, &f.RefreshEnabled, &f.RefreshInterval, &f.LastRefreshAt, &f.LastRefreshComment,
+		&f.NextRefreshAt, &f.CreatedAt, &f.UpdatedAt,
 	}
 }
 

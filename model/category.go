@@ -12,15 +12,11 @@ type PodcastCategory struct {
 }
 
 func (pc *PodcastCategory) DbColumns() []string {
-	return []string{
-		"podcast_id", "category_id",
-	}
+	return []string{"podcast_id", "category_id"}
 }
 
 func (pc *PodcastCategory) FieldAddrs() []interface{} {
-	return []interface{}{
-		&pc.PodcastId, &pc.CategoryId,
-	}
+	return []interface{}{&pc.PodcastId, &pc.CategoryId}
 }
 
 func (pc *PodcastCategory) PreSave() {}
