@@ -38,6 +38,10 @@ type Episode struct {
 	LastPlayedAt string
 }
 
+type GetEpisodesOptions struct {
+	PodcastId int64
+}
+
 func (e *Episode) DbColumns() []string {
 	return []string{
 		"id", "podcast_id", "guid", "title", "media_url", "media_type", "media_size", "pub_date", "description", "duration",

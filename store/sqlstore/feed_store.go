@@ -41,7 +41,7 @@ func (s *SqlFeedStore) Get(feedId int64) (*model.Feed, *model.AppError) {
 	return feed, nil
 }
 
-func (s *SqlFeedStore) GetBySource(source, sourceId string) (*model.Feed, *model.AppError) {
+func (s *SqlFeedStore) GetBySourceId(source, sourceId string) (*model.Feed, *model.AppError) {
 	feed := &model.Feed{}
 	sql := "SELECT " + Cols(feed) + " FROM feed WHERE source = ? AND source_id = ?"
 
@@ -54,7 +54,7 @@ func (s *SqlFeedStore) GetBySource(source, sourceId string) (*model.Feed, *model
 	return feed, nil
 }
 
-func (s *SqlFeedStore) GetAllBySource(source string, offset, limit int) (res []*model.Feed, appE *model.AppError) {
+func (s *SqlFeedStore) GetBySourcePaginated(source string, offset, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Feed{}) + " FROM feed WHERE source = ? LIMIT ?, ?"
 
 	copyTo := func() []interface{} {
@@ -72,13 +72,14 @@ func (s *SqlFeedStore) GetAllBySource(source string, offset, limit int) (res []*
 	return
 }
 
-func (s *SqlFeedStore) GetAllToBeRefreshed(createdAfter int64, limit int) (res []*model.Feed, appE *model.AppError) {
+func (s *SqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Feed{}) + ` FROM feed
 		WHERE refresh_enabled = 1 AND
 			  last_refresh_comment <> 'PENDING' AND
 			  next_refresh_at < ? AND
-			  created_at > ?
-		ORDER BY created_at LIMIT ?`
+			  id > ? 
+		ORDER BY id
+		LIMIT ?`
 
 	copyTo := func() []interface{} {
 		tmp := &model.Feed{}
@@ -86,7 +87,7 @@ func (s *SqlFeedStore) GetAllToBeRefreshed(createdAfter int64, limit int) (res [
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.Query(copyTo, sql, model.Now(), createdAfter, limit); err != nil {
+	if err := s.Query(copyTo, sql, model.Now(), lastId, limit); err != nil {
 		appE = model.NewAppError("store.sqlstore.sql_feed_store.get_all_to_be_refreshed", err.Error(), http.StatusInternalServerError, nil)
 	}
 	return

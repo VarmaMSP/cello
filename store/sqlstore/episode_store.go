@@ -28,18 +28,6 @@ func (s *SqlEpisodeStore) Save(episode *model.Episode) *model.AppError {
 	return nil
 }
 
-func (s *SqlEpisodeStore) SavePlayback(playback *model.EpisodePlayback) *model.AppError {
-	playback.PreSave()
-
-	if _, err := s.InsertOrUpdate("episode_playback", playback, "count_ = count_ + 1, updated_at = ?", model.Now()); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_episode_store.save_playback", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"episode_id": playback.EpisodeId, "played_by": playback.PlayedBy},
-		)
-	}
-	return nil
-}
-
 func (s *SqlEpisodeStore) Get(episodeId int64) (*model.Episode, *model.AppError) {
 	episode := &model.Episode{}
 	sql := "SELECT " + Cols(episode) + " FROM episode WHERE id = ?"
@@ -53,7 +41,7 @@ func (s *SqlEpisodeStore) Get(episodeId int64) (*model.Episode, *model.AppError)
 	return episode, nil
 }
 
-func (s *SqlEpisodeStore) GetAllByIds(episodeIds []int64) (res []*model.Episode, appE *model.AppError) {
+func (s *SqlEpisodeStore) GetByIds(episodeIds []int64) (res []*model.Episode, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Episode{}) + ` FROM episode
 		WHERE id IN (` + strings.Join(Replicate("?", len(episodeIds)), ",") + `)`
 
@@ -76,7 +64,7 @@ func (s *SqlEpisodeStore) GetAllByIds(episodeIds []int64) (res []*model.Episode,
 	return
 }
 
-func (s *SqlEpisodeStore) GetAllByPodcast(podcastId int64, order string, offset, limit int) (res []*model.Episode, appE *model.AppError) {
+func (s *SqlEpisodeStore) GetByPodcastPaginated(podcastId int64, order string, offset, limit int) (res []*model.Episode, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Episode{}) + ` FROM episode
 		WHERE podcast_id = ?
 		ORDER BY pub_date`
@@ -97,6 +85,27 @@ func (s *SqlEpisodeStore) GetAllByPodcast(podcastId int64, order string, offset,
 		appE = model.NewAppError(
 			"store.sqlstore.sql_episode_store.get_all_by_podcast", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"podcast_id": podcastId},
+		)
+	}
+	return
+}
+
+func (s *SqlEpisodeStore) GetByPlaylist(playlistId int64) (res []*model.Episode, appE *model.AppError) {
+	sql := "SELECT " + Cols(&model.Episode{}, "episode") + ` FROM episode
+		INNER JOIN playlist_member ON playlist_member.episode_id = episode.id
+		WHERE playlist_member.playlist_id = ?
+		ORDER BY playlist_member.updated_at DESC`
+
+	copyTo := func() []interface{} {
+		tmp := &model.Episode{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql, playlistId); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_episode_store.get_by_playlist", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"playlist_id": playlistId},
 		)
 	}
 	return
@@ -128,72 +137,6 @@ func (s *SqlEpisodeStore) GetAllPublishedBefore(podcastIds []int64, offset, limi
 	return
 }
 
-func (s *SqlEpisodeStore) GetAllPlaybacks(episodeIds []int64, userId int64) (res []*model.EpisodePlayback, appE *model.AppError) {
-	if len(episodeIds) == 0 {
-		return
-	}
-
-	sql := "SELECT " + Cols(&model.EpisodePlayback{}, "episode_playback") + ` FROM episode_playback
-		WHERE episode_id IN (` + strings.Join(Replicate("?", len(episodeIds)), ",") + `) AND played_by = ?`
-
-	var values []interface{}
-	for _, episodeId := range episodeIds {
-		values = append(values, episodeId)
-	}
-	values = append(values, userId)
-
-	copyTo := func() []interface{} {
-		tmp := &model.EpisodePlayback{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
-
-	if err := s.Query(copyTo, sql, values...); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_all_playbacks", err.Error(), http.StatusInternalServerError, nil,
-		)
-	}
-	return
-}
-
-func (s *SqlEpisodeStore) GetAllPlaybacksByUser(userId int64, offset, limit int) (res []*model.EpisodePlayback, appE *model.AppError) {
-	sql := "SELECT " + Cols(&model.EpisodePlayback{}) + ` FROM episode_playback WHERE played_by = ? ORDER by updated_at DESC LIMIT ?, ?`
-
-	copyTo := func() []interface{} {
-		tmp := &model.EpisodePlayback{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
-
-	if err := s.Query(copyTo, sql, userId, offset, limit); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_all_playbacks_by_user", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"user_id": userId},
-		)
-	}
-	return
-}
-
-func (s *SqlEpisodeStore) SetPlaybackCurrentTime(episodeId, playedBy int64, currentTime int) *model.AppError {
-	sql := `UPDATE episode_playback SET current_time_ = ?, updated_at = ? WHERE episode_id = ? AND played_by = ?`
-
-	if _, err := s.GetMaster().Exec(sql, currentTime, model.Now(), episodeId, playedBy); err != nil {
-		return model.NewAppError(
-			"store.sql_store.sql_episode_store.set_playback_current_time", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"episode_id": episodeId, "played_by": playedBy},
-		)
-	}
-	return nil
-}
-
-func (s *SqlEpisodeStore) Block(podcastId int64, episodeGuid string) *model.AppError {
-	sql := `UPDATE episode SET block = 1 WHERE podcast_id = ? AND guid = ?`
-
-	if _, err := s.GetMaster().Exec(sql, podcastId, episodeGuid); err != nil {
-		return model.NewAppError(
-			"store.sql_store.sql_episode_store.block", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"podcast_id": podcastId, "episode_guid": episodeGuid},
-		)
-	}
+func (s *SqlEpisodeStore) Block(episodeIds []int64) *model.AppError {
 	return nil
 }

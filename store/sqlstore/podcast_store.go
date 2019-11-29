@@ -27,18 +27,6 @@ func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 	return nil
 }
 
-func (s *SqlPodcastStore) SaveSubscription(subscription *model.PodcastSubscription) *model.AppError {
-	subscription.PreSave()
-
-	if _, err := s.InsertOrUpdate("podcast_subscription", subscription, "active = 1, updated_at = ?", model.Now()); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_podcast_store.save_subscription", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"subscribed_by": subscription.SubscribedBy, "podcast_id": subscription.PodcastId},
-		)
-	}
-	return nil
-}
-
 func (s *SqlPodcastStore) Get(podcastId int64) (*model.Podcast, *model.AppError) {
 	podcast := &model.Podcast{}
 	sql := "SELECT " + Cols(podcast) + " FROM podcast WHERE id = ?"
@@ -52,7 +40,7 @@ func (s *SqlPodcastStore) Get(podcastId int64) (*model.Podcast, *model.AppError)
 	return podcast, nil
 }
 
-func (s *SqlPodcastStore) GetAllSubscribedBy(userId int64) (res []*model.Podcast, appE *model.AppError) {
+func (s *SqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Podcast{}, "podcast") + ` FROM podcast
 		INNER JOIN podcast_subscription ON podcast_subscription.podcast_id = podcast.id
 		WHERE podcast_subscription.active = 1 AND podcast_subscription.subscribed_by = ?
@@ -71,16 +59,4 @@ func (s *SqlPodcastStore) GetAllSubscribedBy(userId int64) (res []*model.Podcast
 		)
 	}
 	return
-}
-
-func (s *SqlPodcastStore) DeleteSubscription(userId, podcastId int64) *model.AppError {
-	sql := "UPDATE podcast_subscription SET active = 0 AND updated_at = ? WHERE podcast_id = ? AND subscribed_by = ?"
-
-	if _, err := s.GetMaster().Exec(sql, model.Now(), podcastId, userId); err != nil {
-		return model.NewAppError(
-			"sqlstore.sql_podcast_store.delete_subscription", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"userId": userId, "podcastId": podcastId},
-		)
-	}
-	return nil
 }

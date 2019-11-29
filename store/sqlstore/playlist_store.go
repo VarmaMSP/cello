@@ -22,22 +22,10 @@ func (s *SqlPlaylistStore) Save(playlist *model.Playlist) *model.AppError {
 	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_playlist_store.save", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"title": playlist.Title, "user_id": playlist.CreatedBy},
+			map[string]interface{}{"title": playlist.Title, "user_id": playlist.UserId},
 		)
 	}
 	playlist.Id = id
-	return nil
-}
-
-func (s *SqlPlaylistStore) SaveItem(playlistItem *model.PlaylistItem) *model.AppError {
-	playlistItem.PreSave()
-
-	if _, err := s.Insert("playlist_item", []model.DbModel{playlistItem}); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.save_item", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistItem.PlaylistId, "episode_id": playlistItem.EpisodeId},
-		)
-	}
 	return nil
 }
 
@@ -54,8 +42,8 @@ func (s *SqlPlaylistStore) Get(playlistId int64) (*model.Playlist, *model.AppErr
 	return playlist, nil
 }
 
-func (s *SqlPlaylistStore) GetAllByUser(userId int64) (res []*model.Playlist, appE *model.AppError) {
-	sql := "SELECT " + Cols(&model.Playlist{}) + ` FROM playlist WHERE created_by = ?`
+func (s *SqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE *model.AppError) {
+	sql := "SELECT " + Cols(&model.Playlist{}) + ` FROM playlist WHERE user_id = ?`
 
 	copyTo := func() []interface{} {
 		tmp := &model.Playlist{}
@@ -65,30 +53,25 @@ func (s *SqlPlaylistStore) GetAllByUser(userId int64) (res []*model.Playlist, ap
 
 	if err := s.Query(copyTo, sql, userId); err != nil {
 		appE = model.NewAppError(
-			"store.sqlstore.sql_playlist_store.get_all_by_user", err.Error(), http.StatusInternalServerError,
+			"store.sqlstore.sql_playlist_store.get_by_user", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"user_id": userId},
 		)
 	}
 	return
 }
 
-func (s *SqlPlaylistStore) GetAllEpisodesInPlaylist(playlistId int64) (res []*model.Episode, appE *model.AppError) {
-	sql := "SELECT " + Cols(&model.Episode{}, "episode") + `FROM episode
-		INNER JOIN playlist_item ON playlist_item.episode_id = episode.id
-		WHERE playlist_item.playlist_id = ?
-		ORDER BY playlist_item.createdAt DESC`
+func (s *SqlPlaylistStore) AddMember(member *model.PlaylistMember) *model.AppError {
+	member.PreSave()
 
-	copyTo := func() []interface{} {
-		tmp := &model.Episode{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
-
-	if err := s.Query(copyTo, sql, playlistId); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_playlist_store.get_all_episodes_in_playlist", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId},
+	if _, err := s.Insert("playlist_member", []model.DbModel{member}); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_playlist_store.add_member", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"episode_id": member.EpisodeId},
 		)
 	}
-	return
+	return nil
+}
+
+func (s *SqlPlaylistStore) DeleteMember(playlistId, episodeId int64) *model.AppError {
+	return nil
 }

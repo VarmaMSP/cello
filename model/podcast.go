@@ -33,6 +33,16 @@ type Podcast struct {
 	UpdatedAt     int64
 }
 
+// Elasticsearch podcast index
+type PodcastIndex struct {
+	Id          string `json:"id"`
+	Title       string `json:"title"`
+	Author      string `json:"author"`
+	Description string `json:"description"`
+	Type        string `json:"type"`
+	Complete    int    `json:"complete"`
+}
+
 func (p *Podcast) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		Id            string `json:"id"`
