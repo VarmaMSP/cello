@@ -5,6 +5,12 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
+const (
+	BUCKET_NAME_THUMBNAILS       = "thumbanil"
+	BUCKET_NAME_PHENOPOD_CHARTS  = "phenopod_charts"
+	BUCKET_NAME_CHARTABLE_CHARTS = "chartable_chart"
+)
+
 func NewS3Client(config *model.Config) (*minio.Client, error) {
 	s3Client, err := minio.New(
 		config.Minio.Address,
@@ -16,7 +22,13 @@ func NewS3Client(config *model.Config) (*minio.Client, error) {
 		return nil, err
 	}
 
-	if err := createBucket(s3Client, "charts"); err != nil {
+	if err := createBucket(s3Client, BUCKET_NAME_THUMBNAILS); err != nil {
+		return nil, err
+	}
+	if err := createBucket(s3Client, BUCKET_NAME_PHENOPOD_CHARTS); err != nil {
+		return nil, err
+	}
+	if err := createBucket(s3Client, BUCKET_NAME_CHARTABLE_CHARTS); err != nil {
 		return nil, err
 	}
 
@@ -28,7 +40,6 @@ func createBucket(client *minio.Client, bucketName string) error {
 		return err
 	} else if found {
 		return nil
-	} else {
-		return client.MakeBucket(bucketName, "us-east-1")
 	}
+	return client.MakeBucket(bucketName, "us-east-1")
 }

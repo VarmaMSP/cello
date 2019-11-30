@@ -11,6 +11,7 @@ import (
 	"github.com/minio/minio-go/v6"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/s3"
 )
 
 const (
@@ -62,7 +63,7 @@ func (s *ScrapeCategories) Call() {
 				s.Log.Error().Msg(err.Error())
 			}
 
-			if _, err := s.S3.PutObject("charts", category+".json", bytes.NewReader(file), -1, minio.PutObjectOptions{
+			if _, err := s.S3.PutObject(s3.BUCKET_NAME_CHARTABLE_CHARTS, category+".json", bytes.NewReader(file), -1, minio.PutObjectOptions{
 				ContentType: "application/json",
 			}); err != nil {
 				s.Log.Error().Msg(err.Error())

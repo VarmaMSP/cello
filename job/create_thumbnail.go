@@ -1,18 +1,20 @@
 package job
 
 import (
+	"bytes"
 	"encoding/json"
 	"image"
 	"image/jpeg"
 	"net/http"
-	"os"
 	"time"
 
+	"github.com/minio/minio-go/v6"
 	"github.com/nfnt/resize"
 	"github.com/streadway/amqp"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/rabbitmq"
+	"github.com/varmamsp/cello/service/s3"
 )
 
 const (
@@ -29,9 +31,10 @@ type CreateThumbnailJob struct {
 }
 
 type CreateThumbnailJobInput struct {
-	Id       string `json:"id"`
-	ImageSrc string `json:"image_src"`
-	Type     string `json:"type"`
+	Id         string `json:"id"`
+	Type       string `json:"type"`
+	ImageSrc   string `json:"image_src"`
+	ImageTitle string `json:"image_title"`
 }
 
 func NewCreateThumbnailJob(app *app.App, config *model.Config) (model.Job, error) {
@@ -93,26 +96,25 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 		}
 
 		if input.Type == "PODCAST" {
-			if err := job.saveThumbnailsForPodcast(input.Id, img); err != nil {
+			err := job.resizePodcastImage(input.ImageTitle, img)
+			if err != nil {
 				job.Log.Error().Msg(err.Error())
-				if delivery.Redelivered {
-					delivery.Ack(false)
-				} else {
-					delivery.Nack(false, true)
-				}
-				return
 			}
 		}
 		delivery.Ack(false)
 	}()
 }
 
-func (job *CreateThumbnailJob) saveThumbnailsForPodcast(id string, img image.Image) error {
-	thumbnail, err := os.Create(job.storagePath + "/" + id + "-500x500.jpg")
-	if err != nil {
+func (job *CreateThumbnailJob) resizePodcastImage(imgTitle string, img image.Image) error {
+	thumbnail := new(bytes.Buffer)
+	if err := jpeg.Encode(thumbnail, resize.Thumbnail(THUMBNAIL_SIZE, THUMBNAIL_SIZE, img, resize.Lanczos3), nil); err != nil {
 		return err
 	}
-	if err := jpeg.Encode(thumbnail, resize.Thumbnail(THUMBNAIL_SIZE, THUMBNAIL_SIZE, img, resize.Lanczos3), nil); err != nil {
+
+	file := bytes.NewReader(thumbnail.Bytes())
+	size := int64(thumbnail.Len())
+	putOpts := minio.PutObjectOptions{ContentType: "image/jpeg"}
+	if _, err := job.S3.PutObject(s3.BUCKET_NAME_THUMBNAILS, imgTitle+".json", file, size, putOpts); err != nil {
 		return err
 	}
 	return nil
