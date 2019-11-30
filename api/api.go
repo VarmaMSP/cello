@@ -78,9 +78,9 @@ func NewApi(config model.Config) (*Api, error) {
 		go api.CreateThumbnailJob.Run()
 	}
 
-	if config.Jobs.SyncEpisodePlayback.Enable {
-		api.app.Log.Info().Msg("Starting sync episode playback job...")
-		job, err := job.NewSyncEpisodePlaybackJob(api.app, &config)
+	if config.Jobs.SyncPlayback.Enable {
+		api.app.Log.Info().Msg("Starting sync playback job...")
+		job, err := job.NewSyncPlaybackJob(api.app, &config)
 		if err != nil {
 			return nil, err
 		}

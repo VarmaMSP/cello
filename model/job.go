@@ -11,10 +11,10 @@ const (
 	TASK_NAME_SCRAPE_ITUNES_DIRECTORY  = "scrape_itunes_directory"
 	TASK_NAME_SCHEDULE_PODCAST_REFRESH = "schedule_podcast_refresh"
 
-	QUEUE_NAME_CREATE_THUMBNAIL      = "create_thumbnail"
-	QUEUE_NAME_IMPORT_PODCAST        = "import_podcast"
-	QUEUE_NAME_REFRESH_PODCAST       = "refresh_podcast"
-	QUEUE_NAME_SYNC_EPISODE_PLAYBACK = "sync_episode_playback"
+	QUEUE_NAME_CREATE_THUMBNAIL = "create_thumbnail"
+	QUEUE_NAME_IMPORT_PODCAST   = "import_podcast"
+	QUEUE_NAME_REFRESH_PODCAST  = "refresh_podcast"
+	QUEUE_NAME_SYNC_PLAYBACK    = "sync_episode_playback"
 
 	TASK_TYPE_PERIODIC  = "PERIODIC"
 	TASK_TYPE_ONEOFF    = "ONEOFF"

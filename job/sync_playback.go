@@ -11,32 +11,32 @@ import (
 	"github.com/varmamsp/cello/service/rabbitmq"
 )
 
-type SyncEpisodePlaybackJob struct {
+type SyncPlaybackJob struct {
 	*app.App
 	input          <-chan amqp.Delivery
 	inputBatchSize int
 }
 
-func NewSyncEpisodePlaybackJob(app *app.App, config *model.Config) (model.Job, error) {
-	syncEpisodePlaybackC, err := rabbitmq.NewConsumer(app.RabbitmqConsumerConn, &rabbitmq.ConsumerOpts{
-		QueueName:     model.QUEUE_NAME_SYNC_EPISODE_PLAYBACK,
-		ConsumerName:  config.Queues.SyncEpisodePlayback.ConsumerName,
-		AutoAck:       config.Queues.SyncEpisodePlayback.ConsumerAutoAck,
-		Exclusive:     config.Queues.SyncEpisodePlayback.ConsumerExclusive,
-		PreFetchCount: config.Queues.SyncEpisodePlayback.ConsumerPreFetchCount,
+func NewSyncPlaybackJob(app *app.App, config *model.Config) (model.Job, error) {
+	syncPlaybackC, err := rabbitmq.NewConsumer(app.RabbitmqConsumerConn, &rabbitmq.ConsumerOpts{
+		QueueName:     model.QUEUE_NAME_SYNC_PLAYBACK,
+		ConsumerName:  config.Queues.SyncPlayback.ConsumerName,
+		AutoAck:       config.Queues.SyncPlayback.ConsumerAutoAck,
+		Exclusive:     config.Queues.SyncPlayback.ConsumerExclusive,
+		PreFetchCount: config.Queues.SyncPlayback.ConsumerPreFetchCount,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return &SyncEpisodePlaybackJob{
+	return &SyncPlaybackJob{
 		App:            app,
-		input:          syncEpisodePlaybackC.D,
-		inputBatchSize: config.Queues.SyncEpisodePlayback.ConsumerPreFetchCount,
+		input:          syncPlaybackC.D,
+		inputBatchSize: config.Queues.SyncPlayback.ConsumerPreFetchCount,
 	}, nil
 }
 
-func (job *SyncEpisodePlaybackJob) Run() {
+func (job *SyncPlaybackJob) Run() {
 	timeout := time.NewTimer(time.Minute)
 
 	for {
@@ -61,7 +61,7 @@ func (job *SyncEpisodePlaybackJob) Run() {
 	}
 }
 
-func (job *SyncEpisodePlaybackJob) Call(deliveries []amqp.Delivery) {
+func (job *SyncPlaybackJob) Call(deliveries []amqp.Delivery) {
 	eventsByUserByEpisode := map[int64](map[int64][]*model.PlaybackEvent){}
 	for _, delivery := range deliveries {
 		event := &model.PlaybackEvent{}

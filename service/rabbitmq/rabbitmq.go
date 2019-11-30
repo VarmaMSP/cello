@@ -30,7 +30,7 @@ func NewConnection(config *model.Config) (*amqp.Connection, error) {
 	if err := createQueue(model.QUEUE_NAME_CREATE_THUMBNAIL, channel); err != nil {
 		return nil, err
 	}
-	if err := createQueue(model.QUEUE_NAME_SYNC_EPISODE_PLAYBACK, channel); err != nil {
+	if err := createQueue(model.QUEUE_NAME_SYNC_PLAYBACK, channel); err != nil {
 		return nil, err
 	}
 	return connection, nil

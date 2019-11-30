@@ -42,7 +42,7 @@ queues:
     consumer_exclusive: true
     consumer_prefetch_count: 10
   
-  sync_episode_playback:
+  sync_playback:
     deleivery_mode: 1
     consumer_name: sync_episode_playback
     consumer_auto_ack: true
@@ -66,7 +66,7 @@ jobs:
     enable: {{ scheduler_enable }}
     worker_limit: {{ scheduler_concurrency }}
   
-  sync_episode_playback:
+  sync_playback:
     enable: {{ sync_episode_playback_enable }}
 
 oauth:

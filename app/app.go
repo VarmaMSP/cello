@@ -107,8 +107,8 @@ func NewApp(config model.Config) (*App, error) {
 
 	app.SyncEpisodePlaybackP, err = rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
 		ExchangeName: rabbitmq.DefaultExchange,
-		QueueName:    model.QUEUE_NAME_SYNC_EPISODE_PLAYBACK,
-		DeliveryMode: config.Queues.SyncEpisodePlayback.DeliveryMode,
+		QueueName:    model.QUEUE_NAME_SYNC_PLAYBACK,
+		DeliveryMode: config.Queues.SyncPlayback.DeliveryMode,
 	})
 	if err != nil {
 		return nil, err
