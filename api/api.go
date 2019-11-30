@@ -88,11 +88,14 @@ func NewApi(config model.Config) (*Api, error) {
 		go api.SyncEpisodePlaybackJob.Run()
 	}
 
+	api.RegisterSearchHandlers()
 	api.RegisterPodcastHandlers()
+	api.RegisterSubscriptionHandlers()
 	api.RegisterEpisodeHandlers()
+	api.RegisterPlaybackHandlers()
+	api.RegisterHistoryHandlers()
 	api.RegisterPlaylistHandlers()
 	api.RegisterUserHandlers()
-	api.RegisterFeedHandlers()
 
 	return api, nil
 }

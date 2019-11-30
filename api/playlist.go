@@ -7,10 +7,30 @@ import (
 )
 
 func (api *Api) RegisterPlaylistHandlers() {
+	api.router.Handler("GET", "/playlists", api.NewHandlerSessionRequired(GetUserPlaylists))
 	api.router.Handler("GET", "/playlists/:playlistId", api.NewHandler(GetPlaylist))
-	api.router.Handler("GET", "/playlists", api.NewHandlerSessionRequired(GetCurrentUserPlaylists))
 	api.router.Handler("POST", "/playlists", api.NewHandlerSessionRequired(CreatePlaylist))
 	api.router.Handler("POST", "/playlists/:playlistId/episodes/:episodeId", api.NewHandlerSessionRequired(AddEpisodeToPlaylist))
+}
+
+func GetUserPlaylists(c *Context, w http.ResponseWriter) {
+	req := &GetUserPlaylistsReq{}
+	if err := req.Load(c); err != nil {
+		c.err = model.NewAppError("api.get_user_playlists_req_load", err.Error(), 400, nil)
+		return
+	}
+
+	playlists, err := c.app.GetPlaylistsByUser(req.UserId)
+	if err != nil {
+		c.err = err
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(model.EncodeToJson(map[string]interface{}{
+		"playlists": playlists,
+	}))
 }
 
 func GetPlaylist(c *Context, w http.ResponseWriter) {
@@ -26,49 +46,26 @@ func GetPlaylist(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	episodes, err := c.app.GetEpisodesInPlaylist((playlist.Id))
+	episodes, err := c.app.GetEpisodesInPlaylist(req.PlaylistId)
 	if err != nil {
 		c.err = err
 		return
 	}
 
-	episodeIds := make([]int64, len(episodes))
-	for i, episode := range episodes {
-		episode.Sanitize()
-		episodeIds[i] = episode.Id
-	}
-	var playbacks []*model.EpisodePlayback
-	if c.session != nil {
-		playbacks, err := c.app.GetAllEpisodePlaybacks(episodeIds, c.session.UserId)
+	if c.session != nil && c.session.UserId != 0 {
+		playbacks, err := c.app.GetUserPlaybacksForEpisodes(c.session.UserId, model.GetEpisodeIds(episodes))
 		if err != nil {
 			c.err = err
 			return
 		}
-		for _, playback := range playbacks {
-			playback.Sanitize()
-		}
+		model.EpisodesJoinPlaybacks(episodes, playbacks)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(model.EncodeToJson(map[string]interface{}{
-		"playlist":  playlist,
-		"episodes":  episodes,
-		"playbacks": playbacks,
-	}))
-}
-
-func GetCurrentUserPlaylists(c *Context, w http.ResponseWriter) {
-	playlists, err := c.app.GetPlaylistsByUser(c.session.UserId)
-	if err != nil {
-		c.err = err
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"playlists": playlists,
+		"playlist": playlist,
+		"episodes": episodes,
 	}))
 }
 
@@ -79,7 +76,7 @@ func CreatePlaylist(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	playlist, err := c.app.CreatePlaylist(req.Title, req.Privacy, req.CurrentUserId)
+	playlist, err := c.app.SavePlaylist(req.Title, req.Privacy, req.UserId)
 	if err != nil {
 		c.err = err
 		return
@@ -99,7 +96,7 @@ func AddEpisodeToPlaylist(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	if _, err := c.app.AddEpsiodeToPlaylist(req.EpisodeId, req.PlaylistId); err != nil {
+	if _, err := c.app.SaveEpisodeToPlaylist(req.EpisodeId, req.PlaylistId); err != nil {
 		c.err = err
 		return
 	}

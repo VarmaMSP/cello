@@ -236,3 +236,25 @@ func (e *Episode) Sanitize() {
 	e.CreatedAt = 0
 	e.UpdatedAt = 0
 }
+
+func GetEpisodeIds(episodes []*Episode) []int64 {
+	episodeIds := make([]int64, len(episodes))
+	for i, episode := range episodes {
+		episodeIds[i] = episode.Id
+	}
+	return episodeIds
+}
+
+func EpisodesJoinPlaybacks(episodes []*Episode, playbacks []*Playback) {
+	playbackMap := map[int64]*Playback{}
+	for _, playback := range playbacks {
+		playbackMap[playback.EpisodeId] = playback
+	}
+
+	for _, episode := range episodes {
+		if playback, ok := playbackMap[episode.Id]; ok {
+			episode.Progress = playback.Progress
+			episode.LastPlayedAt = playback.LastPlayedAt
+		}
+	}
+}

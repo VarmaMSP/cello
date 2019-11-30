@@ -2,6 +2,17 @@ package api
 
 import "github.com/varmamsp/cello/model"
 
+type GetUserPlaylistsReq struct {
+	UserId int64 `validate:"required"`
+}
+
+func (o *GetUserPlaylistsReq) Load(c *Context) (err error) {
+	o.UserId = c.session.UserId
+
+	err = c.app.Validate.Struct(o)
+	return
+}
+
 type GetPlaylistReq struct {
 	PlaylistId int64 `validate:"required"`
 }
@@ -17,13 +28,13 @@ func (o *GetPlaylistReq) Load(c *Context) (err error) {
 }
 
 type CreatePlaylistReq struct {
-	Title         string `json:"title" validate:"required,max=100"`
-	Privacy       string `json:"privacy" validate:"required,oneof=PUBLIC PRIVATE"`
-	CurrentUserId int64  `json:"-" validate:"required"`
+	Title   string `json:"title" validate:"required,max=100"`
+	Privacy string `json:"privacy" validate:"required,oneof=PUBLIC PRIVATE"`
+	UserId  int64  `json:"-" validate:"required"`
 }
 
 func (o *CreatePlaylistReq) Load(c *Context) (err error) {
-	o.CurrentUserId = c.session.UserId
+	o.UserId = c.session.UserId
 
 	if err = c.DecodeBody(o); err != nil {
 		return

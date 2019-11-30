@@ -7,7 +7,7 @@ import (
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/varmamsp/gofeed/rss"
 )
- 
+
 const (
 	PODCAST_TITLE_MAX_LENGTH = 500
 )
@@ -19,7 +19,7 @@ type Podcast struct {
 	Description   string
 	ImagePath     string
 	Language      string
-	Explicit      int 
+	Explicit      int
 	Author        string
 	TotalEpisodes int
 	Type          string
@@ -225,4 +225,12 @@ func (p *Podcast) SanitizeToMin() {
 	p.Complete = 0
 	p.Link = ""
 	p.Copyright = ""
+}
+
+func GetPodcastIds(podcasts []*Podcast) []int64 {
+	podcastIds := make([]int64, len(podcasts))
+	for i, podcast := range podcasts {
+		podcastIds[i] = podcast.Id
+	}
+	return podcastIds
 }
