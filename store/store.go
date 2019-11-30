@@ -50,6 +50,7 @@ type EpisodeStore interface {
 	GetByIds(episodeIds []int64) ([]*model.Episode, *model.AppError)
 	GetByPodcast(podcastId int64) ([]*model.Episode, *model.AppError)
 	GetByPodcastPaginated(podcastId int64, order string, offset, limit int) ([]*model.Episode, *model.AppError)
+	GetByPodcastIdsPaginated(podcastIds []int64, offset, limit int) ([]*model.Episode, *model.AppError)
 	GetByPlaylist(playlistId int64) ([]*model.Episode, *model.AppError)
 	Block(episodeId int64) *model.AppError
 }
@@ -65,7 +66,7 @@ type PlaylistStore interface {
 	Save(playlist *model.Playlist) *model.AppError
 	Get(playlistId int64) (*model.Playlist, *model.AppError)
 	GetByUser(userId int64) ([]*model.Playlist, *model.AppError)
-	AddMember(member *model.PlaylistMember) *model.AppError
+	SaveMember(member *model.PlaylistMember) *model.AppError
 	DeleteMember(playlistId, episodeId int64) *model.AppError
 }
 

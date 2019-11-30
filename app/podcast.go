@@ -13,7 +13,7 @@ func (app *App) GetPodcast(podcastId int64) (*model.Podcast, *model.AppError) {
 }
 
 func (app *App) GetUserSubscriptions(userId int64) ([]*model.Podcast, *model.AppError) {
-	return app.Store.Podcast().GetAllSubscribedBy(userId)
+	return app.Store.Podcast().GetSubscriptions(userId)
 }
 
 func (app *App) SearchPodcasts(searchQuery string) ([]*model.PodcastIndex, *model.AppError) {
@@ -36,15 +36,14 @@ func (app *App) SearchPodcasts(searchQuery string) ([]*model.PodcastIndex, *mode
 	return podcasts, nil
 }
 
-func (app *App) CreateSubscription(userId, podcastId int64) *model.AppError {
-	m := &model.PodcastSubscription{
-		PodcastId:    podcastId,
-		SubscribedBy: userId,
-		Active:       1,
-	}
-	return app.Store.Podcast().SaveSubscription(m)
+func (app *App) SaveSubscription(userId, podcastId int64) *model.AppError {
+	return app.Store.Subscription().Save(&model.Subscription{
+		UserId:    userId,
+		PodcastId: podcastId,
+		Active:    1,
+	})
 }
 
 func (app *App) DeleteSubscription(userId, podcastId int64) *model.AppError {
-	return app.Store.Podcast().DeleteSubscription(userId, podcastId)
+	return app.Store.Subscription().Delete(userId, podcastId)
 }

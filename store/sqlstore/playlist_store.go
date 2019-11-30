@@ -1,6 +1,7 @@
 package sqlstore
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/varmamsp/cello/model"
@@ -60,18 +61,29 @@ func (s *SqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE 
 	return
 }
 
-func (s *SqlPlaylistStore) AddMember(member *model.PlaylistMember) *model.AppError {
+func (s *SqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppError {
 	member.PreSave()
 
 	if _, err := s.Insert("playlist_member", []model.DbModel{member}); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_playlist_store.add_member", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"episode_id": member.EpisodeId},
+			map[string]interface{}{"playlist_id": member.PlaylistId, "episode_id": member.EpisodeId},
 		)
 	}
 	return nil
 }
 
 func (s *SqlPlaylistStore) DeleteMember(playlistId, episodeId int64) *model.AppError {
+	sql := fmt.Sprintf(
+		"UPDATE playlist_member SET active = 0, updated_at = %d WHERE playlist_id = %d AND episode_id = %d",
+		model.Now(), playlistId, episodeId,
+	)
+
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_playlist_store.delete_member", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"playlist_id": playlistId, "episode_id": episodeId},
+		)
+	}
 	return nil
 }
