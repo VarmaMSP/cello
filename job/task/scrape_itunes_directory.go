@@ -70,7 +70,7 @@ func NewScrapeItunesDirectory(app *app.App, config *model.Config) (*ScrapeItunes
 	}
 
 	for off, lim := 0, 10000; ; off += lim {
-		feeds, err := scrapeItunesDirectory.Store.Feed().GetAllBySource("ITUNES_SCRAPER", off, lim)
+		feeds, err := scrapeItunesDirectory.Store.Feed().GetBySourcePaginated("ITUNES_SCRAPER", off, lim)
 		if err != nil {
 			return nil, err
 		}
@@ -90,7 +90,7 @@ func NewScrapeItunesDirectory(app *app.App, config *model.Config) (*ScrapeItunes
 }
 
 func (s *ScrapeItunesDirectory) Call() {
-	s.Log.Info().Msg("Scrape Itunes started")
+	s.Log.Info().Msg("Scrape Itunes Directory started")
 	s.urlF.Clear()
 	s.urlF.I <- ITUNES_SEED_URL
 }

@@ -16,8 +16,7 @@ import (
 )
 
 const (
-	IMAGE_SIZE_LARGE   = 500
-	IMAGE_SIZE_MEDIUM  = 250
+	THUMBNAIL_SIZE     = 300
 	IMAGE_STORAGE_PATH = "/var/www/img"
 )
 
@@ -109,21 +108,12 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 }
 
 func (job *CreateThumbnailJob) saveThumbnailsForPodcast(id string, img image.Image) error {
-	imageLg, err := os.Create(job.storagePath + "/" + id + "-500x500.jpg")
+	thumbnail, err := os.Create(job.storagePath + "/" + id + "-500x500.jpg")
 	if err != nil {
 		return err
 	}
-	if err := jpeg.Encode(imageLg, resize.Thumbnail(IMAGE_SIZE_LARGE, IMAGE_SIZE_LARGE, img, resize.Lanczos2), nil); err != nil {
+	if err := jpeg.Encode(thumbnail, resize.Thumbnail(THUMBNAIL_SIZE, THUMBNAIL_SIZE, img, resize.Lanczos3), nil); err != nil {
 		return err
 	}
-
-	imageMd, err := os.Create(job.storagePath + "/" + id + "-250x250.jpg")
-	if err != nil {
-		return err
-	}
-	if err := jpeg.Encode(imageMd, resize.Resize(IMAGE_SIZE_MEDIUM, IMAGE_SIZE_MEDIUM, img, resize.Lanczos3), nil); err != nil {
-		return err
-	}
-
 	return nil
 }

@@ -108,7 +108,7 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId int64, rssFeed *rss.Feed)
 		map[string]interface{}{"podcast_id": podcastId},
 	)
 
-	episodes, err := job.Store.Episode().GetAllByPodcast(podcastId, "pub_date_desc", 0, 10000)
+	episodes, err := job.Store.Episode().GetByPodcast(podcastId)
 	if err != nil {
 		return appErrorC(err.Error())
 	}
@@ -130,23 +130,39 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId int64, rssFeed *rss.Feed)
 		}
 	}
 
-	// Block episodes
-	for episodeGuid, _ := range episodeMap {
+	// blocked episodes
+	blockedEpisodesCount := 0
+	for episodeGuid, episode := range episodeMap {
 		if _, ok := rssItemMap[episodeGuid]; !ok {
-			job.Store.Episode().Block(podcastId, episodeGuid)
+			job.Store.Episode().Block(episode.Id)
+			blockedEpisodesCount += 1
 		}
 	}
 
-	// Add New Episodes
+	// new episodes
+	newEpisodesCount := 0
+	latestEpisodePubDate := model.ParseDateTime(episodes[0].PubDate)
 	for rssItemGuid, rssItem := range rssItemMap {
 		if _, ok := episodeMap[rssItemGuid]; !ok {
 			episode := &model.Episode{PodcastId: podcastId}
 			if err := episode.LoadDetails(rssItem); err != nil {
 				continue
 			}
-			job.Store.Episode().Save(episode)
+			if err := job.Store.Episode().Save(episode); err != nil {
+				continue
+			}
+			if t := model.ParseDateTime(episode.PubDate); t != nil && latestEpisodePubDate.Before(*t) {
+				latestEpisodePubDate = t
+			}
+			newEpisodesCount += 1
+
 		}
 	}
 
+	job.Store.Podcast().UpdateEpisodeStats(
+		podcastId,
+		len(episodes)+newEpisodesCount-blockedEpisodesCount,
+		model.FormatDateTime(latestEpisodePubDate),
+	)
 	return nil
 }

@@ -1,6 +1,7 @@
 package sqlstore
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -71,6 +72,19 @@ func (s *SqlPlaybackStore) GetByUserByEpisodes(userId int64, episodeIds []int64)
 	return
 }
 
-func (s *SqlPlaybackStore) Update(old, new *model.Playback) *model.AppError {
+func (s *SqlPlaybackStore) Update(progress *model.PlaybackProgress) *model.AppError {
+	sql := fmt.Sprintf(
+		`UPDATE playback 
+			SET progress = %f, total_progress = total_progess + %f, updated_at = %d
+			WHERE user_id = %d AND episode_id = %d`,
+		progress.Progress, progress.ProgressDelta, model.Now(), progress.UserId, progress.EpisodeId,
+	)
+
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_playback_store.update", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"user_id": progress.UserId, "episode_id": progress.EpisodeId, "progress": progress.Progress},
+		)
+	}
 	return nil
 }

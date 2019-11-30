@@ -2,7 +2,7 @@ package job
 
 import (
 	"encoding/json"
-	"fmt"
+	"sort"
 	"time"
 
 	"github.com/streadway/amqp"
@@ -62,23 +62,32 @@ func (job *SyncEpisodePlaybackJob) Run() {
 }
 
 func (job *SyncEpisodePlaybackJob) Call(deliveries []amqp.Delivery) {
-	progress := map[int64]*model.EpisodePlayback{}
+	eventsByUserByEpisode := map[int64](map[int64][]*model.PlaybackEvent){}
 	for _, delivery := range deliveries {
-		var playback model.EpisodePlayback
-		if err := json.Unmarshal(delivery.Body, &playback); err != nil {
+		event := &model.PlaybackEvent{}
+		if err := json.Unmarshal(delivery.Body, event); err != nil {
 			continue
 		}
 
-		p := progress[playback.EpisodeId]
-		if p == nil || (p.PlayedBy == playback.PlayedBy && p.UpdatedAt < playback.UpdatedAt) {
-			progress[playback.EpisodeId] = &playback
+		if _, ok := eventsByUserByEpisode[event.UserId]; !ok {
+			eventsByUserByEpisode[event.UserId] = map[int64][]*model.PlaybackEvent{}
 		}
+		if _, ok := eventsByUserByEpisode[event.UserId][event.EpisodeId]; !ok {
+			eventsByUserByEpisode[event.UserId][event.EpisodeId] = []*model.PlaybackEvent{}
+		}
+		eventsByUserByEpisode[event.UserId][event.EpisodeId] = append(eventsByUserByEpisode[event.UserId][event.EpisodeId], event)
 	}
 
-	for _, playback := range progress {
-		err := job.Store.Episode().SetPlaybackCurrentTime(playback.EpisodeId, playback.PlayedBy, playback.CurrentTime)
-		if err != nil {
-			fmt.Println(err)
+	for _, x := range eventsByUserByEpisode {
+		for _, y := range x {
+			sort.Slice(y, func(i, j int) bool { return false })
+			progress := &model.PlaybackProgress{
+				UserId:        y[len(y)-1].UserId,
+				EpisodeId:     y[len(y)-1].EpisodeId,
+				Progress:      y[len(y)-1].Position,
+				ProgressDelta: y[len(y)-1].Position - y[0].Position,
+			}
+			job.Store.Playback().Update(progress)
 		}
 	}
 }

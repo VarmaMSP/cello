@@ -64,6 +64,24 @@ func (s *SqlEpisodeStore) GetByIds(episodeIds []int64) (res []*model.Episode, ap
 	return
 }
 
+func (s *SqlEpisodeStore) GetByPodcast(podcastId int64) (res []*model.Episode, appE *model.AppError) {
+	sql := "SELECT " + Cols(&model.Episode{}) + " FROM episode WHERE podcast_id = ?"
+
+	copyTo := func() []interface{} {
+		tmp := &model.Episode{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql, podcastId); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_episode_store.get_by_podcast", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"podcast_id": podcastId},
+		)
+	}
+	return
+}
+
 func (s *SqlEpisodeStore) GetByPodcastPaginated(podcastId int64, order string, offset, limit int) (res []*model.Episode, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Episode{}) + ` FROM episode
 		WHERE podcast_id = ?
@@ -137,6 +155,6 @@ func (s *SqlEpisodeStore) GetAllPublishedBefore(podcastIds []int64, offset, limi
 	return
 }
 
-func (s *SqlEpisodeStore) Block(episodeIds []int64) *model.AppError {
+func (s *SqlEpisodeStore) Block(episodeIds int64) *model.AppError {
 	return nil
 }

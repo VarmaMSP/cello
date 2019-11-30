@@ -45,7 +45,7 @@ func (s *ScrapeCategories) Call() {
 
 			podcasts := []*model.Podcast{}
 			for _, itunesId := range podcastItunesIds {
-				feed, err := s.Store.Feed().GetBySource("ITUNES_SCRAPER", itunesId)
+				feed, err := s.Store.Feed().GetBySourceId("ITUNES_SCRAPER", itunesId)
 				if err != nil {
 					continue
 				}

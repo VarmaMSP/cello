@@ -116,23 +116,67 @@ func (job *ImportPodcastJob) savePodcast(podcastId int64, rssFeed *rss.Feed) *mo
 		map[string]interface{}{"title": rssFeed.Title},
 	)
 
-	// Save podcast
-	podcast := &model.Podcast{Id: podcastId}
+	// Episodes
+	var episodes []*model.Episode
+	for _, item := range rssFeed.Items {
+		episode := &model.Episode{PodcastId: podcastId}
+		if err := episode.LoadDetails(item); err != nil {
+			continue
+		}
+		episodes = append(episodes, episode)
+		if err := job.Store.Episode().Save(episode); err != nil {
+			continue
+		}
+	}
+
+	// Podcast Categories
+	var podcastCategories []*model.PodcastCategory
+	if rssFeed.ITunesExt != nil {
+		for _, c := range rssFeed.ITunesExt.Categories {
+			if model.CategoryId(c.Text) != -1 {
+				podcastCategories = append(podcastCategories, &model.PodcastCategory{
+					PodcastId:  podcastId,
+					CategoryId: model.CategoryId(c.Text),
+				})
+			}
+			if c.Subcategory != nil && model.CategoryId(c.Subcategory.Text) != -1 {
+				podcastCategories = append(podcastCategories, &model.PodcastCategory{
+					PodcastId:  podcastId,
+					CategoryId: model.CategoryId(c.Subcategory.Text),
+				})
+			}
+		}
+	}
+
+	// Podcast
+	podcast := &model.Podcast{Id: podcastId, TotalEpisodes: len(episodes)}
 	if err := podcast.LoadDetails(rssFeed); err != nil {
 		return appErrorC(err.Error())
 	}
+
+	// Persist
 	if err := job.Store.Podcast().Save(podcast); err != nil {
 		return appErrorC(err.Error())
 	}
+	for _, episode := range episodes {
+		if err := job.Store.Episode().Save(episode); err != nil {
+			continue
+		}
+	}
+	for _, podcastCategory := range podcastCategories {
+		if err := job.Store.Category().SavePodcastCategory(podcastCategory); err != nil {
+			continue
+		}
+	}
 
-	// Offload creation of podcast thumbnail
+	// Create thumbnail
 	job.createThumbnailP.D <- map[string]interface{}{
 		"id":        podcast.Id,
 		"image_src": podcast.ImagePath,
 		"type":      "PODCAST",
 	}
 
-	// Index podcast
+	// Index Podcast
 	job.ElasticSearch.Index().
 		Index(elasticsearch.PodcastIndexName).
 		Id(model.HashIdFromInt64(podcast.Id)).
@@ -145,36 +189,6 @@ func (job *ImportPodcastJob) savePodcast(podcastId int64, rssFeed *rss.Feed) *mo
 			Complete:    podcast.Complete,
 		}).
 		Do(context.TODO())
-
-	// Save Episodes
-	for _, item := range rssFeed.Items {
-		episode := &model.Episode{PodcastId: podcast.Id}
-		if err := episode.LoadDetails(item); err != nil {
-			continue
-		}
-		if err := job.Store.Episode().Save(episode); err != nil {
-			continue
-		}
-	}
-
-	// Save Categories
-	var categoryIds []int64
-	if rssFeed.ITunesExt != nil {
-		for _, c := range rssFeed.ITunesExt.Categories {
-			if c.Subcategory != nil {
-				categoryIds = append(categoryIds, model.CategoryId(c.Subcategory.Text))
-			}
-			categoryIds = append(categoryIds, model.CategoryId(c.Text))
-		}
-	}
-	for _, categoryId := range categoryIds {
-		if categoryId != -1 {
-			category := &model.PodcastCategory{PodcastId: podcast.Id, CategoryId: categoryId}
-			if err := job.Store.Category().SavePodcastCategory(category); err != nil {
-				continue
-			}
-		}
-	}
 
 	return nil
 }

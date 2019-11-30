@@ -31,10 +31,10 @@ func (s *SchedulePodcastRefresh) Call() {
 	s.Log.Info().Msg("Schedule podcast refresh started")
 	go func() {
 		limit := 10000
-		createdAfter := int64(0)
+		lastId := int64(0)
 
 		for {
-			feeds, err := s.Store.Feed().GetAllToBeRefreshed(createdAfter, limit)
+			feeds, err := s.Store.Feed().GetForRefreshPaginated(lastId, limit)
 			if err != nil {
 				break
 			}
@@ -46,14 +46,13 @@ func (s *SchedulePodcastRefresh) Call() {
 				if err := s.Store.Feed().Update(feed, feedU); err != nil {
 					continue
 				}
-
 				s.refreshPodcastP.D <- feedU
 			}
 
 			if len(feeds) < limit {
 				break
 			}
-			createdAfter = feeds[len(feeds)-1].CreatedAt
+			lastId = feeds[len(feeds)-1].Id
 		}
 	}()
 }

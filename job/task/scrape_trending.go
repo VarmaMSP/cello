@@ -40,7 +40,7 @@ func (s *ScrapeTrending) Call() {
 			}
 
 			if ok, itunesId := isItunesPodcastPage(link); ok {
-				feed, err := s.Store.Feed().GetBySource("ITUNES_SCRAPER", itunesId)
+				feed, err := s.Store.Feed().GetBySourceId("ITUNES_SCRAPER", itunesId)
 				if err != nil {
 					continue
 				}
