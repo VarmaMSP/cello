@@ -17,6 +17,9 @@ start-services:
 	redis-server --daemonize yes
 	rabbitmq-server -d
 
+start-minio:
+	minio server ~/minio-data
+
 create-image-directories:
 	mkdir /var/www && mkdir /var/www/img
 
