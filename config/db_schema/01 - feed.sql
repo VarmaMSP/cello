@@ -63,7 +63,7 @@ CREATE TABLE `episode` (
     `created_at`                 BIGINT,
     `updated_at`                 BIGINT,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `category` (
@@ -80,7 +80,7 @@ CREATE TABLE `podcast_category` (
     PRIMARY KEY (`podcast_id`, `category_id`),
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON UPDATE CASCADE ON DELETE NO ACTION
-) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+);
 
 CREATE TABLE `task` (
     `id`                         INT,
@@ -95,7 +95,7 @@ CREATE TABLE `task` (
 );
 
 INSERT INTO `task` (`id`, `name`, `type_`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (1, 'scrape_trending', 'PERIODIC', 28800, 0, 1, 0, 0);
-INSERT INTO `task` (`id`, `name`, `type_`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (2, 'scrape_categories', 'PERIODIC', 1800, 0, 1, 0, 0);
+INSERT INTO `task` (`id`, `name`, `type_`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (2, 'scrape_categories', 'PERIODIC', 28800, 0, 1, 0, 0);
 INSERT INTO `task` (`id`, `name`, `type_`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (3, 'scrape_itunes_directory', 'PERIODIC', 86400, 0, 1, 0, 0);
 INSERT INTO `task` (`id`, `name`, `type_`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (4, 'schedule_podcast_refresh', 'PERIODIC', 86400, 0, 1, 0, 0);
 
