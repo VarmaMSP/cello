@@ -23,15 +23,12 @@ func GetEpisode(c *Context, w http.ResponseWriter) {
 		c.err = err
 		return
 	}
-	episode.Sanitize()
 
 	podcast, err := c.app.GetPodcast(episode.PodcastId)
 	if err != nil {
 		c.err = err
 		return
 	}
-	podcast.Sanitize()
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(model.EncodeToJson(map[string]interface{}{

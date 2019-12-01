@@ -54,7 +54,6 @@ func (s *ScrapeCategories) Call() {
 				if err != nil {
 					continue
 				}
-				podcast.Sanitize()
 				podcasts = append(podcasts, podcast)
 			}
 

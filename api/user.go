@@ -39,9 +39,6 @@ func Me(c *Context, w http.ResponseWriter) {
 		c.err = err
 		return
 	}
-	for _, subscription := range subscriptions {
-		subscription.SanitizeToMin()
-	}
 
 	res, _ := json.Marshal(map[string]interface{}{
 		"user":          user,

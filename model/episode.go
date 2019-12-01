@@ -227,16 +227,6 @@ func (e *Episode) PreSave() {
 	}
 }
 
-func (e *Episode) Sanitize() {
-	e.Guid = ""
-	e.MediaType = ""
-	e.MediaSize = 0
-	e.Link = ""
-	e.ImageLink = ""
-	e.CreatedAt = 0
-	e.UpdatedAt = 0
-}
-
 func GetEpisodeIds(episodes []*Episode) []int64 {
 	episodeIds := make([]int64, len(episodes))
 	for i, episode := range episodes {
