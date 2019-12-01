@@ -1,6 +1,7 @@
 package sqlstore
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/varmamsp/cello/model"
@@ -61,13 +62,16 @@ func (s *SqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, 
 	return
 }
 
-func (s *SqlPodcastStore) UpdateEpisodeStats(podcastId int64, totalEpisodes int, latestEpisodePubDate string) *model.AppError {
-	sql := "UPDATE podcast SET total_episodes = ?, latest_episode_pub_date = ?, updated_at = ? WHERE podcast_id = ?"
+func (s *SqlPodcastStore) UpdateEpisodeStats(stats *model.PodcastEpisodeStats) *model.AppError {
+	sql := fmt.Sprintf(
+		`UPDATE podcast SET total_episodes = %d, total_seasons = %d, latest_episode_pub_date = '%s', updated_at = %d WHERE podcast_id = %d`,
+		stats.TotalEpisodes, stats.TotalSeasons, stats.LastestEpisodePubDate, model.Now(), stats.Id,
+	)
 
-	if _, err := s.GetMaster().Exec(sql, totalEpisodes, latestEpisodePubDate, model.NowDateTime(), podcastId); err != nil {
+	if _, err := s.GetMaster().Exec(sql); err != nil {
 		return model.NewAppError(
 			"sqlstore.sql_curation_store.get_podcast_by_curation", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"podcast_id": podcastId},
+			map[string]interface{}{"podcast_id": stats.Id},
 		)
 	}
 	return nil

@@ -36,7 +36,7 @@ type PodcastStore interface {
 	Save(podcast *model.Podcast) *model.AppError
 	Get(podcastId int64) (*model.Podcast, *model.AppError)
 	GetSubscriptions(userId int64) ([]*model.Podcast, *model.AppError)
-	UpdateEpisodeStats(podcastId int64, totalEpisodes int, lastestEpisodePubDate string) *model.AppError
+	UpdateEpisodeStats(stats *model.PodcastEpisodeStats) *model.AppError
 }
 
 type SubscriptionStore interface {

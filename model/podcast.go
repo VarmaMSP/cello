@@ -14,23 +14,34 @@ const (
 
 // https://help.apple.com/itc/podcasts_connect/#/itcb54353390
 type Podcast struct {
-	Id            int64
-	Title         string
-	Description   string
-	ImagePath     string
-	Language      string
-	Explicit      int
-	Author        string
-	TotalEpisodes int
-	Type          string
-	Block         int
-	Complete      int
-	Link          string
-	OwnerName     string
-	OwnerEmail    string
-	Copyright     string
-	CreatedAt     int64
-	UpdatedAt     int64
+	Id                     int64
+	Title                  string
+	Description            string
+	ImagePath              string
+	Language               string
+	Explicit               int
+	Author                 string
+	Type                   string
+	Block                  int
+	Complete               int
+	Link                   string
+	OwnerName              string
+	OwnerEmail             string
+	Copyright              string
+	TotalEpisodes          int
+	TotalSeasons           int
+	LastestEpisodePubDate  string
+	EarliestEpisodePubDate string
+	CreatedAt              int64
+	UpdatedAt              int64
+}
+
+type PodcastEpisodeStats struct {
+	Id                     int64
+	TotalEpisodes          int
+	TotalSeasons           int
+	LastestEpisodePubDate  string
+	EarliestEpisodePubDate string
 }
 
 // Elasticsearch podcast index
@@ -51,34 +62,37 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 		Language      string `json:"language"`
 		Explicit      int    `json:"explicit"`
 		Author        string `json:"author"`
-		TotalEpisodes int    `json:"total_episodes"`
+		TotalEpisodes int    `json:"total_episodes,omitempty"`
+		TotalSeasons  int    `json:"total_seasons,omiempty"`
 		Type          string `json:"type"`
 		Block         int    `json:"block"`
 		Complete      int    `json:"complete"`
 	}{
-		Id:          HashIdFromInt64(p.Id),
-		Title:       p.Title,
-		Description: p.Description,
-		Language:    p.Language,
-		Explicit:    p.Explicit,
-		Author:      p.Author,
-		Type:        p.Type,
-		Block:       p.Block,
-		Complete:    p.Complete,
+		Id:            HashIdFromInt64(p.Id),
+		Title:         p.Title,
+		Description:   p.Description,
+		Language:      p.Language,
+		Explicit:      p.Explicit,
+		Author:        p.Author,
+		TotalEpisodes: p.TotalEpisodes,
+		TotalSeasons:  p.TotalSeasons,
+		Type:          p.Type,
+		Block:         p.Block,
+		Complete:      p.Complete,
 	})
 }
 
 func (p *Podcast) DbColumns() []string {
 	return []string{
 		"id", "title", "description", "image_path", "language", "explicit", "author", "type", "block", "complete",
-		"link", "owner_name", "owner_email", "copyright", "created_at", "updated_at",
+		"link", "owner_name", "owner_email", "copyright", "total_episodes", "total_seasons", "latest_episode_pub_date", "earliest_episode_pub_date", "created_at", "updated_at",
 	}
 }
 
 func (p *Podcast) FieldAddrs() []interface{} {
 	return []interface{}{
 		&p.Id, &p.Title, &p.Description, &p.ImagePath, &p.Language, &p.Explicit, &p.Author, &p.Type, &p.Block, &p.Complete,
-		&p.Link, &p.OwnerName, &p.OwnerEmail, &p.Copyright, &p.CreatedAt, &p.UpdatedAt,
+		&p.Link, &p.OwnerName, &p.OwnerEmail, &p.Copyright, &p.TotalEpisodes, &p.TotalSeasons, &p.LastestEpisodePubDate, &p.EarliestEpisodePubDate, &p.CreatedAt, &p.UpdatedAt,
 	}
 }
 
@@ -205,26 +219,6 @@ func (p *Podcast) PreSave() {
 	if p.UpdatedAt == 0 {
 		p.UpdatedAt = Now()
 	}
-}
-
-func (p *Podcast) Sanitize() {
-	p.ImagePath = ""
-	p.OwnerName = ""
-	p.OwnerEmail = ""
-	p.CreatedAt = 0
-	p.UpdatedAt = 0
-}
-
-func (p *Podcast) SanitizeToMin() {
-	p.Sanitize()
-	p.Author = ""
-	p.Description = ""
-	p.Language = ""
-	p.Explicit = 0
-	p.Type = ""
-	p.Complete = 0
-	p.Link = ""
-	p.Copyright = ""
 }
 
 func GetPodcastIds(podcasts []*Podcast) []int64 {

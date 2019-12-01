@@ -141,7 +141,6 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId int64, rssFeed *rss.Feed)
 
 	// new episodes
 	newEpisodesCount := 0
-	latestEpisodePubDate := model.ParseDateTime(episodes[0].PubDate)
 	for rssItemGuid, rssItem := range rssItemMap {
 		if _, ok := episodeMap[rssItemGuid]; !ok {
 			episode := &model.Episode{PodcastId: podcastId}
@@ -151,18 +150,18 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId int64, rssFeed *rss.Feed)
 			if err := job.Store.Episode().Save(episode); err != nil {
 				continue
 			}
-			if t := model.ParseDateTime(episode.PubDate); t != nil && latestEpisodePubDate.Before(*t) {
-				latestEpisodePubDate = t
-			}
 			newEpisodesCount += 1
-
 		}
 	}
 
-	job.Store.Podcast().UpdateEpisodeStats(
-		podcastId,
-		len(episodes)+newEpisodesCount-blockedEpisodesCount,
-		model.FormatDateTime(latestEpisodePubDate),
-	)
+	latestEpisode := &model.Episode{}
+	latestEpisode.LoadDetails(rssFeed.Items[0])
+
+	job.Store.Podcast().UpdateEpisodeStats(&model.PodcastEpisodeStats{
+		Id:                    podcastId,
+		TotalEpisodes:         len(episodes) + newEpisodesCount - blockedEpisodesCount,
+		TotalSeasons:          latestEpisode.Season,
+		LastestEpisodePubDate: latestEpisode.PubDate,
+	})
 	return nil
 }
