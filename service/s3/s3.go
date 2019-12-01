@@ -7,8 +7,8 @@ import (
 
 const (
 	BUCKET_NAME_THUMBNAILS       = "thumbanil"
-	BUCKET_NAME_PHENOPOD_CHARTS  = "phenopod_charts"
-	BUCKET_NAME_CHARTABLE_CHARTS = "chartable_chart"
+	BUCKET_NAME_PHENOPOD_CHARTS  = "phenopod-charts"
+	BUCKET_NAME_CHARTABLE_CHARTS = "chartable-charts"
 )
 
 func NewS3Client(config *model.Config) (*minio.Client, error) {
