@@ -18,20 +18,18 @@ import (
 )
 
 const (
-	THUMBNAIL_SIZE     = 300
-	IMAGE_STORAGE_PATH = "/var/www/img"
+	THUMBNAIL_SIZE = 300
 )
 
 type CreateThumbnailJob struct {
 	*app.App
 	input       <-chan amqp.Delivery
-	storagePath string
 	httpClient  *http.Client
 	rateLimiter chan struct{}
 }
 
 type CreateThumbnailJobInput struct {
-	Id         string `json:"id"`
+	Id         int64  `json:"id"`
 	Type       string `json:"type"`
 	ImageSrc   string `json:"image_src"`
 	ImageTitle string `json:"image_title"`
@@ -52,9 +50,8 @@ func NewCreateThumbnailJob(app *app.App, config *model.Config) (model.Job, error
 	}
 
 	return &CreateThumbnailJob{
-		App:         app,
-		input:       createThumbnailC.D,
-		storagePath: IMAGE_STORAGE_PATH,
+		App:   app,
+		input: createThumbnailC.D,
 		httpClient: &http.Client{
 			Timeout: 1200 * time.Second,
 			Transport: &http.Transport{
@@ -73,14 +70,14 @@ func (job *CreateThumbnailJob) Run() {
 }
 
 func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
-	var input CreateThumbnailJobInput
-	if err := json.Unmarshal(delivery.Body, &input); err != nil {
+	input := &CreateThumbnailJobInput{}
+	if err := json.Unmarshal(delivery.Body, input); err != nil {
+		job.Log.Error().Msg(err.Error())
 		delivery.Ack(false)
 		return
 	}
 
 	job.rateLimiter <- struct{}{}
-
 	go func() {
 		defer func() { <-job.rateLimiter }()
 
@@ -114,7 +111,7 @@ func (job *CreateThumbnailJob) resizePodcastImage(imgTitle string, img image.Ima
 	file := bytes.NewReader(thumbnail.Bytes())
 	size := int64(thumbnail.Len())
 	putOpts := minio.PutObjectOptions{ContentType: "image/jpeg"}
-	if _, err := job.S3.PutObject(s3.BUCKET_NAME_THUMBNAILS, imgTitle+".json", file, size, putOpts); err != nil {
+	if _, err := job.S3.PutObject(s3.BUCKET_NAME_THUMBNAILS, imgTitle+".jpeg", file, size, putOpts); err != nil {
 		return err
 	}
 	return nil
