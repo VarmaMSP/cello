@@ -149,17 +149,15 @@ func (job *ImportPodcastJob) savePodcast(podcastId int64, rssFeed *rss.Feed) *mo
 	}
 
 	// Podcast
-	podcast := &model.Podcast{
-		Id:                     podcastId,
-		TotalEpisodes:          len(episodes),
-		LastestEpisodePubDate:  episodes[0].PubDate,
-		EarliestEpisodePubDate: episodes[len(episodes)-1].PubDate,
+	podcast := &model.Podcast{Id: podcastId}
+	if l := len(episodes); l > 0 {
+		podcast.TotalSeasons = episodes[0].Season
+		podcast.TotalEpisodes = l
+		podcast.LastestEpisodePubDate = episodes[0].PubDate
+		podcast.EarliestEpisodePubDate = episodes[l-1].PubDate
 	}
 	if err := podcast.LoadDetails(rssFeed); err != nil {
 		return appErrorC(err.Error())
-	}
-	if podcast.Type == "SERIAL" {
-		podcast.TotalSeasons = episodes[0].Season
 	}
 
 	// Persist
