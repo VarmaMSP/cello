@@ -1,12 +1,14 @@
 package task
 
 import (
+	"bytes"
 	"encoding/json"
-	"io/ioutil"
 	"time"
 
+	"github.com/minio/minio-go/v6"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/s3"
 )
 
 const (
@@ -57,8 +59,14 @@ func (s *ScrapeTrending) Call() {
 			return
 		}
 
-		file, _ := json.MarshalIndent(podcasts, "", " ")
-		if err := ioutil.WriteFile("/var/www/static/trending.json", file, 0644); err != nil {
+		file, err := json.MarshalIndent(map[string][]*model.Podcast{"podcasts": podcasts}, "", " ")
+		if err != nil {
+			s.Log.Error().Msg(err.Error())
+		}
+
+		if _, err := s.S3.PutObject(s3.BUCKET_NAME_CHARTABLE_CHARTS, "trending.json", bytes.NewReader(file), -1, minio.PutObjectOptions{
+			ContentType: "application/json",
+		}); err != nil {
 			s.Log.Error().Msg(err.Error())
 		}
 	}()

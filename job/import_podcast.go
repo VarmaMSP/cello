@@ -169,19 +169,22 @@ func (job *ImportPodcastJob) savePodcast(podcastId int64, rssFeed *rss.Feed) *mo
 		}
 	}
 
+	podcastHashId := model.HashIdFromInt64(podcast.Id)
+
 	// Create thumbnail
 	job.createThumbnailP.D <- map[string]interface{}{
-		"id":        podcast.Id,
-		"image_src": podcast.ImagePath,
-		"type":      "PODCAST",
+		"id":          podcast.Id,
+		"type":        "PODCAST",
+		"image_src":   podcast.ImagePath,
+		"image_title": podcastHashId,
 	}
 
 	// Index Podcast
 	job.ElasticSearch.Index().
 		Index(elasticsearch.PodcastIndexName).
-		Id(model.HashIdFromInt64(podcast.Id)).
+		Id(podcastHashId).
 		BodyJson(&model.PodcastIndex{
-			Id:          model.HashIdFromInt64(podcast.Id),
+			Id:          podcastHashId,
 			Title:       podcast.Title,
 			Author:      podcast.Author,
 			Description: podcast.Description,
