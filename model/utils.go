@@ -219,7 +219,10 @@ func MinInt(x, y int) int {
 	return y
 }
 
-var hashid, _ = hashids.New()
+var hashid, _ = hashids.NewWithData(&hashids.HashIDData{
+	Alphabet:  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+	MinLength: 6,
+})
 
 func HashIdFromInt64(i int64) string {
 	hid, _ := hashid.EncodeInt64(([]int64{i}))
