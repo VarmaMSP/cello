@@ -82,10 +82,10 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 		defer func() { <-job.rateLimiter }()
 
 		img, err := fetchImage(input.ImageSrc, job.httpClient)
-		if err != nil {
+		if err == nil {
 			job.Log.Error().Msg(err.Error())
 			if delivery.Redelivered {
-				delivery.Ack(false)
+				delivery.Nack(false, false)
 			} else {
 				delivery.Nack(false, true)
 			}
@@ -96,6 +96,12 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 			err := job.resizePodcastImage(input.ImageTitle, img)
 			if err != nil {
 				job.Log.Error().Msg(err.Error())
+				if delivery.Redelivered {
+					delivery.Nack(false, false)
+				} else {
+					delivery.Nack(false, true)
+				}
+				return
 			}
 		}
 		delivery.Ack(false)
