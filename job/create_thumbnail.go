@@ -3,6 +3,7 @@ package job
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"image"
 	"image/jpeg"
 	"net/http"
@@ -72,7 +73,7 @@ func (job *CreateThumbnailJob) Run() {
 func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 	input := &CreateThumbnailJobInput{}
 	if err := json.Unmarshal(delivery.Body, input); err != nil {
-		job.Log.Error().Msg(err.Error())
+		job.Log.Error().Str("url", input.ImageSrc).Msg(err.Error())
 		delivery.Ack(false)
 		return
 	}
@@ -83,7 +84,7 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 
 		img, err := fetchImage(input.ImageSrc, job.httpClient)
 		if err != nil {
-			job.Log.Error().Msg(err.Error())
+			job.Log.Error().Str("url", input.ImageSrc).Msg(err.Error())
 			if delivery.Redelivered {
 				delivery.Nack(false, false)
 			} else {
@@ -95,7 +96,7 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 		if input.Type == "PODCAST" {
 			err := job.resizePodcastImage(input.ImageTitle, img)
 			if err != nil {
-				job.Log.Error().Msg(err.Error())
+				job.Log.Error().Str("url", input.ImageSrc).Msg(err.Error())
 				if delivery.Redelivered {
 					delivery.Nack(false, false)
 				} else {
@@ -114,10 +115,9 @@ func (job *CreateThumbnailJob) resizePodcastImage(imgTitle string, img image.Ima
 		return err
 	}
 
-	file := bytes.NewReader(thumbnail.Bytes())
-	size := int64(thumbnail.Len())
 	putOpts := minio.PutObjectOptions{ContentType: "image/jpeg"}
-	if _, err := job.S3.PutObject(s3.BUCKET_NAME_THUMBNAILS, imgTitle+".jpeg", file, size, putOpts); err != nil {
+	file, fileName, fileSize := bytes.NewReader(thumbnail.Bytes()), fmt.Sprintf("%s.jpeg", imgTitle), int64(thumbnail.Len())
+	if _, err := job.S3.PutObject(s3.BUCKET_NAME_THUMBNAILS, fileName, file, fileSize, putOpts); err != nil {
 		return err
 	}
 	return nil
