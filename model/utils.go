@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/mail"
 	"net/url"
@@ -224,11 +225,13 @@ var hashid, _ = hashids.NewWithData(&hashids.HashIDData{
 	MinLength: 6,
 })
 
+// HashIdFromInt64 Encodes hashId
 func HashIdFromInt64(i int64) string {
 	hid, _ := hashid.EncodeInt64(([]int64{i}))
 	return hid
 }
 
+// Int64FromHashId Decodes hashId
 func Int64FromHashId(h string) (int64, error) {
 	res, err := hashid.DecodeInt64WithError(h)
 	if err != nil {
@@ -238,4 +241,27 @@ func Int64FromHashId(h string) (int64, error) {
 		return 0, errors.New("Hashid invalid")
 	}
 	return res[0], nil
+}
+
+var regexpNonAlphaNumeric = regexp.MustCompile(`[^a-zA-ZÀ-ÖØ-öø-ÿ0-9 ]*`)
+
+// Get Url param (title-hashId)
+func UrlParamFromId(title string, id int64) string {
+	x := strings.Split(
+		regexpNonAlphaNumeric.ReplaceAllString(title, ""),
+		" ",
+	)
+	return fmt.Sprintf(
+		"%s-%s",
+		strings.Join(x[:MinInt(10, len(x))], "-"), HashIdFromInt64(id),
+	)
+}
+
+// Get Id from Url param (title-hashId)
+func IdFromUrlParam(urlParam string) (int64, error) {
+	x := strings.Split(urlParam, "-")
+	if len(x) < 2 {
+		return 0, errors.New("Invalid urlParam")
+	}
+	return Int64FromHashId(x[len(x)-1])
 }

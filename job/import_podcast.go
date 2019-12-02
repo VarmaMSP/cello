@@ -191,7 +191,7 @@ func (job *ImportPodcastJob) savePodcast(podcastId int64, rssFeed *rss.Feed) *mo
 		Id(podcastHashId).
 		BodyJson(&model.PodcastIndex{
 			Id:          podcastHashId,
-			Title:       podcast.Title,
+			Title:       model.UrlParamFromId(podcast.Title, podcast.Id),
 			Author:      podcast.Author,
 			Description: podcast.Description,
 			Type:        podcast.Type,

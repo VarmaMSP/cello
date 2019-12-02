@@ -82,7 +82,7 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 		defer func() { <-job.rateLimiter }()
 
 		img, err := fetchImage(input.ImageSrc, job.httpClient)
-		if err == nil {
+		if err != nil {
 			job.Log.Error().Msg(err.Error())
 			if delivery.Redelivered {
 				delivery.Nack(false, false)
