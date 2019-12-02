@@ -13,8 +13,8 @@ type SchedulePodcastRefresh struct {
 
 func NewSchedulePodcastRefresh(app *app.App, config *model.Config) (*SchedulePodcastRefresh, error) {
 	refreshPodcastP, err := rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
-		ExchangeName: rabbitmq.DefaultExchange,
-		QueueName:    model.QUEUE_NAME_REFRESH_PODCAST,
+		ExchangeName: rabbitmq.EXCHANGE_NAME_PHENOPOD_DIRECT,
+		RoutingKey:   rabbitmq.ROUTING_KEY_REFRESH_PODCAST,
 		DeliveryMode: config.Queues.RefreshPodcast.DeliveryMode,
 	})
 	if err != nil {

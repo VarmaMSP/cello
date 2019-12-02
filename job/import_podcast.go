@@ -28,7 +28,7 @@ func NewImportPodcastJob(app *app.App, config *model.Config) (model.Job, error) 
 	workerLimit := config.Jobs.ImportPodcast.WorkerLimit
 
 	importPodcastC, err := rabbitmq.NewConsumer(app.RabbitmqConsumerConn, &rabbitmq.ConsumerOpts{
-		QueueName:     model.QUEUE_NAME_IMPORT_PODCAST,
+		QueueName:     rabbitmq.QUEUE_NAME_IMPORT_PODCAST,
 		ConsumerName:  config.Queues.ImportPodcast.ConsumerName,
 		AutoAck:       config.Queues.ImportPodcast.ConsumerAutoAck,
 		Exclusive:     config.Queues.ImportPodcast.ConsumerExclusive,
@@ -39,8 +39,8 @@ func NewImportPodcastJob(app *app.App, config *model.Config) (model.Job, error) 
 	}
 
 	createThumbnailP, err := rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
-		ExchangeName: rabbitmq.DefaultExchange,
-		QueueName:    model.QUEUE_NAME_CREATE_THUMBNAIL,
+		ExchangeName: rabbitmq.EXCHANGE_NAME_PHENOPOD_DIRECT,
+		RoutingKey:   rabbitmq.ROUTING_KEY_CREATE_THUMBNAIL,
 		DeliveryMode: config.Queues.CreateThumbnail.DeliveryMode,
 	})
 	if err != nil {

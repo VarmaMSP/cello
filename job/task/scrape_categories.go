@@ -25,7 +25,7 @@ var chartableSeedUrls = []string{
 	"https://chartable.com/charts/itunes/au",
 	"https://chartable.com/charts/itunes/in",
 }
- 
+
 type ScrapeCategories struct {
 	*app.App
 }

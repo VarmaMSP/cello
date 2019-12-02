@@ -39,7 +39,7 @@ func NewCreateThumbnailJob(app *app.App, config *model.Config) (model.Job, error
 	workerLimit := config.Jobs.CreateThumbnail.WorkerLimit
 
 	createThumbnailC, err := rabbitmq.NewConsumer(app.RabbitmqConsumerConn, &rabbitmq.ConsumerOpts{
-		QueueName:     model.QUEUE_NAME_CREATE_THUMBNAIL,
+		QueueName:     rabbitmq.QUEUE_NAME_CREATE_THUMBNAIL,
 		ConsumerName:  config.Queues.CreateThumbnail.ConsumerName,
 		AutoAck:       config.Queues.CreateThumbnail.ConsumerAutoAck,
 		Exclusive:     config.Queues.CreateThumbnail.ConsumerExclusive,

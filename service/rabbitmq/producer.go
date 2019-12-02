@@ -14,7 +14,7 @@ type Producer struct {
 
 type ProducerOpts struct {
 	ExchangeName string
-	QueueName    string
+	RoutingKey   string
 	DeliveryMode uint8
 }
 
@@ -40,7 +40,7 @@ func (p *Producer) pollAndPublish(opts *ProducerOpts) error {
 
 		err = p.channel.Publish(
 			opts.ExchangeName, // exchange
-			opts.QueueName,    // exchange key
+			opts.RoutingKey,   // Routing key
 			false,             // immediate
 			false,             // publishing
 			amqp.Publishing{

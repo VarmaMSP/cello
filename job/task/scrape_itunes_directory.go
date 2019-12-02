@@ -43,8 +43,8 @@ type ScrapeItunesDirectory struct {
 
 func NewScrapeItunesDirectory(app *app.App, config *model.Config) (*ScrapeItunesDirectory, error) {
 	importPodcastP, err := rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
-		ExchangeName: rabbitmq.DefaultExchange,
-		QueueName:    model.QUEUE_NAME_IMPORT_PODCAST,
+		ExchangeName: rabbitmq.EXCHANGE_NAME_PHENOPOD_DIRECT,
+		RoutingKey:   rabbitmq.ROUTING_KEY_IMPORT_PODCAST,
 		DeliveryMode: config.Queues.ImportPodcast.DeliveryMode,
 	})
 	if err != nil {

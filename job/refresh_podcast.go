@@ -25,7 +25,7 @@ func NewRefreshPodcastJob(app *app.App, config *model.Config) (model.Job, error)
 	workerLimit := config.Jobs.RefreshPodcast.WorkerLimit
 
 	refreshPodcastC, err := rabbitmq.NewConsumer(app.RabbitmqConsumerConn, &rabbitmq.ConsumerOpts{
-		QueueName:     model.QUEUE_NAME_REFRESH_PODCAST,
+		QueueName:     rabbitmq.QUEUE_NAME_REFRESH_PODCAST,
 		ConsumerName:  config.Queues.RefreshPodcast.ConsumerName,
 		AutoAck:       config.Queues.RefreshPodcast.ConsumerAutoAck,
 		Exclusive:     config.Queues.RefreshPodcast.ConsumerExclusive,

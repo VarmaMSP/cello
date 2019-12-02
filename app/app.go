@@ -106,8 +106,8 @@ func NewApp(config model.Config) (*App, error) {
 	app.TwitterOAuthConfig = NewTwitterOAuthConfig(&config)
 
 	app.SyncEpisodePlaybackP, err = rabbitmq.NewProducer(app.RabbitmqProducerConn, &rabbitmq.ProducerOpts{
-		ExchangeName: rabbitmq.DefaultExchange,
-		QueueName:    model.QUEUE_NAME_SYNC_PLAYBACK,
+		ExchangeName: rabbitmq.EXCHANGE_NAME_PHENOPOD_DIRECT,
+		RoutingKey:   rabbitmq.ROUTING_KEY_SYNC_PLAYBACK,
 		DeliveryMode: config.Queues.SyncPlayback.DeliveryMode,
 	})
 	if err != nil {

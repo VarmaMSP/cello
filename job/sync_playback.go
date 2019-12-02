@@ -19,7 +19,7 @@ type SyncPlaybackJob struct {
 
 func NewSyncPlaybackJob(app *app.App, config *model.Config) (model.Job, error) {
 	syncPlaybackC, err := rabbitmq.NewConsumer(app.RabbitmqConsumerConn, &rabbitmq.ConsumerOpts{
-		QueueName:     model.QUEUE_NAME_SYNC_PLAYBACK,
+		QueueName:     rabbitmq.QUEUE_NAME_SYNC_PLAYBACK,
 		ConsumerName:  config.Queues.SyncPlayback.ConsumerName,
 		AutoAck:       config.Queues.SyncPlayback.ConsumerAutoAck,
 		Exclusive:     config.Queues.SyncPlayback.ConsumerExclusive,
