@@ -1,7 +1,6 @@
 package task
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -104,7 +103,7 @@ func (s *ScrapeItunesDirectory) pollAndFetchPages() {
 			req, _ := http.NewRequest("GET", url, nil)
 			resp, err := s.httpClient.Do(req)
 			if err != nil {
-				fmt.Printf("GET %s: %s\n\n", url, err.Error())
+				s.Log.Error().Str("from", "scrape_itunes_directory").Str("url", url).Msg(err.Error())
 				return
 			}
 

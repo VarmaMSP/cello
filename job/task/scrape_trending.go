@@ -27,9 +27,10 @@ func (s *ScrapeTrending) Call() {
 	s.Log.Info().Msg("Scrape Itunes charts started")
 
 	go func() {
-		doc, err := fetchAndParseHtml(ITUNES_CHART_URL+"/"+time.Now().AddDate(0, 0, -1).Format("2006/01/02"), false)
+		url := ITUNES_CHART_URL + "/" + time.Now().AddDate(0, 0, -1).Format("2006/01/02")
+		doc, err := fetchAndParseHtml(url, false)
 		if err != nil {
-			s.Log.Error().Msg(err.Error())
+			s.Log.Error().Str("from", "scrape_trending").Str("url", url).Msg(err.Error())
 			return
 		}
 
@@ -60,13 +61,17 @@ func (s *ScrapeTrending) Call() {
 
 		file, err := json.MarshalIndent(map[string][]*model.Podcast{"podcasts": podcasts}, "", " ")
 		if err != nil {
-			s.Log.Error().Msg(err.Error())
+			s.Log.Error().Str("from", "scrape_trending").Msg(err.Error())
 		}
 
-		if _, err := s.S3.PutObject(s3.BUCKET_NAME_CHARTABLE_CHARTS, "trending.json", bytes.NewReader(file), -1, minio.PutObjectOptions{
-			ContentType: "application/json",
-		}); err != nil {
-			s.Log.Error().Msg(err.Error())
+		if _, err := s.S3.PutObject(
+			s3.BUCKET_NAME_CHARTABLE_CHARTS,
+			"trending.json",
+			bytes.NewReader(file),
+			int64(len(file)),
+			minio.PutObjectOptions{ContentType: "application/json"},
+		); err != nil {
+			s.Log.Error().Str("from", "scrape_trending").Msg(err.Error())
 		}
 	}()
 }

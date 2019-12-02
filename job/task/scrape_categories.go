@@ -59,13 +59,17 @@ func (s *ScrapeCategories) Call() {
 
 			file, err := json.MarshalIndent(map[string][]*model.Podcast{"podcasts": podcasts}, "", " ")
 			if err != nil {
-				s.Log.Error().Msg(err.Error())
+				s.Log.Error().Str("from", "scrape_categories").Msg(err.Error())
 			}
 
-			if _, err := s.S3.PutObject(s3.BUCKET_NAME_CHARTABLE_CHARTS, category+".json", bytes.NewReader(file), -1, minio.PutObjectOptions{
-				ContentType: "application/json",
-			}); err != nil {
-				s.Log.Error().Msg(err.Error())
+			if _, err := s.S3.PutObject(
+				s3.BUCKET_NAME_CHARTABLE_CHARTS,
+				fmt.Sprintf("%s.json", category),
+				bytes.NewReader(file),
+				int64(len(file)),
+				minio.PutObjectOptions{ContentType: "application/json"},
+			); err != nil {
+				s.Log.Error().Str("from", "scrape_categories").Msg(err.Error())
 			}
 		}
 	}()
@@ -77,7 +81,7 @@ func (s *ScrapeCategories) GetCategoryLinks(seedUrls []string) map[string][]stri
 	for _, seedUrl := range seedUrls {
 		doc, err := fetchAndParseHtml(seedUrl, true)
 		if err != nil {
-			s.Log.Error().Msg(err.Error())
+			s.Log.Error().Str("from", "scrape_categories").Msg(err.Error())
 			return nil
 		}
 

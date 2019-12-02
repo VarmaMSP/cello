@@ -115,9 +115,13 @@ func (job *CreateThumbnailJob) resizePodcastImage(imgTitle string, img image.Ima
 		return err
 	}
 
-	putOpts := minio.PutObjectOptions{ContentType: "image/jpeg"}
-	file, fileName, fileSize := bytes.NewReader(thumbnail.Bytes()), fmt.Sprintf("%s.jpeg", imgTitle), int64(thumbnail.Len())
-	if _, err := job.S3.PutObject(s3.BUCKET_NAME_THUMBNAILS, fileName, file, fileSize, putOpts); err != nil {
+	if _, err := job.S3.PutObject(
+		s3.BUCKET_NAME_THUMBNAILS,
+		fmt.Sprintf("%s.jpeg", imgTitle),
+		bytes.NewReader(thumbnail.Bytes()),
+		int64(thumbnail.Len()),
+		minio.PutObjectOptions{ContentType: "image/jpeg"},
+	); err != nil {
 		return err
 	}
 	return nil
