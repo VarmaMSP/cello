@@ -10,7 +10,6 @@ CREATE TABLE `feed` (
     `last_refresh_at`            BIGINT,
     `next_refresh_at`            BIGINT,
     `last_refresh_comment`       VARCHAR(500),
-    `create_thumbnail_comment`   VARCHAR(500),
     `created_at`                 BIGINT,
     `updated_at`                 BIGINT,
     PRIMARY KEY (`id`),
@@ -85,7 +84,7 @@ CREATE TABLE `podcast_category` (
 CREATE TABLE `task` (
     `id`                         INT,
     `name`                       VARCHAR(30),
-    `type_`                      ENUM('PERIODIC', 'IMMEDIATE', 'ONEOFF'),
+    `type`                       ENUM('PERIODIC', 'IMMEDIATE', 'ONEOFF'),
     `interval_`                  INT,
     `next_run_at`                BIGINT,
     `active`                     TINYINT,
@@ -94,10 +93,10 @@ CREATE TABLE `task` (
     PRIMARY KEY (`id`)
 );
 
-INSERT INTO `task` (`id`, `name`, `type_`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (1, 'scrape_trending', 'PERIODIC', 28800, 0, 1, 0, 0);
-INSERT INTO `task` (`id`, `name`, `type_`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (2, 'scrape_categories', 'PERIODIC', 28800, 0, 1, 0, 0);
-INSERT INTO `task` (`id`, `name`, `type_`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (3, 'scrape_itunes_directory', 'PERIODIC', 86400, 0, 1, 0, 0);
-INSERT INTO `task` (`id`, `name`, `type_`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (4, 'schedule_podcast_refresh', 'PERIODIC', 86400, 0, 1, 0, 0);
+INSERT INTO `task` (`id`, `name`, `type`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (1, 'scrape_trending', 'PERIODIC', 28800, 0, 0, 0, 0);
+INSERT INTO `task` (`id`, `name`, `type`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (2, 'scrape_categories', 'PERIODIC', 28800, 0, 0, 0, 0);
+INSERT INTO `task` (`id`, `name`, `type`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (3, 'scrape_itunes_directory', 'PERIODIC', 86400, 0, 1, 0, 0);
+INSERT INTO `task` (`id`, `name`, `type`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (4, 'schedule_podcast_refresh', 'PERIODIC', 86400, 0, 0, 0, 0);
 
 INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
 INSERT INTO `category` (`id`, `name`) VALUES (2, 'Business');
