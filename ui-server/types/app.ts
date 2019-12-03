@@ -51,6 +51,6 @@ export interface User {
 export interface Playlist {
   id: string
   title: string
-  createdBy: string
+  userId: string
   privacy: 'PUBLIC' | 'PRIVATE' | 'ANONYMOUS'
 }

@@ -40,7 +40,7 @@ export function episode(j: any): Episode {
   }
 }
 
-export function Playback(j: any): Playback {
+export function playback(j: any): Playback {
   return {
     episodeId: j.episode_id,
     progress: j.progress,
@@ -48,11 +48,11 @@ export function Playback(j: any): Playback {
   }
 }
 
-export function unmarshalPlaylist(j: any): Playlist {
+export function playlist(j: any): Playlist {
   return {
     id: j.id,
     title: j.title,
     privacy: j.privacy,
-    createdBy: j.created_by,
+    userId: j.user_id,
   }
 }
