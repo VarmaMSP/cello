@@ -178,11 +178,11 @@ func (job *ImportPodcastJob) savePodcast(podcastId int64, rssFeed *rss.Feed) *mo
 	podcastHashId := model.HashIdFromInt64(podcast.Id)
 
 	// Create thumbnail
-	job.createThumbnailP.D <- map[string]interface{}{
-		"id":          podcast.Id,
-		"type":        "PODCAST",
-		"image_src":   podcast.ImagePath,
-		"image_title": podcastHashId,
+	job.createThumbnailP.D <- CreateThumbnailJobInput{
+		Id:         podcast.Id,
+		Type:       "PODCAST",
+		ImageSrc:   podcast.ImagePath,
+		ImageTitle: model.UrlParamFromId(podcast.Title, podcast.Id),
 	}
 
 	// Index Podcast
@@ -191,7 +191,7 @@ func (job *ImportPodcastJob) savePodcast(podcastId int64, rssFeed *rss.Feed) *mo
 		Id(podcastHashId).
 		BodyJson(&model.PodcastIndex{
 			Id:          podcastHashId,
-			Title:       model.UrlParamFromId(podcast.Title, podcast.Id),
+			Title:       podcast.Title,
 			Author:      podcast.Author,
 			Description: podcast.Description,
 			Type:        podcast.Type,
