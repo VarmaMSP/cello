@@ -9,7 +9,9 @@ import (
 )
 
 const (
-	PODCAST_TITLE_MAX_LENGTH = 500
+	PODCAST_TITLE_MAX_LENGTH     = 500
+	PODCAST_COPYRIGHT_MAX_LENGTH = 500
+	PODCAST_DESCRIPTION_MAX_SIZE = 65535
 )
 
 // https://help.apple.com/itc/podcasts_connect/#/itcb54353390
@@ -65,7 +67,6 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 		TotalEpisodes int    `json:"total_episodes,omitempty"`
 		TotalSeasons  int    `json:"total_seasons,omiempty"`
 		Type          string `json:"type"`
-		Block         int    `json:"block"`
 		Complete      int    `json:"complete"`
 	}{
 		Id:            HashIdFromInt64(p.Id),
@@ -77,7 +78,6 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 		TotalEpisodes: p.TotalEpisodes,
 		TotalSeasons:  p.TotalSeasons,
 		Type:          p.Type,
-		Block:         p.Block,
 		Complete:      p.Complete,
 	})
 }
@@ -196,8 +196,8 @@ func (p *Podcast) PreSave() {
 		p.Title = string(title[0:PODCAST_TITLE_MAX_LENGTH-10]) + "..."
 	}
 
-	if p.Description = strip.StripTags(p.Description); len(p.Description) > MYSQL_BLOB_MAX_SIZE {
-		p.Description = p.Description[0:MYSQL_BLOB_MAX_SIZE]
+	if p.Description = strip.StripTags(p.Description); len(p.Description) > PODCAST_DESCRIPTION_MAX_SIZE {
+		p.Description = p.Description[0:PODCAST_DESCRIPTION_MAX_SIZE-50] + "..."
 	}
 
 	if !IsValidHttpUrl(p.ImagePath) {
@@ -210,6 +210,10 @@ func (p *Podcast) PreSave() {
 
 	if !IsValidEmail(p.OwnerEmail) {
 		p.OwnerEmail = ""
+	}
+
+	if copyright := []rune(p.Copyright); len(copyright) > PODCAST_COPYRIGHT_MAX_LENGTH {
+		p.Copyright = string(copyright[0:PODCAST_COPYRIGHT_MAX_LENGTH-10]) + "..."
 	}
 
 	if p.CreatedAt == 0 {

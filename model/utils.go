@@ -18,15 +18,7 @@ import (
 )
 
 const (
-	StatusSuccess = "SUCCESS"
-	StatusFailure = "FAILURE"
-	StatusPending = "PENDING"
-
-	StateActive   = "ACTIVE"
-	StateInactive = "INACTIVE"
-
-	MYSQL_DATETIME      = "2006-01-02 15:04:05"
-	MYSQL_BLOB_MAX_SIZE = 65535
+	MYSQL_DATETIME = "2006-01-02 15:04:05"
 
 	secondsInHour  = 60 * 60
 	secondsInDay   = 60 * 60 * 24

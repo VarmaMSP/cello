@@ -11,6 +11,7 @@ import (
 const (
 	EPISODE_TITLE_MAX_LENGTH     = 500
 	EPISODE_MEDIA_URL_MAX_LENGTH = 700
+	EPISODE_DESCRIPTION_MAX_SIZE = 65535
 )
 
 type Episode struct {
@@ -206,8 +207,8 @@ func (e *Episode) PreSave() {
 		e.MediaType = ""
 	}
 
-	if len(e.Description) > MYSQL_BLOB_MAX_SIZE {
-		e.Description = e.Description[0:MYSQL_BLOB_MAX_SIZE]
+	if len(e.Description) > EPISODE_DESCRIPTION_MAX_SIZE {
+		e.Description = e.Description[0:EPISODE_DESCRIPTION_MAX_SIZE-50] + "..."
 	}
 
 	if !IsValidHttpUrl(e.Link) {
