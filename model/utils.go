@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/speps/go-hashids"
 	"github.com/varmamsp/gofeed/rss"
@@ -243,21 +244,56 @@ func Int64FromHashId(h string) (int64, error) {
 	return res[0], nil
 }
 
-var regexpNonAlphaNumeric = regexp.MustCompile(`[^a-zA-ZÀ-ÖØ-öø-ÿ0-9 ]*`)
-
-// Get Url param (title-hashId)
+// UrlParamFromId returns urlparam
 func UrlParamFromId(title string, id int64) string {
-	x := strings.Split(
-		regexpNonAlphaNumeric.ReplaceAllString(title, ""),
-		" ",
-	)
+	var sb strings.Builder
+
+	lastChar, hyphen := rune('-'), rune('-')
+	wordCount, maxWordCount := 0, 10
+	for _, r := range []rune(title) {
+		if wordCount == maxWordCount {
+			break
+		}
+
+		// replace space in title with hyphen while making sure
+		// consequent hyphens do not occur
+		if unicode.IsSpace(r) {
+			if wordCount == maxWordCount-1 {
+				break
+			}
+			if lastChar != hyphen {
+				sb.WriteRune(hyphen)
+				wordCount += 1
+			}
+			lastChar = rune('-')
+			continue
+		}
+
+		// retain hyphen from title while making sure
+		// consequent hyphens do not occur
+		if r == hyphen {
+			if lastChar != hyphen {
+				sb.WriteRune(hyphen)
+				lastChar = rune(hyphen)
+			}
+			continue
+		}
+
+		// retain all language alphabet and numbers from title
+		if unicode.IsLetter(r) || unicode.IsNumber(r) {
+			sb.WriteRune(unicode.ToLower(r))
+			lastChar = r
+			continue
+		}
+	}
+
 	return fmt.Sprintf(
 		"%s-%s",
-		strings.Join(x[:MinInt(10, len(x))], "-"), HashIdFromInt64(id),
+		sb.String(), HashIdFromInt64(id),
 	)
 }
 
-// Get Id from Url param (title-hashId)
+// IdFromUrlParam return integer from urlparam's hashId
 func IdFromUrlParam(urlParam string) (int64, error) {
 	x := strings.Split(urlParam, "-")
 	if len(x) < 2 {
