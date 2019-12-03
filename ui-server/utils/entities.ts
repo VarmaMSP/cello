@@ -1,4 +1,4 @@
-import { Episode, EpisodePlayback, Playlist, Podcast, User } from 'types/app'
+import { Episode, Playback, Playlist, Podcast, User } from 'types/app'
 
 export function unmarshalUser(j: any): User {
   return {
@@ -8,38 +8,43 @@ export function unmarshalUser(j: any): User {
   }
 }
 
-export function unmarshalPodcast(j: any): Podcast {
+export function podcast(j: any): Podcast {
   return {
     id: j.id,
-    title: j.title,
-    author: j.author,
-    description: j.description,
-    type: j.type,
-    complete: j.complete || 0,
+    title: j.title || '',
+    description: j.description || '',
+    language: j.language || 'en',
+    explicit: j.explicit || false,
+    author: j.author || '',
+    totalEpisodes: j.total_episodes || 0,
+    type: j.type || 'EPISODE',
+    complete: j.complete || false,
   }
 }
 
-export function unmarshalEpisode(j: any): Episode {
+export function episode(j: any): Episode {
   return {
     id: j.id,
     podcastId: j.podcast_id,
     title: j.title,
-    description: j.description,
     mediaUrl: j.media_url,
-    mediaType: j.media_type,
+    pubDate: j.pub_date,
+    description: j.description || '',
+    duration: j.duration || 0,
+    explicit: j.explicit || false,
     episode: j.episode || 0,
     season: j.season || 0,
-    pubDate: j.pub_date,
-    duration: j.duration || 0,
+    type: j.type || 'FULL',
+    progress: j.progress || 0,
+    lastPlayedAt: j.last_played_at || '',
   }
 }
 
-export function unmarshalEpisodePlayback(j: any): EpisodePlayback {
+export function Playback(j: any): Playback {
   return {
-    id: j.episode_id,
     episodeId: j.episode_id,
-    count: j.count || 0,
-    currentTime: j.current_time || 0,
+    progress: j.progress,
+    lastPlayedAt: j.last_played_at,
   }
 }
 

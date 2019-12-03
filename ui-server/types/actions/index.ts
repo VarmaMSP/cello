@@ -1,5 +1,4 @@
 import { BrowserActionTypes } from './browser'
-import { CurationActionTypes } from './curation'
 import { EpisodeActionTypes } from './episode'
 import { FeedActionTypes } from './feed'
 import { PlaylistActionTypes } from './playlist'
@@ -13,14 +12,12 @@ export type AppActions =
   | UserActionTypes
   | PodcastActionTypes
   | EpisodeActionTypes
-  | CurationActionTypes
   | BrowserActionTypes
   | PlaylistActionTypes
   | RequestActionTypes
   | FeedActionTypes
 
 export * from './browser'
-export * from './curation'
 export * from './episode'
 export * from './feed'
 export * from './playlist'
@@ -28,4 +25,3 @@ export * from './podcast'
 export * from './request'
 export * from './ui'
 export * from './user'
-

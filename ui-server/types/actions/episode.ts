@@ -1,18 +1,16 @@
-import { Episode, EpisodePlayback } from 'types/app'
+import { Episode, Playback } from 'types/app'
 
 export const RECEIVED_EPISODE = 'RECEIVED_EPISODE'
-export const RECEIVED_EPISODE_PLAYBACKS = 'RECEIVED_EPISODE_PLAYBACKS'
+export const RECEIVED_PLAYBACKS = 'RECEIVED_PLAYBACKS'
 
 export interface ReceivedEpisodeAction {
   type: typeof RECEIVED_EPISODE
   episode: Episode
 }
 
-export interface ReceivedEpisodePlaybacksAction {
-  type: typeof RECEIVED_EPISODE_PLAYBACKS
-  playbacks: EpisodePlayback[]
+export interface ReceivedPlaybacksAction {
+  type: typeof RECEIVED_PLAYBACKS
+  playbacks: Playback[]
 }
 
-export type EpisodeActionTypes =
-  | ReceivedEpisodeAction
-  | ReceivedEpisodePlaybacksAction
+export type EpisodeActionTypes = ReceivedEpisodeAction | ReceivedPlaybacksAction

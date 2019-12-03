@@ -44,11 +44,3 @@ export function makeGetReceivedAllEpisodes() {
     (x) => x.includes('pub_date_desc'),
   )
 }
-
-/*
- * PLAYBACK
- */
-
-export function getCurrentUserPlayback(state: AppState, episodeId: string) {
-  return state.entities.episodes.currentUserPlayback[episodeId]
-}

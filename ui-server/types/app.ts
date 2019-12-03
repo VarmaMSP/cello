@@ -8,46 +8,48 @@ export type Modal =
   | { type: 'ADD_TO_PLAYLIST_MODAL'; episodeId: string }
   | { type: 'CREATE_PLAYLIST_MODAL' }
 
-export interface Entity {
+export interface Podcast {
   id: string
+  title: string
+  description: string
+  language: string
+  explicit: boolean
+  author: string
+  totalEpisodes: number
+  type: 'SERIAL' | 'EPISODE'
+  complete: number
 }
 
-export interface User extends Entity {
+export interface Episode {
+  id: string
+  podcastId: string
+  title: string
+  mediaUrl: string
+  pubDate: string
+  description: string
+  duration: number
+  explicit: boolean
+  episode: number
+  season: number
+  type: 'TRAILER' | 'BONUS' | 'FULL'
+  progress: number
+  lastPlayedAt: string
+}
+
+export interface Playback {
+  episodeId: string
+  progress: number
+  lastPlayedAt: string
+}
+
+export interface User {
+  id: string
   name: string
   email: string
 }
 
-export interface Curation extends Entity {
-  title: string
-}
-
-export interface Podcast extends Entity {
-  title: string
-  author: string
-  description: string
-  type: string
-  complete: number
-}
-
-export interface Episode extends Entity {
-  podcastId: string
-  title: string
-  description: string
-  mediaUrl: string
-  mediaType: string
-  episode: number
-  season: number
-  pubDate: string
-  duration: number
-}
-
-export interface EpisodePlayback extends Entity {
-  episodeId: string
-  count: number
-  currentTime: number
-}
-
-export interface Playlist extends Entity {
+export interface Playlist {
+  id: string
   title: string
   createdBy: string
   privacy: 'PUBLIC' | 'PRIVATE' | 'ANONYMOUS'
