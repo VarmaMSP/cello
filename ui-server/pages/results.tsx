@@ -1,4 +1,4 @@
-import { searchPodcasts } from 'actions/podcast'
+import { searchPodcasts } from 'actions/search'
 import ListSearchResults from 'components/list_search_results'
 import { NextSeo } from 'next-seo'
 import React, { Component } from 'react'

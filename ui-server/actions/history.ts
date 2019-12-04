@@ -1,4 +1,4 @@
-import client from 'client'
+import * as client from 'client/history'
 import * as T from 'types/actions'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
@@ -6,15 +6,11 @@ import { requestAction } from './utils'
 export function getHistoryFeed(offset: number, limit: number) {
   return requestAction(
     () => client.getHistoryFeed(offset, limit),
-    (dispatch, _, { episodes, playbacks }) => {
+    (dispatch, _, { episodes }) => {
       dispatch({
         type: T.RECEIVED_HISTORY_FEED,
         offset,
         episodes,
-      })
-      dispatch({
-        type: T.RECEIVED_EPISODE_PLAYBACKS,
-        playbacks,
       })
 
       if (episodes.length < limit) {

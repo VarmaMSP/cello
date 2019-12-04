@@ -1,4 +1,4 @@
-import { syncPlayback } from 'actions/episode'
+import { syncPlayback } from 'actions/playback'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { getViewportSize } from 'selectors/browser/viewport'

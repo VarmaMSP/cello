@@ -1,4 +1,4 @@
-import { RequestException } from 'client/client'
+import { FetchException } from 'client/fetch'
 import { Dispatch } from 'redux'
 import { AppState } from 'store'
 import {
@@ -30,7 +30,7 @@ export function requestAction<T extends Promise<any>>(
       const res = await makeRequest()
       processData(dispatch, getState, res)
     } catch (err) {
-      if ((err as RequestException).statusCode === 401) {
+      if ((err as FetchException).statusCode === 401) {
         dispatch({ type: SIGN_OUT_USER_FORCEFULLY })
       }
     }

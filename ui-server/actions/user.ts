@@ -1,11 +1,11 @@
-import client from 'client'
+import * as client from 'client/user'
 import * as T from 'types/actions'
 import * as gtag from 'utils/gtag'
 import { requestAction } from './utils'
 
 export function getCurrentUser() {
   return requestAction(
-    () => client.getSignedInUser(),
+    () => client.init(),
     (dispatch, _, { user, subscriptions }) => {
       if (!!user) {
         gtag.userId(user.id)
@@ -17,7 +17,7 @@ export function getCurrentUser() {
 
 export function signOutUser() {
   return requestAction(
-    () => client.signOutUser(),
+    () => client.signOut(),
     (dispatch) => {
       dispatch({ type: T.SIGN_OUT_USER })
     },

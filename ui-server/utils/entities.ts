@@ -1,6 +1,6 @@
 import { Episode, Playback, Playlist, Podcast, User } from 'types/app'
 
-export function unmarshalUser(j: any): User {
+export function user(j: any): User {
   return {
     id: j.id,
     name: j.name,

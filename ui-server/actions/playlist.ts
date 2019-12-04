@@ -6,8 +6,12 @@ import { requestAction } from './utils'
 export function getUserPlaylists() {
   return requestAction(
     () => client.getUserPlaylists(),
-    (dispatch, _, { playlists }) => {
-      dispatch({ type: T.RECEIVED_USER_PLAYLISTS, playlists })
+    (dispatch, getState, { playlists }) => {
+      dispatch({
+        type: T.RECEIVED_USER_PLAYLISTS,
+        userId: getCurrentUserId(getState()),
+        playlists,
+      })
     },
   )
 }
