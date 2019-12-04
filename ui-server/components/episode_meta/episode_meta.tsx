@@ -1,12 +1,11 @@
 import classNames from 'classnames'
 import format from 'date-fns/format'
 import React from 'react'
-import { Episode, EpisodePlayback } from 'types/app'
+import { Episode } from 'types/app'
 import { formatEpisodeDuration } from 'utils/format'
 
 export interface StateToProps {
   episode: Episode
-  playback?: EpisodePlayback
 }
 
 export interface OwnProps {
@@ -21,7 +20,6 @@ const EpisodeMeta: React.SFC<Props> = ({
   episode,
   displayPubDate = true,
   displayDuration = true,
-  playback,
 }) => {
   let pubDate: string | undefined
   try {
@@ -45,7 +43,7 @@ const EpisodeMeta: React.SFC<Props> = ({
       <div
         className={classNames(
           'relative flex-initial lg:w-1/3 w-2/5 bg-gray-400 rounded-full',
-          { hidden: !!!playback },
+          { hidden: episode.lastPlayedAt === '' },
         )}
         style={{ height: '0.20rem' }}
       >
@@ -54,9 +52,7 @@ const EpisodeMeta: React.SFC<Props> = ({
           style={{
             transition: 'ease-in 0.4s',
             height: '0.20rem',
-            width: playback
-              ? `${(playback.currentTime / episode.duration) * 100}%`
-              : `0`,
+            width: `${episode.progress}%`,
           }}
         />
       </div>

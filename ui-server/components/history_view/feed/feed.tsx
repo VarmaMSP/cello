@@ -8,6 +8,7 @@ import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {
   history: Episode[]
+  receivedAll: boolean
   isLoadingMore: boolean
 }
 

@@ -1,11 +1,8 @@
-import { getEpisodePlaybacks } from 'actions/episode'
-import { getPodcastEpisodes } from 'actions/podcast'
+import { getPodcastEpisodes as getPodcastEpisodes_ } from 'actions/episode'
+import { getEpisodePlaybacks } from 'actions/playback'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import {
-  makeGetEpisodesInPodcast,
-  makeGetReceivedAllEpisodes,
-} from 'selectors/entities/episodes'
+import { makeGetPodcastEpisodes } from 'selectors/entities/episodes'
 import { getPodcastEpisodesStatus } from 'selectors/request'
 import { AppState } from 'store'
 import * as T from 'types/actions'
@@ -16,14 +13,18 @@ import ListEpisodes, {
 } from './episode_list'
 
 function makeMapStateToProps() {
-  const getEpisodesInPodcast = makeGetEpisodesInPodcast()
-  const getReceivedAllEpisodes = makeGetReceivedAllEpisodes()
+  const getPodcastEpisodes = makeGetPodcastEpisodes()
 
-  return (state: AppState, { podcastId }: OwnProps): StateToProps => ({
-    episodes: getEpisodesInPodcast(state, podcastId),
-    receivedAllEpisodes: getReceivedAllEpisodes(state, podcastId),
-    isLoadingMore: getPodcastEpisodesStatus(state, podcastId) === 'IN_PROGRESS',
-  })
+  return (state: AppState, { podcastId }: OwnProps): StateToProps => {
+    const { episodes, receivedAll } = getPodcastEpisodes(state, podcastId)
+
+    return {
+      episodes,
+      receivedAll,
+      isLoadingMore:
+        getPodcastEpisodesStatus(state, podcastId) === 'IN_PROGRESS',
+    }
+  }
 }
 
 function dispatchToProps(
@@ -37,13 +38,13 @@ function dispatchToProps(
         episodeId,
       }),
     loadEpisodes: (offset: number) =>
-      bindActionCreators(getPodcastEpisodes, dispatch)(
+      bindActionCreators(getPodcastEpisodes_, dispatch)(
         podcastId,
         20,
         offset,
         'pub_date_desc',
       ),
-    loadEpisodePlaybacks: bindActionCreators(getEpisodePlaybacks, dispatch),
+    loadPlaybacks: bindActionCreators(getEpisodePlaybacks, dispatch),
   }
 }
 

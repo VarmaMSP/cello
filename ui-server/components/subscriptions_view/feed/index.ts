@@ -10,10 +10,14 @@ import Feed, { DispatchToProps, StateToProps } from './feed'
 function makeMapStateToProps() {
   const getSubscriptionsFeed = makeGetSubscriptionsFeed()
 
-  return (state: AppState): StateToProps => ({
-    feed: getSubscriptionsFeed(state),
-    isLoadingMore: getSubscriptionsFeedStatus(state) === 'IN_PROGRESS',
-  })
+  return (state: AppState): StateToProps => {
+    const { episodes, receivedAll } = getSubscriptionsFeed(state)
+    return {
+      feed: episodes,
+      receivedAll: receivedAll,
+      isLoadingMore: getSubscriptionsFeedStatus(state) === 'IN_PROGRESS',
+    }
+  }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {

@@ -1,9 +1,9 @@
-import { subscribeToPodcast, unsubscribeToPodcast } from 'actions/podcast'
+import { subscribeToPodcast, unsubscribeToPodcast } from 'actions/subscription'
 import classNames from 'classnames'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import { getIsCurrentUserSubscribedToPodcast } from 'selectors/entities/podcasts'
+import { getIsUserSubscribedToPodcast } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 
@@ -49,7 +49,7 @@ function mapStateToProps(
   { podcastId }: OwnProps,
 ): StateToProps {
   return {
-    isSubscribed: getIsCurrentUserSubscribedToPodcast(state, podcastId),
+    isSubscribed: getIsUserSubscribedToPodcast(state, podcastId),
   }
 }
 

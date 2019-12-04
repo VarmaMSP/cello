@@ -6,6 +6,7 @@ import { Episode } from 'types/app'
 
 export interface StateToProps {
   feed: Episode[]
+  receivedAll: boolean
   isLoadingMore: boolean
 }
 

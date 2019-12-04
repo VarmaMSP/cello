@@ -9,13 +9,13 @@ import { Episode } from 'types/app'
 
 export interface StateToProps {
   episodes: Episode[]
-  receivedAllEpisodes: boolean
+  receivedAll: boolean
   isLoadingMore: boolean
 }
 
 export interface DispatchToProps {
   showAddToPlaylistModal: (episode: string) => void
-  loadEpisodePlaybacks: (episodeIds: string[]) => void
+  loadPlaybacks: (episodeIds: string[]) => void
   loadEpisodes: (offset: number) => void
 }
 
@@ -28,13 +28,13 @@ interface Props extends StateToProps, DispatchToProps, OwnProps {}
 const ListEpisodes: React.SFC<Props> = ({
   episodes,
   showAddToPlaylistModal,
-  loadEpisodePlaybacks,
+  loadPlaybacks,
   loadEpisodes,
-  receivedAllEpisodes,
+  receivedAll,
   isLoadingMore,
 }) => {
   useEffect(() => {
-    loadEpisodePlaybacks(episodes.map((e) => e.id))
+    loadPlaybacks(episodes.map((e) => e.id))
   }, [])
 
   return (
@@ -77,7 +77,7 @@ const ListEpisodes: React.SFC<Props> = ({
           <hr className="my-3" />
         </div>
       ))}
-      {!receivedAllEpisodes && (
+      {!receivedAll && (
         <div className="w-28 h-10 mx-auto my-6">
           <ButtonShowMore
             isLoading={isLoadingMore}

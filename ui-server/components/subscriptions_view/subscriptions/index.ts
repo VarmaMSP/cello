@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
-import { makeGetCurrentUserSubscriptions } from 'selectors/entities/podcasts'
+import { makeGetSubscriptions } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
 import Subscriptions, { StateToProps } from './subscriptions'
 
 function makeMapStateToProps() {
-  const getCurrentUserSubscriptions = makeGetCurrentUserSubscriptions()
+  const getSubscriptions = makeGetSubscriptions()
 
   return (state: AppState): StateToProps => ({
-    subscriptions: getCurrentUserSubscriptions(state),
+    subscriptions: getSubscriptions(state),
   })
 }
 

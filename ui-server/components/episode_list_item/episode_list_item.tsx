@@ -3,12 +3,12 @@ import { iconMap } from 'components/icon'
 import { EpisodeLink, PodcastLink } from 'components/link'
 import React from 'react'
 import striptags from 'striptags'
-import { Episode, EpisodePlayback, Podcast } from 'types/app'
+import { Episode, Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
+
 export interface StateToProps {
   episode: Episode
   podcast: Podcast
-  playback?: EpisodePlayback
 }
 
 export interface DispatchToProps {
@@ -23,7 +23,6 @@ export interface OwnProps {
 const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
   episode,
   podcast,
-  playback,
   playEpisode,
   showAddToPlaylistModal,
 }) => {
@@ -60,7 +59,9 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
         <div className="flex mt-4">
           <button
             className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-purple-900 bg-gray-300 border hover:border-2 rounded-lg"
-            onClick={() => playEpisode(playback ? playback.currentTime : 0)}
+            onClick={() =>
+              playEpisode((episode.progress * episode.duration) / 100)
+            }
           >
             <PlayIcon className="fill-current w-4 h-auto" />
             <span className="ml-2 font-medium">PLAY</span>

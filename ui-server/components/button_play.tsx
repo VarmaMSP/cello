@@ -1,15 +1,15 @@
-import { beginPlayback } from 'actions/episode'
+import { startPlayback } from 'actions/playback'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import { getCurrentUserPlayback } from 'selectors/entities/episodes'
+import { getEpisodeById } from 'selectors/entities/episodes'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import { EpisodePlayback } from 'types/app'
+import { Episode } from 'types/app'
 import ButtonWithIcon from './button_with_icon'
 
 interface StateToProps {
-  playback?: EpisodePlayback
+  episode: Episode
 }
 
 interface DispatchToProps {
@@ -23,7 +23,7 @@ interface OwnProps {
 
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
-const ButtonPlay: React.SFC<Props> = ({ playback, playEpisode, className }) => {
+const ButtonPlay: React.SFC<Props> = ({ episode, playEpisode, className }) => {
   return (
     <ButtonWithIcon
       className={classNames(
@@ -31,7 +31,7 @@ const ButtonPlay: React.SFC<Props> = ({ playback, playEpisode, className }) => {
         className,
       )}
       icon="play-outline"
-      onClick={() => playEpisode(playback ? playback.currentTime : 0)}
+      onClick={() => playEpisode((episode.progress * episode.duration) / 100)}
     />
   )
 }
@@ -41,7 +41,7 @@ function mapStateToProps(
   { episodeId }: OwnProps,
 ): StateToProps {
   return {
-    playback: getCurrentUserPlayback(state, episodeId),
+    episode: getEpisodeById(state, episodeId),
   }
 }
 
@@ -51,7 +51,7 @@ function mapDispatchToProps(
 ): DispatchToProps {
   return {
     playEpisode: (startTime: number) =>
-      bindActionCreators(beginPlayback, dispatch)(episodeId, startTime),
+      bindActionCreators(startPlayback, dispatch)(episodeId, startTime),
   }
 }
 

@@ -11,36 +11,35 @@ export function getEpisodeById(state: AppState, id: $Id<Episode>): Episode {
   return getAllEpisodes(state)[id]
 }
 
-export function makeGetEpisodesInPodcast() {
+export function makeGetPodcastEpisodes() {
   return createSelector<
     AppState,
     $Id<Podcast>,
-    $Id<Episode>[],
     MapById<Episode>,
-    Episode[]
-  >(
-    (state, id) =>
-      Object.values(
-        (state.entities.episodes.episodesInPodcast[id] || {})[
-          'byPubDateDesc'
-        ] || {},
-      ).reduce<string[]>((acc, ids) => [...acc, ...ids], []),
-    (state, _) => getAllEpisodes(state),
-    (ids, episodes) => {
-      return ids.map((id) => episodes[id])
+    {
+      byPubDateDesc: { [offset: string]: string[] }
+      byPubDateAsc: { [offset: string]: string[] }
+      receivedAll: ('pub_date_desc' | 'pub_date_asc')[]
     },
-  )
-}
-
-export function makeGetReceivedAllEpisodes() {
-  return createSelector<
-    AppState,
-    $Id<Podcast>,
-    ('pub_date_desc' | 'pub_date_asc')[],
-    boolean
+    {
+      episodes: Episode[]
+      receivedAll: boolean
+    }
   >(
-    (state, id) =>
-      (state.entities.episodes.episodesInPodcast[id] || {}).receivedAll || [],
-    (x) => x.includes('pub_date_desc'),
+    (state, _) => state.entities.episodes.episodes,
+    (state, podcastId) =>
+      state.entities.episodes.episodesInPodcast[podcastId] || {},
+    (episodes, x) => {
+      return {
+        episodes: Object.values(x.byPubDateDesc || {}).reduce<Episode[]>(
+          (acc, episodeIds) => [
+            ...acc,
+            ...episodeIds.map((id) => episodes[id]),
+          ],
+          [],
+        ),
+        receivedAll: (x.receivedAll || []).includes('pub_date_desc'),
+      }
+    },
   )
 }

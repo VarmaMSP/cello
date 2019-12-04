@@ -15,22 +15,18 @@ export function getPodcastById(state: AppState, podcastId: string) {
  * SUBSCRIPTIONS
  */
 
-export function getIsCurrentUserSubscribedToPodcast(
+export function getIsUserSubscribedToPodcast(
   state: AppState,
   podcastId: string,
 ) {
-  return state.entities.podcasts.currentUserSubscriptions.some(
-    (id) => id === podcastId,
-  )
+  return state.entities.podcasts.subscriptions.some((id) => id === podcastId)
 }
 
-export function makeGetCurrentUserSubscriptions() {
-  return createSelector<AppState, $Id<Podcast>[], MapById<Podcast>, Podcast[]>(
-    (state) => state.entities.podcasts.currentUserSubscriptions,
+export function makeGetSubscriptions() {
+  return createSelector<AppState, MapById<Podcast>, $Id<Podcast>[], Podcast[]>(
     (state) => state.entities.podcasts.podcasts,
-    (subscriptions, podcasts) => {
-      return subscriptions.map((id) => podcasts[id])
-    },
+    (state) => state.entities.podcasts.subscriptions,
+    (podcasts, subscriptions) => subscriptions.map((id) => podcasts[id]),
   )
 }
 
