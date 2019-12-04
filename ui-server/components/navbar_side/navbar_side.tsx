@@ -51,7 +51,7 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
           <>
             <hr className="my-4" />
             <div className="w-full my-3">
-              <div className="mb-2 text-center text-sm text-gray-800 tracking-tighter leading-tight">
+              <div className="mb-2 text-center text-xs text-gray-800 tracking-wide leading-tight">
                 Subscribe to podcasts, create playlists and much more
               </div>
               <div className="w-4/5 h-8 mx-auto">

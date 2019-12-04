@@ -7,7 +7,9 @@ const playlists: Reducer<{ [playlistId: string]: Playlist }, T.AppActions> = (
   action,
 ) => {
   switch (action.type) {
-    case T.RECEIVED_PLAYLISTS:
+    case T.RECEIVED_PLAYLIST:
+      return { ...state, [action.playlist.id]: action.playlist }
+    case T.RECEIVED_USER_PLAYLISTS:
       return {
         ...state,
         ...action.playlists.reduce<{ [playlistId: string]: Playlist }>(
@@ -25,7 +27,7 @@ const byUser: Reducer<{ [userId: string]: string[] }, T.AppActions> = (
   action,
 ) => {
   switch (action.type) {
-    case T.RECEIVED_PLAYLISTS:
+    case T.RECEIVED_USER_PLAYLISTS:
       return {
         ...state,
         [action.userId]: [

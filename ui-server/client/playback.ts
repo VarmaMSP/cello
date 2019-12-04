@@ -11,7 +11,7 @@ export async function getPlaybacks(
   })
 
   return {
-    playbacks: (data.playbacks || []).map(unmarshal.Playback),
+    playbacks: (data.playbacks || []).map(unmarshal.playback),
   }
 }
 

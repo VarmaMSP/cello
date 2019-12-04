@@ -1,4 +1,4 @@
-import { getSubscriptionsFeed } from 'actions/subscriptions'
+import { getSubscriptionsFeed } from 'actions/subscription'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { makeGetSubscriptionsFeed } from 'selectors/entities/feed'

@@ -1,4 +1,4 @@
-import { getSubscriptionsFeed } from 'actions/subscriptions'
+import { getSubscriptionsFeed } from 'actions/subscription'
 import ButtonSignin from 'components/button_signin'
 import { iconMap } from 'components/icon'
 import SubscriptionsView from 'components/subscriptions_view/subscriptions_view'

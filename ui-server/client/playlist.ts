@@ -2,7 +2,7 @@ import { Episode, Playlist } from 'types/app'
 import * as unmarshal from 'utils/entities'
 import { doFetch } from './fetch'
 
-export async function getUserPlaylist(): Promise<{ playlists: Playlist[] }> {
+export async function getUserPlaylists(): Promise<{ playlists: Playlist[] }> {
   const { data } = await doFetch({
     method: 'GET',
     urlPath: `/playlists`,

@@ -10,7 +10,6 @@ const podcasts: Reducer<{ [PodcastId: string]: Podcast }, T.AppActions> = (
     case T.RECEIVED_PODCAST:
       return { ...state, [action.podcast.id]: action.podcast }
     case T.RECEIVED_SEARCH_PODCASTS:
-    case T.RECEIVED_PODCAST_CURATION:
     case T.RECEIVED_TRENDING_PODCASTS:
       return {
         ...state,
@@ -30,37 +29,7 @@ const podcasts: Reducer<{ [PodcastId: string]: Podcast }, T.AppActions> = (
   }
 }
 
-const podcastsTrending: Reducer<string[], T.AppActions> = (
-  state = [],
-  action,
-) => {
-  switch (action.type) {
-    case T.RECEIVED_TRENDING_PODCASTS:
-      return action.podcasts.map((p) => p.id)
-    default:
-      return state
-  }
-}
-
-const podcastsInCuration: Reducer<
-  { [curationId: string]: string[] },
-  T.AppActions
-> = (state = {}, action) => {
-  switch (action.type) {
-    case T.RECEIVED_PODCAST_CURATION:
-      return {
-        ...state,
-        [action.curation.id]: action.podcasts.map((p) => p.id),
-      }
-    default:
-      return state
-  }
-}
-
-const currentUserSubscriptions: Reducer<string[], T.AppActions> = (
-  state = [],
-  action,
-) => {
+const subscriptions: Reducer<string[], T.AppActions> = (state = [], action) => {
   switch (action.type) {
     case T.RECEIVED_SIGNED_IN_USER:
       return action.subscriptions.map((p) => p.id)
@@ -73,9 +42,20 @@ const currentUserSubscriptions: Reducer<string[], T.AppActions> = (
   }
 }
 
+const podcastsTrending: Reducer<string[], T.AppActions> = (
+  state = [],
+  action,
+) => {
+  switch (action.type) {
+    case T.RECEIVED_TRENDING_PODCASTS:
+      return action.podcasts.map((p) => p.id)
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   podcasts,
+  subscriptions,
   podcastsTrending,
-  podcastsInCuration,
-  currentUserSubscriptions,
 })

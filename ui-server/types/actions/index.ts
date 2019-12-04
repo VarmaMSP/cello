@@ -1,11 +1,12 @@
 import { BrowserActionTypes } from './browser'
-import { EpisodeActionTypes } from './episode'
-import { FeedActionTypes } from './feed'
-import { PlaylistActionTypes } from './playlist'
-import { PodcastActionTypes } from './podcast'
+import { EpisodeActionTypes } from './entities/episode'
+import { FeedActionTypes } from './entities/feed'
+import { PlaylistActionTypes } from './entities/playlist'
+import { PodcastActionTypes } from './entities/podcast'
+import { SearchActionTypes } from './entities/search'
+import { UserActionTypes } from './entities/user'
 import { RequestActionTypes } from './request'
 import { UiActionTypes } from './ui'
-import { UserActionTypes } from './user'
 
 export type AppActions =
   | UiActionTypes
@@ -15,13 +16,15 @@ export type AppActions =
   | BrowserActionTypes
   | PlaylistActionTypes
   | RequestActionTypes
+  | SearchActionTypes
   | FeedActionTypes
 
 export * from './browser'
-export * from './episode'
-export * from './feed'
-export * from './playlist'
-export * from './podcast'
+export * from './entities/episode'
+export * from './entities/feed'
+export * from './entities/playlist'
+export * from './entities/podcast'
+export * from './entities/search'
+export * from './entities/user'
 export * from './request'
 export * from './ui'
-export * from './user'

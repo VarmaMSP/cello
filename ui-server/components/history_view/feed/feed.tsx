@@ -75,7 +75,7 @@ const Feed: React.FC<StateToProps & DispatchToProps> = ({ history }) => {
             </div>
           ) : (
             <p className="my-6 text-gray-600 text-sm tracking-wide">
-              {'No episodes published'}
+              {"Have'nt listenend to anything"}
             </p>
           )}
         </div>
