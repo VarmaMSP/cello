@@ -31,7 +31,7 @@ export default class extends Component<Props> {
             <div className="w-full cursor-pointer">
               <img
                 className="w-full h-auto flex-none object-contain rounded-lg border"
-                src={getImageUrl(podcast.id, 'md')}
+                src={getImageUrl(podcast.urlParam)}
               />
               <p className="text-xs tracking-wide leading-tight text-gray-800 mt-2 mb-1 line-clamp-2">
                 {podcast.title}

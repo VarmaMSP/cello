@@ -26,7 +26,7 @@ export async function getPodcastEpisodes(
 }> {
   const { data } = await doFetch({
     method: 'GET',
-    urlPath: `/${podcastId}/episodes?limit=${limit}&offset=${offset}&order=${order}`,
+    urlPath: `/podcasts/${podcastId}/episodes?limit=${limit}&offset=${offset}&order=${order}`,
   })
 
   return { episodes: (data.episodes || []).map(unmarshal.episode) }

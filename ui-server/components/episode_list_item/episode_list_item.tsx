@@ -34,7 +34,7 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
     <div className="flex mb-12">
       <img
         className="w-24 h-24 mr-2 flex-none object-contain rounded-lg border cursor-default"
-        src={getImageUrl(episode.podcastId, 'md')}
+        src={getImageUrl(episode.podcastId)}
       />
       <div className="pl-3">
         <EpisodeLink episodeId={episode.id}>

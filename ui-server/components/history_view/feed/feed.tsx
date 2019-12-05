@@ -51,7 +51,7 @@ const Feed: React.FC<StateToProps & DispatchToProps> = ({ history }) => {
                 <div key={episode.id} className="">
                   <img
                     className="w-24 h-24 flex-none object-contain rounded-lg border cursor-default"
-                    src={getImageUrl(episode.podcastId, 'md')}
+                    src={getImageUrl(episode.podcastId)}
                     onClick={() => {}}
                   />
                   <div className="flex-auto flex flex-col justify-between pl-3">

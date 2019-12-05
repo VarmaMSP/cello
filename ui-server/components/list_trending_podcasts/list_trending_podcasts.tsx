@@ -32,10 +32,10 @@ const ListTrendingPodcasts: React.SFC<StateToProps> = (props) => {
           title: 'Trending Podcasts',
           description: 'Trending Podcasts',
           images: [
-            { url: getImageUrl(trendingPodcasts[2].id, 'sm') },
-            { url: getImageUrl(trendingPodcasts[3].id, 'sm') },
-            { url: getImageUrl(trendingPodcasts[5].id, 'sm') },
-            { url: getImageUrl(trendingPodcasts[7].id, 'sm') },
+            { url: getImageUrl(trendingPodcasts[2].id) },
+            { url: getImageUrl(trendingPodcasts[3].id) },
+            { url: getImageUrl(trendingPodcasts[5].id) },
+            { url: getImageUrl(trendingPodcasts[7].id) },
           ],
         }}
       />
@@ -53,7 +53,7 @@ const ListTrendingPodcasts: React.SFC<StateToProps> = (props) => {
           >
             <img
               className="md:w-28 w-30 md:h-28 h-30 flex-none object-contain rounded-lg border"
-              src={getImageUrl(podcast.id, 'md')}
+              src={getImageUrl(podcast.urlParam)}
             />
             <div className="w-2/3 pl-3">
               <div className="w-full font-sans text-gray-800 tracking-tight mb-2 line-clamp-2">

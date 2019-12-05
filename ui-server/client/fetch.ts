@@ -24,7 +24,7 @@ export async function doFetch({
   body,
 }: FetchRequest): Promise<FetchResponse> {
   // Make Request
-  let url = `${getBaseUrl()}/${urlPath}`
+  let url = `${getBaseUrl()}${urlPath}`
   let response: Response
   try {
     response = await fetch(url, {

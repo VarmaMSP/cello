@@ -44,7 +44,7 @@ const Trending: React.SFC<StateToProps> = ({ trendingPodcasts }) => {
             <a>
               <img
                 className="w-full h-auto flex-none object-contain rounded-lg border cursor-pointer"
-                src={getImageUrl(podcast.id, 'md')}
+                src={getImageUrl(podcast.urlParam)}
               />
             </a>
           </Link>

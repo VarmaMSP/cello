@@ -11,6 +11,7 @@ export function user(j: any): User {
 export function podcast(j: any): Podcast {
   return {
     id: j.id,
+    urlParam: j.url_param || '',
     title: j.title || '',
     description: j.description || '',
     language: j.language || 'en',
@@ -25,6 +26,7 @@ export function podcast(j: any): Podcast {
 export function episode(j: any): Episode {
   return {
     id: j.id,
+    urlParam: j.url_param || '',
     podcastId: j.podcast_id,
     title: j.title,
     mediaUrl: j.media_url,

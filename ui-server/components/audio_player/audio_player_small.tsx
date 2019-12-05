@@ -91,7 +91,7 @@ export default class AudioPlayerSmall extends Component<Props> {
         <section className="flex flex-row px-3 mb-2">
           <img
             className="h-32 w-32 flex-none object-cover object-center rounded"
-            src={getImageUrl(podcast.id, 'lg')}
+            src={getImageUrl(podcast.urlParam)}
           />
           <section className="flex-1 ml-3">
             <h5 className="text-sm font-bold text-gray-700 leading-tight">

@@ -10,6 +10,7 @@ export type Modal =
 
 export interface Podcast {
   id: string
+  urlParam: string
   title: string
   description: string
   language: string
@@ -22,6 +23,7 @@ export interface Podcast {
 
 export interface Episode {
   id: string
+  urlParam: string
   podcastId: string
   title: string
   mediaUrl: string
