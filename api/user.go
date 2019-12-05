@@ -9,7 +9,7 @@ import (
 )
 
 func (api *Api) RegisterUserHandlers() {
-	api.router.Handler("GET", "/me", api.NewHandler(Me))
+	api.router.Handler("GET", "/me", api.NewHandler(Init))
 	api.router.Handler("GET", "/signin/google", api.app.GoogleSignIn())
 	api.router.Handler("GET", "/signin/facebook", api.app.FacebookSignIn())
 	api.router.Handler("GET", "/signin/twitter", api.app.TwitterSignIn())
@@ -19,7 +19,7 @@ func (api *Api) RegisterUserHandlers() {
 	api.router.Handler("GET", "/signout", api.NewHandler(SignOut))
 }
 
-func Me(c *Context, w http.ResponseWriter) {
+func Init(c *Context, w http.ResponseWriter) {
 	if c.session == nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -32,7 +32,7 @@ func Me(c *Context, w http.ResponseWriter) {
 		c.err = err
 		return
 	}
-	user.Sanitize()
+	user.Sanitize() 
 
 	subscriptions, err := c.app.GetUserSubscriptions(c.session.UserId)
 	if err != nil {

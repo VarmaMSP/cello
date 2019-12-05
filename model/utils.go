@@ -179,6 +179,10 @@ func Int64FromStr(str string) int64 {
 	return 0
 }
 
+func StrFromInt64(i int64) string {
+	return strconv.FormatInt(i, 10)
+}
+
 // MapFromJson will decode a map
 func MapFromJson(data io.Reader) map[string]string {
 	decoder := json.NewDecoder(data)

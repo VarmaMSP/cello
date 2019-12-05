@@ -43,9 +43,9 @@ func (s *SqlPodcastStore) Get(podcastId int64) (*model.Podcast, *model.AppError)
 
 func (s *SqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Podcast{}, "podcast") + ` FROM podcast
-		INNER JOIN podcast_subscription ON podcast_subscription.podcast_id = podcast.id
-		WHERE podcast_subscription.active = 1 AND podcast_subscription.subscribed_by = ?
-		ORDER BY podcast_subscription.updated_at DESC`
+		INNER JOIN subscription ON subscription.podcast_id = podcast.id
+		WHERE subscription.active = 1 AND subscription.user_id = ?
+		ORDER BY subscription.updated_at DESC`
 
 	copyTo := func() []interface{} {
 		tmp := &model.Podcast{}
@@ -55,7 +55,7 @@ func (s *SqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, 
 
 	if err := s.Query(copyTo, sql, userId); err != nil {
 		appE = model.NewAppError(
-			"sqlstore.sql_curation_store.get_podcast_by_curation", err.Error(), http.StatusInternalServerError,
+			"sqlstore.sql_podcast_store.get_Subscriptions", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"user_id": userId},
 		)
 	}

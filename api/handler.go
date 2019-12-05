@@ -42,9 +42,9 @@ type Handler struct {
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c := &Context{
-		app: h.app,
-		req: req,
-		// session: h.app.GetSession(req.Context()),
+		app:     h.app,
+		req:     req,
+		session: h.app.GetSession(req.Context()),
 	}
 
 	c.app.Log.Info().
@@ -57,7 +57,6 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-
 	h.handleFunc(c, w)
 
 	if c.err != nil {

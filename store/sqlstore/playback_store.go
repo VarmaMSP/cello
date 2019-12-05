@@ -20,9 +20,9 @@ func NewSqlPlaybackStore(store SqlStore) store.PlaybackStore {
 func (s *SqlPlaybackStore) Save(playback *model.Playback) *model.AppError {
 	playback.PreSave()
 
-	if _, err := s.InsertOrUpdate("playback", playback, "total_plays = total_plays + 1, updated_at = ?", model.Now()); err != nil {
+	if _, err := s.InsertOrUpdate("playback", playback, "play_count = play_count + 1, updated_at = ?", model.Now()); err != nil {
 		return model.NewAppError(
-			"store.sqlstore.sql_episode_store.save_playback", err.Error(), http.StatusInternalServerError,
+			"store.sqlstore.sql_playback_store.save", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"episode_id": playback.EpisodeId, "user_id": playback.UserId},
 		)
 	}
@@ -41,7 +41,7 @@ func (s *SqlPlaybackStore) GetByUserPaginated(userId int64, offset, limit int) (
 
 	if err := s.Query(copyTo, sql, userId, offset, limit); err != nil {
 		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_all_playbacks_by_user", err.Error(), http.StatusInternalServerError,
+			"store.sqlstore.sql_playback_store.get_by_user_paginated", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"user_id": userId},
 		)
 	}
@@ -66,7 +66,7 @@ func (s *SqlPlaybackStore) GetByUserByEpisodes(userId int64, episodeIds []int64)
 
 	if err := s.Query(copyTo, sql, values...); err != nil {
 		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_all_playbacks", err.Error(), http.StatusInternalServerError, nil,
+			"store.sqlstore.sql_playback_store.get_by_user_by_episodes", err.Error(), http.StatusInternalServerError, nil,
 		)
 	}
 	return

@@ -1,6 +1,7 @@
 package sqlstore
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -58,7 +59,7 @@ func (s *SqlEpisodeStore) GetByIds(episodeIds []int64) (res []*model.Episode, ap
 
 	if err := s.Query(copyTo, sql, values...); err != nil {
 		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_all_by_played", err.Error(), http.StatusInternalServerError, nil,
+			"store.sqlstore.sql_episode_store.get_by_ids", err.Error(), http.StatusInternalServerError, nil,
 		)
 	}
 	return
@@ -101,7 +102,7 @@ func (s *SqlEpisodeStore) GetByPodcastPaginated(podcastId int64, order string, o
 
 	if err := s.Query(copyTo, sql, podcastId, offset, limit); err != nil {
 		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_all_by_podcast", err.Error(), http.StatusInternalServerError,
+			"store.sqlstore.sql_episode_store.get_by_podcast_paginated", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"podcast_id": podcastId},
 		)
 	}
@@ -109,16 +110,10 @@ func (s *SqlEpisodeStore) GetByPodcastPaginated(podcastId int64, order string, o
 }
 
 func (s *SqlEpisodeStore) GetByPodcastIdsPaginated(podcastIds []int64, offset, limit int) (res []*model.Episode, appE *model.AppError) {
-	sql := "SELECT " + Cols(&model.Episode{}) + ` FROM episode
-		WHERE podcast_id IN (` + strings.Join(Replicate("?", len(podcastIds)), ",") + `)
-		ORDER BY pub_date DESC
-		LIMIT ?, ?`
-
-	var values []interface{}
-	for _, podcastId := range podcastIds {
-		values = append(values, podcastId)
-	}
-	values = append(values, offset, limit)
+	sql := fmt.Sprintf(
+		`SELECT %s FROM episode WHERE podcast_id IN (%s) ORDER BY pub_date DESC LIMIT %d, %d`,
+		joinStrings((&model.Episode{}).DbColumns(), ","), joinInt64s(podcastIds, ","), offset, limit,
+	)
 
 	copyTo := func() []interface{} {
 		tmp := &model.Episode{}
@@ -126,9 +121,9 @@ func (s *SqlEpisodeStore) GetByPodcastIdsPaginated(podcastIds []int64, offset, l
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.Query(copyTo, sql, values...); err != nil {
+	if err := s.Query(copyTo, sql); err != nil {
 		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_all_published_between", err.Error(), http.StatusInternalServerError, nil,
+			"store.sqlstore.sql_episode_store.get_by_podcast_ids_paginated", err.Error(), http.StatusInternalServerError, nil,
 		)
 	}
 	return

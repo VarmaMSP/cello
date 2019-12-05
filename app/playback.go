@@ -7,6 +7,9 @@ func (app *App) GetUserPlaybacks(userId int64, offset, limit int) ([]*model.Play
 }
 
 func (app *App) GetUserPlaybacksForEpisodes(userId int64, episodeIds []int64) ([]*model.Playback, *model.AppError) {
+	if len(episodeIds) == 0 {
+		return []*model.Playback{}, nil
+	}
 	return app.Store.Playback().GetByUserByEpisodes(userId, episodeIds)
 }
 

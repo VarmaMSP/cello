@@ -35,6 +35,10 @@ func (p *Playback) MarhsalJSON() ([]byte, error) {
 }
 
 func (p *Playback) PreSave() {
+	if p.LastPlayedAt == "" {
+		p.LastPlayedAt = NowDateTime()
+	}
+
 	if p.CreatedAt == 0 {
 		p.CreatedAt = Now()
 	}

@@ -102,6 +102,18 @@ func Cols(m model.DbModel, prefix ...string) string {
 	return strings.Join(cols, ",")
 }
 
+func joinStrings(vals []string, sep string) string {
+	return strings.Join(vals, sep)
+}
+
+func joinInt64s(vals []int64, sep string) string {
+	s := make([]string, len(vals))
+	for i, val := range vals {
+		s[i] = model.StrFromInt64(val)
+	}
+	return joinStrings(s, sep)
+}
+
 func MakeMysqlDSN(config *model.Config) string {
 	c := mysql.NewConfig()
 	c.Net = "tcp"
