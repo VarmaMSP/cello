@@ -140,10 +140,12 @@ func (app *App) GetUser(userId int64) (*model.User, *model.AppError) {
 
 func (app *App) GetSession(ctx context.Context) *model.Session {
 	session := &model.Session{}
-	session.UserId = app.SessionManager.Get(ctx, "user_id").(int64)
-	session.IsAdmin = app.SessionManager.Get(ctx, "is_admin").(int)
 
-	if session.UserId == 0 {
+	var ok bool
+	if session.UserId, ok = app.SessionManager.Get(ctx, "user_id").(int64); !ok {
+		return nil
+	}
+	if session.IsAdmin, ok = app.SessionManager.Get(ctx, "is_admin").(int); !ok {
 		return nil
 	}
 	return session
