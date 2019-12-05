@@ -13,6 +13,7 @@ purge-data:
 	mc rm -r --force --dangerous minio/chartable-charts
 	mc rm -r --force --dangerous minio/phenopod-charts
 	mc rm -r --force --dangerous minio/thumbnails
+	mysql -u root -pbirds phenopod < ./config/db_schema/01\ -\ feed.sql
 
 start-services:
 	nginx
