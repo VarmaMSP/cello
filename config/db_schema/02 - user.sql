@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
     `id`                         INT AUTO_INCREMENT,
     `name`                       VARCHAR(100),
@@ -8,17 +9,19 @@ CREATE TABLE `user` (
     `created_at`                 BIGINT,
     `updated_at`                 BIGINT,
     PRIMARY KEY(`id`)
-) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `email_account`;
 CREATE TABLE `email_account` (
-    `email`                      VARCHAR(50),
+    `email`                      VARCHAR(100),
     `user_id`                    INT,
     `created_at`                 BIGINT,
     `updated_at`                 BIGINT,
-    PRIMARY_KEY(`email`),
-    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE 
+    PRIMARY KEY(`email`),
+    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE 
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `google_account`;
 CREATE TABLE `google_account` (
     `id`                         VARCHAR(50),
     `user_id`                    INT,
@@ -27,15 +30,16 @@ CREATE TABLE `google_account` (
     `gender`                     VARCHAR(20),
     `given_name`                 VARCHAR(100),
     `link`                       VARCHAR(500),
-    `locale`                     VARCHAR(50),
+    `locale`                     VARCHAR(50), 
     `name`                       VARCHAR(200),
     `picture`                    VARCHAR(500),
     `created_at`                 BIGINT,
     `updated_at`                 BIGINT,
     PRIMARY KEY(`id`),
-    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `facebook_account`;
 CREATE TABLE `facebook_account` (
     `id`                         VARCHAR(50),
     `user_id`                    INT,
@@ -44,9 +48,10 @@ CREATE TABLE `facebook_account` (
     `created_at`                 BIGINT,
     `updated_at`                 BIGINT,
     PRIMARY KEY(`id`),
-    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `twitter_account`;
 CREATE TABLE `twitter_account` (
     `id`                         VARCHAR(50), 
     `user_id`                    INT,
@@ -62,5 +67,33 @@ CREATE TABLE `twitter_account` (
     `created_at`                 BIGINT,
     `updated_at`                 BIGINT,
     PRIMARY KEY(`id`),
-    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`)  ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `playback`;
+CREATE TABLE `playback` (
+    `user_id`                   INT,
+    `episode_id`                SMALLINT,
+    `play_count`                INT,
+    `epiosde_duration`          INT,
+    `progress`                  FLOAT,
+    `total_progress`            FLOAT,
+    `last_played_at`            DATETIME,
+    `created_at`                BIGINT,
+    `updated_at`                BIGINT,
+    PRIMARY KEY (`user_id`, `episode_id`),
+    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (`episode_id`) REFERENCES `episode` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS `subscription`;
+CREATE TABLE `subscription` (
+    `user_id`                    INT,
+    `podcast_id`                 INT,
+    `active`                     TINYINT,
+    `created_at`                 BIGINT,
+    `updated_at`                 BIGINT, 
+    PRIMARY KEY (`user_id`, `podcast_id`),
+    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+);
