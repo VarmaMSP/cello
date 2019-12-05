@@ -34,7 +34,7 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
     <div className="flex mb-12">
       <img
         className="w-24 h-24 mr-2 flex-none object-contain rounded-lg border cursor-default"
-        src={getImageUrl(episode.podcastId)}
+        src={getImageUrl(podcast.urlParam)}
       />
       <div className="pl-3">
         <EpisodeLink episodeId={episode.id}>
@@ -58,7 +58,7 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
 
         <div className="flex mt-4">
           <button
-            className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-purple-900 bg-gray-300 border hover:border-2 rounded-lg"
+            className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-purple-900 bg-gray-300 border hover:border-2 rounded-lg focus:outline-none focus:shadow-outline"
             onClick={() =>
               playEpisode((episode.progress * episode.duration) / 100)
             }
@@ -67,13 +67,13 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
             <span className="ml-2 font-medium">PLAY</span>
           </button>
           <button
-            className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-gray-700 bg-gray-200 border rounded-lg"
+            className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-gray-700 bg-gray-200 border rounded-lg focus:outline-none focus:shadow-outline"
             onClick={() => showAddToPlaylistModal()}
           >
             <AddToPlaylistIcon className="fill-current w-4 h-auto" />
             <span className="ml-2 font-medium">ADD</span>
           </button>
-          <button className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-gray-700 bg-gray-200 border rounded-lg">
+          <button className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-gray-700 bg-gray-200 border rounded-lg focus:outline-none focus:shadow-outline">
             <ShareIcon className="fill-current w-3 h-auto" />
             <span className="ml-2 font-medium">SHARE</span>
           </button>

@@ -1,4 +1,3 @@
-import ButtonSignin from 'components/button_signin'
 import { iconMap } from 'components/icon'
 import Link from 'next/link'
 import React from 'react'
@@ -9,8 +8,15 @@ export interface StateToProps {
   currentUrlPath: string
 }
 
-const NavbarSide: React.SFC<StateToProps> = (props) => {
-  const { userSignedIn, currentUrlPath } = props
+export interface DispatchToProps {
+  showSigninModal: () => void
+}
+
+const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
+  userSignedIn,
+  currentUrlPath,
+  showSigninModal,
+}) => {
   const LogoIcon = iconMap['phenopod']
 
   return (
@@ -51,12 +57,15 @@ const NavbarSide: React.SFC<StateToProps> = (props) => {
           <>
             <hr className="my-4" />
             <div className="w-full my-3">
-              <div className="mb-2 text-center text-xs text-gray-800 tracking-wide leading-tight">
-                Subscribe to podcasts, create playlists and much more
-              </div>
-              <div className="w-4/5 h-8 mx-auto">
-                <ButtonSignin />
-              </div>
+              <p className="mb-2 text-center text-xs text-gray-700 tracking-wide leading-normal">
+                Discover podcasts, create playlists and much more.{' '}
+                <span
+                  className="text-red-800 font-medium underline cursor-pointer"
+                  onClick={() => showSigninModal()}
+                >
+                  sign in
+                </span>
+              </p>
             </div>
           </>
         )}
