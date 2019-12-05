@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS phenopod;
+CREATE DATABASE phenopod;
+USE phenopod;
+
 CREATE TABLE `feed` (
     `id`                         INT AUTO_INCREMENT,
     `source`                     VARCHAR(20),
