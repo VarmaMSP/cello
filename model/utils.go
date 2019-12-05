@@ -240,10 +240,11 @@ func Int64FromHashId(h string) (int64, error) {
 func UrlParamFromId(title string, id int64) string {
 	var sb strings.Builder
 
-	lastChar, hyphen := rune('-'), rune('-')
 	wordCount, maxWordCount := 0, 10
+	runeCount, maxRuneCount := 0, 300
+	lastChar, hyphen := rune('-'), rune('-')
 	for _, r := range []rune(title) {
-		if wordCount == maxWordCount {
+		if runeCount == maxRuneCount || wordCount == maxWordCount {
 			break
 		}
 
@@ -256,6 +257,7 @@ func UrlParamFromId(title string, id int64) string {
 			if lastChar != hyphen {
 				sb.WriteRune(hyphen)
 				wordCount += 1
+				runeCount += 1
 			}
 			lastChar = rune('-')
 			continue
@@ -266,6 +268,7 @@ func UrlParamFromId(title string, id int64) string {
 		if r == hyphen {
 			if lastChar != hyphen {
 				sb.WriteRune(hyphen)
+				runeCount += 1
 				lastChar = rune(hyphen)
 			}
 			continue
@@ -274,6 +277,7 @@ func UrlParamFromId(title string, id int64) string {
 		// retain all language alphabet and numbers from title
 		if unicode.IsLetter(r) || unicode.IsNumber(r) {
 			sb.WriteRune(unicode.ToLower(r))
+			runeCount += 1
 			lastChar = r
 			continue
 		}
