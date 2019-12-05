@@ -7,7 +7,7 @@ export async function searchPodcasts(
 ): Promise<{ podcasts: Podcast[] }> {
   const { data } = await doFetch({
     method: 'GET',
-    urlPath: `/results?search_query=${searchQuery}`,
+    urlPath: `/results?query=${searchQuery}`,
   })
 
   return { podcasts: (data.results || []).map(unmarshal.podcast) }

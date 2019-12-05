@@ -1,7 +1,7 @@
 package api
 
 type SearchPodcastsReq struct {
-	SearchQuery string
+	SearchQuery string `validate:"required"`
 }
 
 func (o *SearchPodcastsReq) Load(c *Context) (err error) {
