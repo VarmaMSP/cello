@@ -10,6 +10,9 @@ purge-data:
 	rabbitmqadmin purge queue name=import_podcast
 	rabbitmqadmin purge queue name=refresh_podcast
 	rabbitmqadmin purge queue name=sync_playback
+	mc rm -r --force --dangerous minio/chartable-charts
+	mc rm -r --force --dangerous minio/phenopod-charts
+	mc rm -r --force --dangerous minio/thumbnails
 
 start-services:
 	nginx
