@@ -60,6 +60,7 @@ func (e *Episode) FieldAddrs() []interface{} {
 func (e *Episode) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		Id           string  `json:"id"`
+		UrlParam     string  `json:"url_param"`
 		PodcastId    string  `json:"podcast_id"`
 		Title        string  `json:"title"`
 		MediaUrl     string  `json:"media_url"`
@@ -74,6 +75,7 @@ func (e *Episode) MarshalJSON() ([]byte, error) {
 		LastPlayedAt string  `json:"last_played_at,omitempty"`
 	}{
 		Id:           HashIdFromInt64(e.Id),
+		UrlParam:     UrlParamFromId(e.Title, e.Id),
 		PodcastId:    HashIdFromInt64(e.PodcastId),
 		Title:        e.Title,
 		MediaUrl:     e.MediaUrl,

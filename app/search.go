@@ -8,7 +8,7 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (app *App) SearchPodcasts(searchQuery string) ([]*model.PodcastIndex, *model.AppError) {
+func (app *App) SearchPodcasts(searchQuery string) ([]*model.Podcast, *model.AppError) {
 	results, err := app.ElasticSearch.Search().
 		Index("podcast").
 		Query(elastic.NewMultiMatchQuery(searchQuery, "title", "author")).
@@ -21,9 +21,18 @@ func (app *App) SearchPodcasts(searchQuery string) ([]*model.PodcastIndex, *mode
 	podcasts := []*model.PodcastIndex{}
 	for _, item := range results.Each(reflect.TypeOf(model.PodcastIndex{})) {
 		tmp, _ := item.(model.PodcastIndex)
-		tmp.Description = ""
 		podcasts = append(podcasts, &tmp)
 	}
 
-	return podcasts, nil
+	podcasts_ := make([]*model.Podcast, len(podcasts))
+	for i, podcast := range podcasts {
+		id, _ := model.Int64FromHashId(podcast.Id)
+		podcasts_[i] = &model.Podcast{
+			Id:     id,
+			Title:  podcast.Title,
+			Author: podcast.Author,
+			Type:   podcast.Type,
+		}
+	}
+	return podcasts_, nil
 }

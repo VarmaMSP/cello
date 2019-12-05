@@ -27,7 +27,7 @@ const Subscriptions: React.FC<StateToProps> = ({ subscriptions }) => {
             <a>
               <img
                 className="w-full h-auto flex-none object-contain rounded-lg border cursor-pointer"
-                src={getImageUrl(podcast.id, 'md')}
+                src={getImageUrl(podcast.urlParam)}
               />
             </a>
           </PodcastLink>

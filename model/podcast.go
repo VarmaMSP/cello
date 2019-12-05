@@ -59,6 +59,7 @@ type PodcastIndex struct {
 func (p *Podcast) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		Id            string `json:"id"`
+		UrlParam      string `json:"url_param"`
 		Title         string `json:"title"`
 		Description   string `json:"description"`
 		Language      string `json:"language"`
@@ -70,6 +71,7 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 		Complete      int    `json:"complete"`
 	}{
 		Id:            HashIdFromInt64(p.Id),
+		UrlParam:      UrlParamFromId(p.Title, p.Id),
 		Title:         p.Title,
 		Description:   p.Description,
 		Language:      p.Language,
