@@ -44,13 +44,13 @@ func GetPodcastEpisodes(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	episodes, err := c.app.GetEpisodesInPodcast(req.PodcastId, req.Order, req.Offset, req.Offset)
+	episodes, err := c.app.GetEpisodesInPodcast(req.PodcastId, req.Order, req.Offset, req.Limit)
 	if err != nil {
 		c.err = err
 		return
 	}
 
-	if c.session.UserId != 0 {
+	if c.session != nil && c.session.UserId != 0 {
 		playbacks, err := c.app.GetUserPlaybacksForEpisodes(c.session.UserId, model.GetEpisodeIds(episodes))
 		if err != nil {
 			c.err = err
