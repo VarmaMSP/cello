@@ -62,7 +62,7 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 		UrlParam               string `json:"url_param"`
 		Title                  string `json:"title"`
 		Description            string `json:"description"`
-		Language               string `json:"language"`
+		Language               string `json:"language,omitempty"`
 		Explicit               int    `json:"explicit,omitempty"`
 		Author                 string `json:"author"`
 		TotalEpisodes          int    `json:"total_episodes,omitempty"`
@@ -70,6 +70,7 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 		Type                   string `json:"type,omitempty"`
 		Complete               int    `json:"complete,omitempty"`
 		EarliestEpisodePubDate string `json:"earliest_episode_pub_date,omitempty"`
+		Copyright              string `json:"copyright,omitempty"`
 	}{
 		Id:                     HashIdFromInt64(p.Id),
 		UrlParam:               UrlParamFromId(p.Title, p.Id),
@@ -83,6 +84,7 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 		Type:                   p.Type,
 		Complete:               p.Complete,
 		EarliestEpisodePubDate: p.EarliestEpisodePubDate,
+		Copyright:              p.Copyright,
 	})
 }
 
