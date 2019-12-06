@@ -40,7 +40,7 @@ const PodcastInfo: React.SFC<Props> = ({ podcast }) => {
         />
         <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
           <div className="w-full">
-            <h2 className="md:text-2xl text-lg text-gray-900 leading-tight line-clamp-2">
+            <h2 className="md:text-xl text-lg text-gray-900 leading-tight line-clamp-2">
               {podcast.title}
             </h2>
             <h3 className="md:text-base text-sm text-gray-800 leading-loose truncate">
