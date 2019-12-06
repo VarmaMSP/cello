@@ -18,7 +18,8 @@ export interface Podcast {
   author: string
   totalEpisodes: number
   type: 'SERIAL' | 'EPISODE'
-  complete: number
+  complete: boolean
+  earliestEpisodePubDate: string
 }
 
 export interface Episode {

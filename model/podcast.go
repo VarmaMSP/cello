@@ -58,29 +58,31 @@ type PodcastIndex struct {
 
 func (p *Podcast) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
-		Id            string `json:"id"`
-		UrlParam      string `json:"url_param"`
-		Title         string `json:"title"`
-		Description   string `json:"description"`
-		Language      string `json:"language"`
-		Explicit      int    `json:"explicit"`
-		Author        string `json:"author"`
-		TotalEpisodes int    `json:"total_episodes,omitempty"`
-		TotalSeasons  int    `json:"total_seasons,omiempty"`
-		Type          string `json:"type"`
-		Complete      int    `json:"complete"`
+		Id                     string `json:"id"`
+		UrlParam               string `json:"url_param"`
+		Title                  string `json:"title"`
+		Description            string `json:"description"`
+		Language               string `json:"language"`
+		Explicit               int    `json:"explicit,omitempty"`
+		Author                 string `json:"author"`
+		TotalEpisodes          int    `json:"total_episodes,omitempty"`
+		TotalSeasons           int    `json:"total_seasons,omiempty"`
+		Type                   string `json:"type,omitempty"`
+		Complete               int    `json:"complete,omitempty"`
+		EarliestEpisodePubDate string `json:"earliest_episode_pub_date,omitempty"`
 	}{
-		Id:            HashIdFromInt64(p.Id),
-		UrlParam:      UrlParamFromId(p.Title, p.Id),
-		Title:         p.Title,
-		Description:   p.Description,
-		Language:      p.Language,
-		Explicit:      p.Explicit,
-		Author:        p.Author,
-		TotalEpisodes: p.TotalEpisodes,
-		TotalSeasons:  p.TotalSeasons,
-		Type:          p.Type,
-		Complete:      p.Complete,
+		Id:                     HashIdFromInt64(p.Id),
+		UrlParam:               UrlParamFromId(p.Title, p.Id),
+		Title:                  p.Title,
+		Description:            p.Description,
+		Language:               p.Language,
+		Explicit:               p.Explicit,
+		Author:                 p.Author,
+		TotalEpisodes:          p.TotalEpisodes,
+		TotalSeasons:           p.TotalSeasons,
+		Type:                   p.Type,
+		Complete:               p.Complete,
+		EarliestEpisodePubDate: p.EarliestEpisodePubDate,
 	})
 }
 

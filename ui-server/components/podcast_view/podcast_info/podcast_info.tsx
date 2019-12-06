@@ -1,4 +1,5 @@
 import ButtonSubscribe from 'components/button_subscribe'
+import format from 'date-fns/format'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 import { Podcast } from 'types/app'
@@ -45,9 +46,17 @@ const PodcastInfo: React.SFC<Props> = ({ podcast }) => {
             <h3 className="md:text-base text-sm text-gray-800 leading-loose truncate">
               {podcast.author}
             </h3>
+            <h4 className="text-xs text-gray-700">
+              {`${podcast.totalEpisodes} episodes`}
+              <span className="mx-2 font-extrabold">&middot;</span>
+              {format(
+                new Date(`${podcast.earliestEpisodePubDate} +0000`),
+                'MMM yyyy',
+              )}
+            </h4>
           </div>
           <ButtonSubscribe
-            className="w-28 px-4 py-2 text-sm"
+            className="w-24 py-1 text-xs"
             podcastId={podcast.id}
           />
         </div>

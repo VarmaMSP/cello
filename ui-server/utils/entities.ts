@@ -20,6 +20,7 @@ export function podcast(j: any): Podcast {
     totalEpisodes: j.total_episodes || 0,
     type: j.type || 'EPISODE',
     complete: j.complete || false,
+    earliestEpisodePubDate: j.earliest_episode_pub_date,
   }
 }
 
