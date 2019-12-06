@@ -3,6 +3,7 @@ import { getEpisodePlaybacks } from 'actions/playback'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { makeGetPodcastEpisodes } from 'selectors/entities/episodes'
+import { getPodcastById } from 'selectors/entities/podcasts'
 import { getPodcastEpisodesStatus } from 'selectors/request'
 import { AppState } from 'store'
 import * as T from 'types/actions'
@@ -16,9 +17,11 @@ function makeMapStateToProps() {
   const getPodcastEpisodes = makeGetPodcastEpisodes()
 
   return (state: AppState, { podcastId }: OwnProps): StateToProps => {
+    const podcast = getPodcastById(state, podcastId)
     const { episodes, receivedAll } = getPodcastEpisodes(state, podcastId)
 
     return {
+      podcast,
       episodes,
       receivedAll,
       isLoadingMore:

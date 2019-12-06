@@ -11,10 +11,10 @@ interface DispatchToProps {
 const ButtonSignin: React.SFC<DispatchToProps> = (props) => {
   return (
     <button
-      className="w-full h-full rounded border-2 border-orange-600 focus:outline-none focus:shadow-outline"
+      className="w-full h-full rounded bg-orange-600 focus:outline-none focus:shadow-outline"
       onClick={props.showSigninModal}
     >
-      <p className="text-sm text-orange-600 font-semibold leading-loose">
+      <p className="text-sm text-white font-semibold leading-loose">
         SIGN IN
       </p>
     </button>

@@ -41,7 +41,7 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
           <a className="md:text-base text-sm line-clamp-2">{episode.title}</a>
         </EpisodeLink>
         <PodcastLink podcastId={podcast.id}>
-          <a className="text-sm text-grey-800 hover:text-black my-1">
+          <a className="text-sm text-grey-700 hover:text-black my-1">
             {podcast.title}
           </a>
         </PodcastLink>
@@ -58,13 +58,13 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
 
         <div className="flex mt-4">
           <button
-            className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-purple-900 bg-gray-300 border hover:border-2 rounded-lg focus:outline-none focus:shadow-outline"
+            className="flex items-center mr-4 px-3 py-1 text-2xs text-center bg-indigo-500 text-white border hover:border-2 rounded-lg focus:outline-none focus:shadow-outline"
             onClick={() =>
               playEpisode((episode.progress * episode.duration) / 100)
             }
           >
             <PlayIcon className="fill-current w-4 h-auto" />
-            <span className="ml-2 font-medium">PLAY</span>
+            <span className="ml-1 font-medium">PLAY</span>
           </button>
           <button
             className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-gray-700 bg-gray-200 border rounded-lg focus:outline-none focus:shadow-outline"

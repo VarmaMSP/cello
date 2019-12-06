@@ -5,9 +5,10 @@ import EpisodeMeta from 'components/episode_meta'
 import { EpisodeLink } from 'components/link'
 import React, { useEffect } from 'react'
 import striptags from 'striptags'
-import { Episode } from 'types/app'
+import { Episode, Podcast } from 'types/app'
 
 export interface StateToProps {
+  podcast: Podcast
   episodes: Episode[]
   receivedAll: boolean
   isLoadingMore: boolean
@@ -26,6 +27,7 @@ export interface OwnProps {
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
 const ListEpisodes: React.SFC<Props> = ({
+  podcast,
   episodes,
   showAddToPlaylistModal,
   loadPlaybacks,
@@ -62,7 +64,10 @@ const ListEpisodes: React.SFC<Props> = ({
               </EpisodeLink>
             </div>
             <div className="flex flex-col items-center justify-end ml-4">
-              <ButtonPlay className="w-6" episodeId={episode.id} />
+              <ButtonPlay
+                className="w-6"
+                episodeId={episode.id}
+              />
               <ButtonWithIcon
                 className="group-hover:block text-gray-600 w-5 my-4"
                 icon="playlist-add"
@@ -77,7 +82,7 @@ const ListEpisodes: React.SFC<Props> = ({
           <hr className="my-3" />
         </div>
       ))}
-      {!receivedAll && (
+      {episodes.length < podcast.totalEpisodes && !receivedAll && (
         <div className="w-28 h-10 mx-auto my-6">
           <ButtonShowMore
             isLoading={isLoadingMore}

@@ -21,6 +21,7 @@ export function podcast(j: any): Podcast {
     type: j.type || 'EPISODE',
     complete: j.complete || false,
     earliestEpisodePubDate: j.earliest_episode_pub_date,
+    copyright: j.copyright || "",
   }
 }
 

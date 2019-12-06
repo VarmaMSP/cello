@@ -20,6 +20,7 @@ export interface Podcast {
   type: 'SERIAL' | 'EPISODE'
   complete: boolean
   earliestEpisodePubDate: string
+  copyright: string
 }
 
 export interface Episode {

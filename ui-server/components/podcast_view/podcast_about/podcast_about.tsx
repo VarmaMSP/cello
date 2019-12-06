@@ -17,7 +17,8 @@ const PodcastAbout: React.FC<Props> = ({ podcast }) => {
       className="mt-6 text-gray-800 text-sm tracking-wide leading-relaxed"
       style={{ hyphens: 'auto' }}
     >
-      {podcast.description}
+      <div>{podcast.description}</div>
+      <div className="mt-5 text-gray-600">{`${podcast.copyright}`}</div>
     </div>
   )
 }

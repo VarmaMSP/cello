@@ -10,7 +10,6 @@ export interface StateToProps {
 const Subscriptions: React.FC<StateToProps> = ({ subscriptions }) => {
   const [showAll, setShowAll] = useState(false)
 
-  console.log('rendering')
   return (
     <div className="bg-gray-200 py-3 px-2 rounded-xl">
       <h2 className="text-lg text-gray-700 mb-4 px-2">
@@ -33,7 +32,7 @@ const Subscriptions: React.FC<StateToProps> = ({ subscriptions }) => {
           </PodcastLink>
         ))}
       </Grid>
-      {!showAll && (
+      {subscriptions.length > 12 && !showAll && (
         <>
           <hr className="my-1" />
           <button

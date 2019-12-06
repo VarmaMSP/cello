@@ -27,7 +27,7 @@ const ButtonPlay: React.SFC<Props> = ({ episode, playEpisode, className }) => {
   return (
     <ButtonWithIcon
       className={classNames(
-        'flex-none text-gray-700 hover:text-black',
+        'flex-none text-indigo-600 hover:text-indigo-700',
         className,
       )}
       icon="play-outline"
