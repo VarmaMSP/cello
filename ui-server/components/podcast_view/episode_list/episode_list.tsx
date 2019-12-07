@@ -48,7 +48,7 @@ const ListEpisodes: React.SFC<Props> = ({
               <EpisodeMeta episodeId={episode.id} />
               <EpisodeLink episodeId={episode.id}>
                 <a
-                  className="md:text-base text-sm text-black tracking-wide line-clamp-1"
+                  className="font-medium text-sm md:text-base text-black tracking-wide line-clamp-1"
                   style={{ marginTop: '1px' }}
                 >
                   {episode.title}
@@ -64,10 +64,7 @@ const ListEpisodes: React.SFC<Props> = ({
               </EpisodeLink>
             </div>
             <div className="flex flex-col items-center justify-end ml-4">
-              <ButtonPlay
-                className="w-6"
-                episodeId={episode.id}
-              />
+              <ButtonPlay className="w-6" episodeId={episode.id} />
               <ButtonWithIcon
                 className="group-hover:block text-gray-600 w-5 my-4"
                 icon="playlist-add"
@@ -83,7 +80,7 @@ const ListEpisodes: React.SFC<Props> = ({
         </div>
       ))}
       {episodes.length < podcast.totalEpisodes && !receivedAll && (
-        <div className="w-28 h-10 mx-auto my-6">
+        <div className="w-full h-10 mx-auto my-6">
           <ButtonShowMore
             isLoading={isLoadingMore}
             loadMore={() =>

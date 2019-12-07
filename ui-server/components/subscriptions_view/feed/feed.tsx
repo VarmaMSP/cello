@@ -58,7 +58,7 @@ const Feed: React.SFC<StateToProps & DispatchToProps> = (props) => {
         </div>
       ))}
 
-      <div className="w-28 h-10 mx-auto my-6">
+      <div className="w-full h-10 mx-auto my-6">
         <ButtonShowMore
           isLoading={isLoadingMore}
           loadMore={() => loadMore(feed.length)}
