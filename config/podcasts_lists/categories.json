@@ -97,7 +97,8 @@
         ]
     },
     {
-        "title": "News#(Business News, Daily News, Tech News...)",
+        "title": "News",
+        "sub_title": "(Business News, Daily News, Tech News...)",
         "sub": [
             "Business News",
             "Daily News",
