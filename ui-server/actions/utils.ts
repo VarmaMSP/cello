@@ -1,39 +1,61 @@
 import { FetchException } from 'client/fetch'
 import { Dispatch } from 'redux'
+import { getCurrentUserId } from 'selectors/entities/users'
+import { requestStatus } from 'selectors/request'
 import { AppState } from 'store'
-import {
-  AppActions,
-  REQUEST_COMPLETE,
-  REQUEST_IN_PROGRESS,
-  SIGN_OUT_USER_FORCEFULLY,
-} from 'types/actions'
+import * as AT from 'types/actions'
 
-interface RequestActionOpts {
+type ProcessData<T> = (
+  d: Dispatch<AT.AppActions>,
+  g: () => AppState,
+  r: T extends Promise<infer U> ? U : T,
+) => void
+
+type RequestActionOpts = {
   requestId: string
+  skip: RequestActionSkipCond
   notifyError: boolean
 }
 
-type ResolveData<T> = T extends Promise<infer U> ? U : T
+type RequestActionSkipCond =
+  | { cond: 'USER_NOT_SIGNED_IN' }
+  | { cond: 'REQUEST_ALREADY_MADE' }
 
 export function requestAction<T extends Promise<any>>(
   makeRequest: () => T,
-  processData: (
-    dispatch: Dispatch<AppActions>,
-    getState: () => AppState,
-    data: ResolveData<T>,
-  ) => void,
-  { requestId }: Partial<RequestActionOpts> = {},
+  processData: ProcessData<T>,
+  { skip, requestId }: Partial<RequestActionOpts> = {},
 ) {
-  return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
-    !!requestId && dispatch({ type: REQUEST_IN_PROGRESS, requestId })
+  return async (
+    dispatch: Dispatch<AT.AppActions>,
+    getState: () => AppState,
+  ) => {
+    if (!!skip) {
+      switch (skip.cond) {
+        case 'REQUEST_ALREADY_MADE':
+          if (requestStatus(getState(), requestId!) === 'SUCCESS') {
+            return
+          }
+          break
+        case 'USER_NOT_SIGNED_IN':
+          if (getCurrentUserId(getState()) === '') {
+            return
+          }
+          break
+      }
+    }
+
+    !!requestId && dispatch({ type: AT.REQUEST_IN_PROGRESS, requestId })
+
     try {
       const res = await makeRequest()
       processData(dispatch, getState, res)
+      !!requestId && dispatch({ type: AT.REQUEST_SUCCESS, requestId })
     } catch (err) {
       if ((err as FetchException).statusCode === 401) {
-        dispatch({ type: SIGN_OUT_USER_FORCEFULLY })
+        dispatch({ type: AT.SIGN_OUT_USER_FORCEFULLY })
       }
+      !!requestId && dispatch({ type: AT.REQUEST_FAILURE, requestId })
     }
-    !!requestId && dispatch({ type: REQUEST_COMPLETE, requestId })
   }
 }
