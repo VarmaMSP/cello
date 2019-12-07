@@ -17,7 +17,6 @@ export interface DispatchToProps {
 }
 
 const Feed: React.FC<StateToProps & DispatchToProps> = ({ history }) => {
-  console.log(history)
   const historyList: { title: string; episodes: Episode[] }[] = [
     { title: 'Today', episodes: [] },
     { title: 'Yesterday', episodes: [] },
