@@ -13,7 +13,7 @@ func (api *Api) RegisterDiscoverHandlers() {
 }
 
 func GetHomePageDate(c *Context, w http.ResponseWriter) {
-	trending, err := c.app.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_DISCOVER, "discover.json")
+	recommended, err := c.app.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_DISCOVER, "recommended.json")
 	if err != nil {
 		c.err = err
 		return
@@ -29,11 +29,11 @@ func GetHomePageDate(c *Context, w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(
 		model.EncodeToJson(&struct {
-			Trending   json.RawMessage `json:"trending"`
-			Categories json.RawMessage `json:"categories"`
+			Recommended json.RawMessage `json:"recommended"`
+			Categories  json.RawMessage `json:"categories"`
 		}{
-			Trending:   (json.RawMessage)(trending),
-			Categories: (json.RawMessage)(categories),
+			Recommended: (json.RawMessage)(recommended),
+			Categories:  (json.RawMessage)(categories),
 		}),
 	)
 }

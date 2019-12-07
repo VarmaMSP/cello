@@ -74,7 +74,6 @@
         ]
     },
     {
-        "id": "leisure",
         "title": "Leisure",
         "sub_title": "(Manga, Auto, Video Games, Crafts...)",
         "sub": [
@@ -182,8 +181,5 @@
             "Film Reviews",
             "TV Reviews"
         ]
-    },
-    {
-        "title": "Technology"
     }
 ]
