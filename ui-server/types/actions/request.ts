@@ -1,14 +1,23 @@
 export const REQUEST_IN_PROGRESS = 'REQUEST_IN_PROGRESS'
-export const REQUEST_COMPLETE = 'REQUEST_COMPLETE'
+export const REQUEST_SUCCESS = 'REQUEST_SUCCESS'
+export const REQUEST_FAILURE = 'REQUEST_FAILURE'
 
 export interface RequestInProgressAction {
   type: typeof REQUEST_IN_PROGRESS
   requestId: string
 }
 
-export interface RequestCompleteAction {
-  type: typeof REQUEST_COMPLETE
+export interface RequestSuccessAction {
+  type: typeof REQUEST_SUCCESS
   requestId: string
 }
 
-export type RequestActionTypes = RequestInProgressAction | RequestCompleteAction
+export interface RequestFailureAction {
+  type: typeof REQUEST_FAILURE
+  requestId: string
+}
+
+export type RequestActionTypes =
+  | RequestInProgressAction
+  | RequestSuccessAction
+  | RequestFailureAction
