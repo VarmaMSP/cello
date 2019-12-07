@@ -11,6 +11,7 @@ const podcasts: Reducer<{ [PodcastId: string]: Podcast }, T.AppActions> = (
       return { ...state, [action.podcast.id]: action.podcast }
     case T.RECEIVED_SEARCH_PODCASTS:
     case T.RECEIVED_TRENDING_PODCASTS:
+    case T.RECEIVED_RECOMMENDED_PODCASTS:
       return {
         ...state,
         ...action.podcasts.reduce<{

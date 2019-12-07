@@ -58,3 +58,10 @@ export interface Playlist {
   userId: string
   privacy: 'PUBLIC' | 'PRIVATE' | 'ANONYMOUS'
 }
+
+export interface PodcastList {
+  id: string
+  parentId?: string
+  title: string
+  subTitle?: string
+}
