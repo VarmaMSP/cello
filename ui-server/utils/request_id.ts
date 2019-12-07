@@ -9,3 +9,7 @@ export function getSubscriptionsFeed() {
 export function getHistoryFeed() {
   return '3'
 }
+
+export function getDiscoverPageData() {
+  return '4'
+}

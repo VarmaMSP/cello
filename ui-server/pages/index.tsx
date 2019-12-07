@@ -1,3 +1,4 @@
+import { getDiscoverPageData } from 'actions/discover'
 import { getTrendingPodcasts } from 'actions/podcast'
 import Discover from 'components/discover'
 import LoadingPage from 'components/loading_page'
@@ -26,6 +27,7 @@ interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
 class IndexPage extends React.Component<Props> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
+    await bindActionCreators(getDiscoverPageData, ctx.store.dispatch)()
     ctx.store.dispatch({ type: SET_CURRENT_URL_PATH, urlPath: '/' })
   }
 

@@ -76,3 +76,10 @@ function roundTo(n: number, digits: number) {
   var test = Math.round(n) / multiplicator
   return +test.toFixed(digits)
 }
+
+export function formatCategoryTitle(str: string): string {
+  return str
+    .toLowerCase()
+    .replace(/& /g, '')
+    .replace(/ /g, '-')
+}
