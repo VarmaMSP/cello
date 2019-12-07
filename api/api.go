@@ -96,6 +96,7 @@ func NewApi(config model.Config) (*Api, error) {
 	api.RegisterHistoryHandlers()
 	api.RegisterPlaylistHandlers()
 	api.RegisterUserHandlers()
+	api.RegisterDiscoverHandlers()
 
 	return api, nil
 }

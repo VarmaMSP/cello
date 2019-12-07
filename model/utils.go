@@ -202,7 +202,7 @@ func MapToJson(data map[string]string) []byte {
 }
 
 //EncodeToJson will encode given map to valid json
-func EncodeToJson(data map[string]interface{}) []byte {
+func EncodeToJson(data interface{}) []byte {
 	if res, err := json.Marshal(data); err == nil {
 		return res
 	}
