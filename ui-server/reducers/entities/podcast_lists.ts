@@ -7,8 +7,11 @@ const categories: Reducer<{ [id: string]: PodcastList }, T.AppActions> = (
   action,
 ) => {
   switch (action.type) {
-    case T.RECEIVED_PODCAST_CATEGORY_LIST:
-      return { ...state, [action.category.id]: action.category }
+    case T.RECEIVED_PODCAST_CATEGORY_LISTS:
+      return action.categories.reduce<{ [id: string]: PodcastList }>(
+        (acc, c) => ({ ...acc, [c.id]: c }),
+        {},
+      )
     default:
       return state
   }
@@ -19,18 +22,14 @@ const subCategories: Reducer<{ [id: string]: string[] }, T.AppActions> = (
   action,
 ) => {
   switch (action.type) {
-    case T.RECEIVED_PODCAST_CATEGORY_LIST:
-      if (!!!action.category.parentId) {
-        return state
-      }
-
-      return {
-        ...state,
-        [action.category.parentId]: [
-          ...(state[action.category.parentId] || []),
-          action.category.id,
-        ],
-      }
+    case T.RECEIVED_PODCAST_CATEGORY_LISTS:
+      return action.categories.reduce<{ [id: string]: string[] }>(
+        (acc, c) =>
+          !!c.parentId
+            ? { ...acc, [c.parentId]: [...(acc[c.parentId] || []), c.id] }
+            : acc,
+        {},
+      )
     default:
       return state
   }

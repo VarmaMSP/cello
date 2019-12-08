@@ -7,12 +7,10 @@ export function getDiscoverPageData() {
   return requestAction(
     () => client.getDiscoverPageData(),
     (dispatch, _, { podcasts, categories }) => {
-      categories.forEach((category) =>
-        dispatch({
-          type: T.RECEIVED_PODCAST_CATEGORY_LIST,
-          category,
-        }),
-      )
+      dispatch({
+        type: T.RECEIVED_PODCAST_CATEGORY_LISTS,
+        categories,
+      }),
       dispatch({
         type: T.RECEIVED_RECOMMENDED_PODCASTS,
         podcasts,
