@@ -23,7 +23,7 @@ export function makeGetCategories() {
   )
 }
 
-export function makeGetSubCategories() {
+export function makeGetChartChildren() {
   return createSelector<
     AppState,
     $Id<Chart>,
@@ -32,8 +32,8 @@ export function makeGetSubCategories() {
     Chart[]
   >(
     (state) => state.entities.charts.charts,
-    (state, id) => state.entities.charts.chartTree[id],
-    (all, ids) => ids.map((id) => all[id]).filter((c) => c.type === 'CATEGORY'),
+    (state, id) => state.entities.charts.chartTree[id] || [],
+    (all, ids) => ids.map((id) => all[id]),
   )
 }
 
