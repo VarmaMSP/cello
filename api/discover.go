@@ -10,8 +10,8 @@ import (
 )
 
 func (api *Api) RegisterDiscoverHandlers() {
-	api.router.Handler("GET", "/discover", api.NewHandler(GetHomePageDate))
-	api.router.Handler("GET", "/discover/:listId", api.NewHandler(GetPodcastsInList))
+	api.router.Handler("GET", "/home", api.NewHandler(GetHomePageDate))
+	api.router.Handler("GET", "/charts/:chartId", api.NewHandler(GetPodcastsInChart))
 }
 
 func GetHomePageDate(c *Context, w http.ResponseWriter) {
@@ -40,9 +40,9 @@ func GetHomePageDate(c *Context, w http.ResponseWriter) {
 	)
 }
 
-func GetPodcastsInList(c *Context, w http.ResponseWriter) {
-	listId := c.Param("listId")
-	podcasts, err := c.app.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_CHARTS, fmt.Sprintf("%s.json", listId))
+func GetPodcastsInChart(c *Context, w http.ResponseWriter) {
+	chartId := c.Param("chartId")
+	podcasts, err := c.app.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_CHARTS, fmt.Sprintf("%s.json", chartId))
 	if err != nil {
 		c.err = err
 		return
