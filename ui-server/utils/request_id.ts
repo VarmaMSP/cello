@@ -13,3 +13,7 @@ export function getHistoryFeed() {
 export function getDiscoverPageData() {
   return '4'
 }
+
+export function getPodcastsInList(listId: string) {
+  return `5_${listId}`
+}

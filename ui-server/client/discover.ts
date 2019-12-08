@@ -29,9 +29,22 @@ export async function getDiscoverPageData(): Promise<{
     }
     categories.push(cat)
   }
-  
+
   return {
     categories,
     podcasts: (data.recommended || []).map(unmarshal.podcast),
   }
+}
+
+export async function getPodcastsFromList(
+  listId: string,
+): Promise<{
+  podcasts: Podcast[]
+}> {
+  const { data } = await doFetch({
+    method: 'GET',
+    urlPath: `/discover/${listId}`,
+  })
+
+  return { podcasts: (data.podcasts || []).map(unmarshal.podcast) }
 }

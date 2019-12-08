@@ -2,6 +2,18 @@ import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
 import { PodcastList } from 'types/app'
 
+const podcastsInList: Reducer<{ [id: string]: string[] }, T.AppActions> = (
+  state = {},
+  action,
+) => {
+  switch (action.type) {
+    case T.RECEIVED_PODCASTS_IN_LIST:
+      return { ...state, [action.listId]: action.podcasts.map((p) => p.id) }
+    default:
+      return state
+  }
+}
+
 const categories: Reducer<{ [id: string]: PodcastList }, T.AppActions> = (
   state = {},
   action,
@@ -45,6 +57,7 @@ const recommended: Reducer<string[], T.AppActions> = (state = [], action) => {
 }
 
 export default combineReducers({
+  podcastsInList,
   categories,
   subCategories,
   recommended,

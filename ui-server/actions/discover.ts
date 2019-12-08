@@ -11,13 +11,30 @@ export function getDiscoverPageData() {
         type: T.RECEIVED_PODCAST_CATEGORY_LISTS,
         categories,
       }),
+        dispatch({
+          type: T.RECEIVED_RECOMMENDED_PODCASTS,
+          podcasts,
+        })
+    },
+    {
+      requestId: RequestId.getDiscoverPageData(),
+      skip: { cond: 'REQUEST_ALREADY_MADE' },
+    },
+  )
+}
+
+export function getPodcastsInList(listId: string) {
+  return requestAction(
+    () => client.getPodcastsFromList(listId),
+    (dispatch, _, { podcasts }) => {
       dispatch({
-        type: T.RECEIVED_RECOMMENDED_PODCASTS,
+        type: T.RECEIVED_PODCASTS_IN_LIST,
+        listId,
         podcasts,
       })
     },
     {
-      requestId: RequestId.getDiscoverPageData(),
+      requestId: RequestId.getPodcastsInList(listId),
       skip: { cond: 'REQUEST_ALREADY_MADE' },
     },
   )

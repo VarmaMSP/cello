@@ -17,9 +17,10 @@ export default class PodcastsPage extends Component<OwnProps> {
       return
     }
 
-    await bindActionCreators(getPodcast, store.dispatch)(query[
-      'podcastId'
-    ] as string)
+    await bindActionCreators(
+      getPodcast,
+      store.dispatch,
+    )(query['podcastId'] as string)
   }
 
   componentDidMount() {
