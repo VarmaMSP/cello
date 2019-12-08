@@ -1,4 +1,4 @@
-import { getDiscoverPageData } from 'actions/discover'
+import { getHomePageData } from 'actions/home'
 import HomeView from 'components/home_view/home_view'
 import { NextSeo } from 'next-seo'
 import React from 'react'
@@ -12,7 +12,7 @@ interface OwnProps {
 
 export default class IndexPage extends React.Component<OwnProps> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
-    await bindActionCreators(getDiscoverPageData, ctx.store.dispatch)()
+    await bindActionCreators(getHomePageData, ctx.store.dispatch)()
   }
 
   componentDidMount() {

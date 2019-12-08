@@ -10,10 +10,10 @@ export function getHistoryFeed() {
   return '3'
 }
 
-export function getDiscoverPageData() {
+export function getHomePageData() {
   return '4'
 }
 
-export function getPodcastsInList(listId: string) {
-  return `5_${listId}`
+export function getPodcastsInChart(chartId: string) {
+  return `5_${chartId}`
 }

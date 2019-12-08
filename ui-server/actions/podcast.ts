@@ -17,12 +17,3 @@ export function getPodcast(podcastId: string) {
     },
   )
 }
-
-export function getTrendingPodcasts() {
-  return requestAction(
-    () => Promise.resolve(),
-    (dispatch) => {
-      dispatch({ type: T.RECEIVED_TRENDING_PODCASTS, podcasts: [] })
-    },
-  )
-}

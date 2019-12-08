@@ -40,17 +40,17 @@ export const EpisodeLink: React.FC<Props & { episodeId: string }> = ({
   )
 }
 
-export const PodcastListLink: React.FC<Props & { listId: string }> = ({
+export const ChartLink: React.FC<Props & { chartId: string }> = ({
   children,
-  listId,
+  chartId,
 }) => {
   return (
     <Link
       href={{
-        pathname: '/discover',
-        query: { listId: listId },
+        pathname: '/charts',
+        query: { chartId: chartId },
       }}
-      as={`/discover/${listId}`}
+      as={`/charts/${chartId}`}
     >
       {children}
     </Link>

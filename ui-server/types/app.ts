@@ -59,9 +59,10 @@ export interface Playlist {
   privacy: 'PUBLIC' | 'PRIVATE' | 'ANONYMOUS'
 }
 
-export interface PodcastList {
+export interface Chart {
   id: string
   parentId?: string
   title: string
   subTitle?: string
+  type: 'CATEGORY' | 'NORMAL'
 }

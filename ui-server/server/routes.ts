@@ -33,6 +33,14 @@ export function registerRoutes(app: NextServer, router: Router) {
     })),
   )
 
+  // Charts Page
+  router.get(
+    '/charts/:chartId',
+    servePage('/charts', 'public,max-age=1200,must-revalidate', (ctx) => ({
+      chartId: ctx.params['chartId'],
+    })),
+  )
+
   // Results Page
   router.get(
     '/results',

@@ -1,9 +1,9 @@
-import { PodcastListLink } from 'components/link'
+import { ChartLink } from 'components/link'
 import React from 'react'
-import { PodcastList } from 'types/app'
+import { Chart } from 'types/app'
 
 export interface StateToProps {
-  categories: PodcastList[]
+  categories: Chart[]
 }
 
 const Categories: React.FC<StateToProps> = ({ categories }) => {
@@ -13,7 +13,7 @@ const Categories: React.FC<StateToProps> = ({ categories }) => {
       <hr className="mt-2 mb-4 border-gray-400" />
       <ul>
         {categories.map((c) => (
-          <PodcastListLink listId={c.id}>
+          <ChartLink chartId={c.id}>
             <a>
               <li
                 key={c.id}
@@ -26,7 +26,7 @@ const Categories: React.FC<StateToProps> = ({ categories }) => {
                 </span>
               </li>
             </a>
-          </PodcastListLink>
+          </ChartLink>
         ))}
       </ul>
     </div>

@@ -10,8 +10,7 @@ const podcasts: Reducer<{ [PodcastId: string]: Podcast }, T.AppActions> = (
     case T.RECEIVED_PODCAST:
       return { ...state, [action.podcast.id]: action.podcast }
     case T.RECEIVED_SEARCH_PODCASTS:
-    case T.RECEIVED_TRENDING_PODCASTS:
-    case T.RECEIVED_RECOMMENDED_PODCASTS:
+    case T.RECEIVED_CHART_PODCASTS:
       return {
         ...state,
         ...action.podcasts.reduce<{
@@ -43,20 +42,7 @@ const subscriptions: Reducer<string[], T.AppActions> = (state = [], action) => {
   }
 }
 
-const podcastsTrending: Reducer<string[], T.AppActions> = (
-  state = [],
-  action,
-) => {
-  switch (action.type) {
-    case T.RECEIVED_TRENDING_PODCASTS:
-      return action.podcasts.map((p) => p.id)
-    default:
-      return state
-  }
-}
-
 export default combineReducers({
   podcasts,
   subscriptions,
-  podcastsTrending,
 })

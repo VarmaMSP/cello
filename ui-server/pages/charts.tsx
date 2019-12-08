@@ -1,32 +1,34 @@
-import { getPodcastsInList } from 'actions/discover'
-import DiscoverView from 'components/discover_view/discover_view'
+import { getPodcastsInChart } from 'actions/chart'
+import { getHomePageData } from 'actions/home'
+import ChartView from 'components/chart_view/chart_view'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { PageContext } from 'types/utilities'
 import * as gtag from 'utils/gtag'
 
 interface OwnProps {
-  listId: string
+  chartId: string
   scrollY: number
 }
 
-export default class DiscoverPage extends Component<OwnProps> {
+export default class ChartsPage extends Component<OwnProps> {
   static async getInitialProps({ query, store }: PageContext): Promise<void> {
+    await bindActionCreators(getHomePageData, store.dispatch)()
     await bindActionCreators(
-      getPodcastsInList,
+      getPodcastsInChart,
       store.dispatch,
-    )(query['listId'] as string)
+    )(query['chartId'] as string)
   }
 
   componentDidMount() {
-    gtag.pageview(`/discover/${this.props.listId}`)
+    gtag.pageview(`/charts/${this.props.chartId}`)
     window.window.scrollTo(0, this.props.scrollY)
   }
 
   render() {
     return (
       <div>
-        <DiscoverView listId={this.props.listId} />
+        <ChartView chartId={this.props.chartId} />
       </div>
     )
   }

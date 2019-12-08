@@ -5,33 +5,33 @@ import { Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {
-  recommended: Podcast[]
+  podcasts: Podcast[]
 }
 
-const Recommended: React.FC<StateToProps> = ({ recommended }) => {
+const Recommended: React.FC<StateToProps> = ({ podcasts }) => {
   return (
     <div className="mb-6">
       <h2 className="text-xl text-gray-700">{'Trending'}</h2>
       <hr className="mt-1 mb-4 border-gray-400" />
       <GridResponsive cols={{ SM: 4, MD: 5, LG: 8 }}>
-        {recommended.map((podcast) => (
-          <div key={podcast.id} className="flex-none px-1 mb-4">
-            <PodcastLink podcastId={podcast.id}>
+        {podcasts.map((p) => (
+          <div key={p.id} className="flex-none px-1 mb-4">
+            <PodcastLink podcastId={p.id}>
               <a>
                 <img
                   className="w-full h-auto mb-2 flex-none object-contain rounded-lg border"
-                  src={getImageUrl(podcast.urlParam)}
+                  src={getImageUrl(p.urlParam)}
                 />
               </a>
             </PodcastLink>
-            <PodcastLink podcastId={podcast.id}>
+            <PodcastLink podcastId={p.id}>
               <a className="md:text-xs text-2xs text-gray-800 tracking-wide leading-snug md:mb-1 line-clamp-1">
-                {podcast.title}
+                {p.title}
               </a>
             </PodcastLink>
-            <PodcastLink podcastId={podcast.id}>
+            <PodcastLink podcastId={p.id}>
               <a className="md:text-xs text-2xs text-gray-600 leading-snug line-clamp-1">
-                {podcast.author}
+                {p.author}
               </a>
             </PodcastLink>
           </div>
