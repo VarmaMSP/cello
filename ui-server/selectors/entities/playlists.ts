@@ -4,19 +4,19 @@ import { Playlist, User } from 'types/app'
 import { $Id, MapById } from 'types/utilities'
 
 export function getAllPlaylists(state: AppState) {
-  return state.entities.playlist.playlists
+  return state.entities.playlists.playlists
 }
 
 export function makeGetUserPlaylists() {
   return createSelector<
     AppState,
     $Id<User>,
-    $Id<Playlist>[],
     MapById<Playlist>,
+    $Id<Playlist>[],
     Playlist[]
   >(
-    (state, userId) => state.entities.playlist.byUser[userId] || [],
     (state, _) => getAllPlaylists(state),
-    (ids, playlists) => ids.map((id) => playlists[id]),
+    (state, userId) => state.entities.playlists.byUser[userId] || [],
+    (all, ids) => ids.map((id) => all[id]),
   )
 }

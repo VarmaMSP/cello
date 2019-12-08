@@ -20,9 +20,10 @@ import '../styles/index.css'
 NProgress.configure({
   showSpinner: false,
   trickle: true,
-  trickleSpeed: 200,
+  trickleSpeed: 100,
   easing: 'ease',
   speed: 200,
+  minimum: 0.5,
 })
 
 export default withRedux(makeStore)(

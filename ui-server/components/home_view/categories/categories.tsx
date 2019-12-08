@@ -14,7 +14,7 @@ const Categories: React.FC<StateToProps> = ({ categories }) => {
         {categories.map((c) => (
           <li
             key={c.id}
-            className="block flex items-center h-10 w-2/3 pl-6 rounded-full hover:bg-gray-200"
+            className="block flex items-center h-10 md:w-1/2 pl-6 rounded-full hover:bg-gray-200"
           >
             <span className="text-lg text-gray-900">{c.title}</span>
             &nbsp;&nbsp;
