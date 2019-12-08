@@ -46,5 +46,53 @@
         "url_param": "motherhacker-dJZ8gd",
         "title": "Motherhacker",
         "author": "Gimlet"
+    },
+    {
+        "id": "vbmOeY",
+        "url_param": "startup-podcast-vbmOeY",
+        "title": "StartUp Podcast",
+        "author": "Gimlet"
+    },
+    {
+        "id": "eg5xGb",
+        "url_param": "blood-ties-eg5xGb",
+        "title": "Blood Ties",
+        "author": "Wondery"
+    },
+    {
+        "id": "oeEQle",
+        "url_param": "the-david-rubenstein-show-oeEQle",
+        "title": "The David Rubenstein Show",
+        "author": "Bloomberg TV"
+    },
+    {
+        "id": "erkn2a",
+        "url_param": "conan-obrien-needs-a-friend-erkn2a",
+        "title": "Conan O’Brien Needs A Friend",
+        "author": "Team Coco & Earwolf"
+    },
+    {
+        "id": "PdyNVe",
+        "url_param": "pivot-with-jenny-blake-PdyNVe",
+        "title": "Pivot with Jenny Blake",
+        "author": "Jenny Blake — Author, Speaker, Career & Business Strategist"
+    },
+    {
+        "id": "ZdPr2a",
+        "url_param": "brought-to-you-by-ZdPr2a",
+        "title": "Brought to you by...",
+        "author": "Business Insider"
+    },
+    {
+        "id": "QbYXYa",
+        "url_param": "hbs-managing-the-future-of-work-QbYXYa",
+        "title": "HBS Managing the Future of Work",
+        "author": "Harvard Business School"
+    },
+    {
+        "id": "zbqMkb",
+        "url_param": "business-casual-zbqMkb",
+        "title": "Business Casual",
+        "author": "Morning Brew"
     }
 ]
