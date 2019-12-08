@@ -17,7 +17,7 @@ function makeMapStateToProps() {
       receivedAll: receivedAll,
       isLoadingMore: getSubscriptionsFeedStatus(state) === 'IN_PROGRESS',
     }
-  }
+  } 
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {

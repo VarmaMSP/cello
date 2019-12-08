@@ -1,10 +1,9 @@
-import ButtonPlay from 'components/button_play'
-import EpisodeMeta from 'components/episode_meta'
+import ButtonShowMore from 'components/button_show_more'
+import EpisodeListItem from 'components/episode_list_item'
 import isToday from 'date-fns/isToday'
 import isYesterday from 'date-fns/isYesterday'
 import React from 'react'
 import { Episode } from 'types/app'
-import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {
   history: Episode[]
@@ -16,7 +15,12 @@ export interface DispatchToProps {
   loadMore: (offset: number) => void
 }
 
-const Feed: React.FC<StateToProps & DispatchToProps> = ({ history }) => {
+const Feed: React.FC<StateToProps & DispatchToProps> = ({
+  history,
+  loadMore,
+  receivedAll,
+  isLoadingMore,
+}) => {
   const historyList: { title: string; episodes: Episode[] }[] = [
     { title: 'Today', episodes: [] },
     { title: 'Yesterday', episodes: [] },
@@ -47,30 +51,7 @@ const Feed: React.FC<StateToProps & DispatchToProps> = ({ history }) => {
           {episodes.length > 0 ? (
             <div>
               {episodes.map((episode) => (
-                <div key={episode.id} className="">
-                  <img
-                    className="w-24 h-24 flex-none object-contain rounded-lg border cursor-default"
-                    src={getImageUrl(episode.podcastId)}
-                    onClick={() => {}}
-                  />
-                  <div className="flex-auto flex flex-col justify-between pl-3">
-                    <div>
-                      <h1
-                        className="text-sm leading-tight line-clamp-2 cursor-default"
-                        onClick={() => {}}
-                      >
-                        {episode.title}
-                      </h1>
-                      <div className="mt-2">
-                        <EpisodeMeta
-                          displayPubDate={false}
-                          episodeId={episode.id}
-                        />
-                      </div>
-                    </div>
-                    <ButtonPlay className="w-5" episodeId={episode.id} />
-                  </div>
-                </div>
+                <EpisodeListItem key={episode.id} episodeId={episode.id} />
               ))}
             </div>
           ) : (
@@ -80,6 +61,15 @@ const Feed: React.FC<StateToProps & DispatchToProps> = ({ history }) => {
           )}
         </div>
       ))}
+
+      {!receivedAll && (
+        <div className="w-full h-10 mx-auto my-6">
+          <ButtonShowMore
+            isLoading={isLoadingMore}
+            loadMore={() => loadMore(history.length)}
+          />
+        </div>
+      )}
     </>
   )
 }

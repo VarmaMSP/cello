@@ -17,7 +17,7 @@ const subscriptions: Reducer<
     case T.RECEIVED_ALL_SUBSCRIPTION_FEED:
       return {
         ...state,
-        receivedAll: [...state.receivedAll, 'pub_date_desc'],
+        receivedAll: [...new Set([...state.receivedAll, 'pub_date_desc'])],
       }
     default:
       return state
@@ -40,7 +40,7 @@ const history: Reducer<
     case T.RECEIVED_ALL_HISTORY_FEED:
       return {
         ...state,
-        receivedAll: [...state.receivedAll, 'pub_date_desc'],
+        receivedAll: [...new Set([...state.receivedAll, 'pub_date_desc'])],
       }
     default:
       return state

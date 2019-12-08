@@ -28,7 +28,7 @@ export function makeGetSubscriptionsFeed() {
           [],
         )
         .sort((a, b) => +new Date(b.pubDate) - +new Date(a.pubDate)),
-      receivedAll: obj.receivedAll.includes('by_pub_date_desc'),
+      receivedAll: obj.receivedAll.includes('pub_date_desc'),
     }),
   )
 }
@@ -58,7 +58,7 @@ export function makeGetHistoryFeed() {
           [],
         )
         .sort((a, b) => +new Date(b.pubDate) - +new Date(a.pubDate)),
-      receivedAll: obj.receivedAll.includes('by_pub_date_desc'),
+      receivedAll: obj.receivedAll.includes('pub_date_desc'),
     }),
   )
 }
