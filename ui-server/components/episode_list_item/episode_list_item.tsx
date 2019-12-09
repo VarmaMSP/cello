@@ -38,10 +38,12 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
       />
       <div className="pl-3">
         <EpisodeLink episodeId={episode.id}>
-          <a className="md:text-base text-sm font-medium line-clamp-2">{episode.title}</a>
+          <a className="md:text-base text-sm font-medium tracking-wide line-clamp-2">
+            {episode.title}
+          </a>
         </EpisodeLink>
         <PodcastLink podcastId={podcast.id}>
-          <a className="text-sm text-grey-700 hover:text-black my-1">
+          <a className="text-sm text-grey-700 hover:text-black tracking-wide my-1">
             {podcast.title}
           </a>
         </PodcastLink>
