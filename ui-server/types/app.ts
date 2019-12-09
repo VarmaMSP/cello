@@ -12,6 +12,7 @@ export interface Podcast {
   id: string
   urlParam: string
   title: string
+  summary: string
   description: string
   language: string
   explicit: boolean
@@ -28,6 +29,7 @@ export interface Episode {
   urlParam: string
   podcastId: string
   title: string
+  summary: string
   mediaUrl: string
   pubDate: string
   description: string

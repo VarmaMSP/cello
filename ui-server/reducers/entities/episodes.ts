@@ -8,14 +8,20 @@ const episodes: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
 ) => {
   switch (action.type) {
     case T.RECEIVED_EPISODE:
-      return { ...state, [action.episode.id]: action.episode }
+      return {
+        ...state,
+        [action.episode.id]: {
+          ...(state[action.episode.id] || {}),
+          ...action.episode,
+        },
+      }
     case T.RECEIVED_PODCAST_EPISODES:
     case T.RECEIVED_SUBSCRIPTION_FEED:
     case T.RECEIVED_HISTORY_FEED:
       return {
         ...state,
         ...action.episodes.reduce<{ [episodeId: string]: Episode }>(
-          (acc, e) => ({ ...acc, [e.id]: e }),
+          (acc, e) => ({ ...acc, [e.id]: { ...(state[e.id] || {}), ...e } }),
           {},
         ),
       }
@@ -25,7 +31,7 @@ const episodes: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
         ...action.playbacks.reduce<{ [episodeId: string]: Episode }>(
           (acc, p) => ({
             ...acc,
-            [p.episodeId]: { ...state[p.episodeId], ...p },
+            [p.episodeId]: { ...(state[p.episodeId] || {}), ...p },
           }),
           {},
         ),

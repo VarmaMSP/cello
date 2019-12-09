@@ -8,21 +8,33 @@ const podcasts: Reducer<{ [PodcastId: string]: Podcast }, T.AppActions> = (
 ) => {
   switch (action.type) {
     case T.RECEIVED_PODCAST:
-      return { ...state, [action.podcast.id]: action.podcast }
-    case T.RECEIVED_SEARCH_PODCASTS:
+      return {
+        ...state,
+        [action.podcast.id]: {
+          ...(state[action.podcast.id] || {}),
+          ...action.podcast,
+        },
+      }
     case T.RECEIVED_CHART_PODCASTS:
+    case T.RECEIVED_SEARCH_PODCASTS:
       return {
         ...state,
         ...action.podcasts.reduce<{
           [id: string]: Podcast
-        }>((acc, p) => ({ ...acc, [p.id]: p }), {}),
+        }>(
+          (acc, p) => ({ ...acc, [p.id]: { ...(state[p.id] || {}), ...p } }),
+          {},
+        ),
       }
     case T.RECEIVED_SIGNED_IN_USER:
       return {
+        ...state,
         ...action.subscriptions.reduce<{
           [id: string]: Podcast
-        }>((acc, p) => ({ ...acc, [p.id]: p }), {}),
-        ...state,
+        }>(
+          (acc, p) => ({ ...acc, [p.id]: { ...(state[p.id] || {}), ...p } }),
+          {},
+        ),
       }
     default:
       return state
