@@ -1,39 +1,39 @@
 import { iconMap } from 'components/icon'
+import ModalContainer from 'components/modal/modal_container'
+import Overlay from 'components/modal/overlay'
 import React from 'react'
-import ButtonSocialSignin from './components/button_social_signin'
-import ModalContainer from './components/modal_container'
-import Overlay from './components/overlay'
+import SocialSignIn from './social_sign_in'
 
-export interface Props {
+interface OwnProps {
   closeModal: () => void
 }
 
-const ModalSignin: React.SFC<Props> = (props) => {
+const SignInModal: React.SFC<OwnProps> = (props) => {
   const LogoIcon = iconMap['logo-lg']
 
   return (
-    <Overlay background="rgba(255, 255, 255, 0.95)">
+    <Overlay background="rgba(255, 255, 255, 0.45)">
       <ModalContainer handleClose={props.closeModal} closeUponClicking="CROSS">
         <div className="h-full pt-8">
           <LogoIcon className="mx-auto" />
           <div className="text-center mt-3 mb-10">
             Subscribe to podcasts, create playlists and much more
           </div>
-          <ButtonSocialSignin
+          <SocialSignIn
             icon="google-color"
             text="Sign in with Google"
             onClick={() => {
               window.location.href = `/api/signin/google`
             }}
           />
-          <ButtonSocialSignin
+          <SocialSignIn
             icon="facebook-color"
             text="Sign in with Facebook"
             onClick={() => {
               window.location.href = `/api/signin/facebook`
             }}
           />
-          <ButtonSocialSignin
+          <SocialSignIn
             icon="twitter-color"
             text="Sign in with Twitter"
             onClick={() => {
@@ -46,4 +46,4 @@ const ModalSignin: React.SFC<Props> = (props) => {
   )
 }
 
-export default ModalSignin
+export default SignInModal

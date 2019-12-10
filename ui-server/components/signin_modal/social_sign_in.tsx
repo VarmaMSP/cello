@@ -7,7 +7,7 @@ interface Props {
   onClick?: () => void
 }
 
-const ButtonSocialSignin: React.SFC<Props> = (props) => {
+const SocialSignIn: React.SFC<Props> = (props) => {
   const { icon, text, onClick } = props
   const SocialMediaIcon = iconMap[icon]
 
@@ -22,4 +22,4 @@ const ButtonSocialSignin: React.SFC<Props> = (props) => {
   )
 }
 
-export default ButtonSocialSignin
+export default SocialSignIn

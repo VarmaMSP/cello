@@ -1,6 +1,6 @@
 import { getCurrentUser } from 'actions/user'
 import AudioPlayer from 'components/audio_player'
-import Modals from 'components/modals'
+import ModalSelector from 'components/modal/modal_selector'
 import NavbarSide from 'components/navbar_side'
 import NavbarTop from 'components/navbar_top'
 import withRedux from 'next-redux-wrapper'
@@ -158,7 +158,7 @@ export default withRedux(makeStore)(
             <NavbarTop />
             <AudioPlayer />
             <NavbarSide />
-            <Modals />
+            <ModalSelector />
           </Provider>
         </Container>
       )

@@ -1,8 +1,8 @@
+import ModalContainer from 'components/modal/modal_container'
+import Overlay from 'components/modal/overlay'
 import { Formik } from 'formik'
 import React from 'react'
 import { PlaylistPrivacy } from 'types/app'
-import ModalContainer from '../modals/components/modal_container'
-import Overlay from '../modals/components/overlay'
 
 export interface StateToProps {
   isLoading: boolean
