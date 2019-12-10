@@ -22,7 +22,7 @@ const showModal: Reducer<Modal, T.AppActions> = (
     case T.SHOW_ADD_TO_PLAYLIST_MODAL:
       return { type: 'ADD_TO_PLAYLIST_MODAL', episodeId: action.episodeId }
     case T.SHOW_CREATE_PLAYLIST_MODAL:
-      return { type: 'CREATE_PLAYLIST_MODAL' }
+      return { type: 'CREATE_PLAYLIST_MODAL', episodeId: action.episodeId }
     case T.CLOSE_MODAL:
       return { type: 'NONE' }
     default:

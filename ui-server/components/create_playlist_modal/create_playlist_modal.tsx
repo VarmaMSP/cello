@@ -1,24 +1,25 @@
 import { Formik } from 'formik'
 import React from 'react'
+import { PlaylistPrivacy } from 'types/app'
 import ModalContainer from '../modals/components/modal_container'
 import Overlay from '../modals/components/overlay'
 
 export interface StateToProps {
-  isLoading: boolean // FIXME
+  isLoading: boolean
 }
 
 export interface DispatchToProps {
-  closeModal: () => void
-  createPlaylist: (
-    title: string,
-    privacy: 'PUBLIC' | 'PRIVATE' | 'ANONYMOUS',
-  ) => void
+  createPlaylist: (title: string, privacy: PlaylistPrivacy) => void
 }
 
-const CreatePlaylistModal: React.FC<DispatchToProps> = ({
-  closeModal,
-  createPlaylist,
-}) => {
+export interface OwnProps {
+  episodeId: string
+  closeModal: () => void
+}
+
+const CreatePlaylistModal: React.FC<StateToProps &
+  DispatchToProps &
+  OwnProps> = ({ closeModal, createPlaylist }) => {
   return (
     <Overlay background="rgba(0, 0, 0, 0.8)">
       <ModalContainer handleClose={closeModal} closeUponClicking="CROSS">
@@ -28,10 +29,7 @@ const CreatePlaylistModal: React.FC<DispatchToProps> = ({
             initialValues={{ title: '', privacy: 'PUBLIC' }}
             validate={() => ({})}
             onSubmit={(values) => {
-              createPlaylist(
-                values.title,
-                values.privacy as 'PUBLIC' | 'PRIVATE',
-              )
+              createPlaylist(values.title, values.privacy as PlaylistPrivacy)
             }}
           >
             {({ values, isSubmitting, handleChange, handleSubmit }) => (

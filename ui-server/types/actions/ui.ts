@@ -17,6 +17,7 @@ export interface ShowAddToPlaylistModalAction {
 
 export interface ShowCreatePlaylistModalAction {
   type: typeof SHOW_CREATE_PLAYLIST_MODAL
+  episodeId: string
 }
 
 export interface CloseModalAction {
