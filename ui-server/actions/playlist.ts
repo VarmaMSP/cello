@@ -1,6 +1,7 @@
 import * as client from 'client/playlist'
 import { getCurrentUserId } from 'selectors/entities/users'
 import * as T from 'types/actions'
+import { getIdFromUrlParam } from 'utils/format'
 import { requestAction } from './utils'
 
 export function getUserPlaylists() {
@@ -40,7 +41,8 @@ export function createPlaylist(
       dispatch({
         type: T.RECEIVED_PLAYLIST,
         playlist: {
-          id: urlParam,
+          id: getIdFromUrlParam(urlParam),
+          urlParam,
           title,
           privacy,
           userId: getCurrentUserId(getState()),

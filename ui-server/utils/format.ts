@@ -83,3 +83,7 @@ export function formatCategoryTitle(str: string): string {
     .replace(/& /g, '')
     .replace(/ /g, '-')
 }
+
+export function getIdFromUrlParam(s: string): string {
+  return s.split("-").splice(-1)[0]
+}
