@@ -23,11 +23,13 @@ func (p *Playlist) FieldAddrs() []interface{} {
 func (p *Playlist) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		Id          string `json:"id"`
+		UserId      string `json:"user_id"`
 		Title       string `json:"title"`
 		Description string `json:"description"`
 		Privacy     string `json:"privacy"`
 	}{
 		Id:          HashIdFromInt64(p.Id),
+		UserId:      HashIdFromInt64(p.UserId),
 		Title:       p.Title,
 		Description: p.Description,
 		Privacy:     p.Privacy,
