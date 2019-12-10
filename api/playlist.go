@@ -10,7 +10,7 @@ func (api *Api) RegisterPlaylistHandlers() {
 	api.router.Handler("GET", "/playlists", api.NewHandlerSessionRequired(GetUserPlaylists))
 	api.router.Handler("GET", "/playlists/:playlistId", api.NewHandler(GetPlaylist))
 	api.router.Handler("POST", "/playlists", api.NewHandlerSessionRequired(CreatePlaylist))
-	api.router.Handler("POST", "/playlists/:playlistId/episodes/:episodeId", api.NewHandlerSessionRequired(AddEpisodeToPlaylist))
+	api.router.Handler("POST", "/playlists/episodes", api.NewHandlerSessionRequired(AddEpisodeToPlaylists))
 }
 
 func GetUserPlaylists(c *Context, w http.ResponseWriter) {
@@ -90,16 +90,18 @@ func CreatePlaylist(c *Context, w http.ResponseWriter) {
 	}))
 }
 
-func AddEpisodeToPlaylist(c *Context, w http.ResponseWriter) {
-	req := &AddEpisodeToPlaylistReq{}
+func AddEpisodeToPlaylists(c *Context, w http.ResponseWriter) {
+	req := &AddEpisodeToPlaylistsReq{}
 	if err := req.Load(c); err != nil {
 		c.err = model.NewAppError("api.add_episode_to_playlist_req.load", err.Error(), 400, nil)
 		return
 	}
 
-	if _, err := c.app.SaveEpisodeToPlaylist(req.EpisodeId, req.PlaylistId); err != nil {
-		c.err = err
-		return
+	for _, playlistId := range req.PlaylistIds {
+		if _, err := c.app.SaveEpisodeToPlaylist(req.EpisodeId, playlistId); err != nil {
+			c.err = err
+			return
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")

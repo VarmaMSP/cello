@@ -25,10 +25,12 @@ func (p *Playback) FieldAddrs() []interface{} {
 func (p *Playback) MarhsalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		EpisodeId    string  `json:"episode_id"`
+		UserId       string  `json:"user_id"`
 		Progress     float32 `json:"progress"`
 		LastPlayedAt string  `json:"last_played_at"`
 	}{
 		EpisodeId:    HashIdFromInt64(p.EpisodeId),
+		UserId:       HashIdFromInt64(p.UserId),
 		Progress:     p.Progress,
 		LastPlayedAt: p.LastPlayedAt,
 	})

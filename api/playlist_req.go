@@ -45,18 +45,31 @@ func (o *CreatePlaylistReq) Load(c *Context) (err error) {
 	return
 }
 
-type AddEpisodeToPlaylistReq struct {
-	PlaylistId int64 `validate:"required"`
-	EpisodeId  int64 `validate:"required"`
+type AddEpisodeToPlaylistsReq struct {
+	EpisodeId   int64   `validate:"required"`
+	PlaylistIds []int64 `validate:"required"`
 }
 
-func (o *AddEpisodeToPlaylistReq) Load(c *Context) (err error) {
-	if o.PlaylistId, err = model.Int64FromHashId(c.Param("playlistId")); err != nil {
+func (o *AddEpisodeToPlaylistsReq) Load(c *Context) (err error) {
+	aux := &struct {
+		EpisodeId   string   `json:"episode_id"`
+		PlaylistIds []string `json:"playlist_ids"`
+	}{}
+	if err = c.DecodeBody(aux); err != nil {
 		return
 	}
-	if o.EpisodeId, err = model.Int64FromHashId(c.Param("epsiodeId")); err != nil {
+
+	if o.EpisodeId, err = model.Int64FromHashId(aux.EpisodeId); err != nil {
 		return
 	}
+
+	playlistIds := make([]int64, len(aux.PlaylistIds))
+	for i, playlistId := range aux.PlaylistIds {
+		if playlistIds[i], err = model.Int64FromHashId(playlistId); err != nil {
+			return
+		}
+	}
+	o.PlaylistIds = playlistIds
 
 	if err = c.app.Validate.Struct(o); err != nil {
 		return
