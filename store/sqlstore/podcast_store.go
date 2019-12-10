@@ -41,6 +41,27 @@ func (s *SqlPodcastStore) Get(podcastId int64) (*model.Podcast, *model.AppError)
 	return podcast, nil
 }
 
+func (s *SqlPodcastStore) GetByIds(podcastIds []int64) (res []*model.Podcast, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM podcast WHERE id IN (%s)`,
+		joinStrings((&model.Podcast{}).DbColumns(), ","), joinInt64s(podcastIds, ","),
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.Podcast{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"sqlstore.sql_podcast_store.get_by_ids", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"podcast_ids": podcastIds},
+		)
+	}
+	return
+}
+
 func (s *SqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, appE *model.AppError) {
 	sql := "SELECT " + Cols(&model.Podcast{}, "podcast") + ` FROM podcast
 		INNER JOIN subscription ON subscription.podcast_id = podcast.id

@@ -35,6 +35,7 @@ type FeedStore interface {
 type PodcastStore interface {
 	Save(podcast *model.Podcast) *model.AppError
 	Get(podcastId int64) (*model.Podcast, *model.AppError)
+	GetByIds(podcastIds []int64) ([]*model.Podcast, *model.AppError)
 	GetSubscriptions(userId int64) ([]*model.Podcast, *model.AppError)
 	UpdateEpisodeStats(stats *model.PodcastEpisodeStats) *model.AppError
 }

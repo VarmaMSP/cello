@@ -34,9 +34,20 @@ func GetHistoryFeed(c *Context, w http.ResponseWriter) {
 	}
 	model.EpisodesJoinPlaybacks(episodes, playbacks)
 
+	podcastIds := make([]int64, len(episodes))
+	for i, episode := range episodes {
+		podcastIds[i] = episode.PodcastId
+	}
+	podcasts, err := c.app.GetPodcastsByIs(model.RemoveDuplicatesInt64(podcastIds))
+	if err != nil {
+		c.err = err
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(model.EncodeToJson(map[string]interface{}{
 		"episodes": episodes,
+		"podcasts": podcasts,
 	}))
 }

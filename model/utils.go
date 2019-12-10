@@ -301,3 +301,16 @@ func IdFromUrlParam(urlParam string) (int64, error) {
 	}
 	return Int64FromHashId(x[len(x)-1])
 }
+
+// RemoveDuplicatesInt64 removes duplicates from []int64
+func RemoveDuplicatesInt64(arr []int64) []int64 {
+	m := make(map[int64]struct{}, len(arr))
+	res := []int64{}
+	for _, a := range arr {
+		if _, ok := m[a]; !ok {
+			res = append(res, a)
+		}
+		m[a] = struct{}{}
+	}
+	return res
+}
