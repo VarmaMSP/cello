@@ -6,19 +6,6 @@ import { getIdFromUrlParam } from 'utils/format'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
-export function getUserPlaylists() {
-  return requestAction(
-    () => client.getUserPlaylists(),
-    (dispatch, getState, { playlists }) => {
-      dispatch({
-        type: T.RECEIVED_USER_PLAYLISTS,
-        userId: getCurrentUserId(getState()),
-        playlists,
-      })
-    },
-  )
-}
-
 export function getPlaylist(playlistId: string) {
   return requestAction(
     () => client.getPlaylist(playlistId),
@@ -28,6 +15,23 @@ export function getPlaylist(playlistId: string) {
         type: T.RECEIVED_PLAYLIST_EPISODES,
         playlistId: playlist.id,
         episodes,
+      })
+    },
+  )
+}
+
+export function loadAndShowAddToPlaylistModal(episodeId: string) {
+  return requestAction(
+    () => client.getUserPlaylists(),
+    (dispatch, getState, { playlists }) => {
+      dispatch({
+        type: T.RECEIVED_USER_PLAYLISTS,
+        userId: getCurrentUserId(getState()),
+        playlists,
+      })
+      dispatch({
+        type: T.SHOW_ADD_TO_PLAYLIST_MODAL,
+        episodeId,
       })
     },
   )
@@ -43,7 +47,7 @@ export function createPlaylist(
     (dispatch, getState, { urlParam }) => {
       const id = getIdFromUrlParam(urlParam)
       const userId = getCurrentUserId(getState())
-      
+
       dispatch({
         type: T.RECEIVED_PLAYLIST,
         playlist: { id, urlParam, title, privacy, userId },
