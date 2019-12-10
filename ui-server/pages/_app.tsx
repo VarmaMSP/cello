@@ -20,10 +20,10 @@ import '../styles/index.css'
 NProgress.configure({
   showSpinner: false,
   trickle: true,
-  trickleSpeed: 50,
+  trickleSpeed: 30,
   easing: 'ease',
   speed: 200,
-  minimum: 0.5,
+  minimum: 0.3,
 })
 
 export default withRedux(makeStore)(
@@ -108,6 +108,14 @@ export default withRedux(makeStore)(
        * Try to get signed in user session details
        */
       bindActionCreators(getCurrentUser, dispatch)()
+
+      /*
+       * Set initial page url
+       */
+      dispatch({
+        type: T.SET_CURRENT_URL_PATH,
+        urlPath: window.location.pathname,
+      })
     }
 
     handleViewportSizeChange = () => {

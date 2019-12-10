@@ -27,8 +27,8 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
           <Link href="/" scroll={false}>
             <li className="h-8">
               <MenuItem
-                icon="home"
-                name="home"
+                icon="explore"
+                name="explore"
                 active={currentUrlPath === '/'}
               />
             </li>

@@ -42,22 +42,22 @@ const NavbarBottom: React.SFC<StateToProps> = ({ currentUrlPath }) => {
   return (
     <div className="flex h-full pt-2 pb-0 bg-white z-50">
       <MenuItem
-        icon="home"
-        name="home"
+        icon="explore"
+        name="explore"
         href="/"
         active={currentUrlPath === '/'}
       />
       <MenuItem
-        icon="feed"
-        name="feed"
-        href="/feed"
+        icon="heart"
+        name="subs"
+        href="/subscriptions"
         active={currentUrlPath === '/feed'}
       />
       <MenuItem
-        icon="heart"
-        name="subscriptions"
-        href="/subscriptions"
-        active={currentUrlPath === '/subscriptions'}
+        icon="history"
+        name="history"
+        href="/history"
+        active={currentUrlPath === '/history'}
       />
     </div>
   )
