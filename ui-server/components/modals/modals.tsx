@@ -19,7 +19,12 @@ const Modals: React.SFC<Props> = ({ modalToShow, closeModal }) => {
   }
 
   if (modalToShow.type === 'ADD_TO_PLAYLIST_MODAL') {
-    return <ModalAddToPlaylist episodeId={modalToShow.episodeId} />
+    return (
+      <ModalAddToPlaylist
+        closeModal={closeModal}
+        episodeId={modalToShow.episodeId}
+      />
+    )
   }
 
   if (modalToShow.type === 'CREATE_PLAYLIST_MODAL') {

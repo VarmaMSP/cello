@@ -17,9 +17,12 @@ export interface OwnProps {
   closeModal: () => void
 }
 
-const CreatePlaylistModal: React.FC<StateToProps &
-  DispatchToProps &
-  OwnProps> = ({ closeModal, createPlaylist }) => {
+type Props = StateToProps & DispatchToProps & OwnProps
+
+const CreatePlaylistModal: React.FC<Props> = ({
+  closeModal,
+  createPlaylist,
+}) => {
   return (
     <Overlay background="rgba(0, 0, 0, 0.8)">
       <ModalContainer handleClose={closeModal} closeUponClicking="CROSS">
