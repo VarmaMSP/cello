@@ -7,6 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { getIsUserSignedIn } from 'selectors/entities/users'
+import { getHistoryFeedStatus } from 'selectors/request'
 import { AppState } from 'store'
 import { AppActions, SET_CURRENT_URL_PATH } from 'types/actions'
 import { PageContext } from 'types/utilities'
@@ -14,6 +15,7 @@ import * as gtag from 'utils/gtag'
 
 interface StateToProps {
   isUserSignedIn: boolean
+  isLoading: boolean
 }
 
 interface DispatchToProps {
@@ -49,9 +51,9 @@ class FeedPage extends React.Component<Props> {
   }
 
   render() {
-    const { isUserSignedIn } = this.props
+    const { isUserSignedIn, isLoading } = this.props
 
-    if (!isUserSignedIn) {
+    if (!isUserSignedIn || isLoading) {
       const HistoryIcon = iconMap['history']
       return (
         <>
@@ -85,6 +87,7 @@ class FeedPage extends React.Component<Props> {
 function mapStateToProps(state: AppState): StateToProps {
   return {
     isUserSignedIn: getIsUserSignedIn(state),
+    isLoading: getHistoryFeedStatus(state) === 'IN_PROGRESS',
   }
 }
 
