@@ -15,6 +15,7 @@ const podcasts: Reducer<{ [PodcastId: string]: Podcast }, T.AppActions> = (
           ...action.podcast,
         },
       }
+    case T.RECEIVED_PODCASTS:
     case T.RECEIVED_CHART_PODCASTS:
     case T.RECEIVED_SEARCH_PODCASTS:
       return {

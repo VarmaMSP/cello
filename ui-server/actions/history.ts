@@ -6,7 +6,11 @@ import { requestAction } from './utils'
 export function getHistoryFeed(offset: number, limit: number) {
   return requestAction(
     () => client.getHistoryFeed(offset, limit),
-    (dispatch, _, { episodes }) => {
+    (dispatch, _, { podcasts, episodes }) => {
+      dispatch({
+        type: T.RECEIVED_PODCASTS,
+        podcasts,
+      })
       dispatch({
         type: T.RECEIVED_HISTORY_FEED,
         offset,
@@ -14,9 +18,7 @@ export function getHistoryFeed(offset: number, limit: number) {
       })
 
       if (episodes.length < limit) {
-        dispatch({
-          type: T.RECEIVED_ALL_HISTORY_FEED,
-        })
+        dispatch({ type: T.RECEIVED_ALL_HISTORY_FEED })
       }
     },
     { requestId: RequestId.getHistoryFeed() },

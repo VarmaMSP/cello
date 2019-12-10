@@ -6,7 +6,11 @@ import { getEpisodeById } from 'selectors/entities/episodes'
 import { getPodcastById } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import EpisodeListItem, { DispatchToProps, OwnProps, StateToProps } from './episode_list_item'
+import EpisodeListItem, {
+  DispatchToProps,
+  OwnProps,
+  StateToProps,
+} from './episode_list_item'
 
 function mapStateToProps(
   state: AppState,
