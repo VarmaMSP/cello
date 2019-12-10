@@ -1,14 +1,11 @@
+import { addEpisodeToPlaylists } from 'actions/playlist'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { makeGetUserPlaylists } from 'selectors/entities/playlists'
 import { getCurrentUserId } from 'selectors/entities/users'
 import { AppState } from 'store'
 import { AppActions, SHOW_CREATE_PLAYLIST_MODAL } from 'types/actions'
-import AddToPlaylistModal, {
-  DispatchToProps,
-  OwnProps,
-  StateToProps,
-} from './add_to_playlist_modal'
+import AddToPlaylistModal, { DispatchToProps, OwnProps, StateToProps } from './add_to_playlist_modal'
 
 function makeMapStateToProps() {
   const getUserPlaylists_ = makeGetUserPlaylists()
@@ -26,6 +23,11 @@ function mapDispatchToProps(
   return {
     showCreatePlaylistModal: () =>
       dispatch({ type: SHOW_CREATE_PLAYLIST_MODAL, episodeId }),
+    addEpisodeToPlaylists: (playlistIds: string[]) =>
+      bindActionCreators(addEpisodeToPlaylists, dispatch)(
+        episodeId,
+        playlistIds,
+      ),
   }
 }
 

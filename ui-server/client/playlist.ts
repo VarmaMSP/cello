@@ -38,12 +38,16 @@ export async function createPlaylist(
   return { urlParam: responseHeaders['Location'] }
 }
 
-export async function addEpisodeToPlaylist(
+export async function addEpisodeToPlaylists(
   episodeId: string,
-  playlistId: string,
+  playlistIds: string[],
 ): Promise<void> {
   await doFetch({
     method: 'POST',
-    urlPath: `/playlists/${playlistId}/episodes/${episodeId}`,
+    urlPath: `/playlists/episodes`,
+    body: {
+      episode_id: episodeId,
+      playlist_ids: playlistIds,
+    }
   })
 }

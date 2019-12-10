@@ -11,6 +11,7 @@ export interface StateToProps {
 
 export interface DispatchToProps {
   showCreatePlaylistModal: () => void
+  addEpisodeToPlaylists: (playlistIds: string[]) => void
 }
 
 export interface OwnProps {
@@ -25,6 +26,7 @@ const AddToPlaylistModal: React.FC<Props> = ({
   playlists,
   closeModal,
   showCreatePlaylistModal,
+  addEpisodeToPlaylists,
 }) => {
   return (
     <Overlay background="rgba(0, 0, 0, 0.8)">
@@ -35,7 +37,7 @@ const AddToPlaylistModal: React.FC<Props> = ({
             initialValues={{ playlistIds: [] as string[] }}
             validate={() => ({})}
             onSubmit={(values) => {
-              console.log(values)
+              addEpisodeToPlaylists(values.playlistIds)
             }}
           >
             {({ values, isSubmitting, handleSubmit, setFieldValue }) => (

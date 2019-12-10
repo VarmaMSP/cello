@@ -23,10 +23,9 @@ export function getPlaylist(playlistId: string) {
 export function loadAndShowAddToPlaylistModal(episodeId: string) {
   return requestAction(
     () => client.getUserPlaylists(),
-    (dispatch, getState, { playlists }) => {
+    (dispatch, _, { playlists }) => {
       dispatch({
-        type: T.RECEIVED_USER_PLAYLISTS,
-        userId: getCurrentUserId(getState()),
+        type: T.RECEIVED_PLAYLISTS,
         playlists,
       })
       dispatch({
@@ -61,15 +60,22 @@ export function createPlaylist(
   )
 }
 
-export function addEpisodeToPlaylist(episodeId: string, playlistId: string) {
+export function addEpisodeToPlaylists(
+  episodeId: string,
+  playlistIds: string[],
+) {
   return requestAction(
-    () => client.addEpisodeToPlaylist(episodeId, playlistId),
+    () => client.addEpisodeToPlaylists(episodeId, playlistIds),
     (dispatch) => {
-      dispatch({
-        type: T.ADD_EPISODE_TO_PLAYLIST,
-        episodeId,
-        playlistId,
-      })
+      console.log(playlistIds)
+      playlistIds.forEach((playlistId) =>
+        dispatch({
+          type: T.ADD_EPISODE_TO_PLAYLIST,
+          episodeId,
+          playlistId,
+        }),
+      )
+      dispatch({ type: T.CLOSE_MODAL })
     },
   )
 }
