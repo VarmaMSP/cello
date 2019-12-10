@@ -6,7 +6,7 @@ export type Modal =
   | { type: 'NONE' }
   | { type: 'SIGNIN_MODAL' }
   | { type: 'ADD_TO_PLAYLIST_MODAL'; episodeId: string }
-  | { type: 'CREATE_PLAYLIST_MODAL' }
+  | { type: 'CREATE_PLAYLIST_MODAL'; episodeId: string }
 
 export interface Podcast {
   id: string
@@ -54,11 +54,14 @@ export interface User {
   email: string
 }
 
+export type PlaylistPrivacy = 'PUBLIC' | 'PRIVATE' | 'UNLISTED' | 'ANONYMOUS'
+
 export interface Playlist {
   id: string
+  urlParam: string
   title: string
   userId: string
-  privacy: 'PUBLIC' | 'PRIVATE' | 'ANONYMOUS'
+  privacy: PlaylistPrivacy
 }
 
 export interface Chart {

@@ -1,7 +1,9 @@
 import * as client from 'client/playlist'
 import { getCurrentUserId } from 'selectors/entities/users'
 import * as T from 'types/actions'
+import { PlaylistPrivacy } from 'types/app'
 import { getIdFromUrlParam } from 'utils/format'
+import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
 export function getUserPlaylists() {
@@ -33,22 +35,25 @@ export function getPlaylist(playlistId: string) {
 
 export function createPlaylist(
   title: string,
-  privacy: 'PUBLIC' | 'PRIVATE' | 'ANONYMOUS',
+  privacy: PlaylistPrivacy,
+  episodeId: string,
 ) {
   return requestAction(
     () => client.createPlaylist(title, privacy),
     (dispatch, getState, { urlParam }) => {
+      const id = getIdFromUrlParam(urlParam)
+      const userId = getCurrentUserId(getState())
+      
       dispatch({
         type: T.RECEIVED_PLAYLIST,
-        playlist: {
-          id: getIdFromUrlParam(urlParam),
-          urlParam,
-          title,
-          privacy,
-          userId: getCurrentUserId(getState()),
-        },
+        playlist: { id, urlParam, title, privacy, userId },
+      })
+      dispatch({
+        type: T.SHOW_ADD_TO_PLAYLIST_MODAL,
+        episodeId,
       })
     },
+    { requestId: RequestId.createPlaylist() },
   )
 }
 

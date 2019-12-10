@@ -16,3 +16,7 @@ export function getSubscriptionsFeedStatus(state: AppState) {
 export function getHistoryFeedStatus(state: AppState) {
   return requestStatus(state, RequestId.getHistoryFeed())
 }
+
+export function getCreatePlaylistStatus(state: AppState) {
+  return requestStatus(state, RequestId.createPlaylist())
+}

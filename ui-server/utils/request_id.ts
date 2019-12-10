@@ -17,3 +17,7 @@ export function getHomePageData() {
 export function getPodcastsInChart(chartId: string) {
   return `5_${chartId}`
 }
+
+export function createPlaylist() {
+  return '6'
+}

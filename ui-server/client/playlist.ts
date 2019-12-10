@@ -35,7 +35,7 @@ export async function createPlaylist(
     body: { title, privacy },
   })
 
-  return { urlParam: responseHeaders['location'] }
+  return { urlParam: responseHeaders['Location'] }
 }
 
 export async function addEpisodeToPlaylist(
