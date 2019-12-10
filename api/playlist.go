@@ -83,6 +83,7 @@ func CreatePlaylist(c *Context, w http.ResponseWriter) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Location", model.UrlParamFromId(playlist.Title, playlist.Id))
 	w.WriteHeader(http.StatusCreated)
 	w.Write(model.EncodeToJson(map[string]interface{}{
 		"playlist": playlist,

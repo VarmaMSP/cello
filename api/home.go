@@ -9,7 +9,7 @@ import (
 	"github.com/varmamsp/cello/service/s3"
 )
 
-func (api *Api) RegisterDiscoverHandlers() {
+func (api *Api) RegisterHomeHandlers() {
 	api.router.Handler("GET", "/home", api.NewHandler(GetHomePageDate))
 	api.router.Handler("GET", "/charts/:chartId", api.NewHandler(GetPodcastsInChart))
 }
