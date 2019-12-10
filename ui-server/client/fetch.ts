@@ -52,7 +52,9 @@ export async function doFetch({
     throw makeFetchException(url, response!.status, {}, errMsg)
   }
 
-  return <FetchResponse>{ responseHeaders: {}, data }
+  return <FetchResponse>{ responseHeaders: {
+    Location: response!.headers.get('Location') || '',
+  }, data }
 }
 
 function getBaseUrl(): string {
