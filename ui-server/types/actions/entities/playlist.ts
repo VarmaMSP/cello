@@ -1,9 +1,9 @@
 import { Episode, Playlist } from 'types/app'
 
 export const RECEIVED_PLAYLIST = 'RECEIVED_PLAYLIST'
-export const RECEIVED_USER_PLAYLISTS = 'RECEIVED_USER_PLAYLIST'
+export const RECEIVED_PLAYLISTS = 'RECEIVED_PLAYLISTS'
 export const RECEIVED_PLAYLIST_EPISODES = 'RECEIVED_PLAYLIST_EPISODES'
-export const ADD_EPISODE_TO_PLAYLIST = 'ADD_EPISODE_TO_PLAYLIST'
+export const ADD_EPISODE_TO_PLAYLIST = 'ADD_EPISODE_TO_PLAYLISTS'
 export const REMOVE_EPISODE_FROM_PLAYLIST = 'REMOVE_EPISODE_FROM_PlAYLIST'
 
 export interface ReceivedPlaylistAction {
@@ -11,9 +11,8 @@ export interface ReceivedPlaylistAction {
   playlist: Playlist
 }
 
-export interface ReceivedUserPlaylistsAction {
-  type: typeof RECEIVED_USER_PLAYLISTS
-  userId: string
+export interface ReceivedPlaylistsAction {
+  type: typeof RECEIVED_PLAYLISTS
   playlists: Playlist[]
 }
 
@@ -37,7 +36,7 @@ export interface RemoveEpisodeFromPlaylistAction {
 
 export type PlaylistActionTypes =
   | ReceivedPlaylistAction
-  | ReceivedUserPlaylistsAction
+  | ReceivedPlaylistsAction
   | ReceivedPlaylistEpisodesAction
   | AddEpisodeToPlaylistAction
   | RemoveEpisodeFromPlaylistAction
