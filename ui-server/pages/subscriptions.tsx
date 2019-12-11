@@ -1,4 +1,4 @@
-import { getSubscriptionsFeed } from 'actions/subscription'
+import { getSubscriptionsPageData } from 'actions/subscription'
 import ButtonSignin from 'components/button_signin'
 import { iconMap } from 'components/icon'
 import SubscriptionsView from 'components/subscriptions_view/subscriptions_view'
@@ -7,9 +7,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { getIsUserSignedIn } from 'selectors/entities/users'
-import { getSubscriptionsFeedStatus } from 'selectors/request'
+import { getSubscriptionsPageStatus } from 'selectors/request'
 import { AppState } from 'store'
-import { AppActions, SET_CURRENT_URL_PATH } from 'types/actions'
+import { AppActions } from 'types/actions'
 import { PageContext } from 'types/utilities'
 import * as gtag from 'utils/gtag'
 
@@ -19,7 +19,7 @@ interface StateToProps {
 }
 
 interface DispatchToProps {
-  loadFeed: (offset: number) => void
+  loadPageData: () => void
 }
 
 interface OwnProps {
@@ -33,15 +33,14 @@ class SubscriptionsPage extends React.Component<Props> {
     const { store } = ctx
 
     if (getIsUserSignedIn(store.getState())) {
-      await bindActionCreators(getSubscriptionsFeed, store.dispatch)(0, 20)
+      await bindActionCreators(getSubscriptionsPageData, store.dispatch)()
     }
-    store.dispatch({ type: SET_CURRENT_URL_PATH, urlPath: '/subscriptions' })
   }
 
   componentDidUpdate(prevProps: Props) {
     const { isUserSignedIn } = this.props
     if (isUserSignedIn && !prevProps.isUserSignedIn) {
-      this.props.loadFeed(0)
+      this.props.loadPageData()
     }
   }
 
@@ -87,14 +86,13 @@ class SubscriptionsPage extends React.Component<Props> {
 function mapStateToProps(state: AppState): StateToProps {
   return {
     isUserSignedIn: getIsUserSignedIn(state),
-    isLoading: getSubscriptionsFeedStatus(state) === 'IN_PROGRESS',
+    isLoading: getSubscriptionsPageStatus(state) === 'IN_PROGRESS',
   }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
-    loadFeed: (offset: number) =>
-      bindActionCreators(getSubscriptionsFeed, dispatch)(offset, 20),
+    loadPageData: bindActionCreators(getSubscriptionsPageData, dispatch),
   }
 }
 
