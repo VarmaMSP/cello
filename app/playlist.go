@@ -19,12 +19,12 @@ func (app *App) GetPlaylist(playlistId int64) (*model.Playlist, *model.AppError)
 	return app.Store.Playlist().Get(playlistId)
 }
 
-func (app *App) GetPlaylistsByUser(userId int64) ([]*model.Playlist, *model.AppError) {
-	return app.Store.Playlist().GetByUserPaginated(userId, 0, 1000)
+func (app *App) GetPlaylistsByUser(userId int64, offset, limit int) ([]*model.Playlist, *model.AppError) {
+	return app.Store.Playlist().GetByUserPaginated(userId, offset, limit)
 }
 
-func (app *App) GetEpisodesInPlaylist(playlistId int64) ([]*model.Episode, *model.AppError) {
-	return app.Store.Episode().GetByPlaylistPaginated(playlistId, 0, 1000)
+func (app *App) GetEpisodesInPlaylist(playlistId int64, offset, limit int) ([]*model.Episode, *model.AppError) {
+	return app.Store.Episode().GetByPlaylistPaginated(playlistId, offset, limit)
 }
 
 func (app *App) SaveEpisodeToPlaylist(episodeId, playlistId int64) (*model.PlaylistMember, *model.AppError) {

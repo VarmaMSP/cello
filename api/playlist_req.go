@@ -62,7 +62,6 @@ func (o *AddEpisodeToPlaylistsReq) Load(c *Context) (err error) {
 	if o.EpisodeId, err = model.Int64FromHashId(aux.EpisodeId); err != nil {
 		return
 	}
-
 	playlistIds := make([]int64, len(aux.PlaylistIds))
 	for i, playlistId := range aux.PlaylistIds {
 		if playlistIds[i], err = model.Int64FromHashId(playlistId); err != nil {

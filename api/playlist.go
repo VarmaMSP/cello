@@ -20,7 +20,7 @@ func GetUserPlaylists(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	playlists, err := c.app.GetPlaylistsByUser(req.UserId)
+	playlists, err := c.app.GetPlaylistsByUser(req.UserId, 0, 1000)
 	if err != nil {
 		c.err = err
 		return
@@ -30,6 +30,37 @@ func GetUserPlaylists(c *Context, w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(model.EncodeToJson(map[string]interface{}{
 		"playlists": playlists,
+	}))
+}
+
+func GetUserPlaylistsAll(c *Context, w http.ResponseWriter) {
+	req := &GetUserPlaylistsReq{}
+	if err := req.Load(c); err != nil {
+		c.err = model.NewAppError("api.get_user_playlists_req_all_load", err.Error(), 400, nil)
+		return
+	}
+
+	playlists, err := c.app.GetPlaylistsByUser(req.UserId, 0, 10)
+	if err != nil {
+		c.err = err
+		return
+	}
+
+	episodes := []*model.Episode{}
+	for _, playlist := range playlists {
+		e, err := c.app.GetEpisodesInPlaylist(playlist.Id, 0, 3)
+		if err != nil {
+			c.err = err
+			return
+		}
+		episodes = append(episodes, e...)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(model.EncodeToJson(map[string]interface{}{
+		"playlists": playlists,
+		"episodes":  episodes,
 	}))
 }
 
@@ -46,7 +77,7 @@ func GetPlaylist(c *Context, w http.ResponseWriter) {
 		return
 	}
 
-	episodes, err := c.app.GetEpisodesInPlaylist(req.PlaylistId)
+	episodes, err := c.app.GetEpisodesInPlaylist(req.PlaylistId, 0, 1000)
 	if err != nil {
 		c.err = err
 		return
