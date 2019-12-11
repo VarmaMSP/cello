@@ -12,6 +12,8 @@ import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 import { PageContext } from 'types/utilities'
 import * as gtag from 'utils/gtag'
+import { getHistoryPageData } from 'utils/request_id'
+import { getHistoryPageStatus } from 'selectors/request'
 
 interface StateToProps {
   isUserSignedIn: boolean
