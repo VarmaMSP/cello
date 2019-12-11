@@ -11,7 +11,7 @@ const Subscriptions: React.FC<StateToProps> = ({ subscriptions }) => {
   const [showAll, setShowAll] = useState(false)
 
   return (
-    <div className="py-3 px-2 border border-gray-500 rounded-xl">
+    <div className="py-3 px-2 border border-gray-400 rounded-xl">
       <h2 className="text-lg text-gray-700 mb-4 px-2">
         {"You're subscribed to"}
       </h2>
