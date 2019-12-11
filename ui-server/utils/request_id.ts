@@ -2,12 +2,20 @@ export function getPodcastEpisodes(podcastId: string) {
   return `1_${podcastId}`
 }
 
-export function getSubscriptionsFeed() {
+export function getSubscriptionsPageData() {
   return '2'
 }
 
-export function getHistoryFeed() {
+export function getSubscriptionsFeed() {
+  return '2-0'
+}
+
+export function getHistoryPageData() {
   return '3'
+}
+
+export function getHistoryFeed() {
+  return '3-0'
 }
 
 export function getHomePageData() {

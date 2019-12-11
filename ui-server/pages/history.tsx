@@ -1,4 +1,4 @@
-import { getHistoryFeed } from 'actions/history'
+import { getHistoryPageData } from 'actions/history'
 import ButtonSignin from 'components/button_signin'
 import HistoryView from 'components/history_view/history_view'
 import { iconMap } from 'components/icon'
@@ -7,9 +7,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { getIsUserSignedIn } from 'selectors/entities/users'
-import { getHistoryFeedStatus } from 'selectors/request'
+import { getHistoryPageStatus } from 'selectors/request'
 import { AppState } from 'store'
-import { AppActions, SET_CURRENT_URL_PATH } from 'types/actions'
+import { AppActions } from 'types/actions'
 import { PageContext } from 'types/utilities'
 import * as gtag from 'utils/gtag'
 
@@ -19,7 +19,7 @@ interface StateToProps {
 }
 
 interface DispatchToProps {
-  loadHistory: () => void
+  loadPageData: () => void
 }
 
 interface OwnProps {
@@ -33,15 +33,14 @@ class FeedPage extends React.Component<Props> {
     const { store } = ctx
 
     if (getIsUserSignedIn(store.getState())) {
-      await bindActionCreators(getHistoryFeed, store.dispatch)(0, 20)
+      await bindActionCreators(getHistoryPageData, store.dispatch)()
     }
-    store.dispatch({ type: SET_CURRENT_URL_PATH, urlPath: '/history' })
   }
 
   componentDidUpdate(prevProps: Props) {
     const { isUserSignedIn } = this.props
     if (isUserSignedIn && !prevProps.isUserSignedIn) {
-      this.props.loadHistory()
+      this.props.loadPageData()
     }
   }
 
@@ -87,13 +86,13 @@ class FeedPage extends React.Component<Props> {
 function mapStateToProps(state: AppState): StateToProps {
   return {
     isUserSignedIn: getIsUserSignedIn(state),
-    isLoading: getHistoryFeedStatus(state) === 'IN_PROGRESS',
+    isLoading: getHistoryPageStatus(state) === 'IN_PROGRESS',
   }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
-    loadHistory: () => bindActionCreators(getHistoryFeed, dispatch)(0, 20),
+    loadPageData: bindActionCreators(getHistoryPageData, dispatch),
   }
 }
 
