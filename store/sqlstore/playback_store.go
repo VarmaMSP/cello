@@ -3,7 +3,6 @@ package sqlstore
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/store"
@@ -30,8 +29,10 @@ func (s *SqlPlaybackStore) Save(playback *model.Playback) *model.AppError {
 }
 
 func (s *SqlPlaybackStore) GetByUserPaginated(userId int64, offset, limit int) (res []*model.Playback, appE *model.AppError) {
-	sql := "SELECT " + Cols(&model.Playback{}) + ` FROM playback
-		WHERE user_id = ? ORDER by last_played_at DESC LIMIT ?, ?`
+	sql := fmt.Sprintf(
+		`SELECT %s FROM playback WHERE user_id = %d ORDER by last_played_at DESC LIMIT %d, %d`,
+		joinStrings((&model.Playback{}).DbColumns(), ","), userId, offset, limit,
+	)
 
 	copyTo := func() []interface{} {
 		tmp := &model.Playback{}
@@ -39,7 +40,7 @@ func (s *SqlPlaybackStore) GetByUserPaginated(userId int64, offset, limit int) (
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.Query(copyTo, sql, userId, offset, limit); err != nil {
+	if err := s.Query(copyTo, sql); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_playback_store.get_by_user_paginated", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"user_id": userId},
@@ -49,14 +50,10 @@ func (s *SqlPlaybackStore) GetByUserPaginated(userId int64, offset, limit int) (
 }
 
 func (s *SqlPlaybackStore) GetByUserByEpisodes(userId int64, episodeIds []int64) (res []*model.Playback, appE *model.AppError) {
-	sql := "SELECT " + Cols(&model.Playback{}) + ` FROM playback
-		WHERE episode_id IN (` + strings.Join(Replicate("?", len(episodeIds)), ",") + `) AND user_id = ?`
-
-	var values []interface{}
-	for _, episodeId := range episodeIds {
-		values = append(values, episodeId)
-	}
-	values = append(values, userId)
+	sql := fmt.Sprintf(
+		`SELECT %s FROM playback WHERE episode_id IN (%s) AND user_id = %d`,
+		joinStrings((&model.Playback{}).DbColumns(), ","), joinInt64s(episodeIds, ","), userId,
+	)
 
 	copyTo := func() []interface{} {
 		tmp := &model.Playback{}
@@ -64,7 +61,7 @@ func (s *SqlPlaybackStore) GetByUserByEpisodes(userId int64, episodeIds []int64)
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.Query(copyTo, sql, values...); err != nil {
+	if err := s.Query(copyTo, sql); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_playback_store.get_by_user_by_episodes", err.Error(), http.StatusInternalServerError, nil,
 		)

@@ -30,11 +30,14 @@ func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 
 func (s *SqlPodcastStore) Get(podcastId int64) (*model.Podcast, *model.AppError) {
 	podcast := &model.Podcast{}
-	sql := "SELECT " + Cols(podcast) + " FROM podcast WHERE id = ?"
+	sql := fmt.Sprintf(
+		"SELECT %s FROM podcast WHERE id = %d",
+		joinStrings(podcast.DbColumns(), ","), podcastId,
+	)
 
-	if err := s.GetMaster().QueryRow(sql, podcastId).Scan(podcast.FieldAddrs()...); err != nil {
+	if err := s.GetMaster().QueryRow(sql).Scan(podcast.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
-			"store.sqlstore.sql_podcast_store.get_podcast", err.Error(), http.StatusInternalServerError,
+			"store.sqlstore.sql_podcast_store.get", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"id": podcastId},
 		)
 	}
@@ -76,7 +79,7 @@ func (s *SqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, 
 
 	if err := s.Query(copyTo, sql, userId); err != nil {
 		appE = model.NewAppError(
-			"sqlstore.sql_podcast_store.get_Subscriptions", err.Error(), http.StatusInternalServerError,
+			"sqlstore.sql_podcast_store.get_subscriptions", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"user_id": userId},
 		)
 	}
@@ -85,13 +88,15 @@ func (s *SqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, 
 
 func (s *SqlPodcastStore) UpdateEpisodeStats(stats *model.PodcastEpisodeStats) *model.AppError {
 	sql := fmt.Sprintf(
-		`UPDATE podcast SET total_episodes = %d, total_seasons = %d, latest_episode_pub_date = '%s', updated_at = %d WHERE podcast_id = %d`,
+		`UPDATE podcast 
+			SET total_episodes = %d, total_seasons = %d, latest_episode_pub_date = '%s', updated_at = %d
+			WHERE podcast_id = %d`,
 		stats.TotalEpisodes, stats.TotalSeasons, stats.LastestEpisodePubDate, model.Now(), stats.Id,
 	)
 
 	if _, err := s.GetMaster().Exec(sql); err != nil {
 		return model.NewAppError(
-			"sqlstore.sql_curation_store.get_podcast_by_curation", err.Error(), http.StatusInternalServerError,
+			"sqlstore.sql_curation_store.update_episode_stats", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"podcast_id": stats.Id},
 		)
 	}

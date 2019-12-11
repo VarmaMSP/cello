@@ -32,9 +32,12 @@ func (s *SqlPlaylistStore) Save(playlist *model.Playlist) *model.AppError {
 
 func (s *SqlPlaylistStore) Get(playlistId int64) (*model.Playlist, *model.AppError) {
 	playlist := &model.Playlist{}
-	sql := "SELECT " + Cols(playlist) + " FROM playlist WHERE id = ?"
+	sql := fmt.Sprintf(
+		"SELECT %s FROM playlist WHERE id = %d",
+		joinStrings(playlist.DbColumns(), ","), playlistId,
+	)
 
-	if err := s.GetMaster().QueryRow(sql, playlistId).Scan(playlist.FieldAddrs()...); err != nil {
+	if err := s.GetMaster().QueryRow(sql).Scan(playlist.FieldAddrs()...); err != nil {
 		return nil, model.NewAppError(
 			"store.sqlstore.sql_playlist_store.get", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"playlist_id": playlistId},
@@ -43,8 +46,11 @@ func (s *SqlPlaylistStore) Get(playlistId int64) (*model.Playlist, *model.AppErr
 	return playlist, nil
 }
 
-func (s *SqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE *model.AppError) {
-	sql := "SELECT " + Cols(&model.Playlist{}) + ` FROM playlist WHERE user_id = ?`
+func (s *SqlPlaylistStore) GetByUserPaginated(userId int64, offset, limit int) (res []*model.Playlist, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		"SELECT %s FROM playlist WHERE user_id = %d LIMIT %d, %d",
+		joinStrings((&model.Playlist{}).DbColumns(), ","), userId, offset, limit,
+	)
 
 	copyTo := func() []interface{} {
 		tmp := &model.Playlist{}
@@ -52,10 +58,10 @@ func (s *SqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE 
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.Query(copyTo, sql, userId); err != nil {
+	if err := s.Query(copyTo, sql); err != nil {
 		appE = model.NewAppError(
-			"store.sqlstore.sql_playlist_store.get_by_user", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"user_id": userId},
+			"store.sqlstore.sql_playlist_store.get_by_user_paginated", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"user_id": userId, "offset": offset, "limit": limit},
 		)
 	}
 	return
@@ -66,7 +72,7 @@ func (s *SqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppEr
 
 	if _, err := s.Insert("playlist_member", []model.DbModel{member}); err != nil {
 		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.add_member", err.Error(), http.StatusInternalServerError,
+			"store.sqlstore.sql_playlist_store.save_member", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"playlist_id": member.PlaylistId, "episode_id": member.EpisodeId},
 		)
 	}
