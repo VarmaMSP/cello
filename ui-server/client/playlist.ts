@@ -2,13 +2,28 @@ import { Episode, Playlist } from 'types/app'
 import * as unmarshal from 'utils/entities'
 import { doFetch } from './fetch'
 
-export async function getUserPlaylists(): Promise<{ playlists: Playlist[] }> {
+export async function getPlaylistFeed(): Promise<{
+  playlists: Playlist[]
+  episodesByPlaylist: { [playlistId: string]: Episode[] }
+}> {
   const { data } = await doFetch({
     method: 'GET',
-    urlPath: `/playlists`,
+    urlPath: '/playlists/feed',
   })
 
-  return { playlists: (data.playlists || []).map(unmarshal.playlist) }
+  const episodesByPlaylist = data.episodes_by_playlist || {}
+  return {
+    playlists: (data.playlists || []).map(unmarshal.playlist),
+    episodesByPlaylist: Object.keys(episodesByPlaylist).reduce<{
+      [playlistId: string]: Episode[]
+    }>(
+      (acc, playlistId) => ({
+        ...acc,
+        [playlistId]: episodesByPlaylist[playlistId].map(unmarshal.episode),
+      }),
+      {},
+    ),
+  }
 }
 
 export async function getPlaylist(
@@ -23,6 +38,15 @@ export async function getPlaylist(
     playlist: unmarshal.playlist(data.playlist),
     episodes: (data.episodes || []).map(unmarshal.episode),
   }
+}
+
+export async function getUserPlaylists(): Promise<{ playlists: Playlist[] }> {
+  const { data } = await doFetch({
+    method: 'GET',
+    urlPath: `/playlists`,
+  })
+
+  return { playlists: (data.playlists || []).map(unmarshal.playlist) }
 }
 
 export async function createPlaylist(
@@ -48,6 +72,6 @@ export async function addEpisodeToPlaylists(
     body: {
       episode_id: episodeId,
       playlist_ids: playlistIds,
-    }
+    },
   })
 }

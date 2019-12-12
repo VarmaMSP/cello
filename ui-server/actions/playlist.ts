@@ -6,6 +6,42 @@ import { getIdFromUrlParam } from 'utils/format'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
+export function getPlaylistPageData() {
+  return requestAction(
+    () => client.getPlaylistFeed(),
+    (dispatch, _, { playlists, episodesByPlaylist }) => {
+      dispatch({ type: T.RECEIVED_PLAYLISTS, playlists })
+
+      Object.keys(episodesByPlaylist).forEach((playlistId) =>
+        dispatch({
+          type: T.RECEIVED_PLAYLIST_EPISODES,
+          playlistId,
+          episodes: episodesByPlaylist[playlistId],
+        }),
+      )
+    },
+    { requestId: RequestId.getPlaylistPageData() },
+  )
+}
+
+export function getPlaylistFeed() {
+  return requestAction(
+    () => client.getPlaylistFeed(),
+    (dispatch, _, { playlists, episodesByPlaylist }) => {
+      dispatch({ type: T.RECEIVED_PLAYLISTS, playlists })
+
+      Object.keys(episodesByPlaylist).forEach((playlistId) =>
+        dispatch({
+          type: T.RECEIVED_PLAYLIST_EPISODES,
+          playlistId,
+          episodes: episodesByPlaylist[playlistId],
+        }),
+      )
+    },
+    { requestId: RequestId.getPlaylistFeed() },
+  )
+}
+
 export function getPlaylist(playlistId: string) {
   return requestAction(
     () => client.getPlaylist(playlistId),

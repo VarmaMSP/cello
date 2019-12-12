@@ -28,3 +28,11 @@ export function getHistoryFeedStatus(state: AppState) {
 export function getCreatePlaylistStatus(state: AppState) {
   return requestStatus(state, RequestId.createPlaylist())
 }
+
+export function getPlaylistPageStatus(state: AppState) {
+  return requestStatus(state, RequestId.getPlaylistPageData())
+}
+
+export function getPlaylistFeedStatus(state: AppState) {
+  return requestStatus(state, RequestId.getPlaylistFeed())
+}

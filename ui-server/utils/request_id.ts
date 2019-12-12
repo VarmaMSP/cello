@@ -1,5 +1,9 @@
 export function getPodcastEpisodes(podcastId: string) {
-  return `1_${podcastId}`
+  return `0_${podcastId}`
+}
+
+export function getHomePageData() {
+  return '1'
 }
 
 export function getSubscriptionsPageData() {
@@ -18,8 +22,12 @@ export function getHistoryFeed() {
   return '3-0'
 }
 
-export function getHomePageData() {
+export function getPlaylistPageData() {
   return '4'
+}
+
+export function getPlaylistFeed() {
+  return '4-0'
 }
 
 export function getPodcastsInChart(chartId: string) {
