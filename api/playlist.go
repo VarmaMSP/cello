@@ -7,19 +7,28 @@ import (
 )
 
 func (api *Api) RegisterPlaylistHandlers() {
-	api.router.Handler("GET", "/playlists", api.NewHandlerSessionRequired(GetUserPlaylists))
+
+	api.router.Handler("GET", "/playlists", api.NewHandlerSessionRequired(GetPlaylists))
 	api.router.Handler("GET", "/playlists/:playlistId", api.NewHandler(GetPlaylist))
 	api.router.Handler("POST", "/playlists", api.NewHandlerSessionRequired(CreatePlaylist))
 	api.router.Handler("POST", "/playlists/episodes", api.NewHandlerSessionRequired(AddEpisodeToPlaylists))
 }
 
-func GetUserPlaylists(c *Context, w http.ResponseWriter) {
-	req := &GetUserPlaylistsReq{}
+func GetPlaylists(c *Context, w http.ResponseWriter) {
+	req := &GetPlaylistsReq{}
 	if err := req.Load(c); err != nil {
-		c.err = model.NewAppError("api.get_user_playlists_req_load", err.Error(), 400, nil)
+		c.err = model.NewAppError("api.get_playlists_req_load", err.Error(), 400, nil)
 		return
 	}
 
+	if req.FullDetails {
+		GetUserPlaylists(req, c, w)
+	} else {
+		GetSignedInUserPlaylists(req, c, w)
+	}
+}
+
+func GetSignedInUserPlaylists(req *GetPlaylistsReq, c *Context, w http.ResponseWriter) {
 	playlists, err := c.app.GetPlaylistsByUser(req.UserId, 0, 1000)
 	if err != nil {
 		c.err = err
@@ -33,34 +42,28 @@ func GetUserPlaylists(c *Context, w http.ResponseWriter) {
 	}))
 }
 
-func GetUserPlaylistsAll(c *Context, w http.ResponseWriter) {
-	req := &GetUserPlaylistsReq{}
-	if err := req.Load(c); err != nil {
-		c.err = model.NewAppError("api.get_user_playlists_req_all_load", err.Error(), 400, nil)
-		return
-	}
-
-	playlists, err := c.app.GetPlaylistsByUser(req.UserId, 0, 10)
+func GetUserPlaylists(req *GetPlaylistsReq, c *Context, w http.ResponseWriter) {
+	playlists, err := c.app.GetPlaylistsByUser(req.UserId, req.Offset, req.Limit)
 	if err != nil {
 		c.err = err
 		return
 	}
 
-	episodes := []*model.Episode{}
+	episodesByPlaylist := map[string]([]*model.Episode){}
 	for _, playlist := range playlists {
 		e, err := c.app.GetEpisodesInPlaylist(playlist.Id, 0, 3)
 		if err != nil {
 			c.err = err
 			return
 		}
-		episodes = append(episodes, e...)
+		episodesByPlaylist[model.HashIdFromInt64(playlist.Id)] = e
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(model.EncodeToJson(map[string]interface{}{
-		"playlists": playlists,
-		"episodes":  episodes,
+		"playlists":            playlists,
+		"episodes_by_playlist": episodesByPlaylist,
 	}))
 }
 

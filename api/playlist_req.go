@@ -2,12 +2,26 @@ package api
 
 import "github.com/varmamsp/cello/model"
 
-type GetUserPlaylistsReq struct {
-	UserId int64 `validate:"required"`
+type GetPlaylistsReq struct {
+	UserId      int64 `validate:"-"`
+	FullDetails bool  `validate:"-"`
+	Offset      int   `validate:"min=0"`
+	Limit       int   `validate:"min=5"`
 }
 
-func (o *GetUserPlaylistsReq) Load(c *Context) (err error) {
-	o.UserId = c.session.UserId
+func (o *GetPlaylistsReq) Load(c *Context) (err error) {
+	if c.Query("user_id") == "" {
+		o.UserId = c.session.UserId
+	} else {
+		o.UserId, err = model.Int64FromHashId(c.Query("user_id"))
+		if err != nil {
+			return
+		}
+	}
+
+	o.FullDetails = model.BoolFromStr(c.Query("full_details"))
+	o.Offset = model.IntFromStr(c.Query("offset"))
+	o.Limit = model.IntFromStr(c.Query("limit"))
 
 	err = c.app.Validate.Struct(o)
 	return

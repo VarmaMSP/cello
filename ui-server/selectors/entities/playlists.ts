@@ -12,11 +12,28 @@ export function makeGetUserPlaylists() {
     AppState,
     $Id<User>,
     MapById<Playlist>,
-    $Id<Playlist>[],
-    Playlist[]
+    {
+      byCreateDateDesc: { [offset: string]: string[] }
+      receivedAll: 'create_date_desc'[]
+    },
+    {
+      playlists: Playlist[]
+      receivedAll: boolean
+    }
   >(
     (state, _) => getAllPlaylists(state),
-    (state, userId) => state.entities.playlists.byUser[userId] || [],
-    (all, ids) => ids.map((id) => all[id]),
+    (state, userId) => state.entities.playlists.playlistsByUser[userId] || {},
+    (playlists, x) => {
+      return {
+        playlists: Object.values(x.byCreateDateDesc || {}).reduce<Playlist[]>(
+          (acc, playlistIds) => [
+            ...acc,
+            ...playlistIds.map((id) => playlists[id]),
+          ],
+          [],
+        ),
+        receivedAll: (x.receivedAll || []).includes('create_date_desc'),
+      }
+    }
   )
 }

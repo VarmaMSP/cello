@@ -2,30 +2,6 @@ import { Episode, Playlist } from 'types/app'
 import * as unmarshal from 'utils/entities'
 import { doFetch } from './fetch'
 
-export async function getPlaylistFeed(): Promise<{
-  playlists: Playlist[]
-  episodesByPlaylist: { [playlistId: string]: Episode[] }
-}> {
-  const { data } = await doFetch({
-    method: 'GET',
-    urlPath: '/playlists/feed',
-  })
-
-  const episodesByPlaylist = data.episodes_by_playlist || {}
-  return {
-    playlists: (data.playlists || []).map(unmarshal.playlist),
-    episodesByPlaylist: Object.keys(episodesByPlaylist).reduce<{
-      [playlistId: string]: Episode[]
-    }>(
-      (acc, playlistId) => ({
-        ...acc,
-        [playlistId]: episodesByPlaylist[playlistId].map(unmarshal.episode),
-      }),
-      {},
-    ),
-  }
-}
-
 export async function getPlaylist(
   playlistId: string,
 ): Promise<{ playlist: Playlist; episodes: Episode[] }> {
@@ -40,10 +16,42 @@ export async function getPlaylist(
   }
 }
 
-export async function getUserPlaylists(): Promise<{ playlists: Playlist[] }> {
+export async function getUserPlaylists(
+  userId: string,
+  offset: number,
+  limit: number,
+  order: 'create_date_desc',
+): Promise<{
+  playlists: Playlist[]
+  episodesByPlaylist: { [playlist: string]: Episode[] }
+}> {
   const { data } = await doFetch({
     method: 'GET',
-    urlPath: `/playlists`,
+    urlPath: `/playlists?full_details=true&user_id=${userId}&limit=${limit}&offset=${offset}&order=${order}`,
+  })
+
+  return {
+    playlists: (data.playlists || []).map(unmarshal.playlist),
+    episodesByPlaylist: Object.keys(data.episodes_by_playlist || {}).reduce<{
+      [playlistId: string]: Episode[]
+    }>(
+      (acc, playlistId) => ({
+        ...acc,
+        [playlistId]: (data.episodes_by_playlist || {})[playlistId].map(
+          unmarshal.episode,
+        ),
+      }),
+      {},
+    ),
+  }
+}
+
+export async function getSignedInUserPlaylists(): Promise<{
+  playlists: Playlist[]
+}> {
+  const { data } = await doFetch({
+    method: 'GET',
+    urlPath: `/playlists?full_details=false`,
   })
 
   return { playlists: (data.playlists || []).map(unmarshal.playlist) }

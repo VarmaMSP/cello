@@ -10,9 +10,13 @@ function makeMapStateToProps() {
   const getPlaylists = makeGetUserPlaylists()
 
   return (state: AppState): StateToProps => {
+    const { playlists, receivedAll } = getPlaylists(
+      state,
+      getCurrentUserId(state),
+    )
     return {
-      playlists: getPlaylists(state, getCurrentUserId(state)),
-      receviedAll: true,
+      playlists,
+      receivedAll,
       isLoadingMore: false,
     }
   }

@@ -15,7 +15,7 @@ const playlists: Reducer<{ [playlistId: string]: Playlist }, T.AppActions> = (
           ...action.playlist,
         },
       }
-    case T.RECEIVED_PLAYLISTS:
+    case T.RECEIVED_USER_PLAYLISTS:
       return {
         ...state,
         ...action.playlists.reduce<{ [playlistId: string]: Playlist }>(
@@ -28,37 +28,42 @@ const playlists: Reducer<{ [playlistId: string]: Playlist }, T.AppActions> = (
   }
 }
 
-const byUser: Reducer<{ [userId: string]: string[] }, T.AppActions> = (
-  state = {},
-  action,
-) => {
+const playlistsByUser: Reducer<
+  {
+    [userId: string]: {
+      byCreateDateDesc: { [offset: string]: string[] }
+      receivedAll: 'create_date_desc'[]
+    }
+  },
+  T.AppActions
+> = (state = {}, action) => {
   switch (action.type) {
-    case T.RECEIVED_PLAYLIST:
-      return {
-        ...state,
-        [action.playlist.userId]: [
-          ...new Set([
-            ...(state[action.playlist.userId] || []),
-            action.playlist.id,
-          ]),
-        ],
+    case T.RECEIVED_USER_PLAYLISTS:
+      switch (action.order) {
+        case 'create_date_desc':
+          return {
+            ...state,
+            [action.userId]: {
+              ...(state[action.userId] || {}),
+              byCreateDateDesc: {
+                ...((state[action.userId] || {}).byCreateDateDesc || {}),
+                [action.offset.toString()]: action.playlists.map((p) => p.id),
+              },
+            },
+          }
+        default:
+          return state
       }
-    case T.RECEIVED_PLAYLISTS:
+    case T.RECEIVED_ALL_USER_PLAYLISTS:
       return {
         ...state,
-        ...action.playlists.reduce<{ [userId: string]: string[] }>(
-          (acc, playlist) => ({
-            ...acc,
-            [playlist.userId]: [
-              ...new Set([
-                ...(state[playlist.userId] || []),
-                ...(acc[playlist.userId] || []),
-                playlist.id,
-              ]),
-            ],
-          }),
-          {},
-        ),
+        [action.userId]: {
+          ...(state[action.userId] || {}),
+          receivedAll: [
+            ...((state[action.userId] || {}).receivedAll || []),
+            action.order,
+          ],
+        },
       }
     default:
       return state
@@ -67,5 +72,5 @@ const byUser: Reducer<{ [userId: string]: string[] }, T.AppActions> = (
 
 export default combineReducers({
   playlists,
-  byUser,
+  playlistsByUser,
 })

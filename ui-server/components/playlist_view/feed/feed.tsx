@@ -3,7 +3,7 @@ import { Playlist } from 'types/app'
 
 export interface StateToProps {
   playlists: Playlist[]
-  receviedAll: boolean
+  receivedAll: boolean
   isLoadingMore: boolean
 }
 

@@ -5,6 +5,8 @@ import { requestStatus } from 'selectors/request'
 import { AppState } from 'store'
 import * as AT from 'types/actions'
 
+type MakeRequest<T> = (g: () => AppState) => T
+
 type ProcessData<T> = (
   d: Dispatch<AT.AppActions>,
   g: () => AppState,
@@ -22,7 +24,7 @@ type RequestActionSkipCond =
   | { cond: 'REQUEST_ALREADY_MADE' }
 
 export function requestAction<T extends Promise<any>>(
-  makeRequest: () => T,
+  makeRequest: MakeRequest<T>,
   processData: ProcessData<T>,
   { skip, requestId }: Partial<RequestActionOpts> = {},
 ) {
@@ -48,7 +50,7 @@ export function requestAction<T extends Promise<any>>(
     !!requestId && dispatch({ type: AT.REQUEST_IN_PROGRESS, requestId })
 
     try {
-      const res = await makeRequest()
+      const res = await makeRequest(getState)
       processData(dispatch, getState, res)
       !!requestId && dispatch({ type: AT.REQUEST_SUCCESS, requestId })
     } catch (err) {

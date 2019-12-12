@@ -163,6 +163,11 @@ func IsValidMediaType(mediaType string) bool {
 	return true
 }
 
+// BoolFromStr decodes bool from string
+func BoolFromStr(str string) bool {
+	return strings.ToLower(str) == "true"
+}
+
 // IntFromStr decodes int from string
 func IntFromStr(str string) int {
 	if res, err := strconv.Atoi(str); err == nil {

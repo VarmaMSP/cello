@@ -11,7 +11,7 @@ function makeMapStateToProps() {
   const getUserPlaylists_ = makeGetUserPlaylists()
 
   return (state: AppState): StateToProps => ({
-    playlists: getUserPlaylists_(state, getCurrentUserId(state)),
+    playlists: getUserPlaylists_(state, getCurrentUserId(state)).playlists,
     isLoading: false,
   })
 }

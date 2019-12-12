@@ -1,6 +1,7 @@
 import { getPlaylistPageData } from 'actions/playlist'
 import ButtonSignin from 'components/button_signin'
 import { iconMap } from 'components/icon'
+import PlaylistView from 'components/playlist_view/playlist_view'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
@@ -65,7 +66,11 @@ class PlaylistPage extends React.Component<Props> {
       )
     }
 
-    return <div></div>
+    return (
+      <div>
+        <PlaylistView />
+      </div>
+    )
   }
 }
 
