@@ -42,13 +42,23 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
               />
             </li>
           </Link>
-          <hr className="my-2" />
+          
           <Link href="/history" scroll={false}>
             <li className="h-8">
               <MenuItem
                 icon="history"
                 name="history"
                 active={currentUrlPath === '/history'}
+              />
+            </li>
+          </Link>
+          <hr className="my-2" />
+          <Link href="/playlists" scroll={false}>
+            <li className="h-8">
+              <MenuItem
+                icon="playlist"
+                name="playlists"
+                active={currentUrlPath === '/playlists'}
               />
             </li>
           </Link>
