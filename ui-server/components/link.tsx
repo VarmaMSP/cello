@@ -13,9 +13,9 @@ export const PodcastLink: React.FC<Props & { podcastId: string }> = ({
     <Link
       href={{
         pathname: '/podcasts',
-        query: { podcastId: podcastId, activeTab: 'episodes' },
+        query: { podcastId: podcastId, activeTab: 'about' },
       }}
-      as={`/podcasts/${podcastId}/episodes`}
+      as={`/podcasts/${podcastId}`}
       key={podcastId}
     >
       {children}

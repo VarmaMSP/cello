@@ -18,16 +18,16 @@ const PodcastView: React.FC<OwnProps> = ({ podcastId, activeTab }) => {
           <NavTabs
             tabs={[
               {
-                name: 'episodes',
-                pathname: '/podcasts',
-                query: { podcastId, skipLoad: true, activeTab: 'episodes' },
-                as: `/podcasts/${podcastId}/episodes`,
-              },
-              {
                 name: 'about',
                 pathname: '/podcasts',
                 query: { podcastId, skipLoad: true, activeTab: 'about' },
                 as: `/podcasts/${podcastId}/about`,
+              },
+              {
+                name: 'episodes',
+                pathname: '/podcasts',
+                query: { podcastId, skipLoad: true, activeTab: 'episodes' },
+                as: `/podcasts/${podcastId}/episodes`,
               },
             ]}
             active={activeTab}
