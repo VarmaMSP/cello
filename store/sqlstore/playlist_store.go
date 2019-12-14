@@ -67,6 +67,21 @@ func (s *SqlPlaylistStore) GetByUserPaginated(userId int64, offset, limit int) (
 	return
 }
 
+func (s *SqlPlaylistStore) UpdateMemberStats(stats *model.PlaylistMemberStats) *model.AppError {
+	sql := fmt.Sprintf(
+		"UPDATE playlist SET preview_image = %s, episode_count = %d, updated_at = %d WHERE id = %d",
+		stats.PreviewImage, stats.EpisodeCount, model.Now(), stats.Id,
+	)
+
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_playlist_store.update_member_stats", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"playlist_id": stats.Id},
+		)
+	}
+	return nil
+}
+
 func (s *SqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppError {
 	member.PreSave()
 

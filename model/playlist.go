@@ -3,42 +3,58 @@ package model
 import "encoding/json"
 
 type Playlist struct {
-	Id          int64
-	UserId      int64
-	Title       string
-	Description string
-	Privacy     string
-	CreatedAt   int64
-	UpdatedAt   int64
+	Id           int64
+	UserId       int64
+	Title        string
+	Description  string
+	Privacy      string
+	EpisodeCount int
+	PreviewImage string
+	CreatedAt    int64
+	UpdatedAt    int64
+}
+
+type PlaylistMemberStats struct {
+	Id           int64
+	EpisodeCount int
+	PreviewImage string
 }
 
 func (p *Playlist) DbColumns() []string {
-	return []string{"id", "user_id", "title", "description", "privacy", "created_at", "updated_at"}
+	return []string{"id", "user_id", "title", "description", "privacy", "episode_count", "preview_image", "created_at", "updated_at"}
 }
 
 func (p *Playlist) FieldAddrs() []interface{} {
-	return []interface{}{&p.Id, &p.UserId, &p.Title, &p.Description, &p.Privacy, &p.CreatedAt, &p.UpdatedAt}
+	return []interface{}{&p.Id, &p.UserId, &p.Title, &p.Description, &p.Privacy, &p.EpisodeCount, &p.PreviewImage, &p.CreatedAt, &p.UpdatedAt}
 }
 
 func (p *Playlist) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
-		Id          string `json:"id"`
-		UserId      string `json:"user_id"`
-		Title       string `json:"title"`
-		Description string `json:"description"`
-		Privacy     string `json:"privacy"`
+		Id           string `json:"id"`
+		UserId       string `json:"user_id,omitempty"`
+		Title        string `json:"title"`
+		Description  string `json:"description,omitempty"`
+		Privacy      string `json:"privacy,omirempty"`
+		EpisodeCount int    `json:"episode_count,omitempty"`
+		PreviewImage string `json:"preview_image,omitempty"`
 	}{
-		Id:          HashIdFromInt64(p.Id),
-		UserId:      HashIdFromInt64(p.UserId),
-		Title:       p.Title,
-		Description: p.Description,
-		Privacy:     p.Privacy,
+		Id:           HashIdFromInt64(p.Id),
+		UserId:       HashIdFromInt64(p.UserId),
+		Title:        p.Title,
+		Description:  p.Description,
+		Privacy:      p.Privacy,
+		EpisodeCount: p.EpisodeCount,
+		PreviewImage: p.PreviewImage,
 	})
 }
 
 func (p *Playlist) PreSave() {
 	if p.Privacy == "" {
 		p.Privacy = "PUBLIC"
+	}
+
+	if p.PreviewImage == "" {
+		p.PreviewImage = "placeholder"
 	}
 
 	if p.CreatedAt == 0 {
