@@ -1,6 +1,6 @@
 import { ParameterizedContext as KoaContext } from 'koa'
 import Router from 'koa-router'
-import NextServer from 'next-server/dist/server/next-server'
+import NextServer from 'next/dist/next-server/server/next-server'
 import { ParsedUrlQuery } from 'querystring'
 
 export function registerRoutes(app: NextServer, router: Router) {
@@ -18,18 +18,18 @@ export function registerRoutes(app: NextServer, router: Router) {
 
   // Podcast Page
   router.get(
-    '/podcasts/:podcastId/:activeTab*',
+    '/podcasts/:podcastUrlParam/:activeTab*',
     servePage('/podcasts', 'public,max-age=3600,must-revalidate', (ctx) => ({
-      podcastId: ctx.params['podcastId'],
-      activeTab: ctx.params['activeTab'] || 'episodes',
+      podcastUrlParam: ctx.params['podcastUrlParam'],
+      activeTab: ctx.params['activeTab'] || 'about',
     })),
   )
 
   // Episode Page
   router.get(
-    '/episodes/:episodeId',
+    '/episodes/:episodeUrlParam',
     servePage('/episodes', 'public,max-age=7200,must-revalidate', (ctx) => ({
-      episodeId: ctx.params['episodeId'],
+      episodeUrlParam: ctx.params['episodeurlParam'],
     })),
   )
 
