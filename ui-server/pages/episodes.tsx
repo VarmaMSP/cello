@@ -1,11 +1,12 @@
-import { getEpisode } from 'actions/episode'
+import { getEpisodePageData } from 'actions/episode'
 import EpisodeView from 'components/episode_view'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { PageContext } from 'types/utilities'
+import { getIdFromUrlParam } from 'utils/format'
 
 interface OwnProps {
-  episodeId: string
+  episodeUrlParam: string
   scrollY: number
 }
 
@@ -16,9 +17,9 @@ export default class EpisodePage extends Component<OwnProps> {
     }
 
     await bindActionCreators(
-      getEpisode,
+      getEpisodePageData,
       store.dispatch,
-    )(query['episodeId'] as string)
+    )(query['episodeUrlParam'] as string)
   }
 
   componentDidMount() {
@@ -26,6 +27,8 @@ export default class EpisodePage extends Component<OwnProps> {
   }
 
   render() {
-    return <EpisodeView episodeId={this.props.episodeId} />
+    return (
+      <EpisodeView episodeId={getIdFromUrlParam(this.props.episodeUrlParam)} />
+    )
   }
 }

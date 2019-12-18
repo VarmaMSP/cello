@@ -1,4 +1,4 @@
-import { searchPodcasts } from 'actions/search'
+import { getResultsPageData } from 'actions/results'
 import ListSearchResults from 'components/list_search_results'
 import { NextSeo } from 'next-seo'
 import React, { Component } from 'react'
@@ -15,7 +15,7 @@ export default class ResultsPage extends Component<OwnProps> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
     const { query, store } = ctx
     await bindActionCreators(
-      searchPodcasts,
+      getResultsPageData,
       store.dispatch,
     )(query['query'] as string)
   }

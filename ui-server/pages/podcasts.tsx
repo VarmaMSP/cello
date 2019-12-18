@@ -1,12 +1,11 @@
-import { getPodcast } from 'actions/podcast'
+import { getPodcastPageData } from 'actions/podcast'
 import PodcastView from 'components/podcast_view/podcast_view'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { PageContext } from 'types/utilities'
-import * as gtag from 'utils/gtag'
 
 interface OwnProps {
-  podcastId: string
+  podcastUrlParam: string
   activeTab: string
   scrollY: number
 }
@@ -18,20 +17,19 @@ export default class PodcastsPage extends Component<OwnProps> {
     }
 
     await bindActionCreators(
-      getPodcast,
+      getPodcastPageData,
       store.dispatch,
-    )(query['podcastId'] as string)
+    )(query['podcastUrlParam'] as string)
   }
 
   componentDidMount() {
-    gtag.pageview(`/podcasts/${this.props.podcastId}/${this.props.activeTab}`)
     window.window.scrollTo(0, this.props.scrollY)
   }
 
   render() {
     return (
       <PodcastView
-        podcastId={this.props.podcastId}
+        podcastUrlParam={this.props.podcastUrlParam}
         activeTab={this.props.activeTab}
       />
     )
