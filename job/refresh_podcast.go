@@ -68,7 +68,7 @@ func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 		defer delivery.Ack(false)
 		defer func() { <-job.rateLimiter }()
 
-		// updated details
+		// Updated feed
 		feedU := feed
 
 		rssFeed, headers, err := fetchRssFeed(
@@ -122,9 +122,6 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId int64, rssFeed *rss.Feed)
 	// Index rss items by their guid
 	rssItemMap := map[string]*rss.Item{}
 	for _, item := range rssFeed.Items {
-		if item.ITunesExt != nil && item.ITunesExt.Block == "true" {
-			continue
-		}
 		if guid := model.RssItemGuid(item); guid != "" {
 			rssItemMap[guid] = item
 		}
@@ -154,14 +151,17 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId int64, rssFeed *rss.Feed)
 		}
 	}
 
-	latestEpisode := &model.Episode{}
-	latestEpisode.LoadDetails(rssFeed.Items[0])
+	if len(rssFeed.Items) > 0 && (newEpisodesCount > 0 || blockedEpisodesCount > 0) {
+		latestEpisode := &model.Episode{}
+		latestEpisode.LoadDetails(rssFeed.Items[0])
 
-	job.Store.Podcast().UpdateEpisodeStats(&model.PodcastEpisodeStats{
-		Id:                    podcastId,
-		TotalEpisodes:         len(episodes) + newEpisodesCount - blockedEpisodesCount,
-		TotalSeasons:          latestEpisode.Season,
-		LastestEpisodePubDate: latestEpisode.PubDate,
-	})
+		job.Store.Podcast().UpdateEpisodeStats(&model.PodcastEpisodeStats{
+			Id:                    podcastId,
+			TotalEpisodes:         len(episodes) + newEpisodesCount - blockedEpisodesCount,
+			TotalSeasons:          latestEpisode.Season,
+			LastestEpisodePubDate: latestEpisode.PubDate,
+		})
+	}
+
 	return nil
 }
