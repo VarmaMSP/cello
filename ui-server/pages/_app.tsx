@@ -1,3 +1,4 @@
+import NProgress from 'accessible-nprogress'
 import { getCurrentUser } from 'actions/user'
 import AudioPlayer from 'components/audio_player'
 import ModalSelector from 'components/modal/modal_selector'
@@ -7,7 +8,6 @@ import withRedux from 'next-redux-wrapper'
 import { DefaultSeo } from 'next-seo'
 import { AppProps } from 'next/app'
 import Router from 'next/router'
-import NProgress from 'nprogress'
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -23,7 +23,7 @@ NProgress.configure({
   trickleSpeed: 200,
   easing: 'ease',
   speed: 500,
-  minimum: 0.2,
+  minimum: 0.1,
 })
 
 export default withRedux(makeStore)(

@@ -10,6 +10,7 @@
     "make-icons": "npx svgr --ext tsx --out-dir ./components/icons ./static/icons"
   },
   "dependencies": {
+    "accessible-nprogress": "^2.0.1",
     "date-fns": "^2.6.0",
     "formik": "^2.0.3",
     "isomorphic-unfetch": "^3.0.0",
@@ -19,7 +20,6 @@
     "next": "^9.1.6",
     "next-redux-wrapper": "^3.0.0",
     "next-seo": "^2.1.2",
-    "nprogress": "^0.2.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-redux": "^7.1.0",
@@ -37,7 +37,6 @@
     "@types/koa-router": "^7.0.42",
     "@types/next-redux-wrapper": "^2.0.2",
     "@types/node": "^12.7.1",
-    "@types/nprogress": "^0.2.0",
     "@types/react": "^16.9.1",
     "@types/react-dom": "^16.8.5",
     "@types/react-redux": "^7.1.2",
