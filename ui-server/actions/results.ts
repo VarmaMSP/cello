@@ -2,7 +2,7 @@ import * as client from 'client/search'
 import * as T from 'types/actions'
 import { requestAction } from './utils'
 
-export function searchPodcasts(query: string) {
+export function getResultsPageData(query: string) {
   return requestAction(
     () => client.searchPodcasts(query),
     (dispatch, _, { podcasts }) => {

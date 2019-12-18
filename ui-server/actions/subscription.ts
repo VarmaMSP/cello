@@ -5,14 +5,13 @@ import { requestAction } from './utils'
 
 export function getSubscriptionsPageData() {
   return requestAction(
-    () => client.getSubscriptionsFeed(0, 15),
+    () => client.getSubscriptionsPageData(),
     (dispatch, _, { episodes }) => {
       dispatch({
         type: T.RECEIVED_SUBSCRIPTION_FEED,
         offset: 0,
         episodes,
       })
-
       if (episodes.length < 15) {
         dispatch({ type: T.RECEIVED_ALL_SUBSCRIPTION_FEED })
       }
@@ -26,7 +25,6 @@ export function getSubscriptionsFeed(offset: number, limit: number) {
     () => client.getSubscriptionsFeed(offset, limit),
     (dispatch, _, { episodes }) => {
       dispatch({ type: T.RECEIVED_SUBSCRIPTION_FEED, offset, episodes })
-
       if (episodes.length < limit) {
         dispatch({ type: T.RECEIVED_ALL_SUBSCRIPTION_FEED })
       }
@@ -37,7 +35,7 @@ export function getSubscriptionsFeed(offset: number, limit: number) {
 
 export function subscribeToPodcast(podcastId: string) {
   return requestAction(
-    () => client.subscribeToPodcast(podcastId),
+    () => client.subscribePodcast(podcastId),
     (dispatch) => {
       dispatch({ type: T.SUBSCRIBED_TO_PODCAST, podcastId })
     },
@@ -46,7 +44,7 @@ export function subscribeToPodcast(podcastId: string) {
 
 export function unsubscribeToPodcast(podcastId: string) {
   return requestAction(
-    () => client.unsubscribeToPodcast(podcastId),
+    () => client.unsubscribePodcast(podcastId),
     (dispatch) => {
       dispatch({ type: T.UNSUBSCRIBED_TO_PODCAST, podcastId })
     },

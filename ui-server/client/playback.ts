@@ -6,8 +6,9 @@ export async function getPlaybacks(
   episodeIds: string[],
 ): Promise<{ playbacks: Playback[] }> {
   const { data } = await doFetch({
-    method: 'GET',
-    urlPath: `/playback?ids=${episodeIds.join(',')}`,
+    method: 'POST',
+    urlPath: `/ajax/service?endpoint=get_playbacks`,
+    body: { episode_ids: episodeIds },
   })
 
   return {
@@ -18,7 +19,8 @@ export async function getPlaybacks(
 export async function startPlayback(episodeId: string): Promise<void> {
   await doFetch({
     method: 'POST',
-    urlPath: `/playback/${episodeId}`,
+    urlPath: `/ajax/service?endpoint=playback_sync&action=playback_begin`,
+    body: { episode_id: episodeId}
   })
 }
 

@@ -7,8 +7,8 @@ export async function init(): Promise<{
   subscriptions: Podcast[]
 }> {
   const { data } = await doFetch({
-    method: 'GET',
-    urlPath: `/me`,
+    method: 'POST',
+    urlPath: `/ajax/service?endpoint=load_session`,
   })
 
   return {
@@ -19,7 +19,7 @@ export async function init(): Promise<{
 
 export async function signOut(): Promise<void> {
   await doFetch({
-    method: 'GET',
-    urlPath: `/signout`,
+    method: 'POST',
+    urlPath: `/ajax/service?endpoint=end_session`,
   })
 }

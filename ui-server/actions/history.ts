@@ -5,7 +5,7 @@ import { requestAction } from './utils'
 
 export function getHistoryPageData() {
   return requestAction(
-    () => client.getHistoryFeed(0, 15),
+    () => client.getHistoryPageData(),
     (dispatch, _, { podcasts, episodes }) => {
       dispatch({
         type: T.RECEIVED_PODCASTS,

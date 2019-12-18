@@ -9,7 +9,7 @@ export async function getHomePageData(): Promise<{
 }> {
   const { data } = await doFetch({
     method: 'GET',
-    urlPath: '/home',
+    urlPath: '/',
   })
 
   let categories = <Chart[]>[]
