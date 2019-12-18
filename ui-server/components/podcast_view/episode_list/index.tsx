@@ -1,4 +1,4 @@
-import { getPodcastEpisodes as getPodcastEpisodes_ } from 'actions/episode'
+import { getPodcastEpisodes as getPodcastEpisodes_ } from 'actions/podcast'
 import { getEpisodePlaybacks } from 'actions/playback'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'

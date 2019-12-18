@@ -23,9 +23,9 @@ export default class extends Component<Props> {
           <Link
             href={{
               pathname: '/podcasts',
-              query: { podcastId: podcast.id, activeTab: 'episodes' },
+              query: { podcastUrlParam: podcast.urlParam, activeTab: 'about' },
             }}
-            as={`/podcasts/${podcast.id}/episodes`}
+            as={`/podcasts/${podcast.urlParam}`}
             key={podcast.id}
           >
             <div className="w-full cursor-pointer">

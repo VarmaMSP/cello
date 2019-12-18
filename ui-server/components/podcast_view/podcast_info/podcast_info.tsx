@@ -47,12 +47,12 @@ const PodcastInfo: React.SFC<Props> = ({ podcast }) => {
               {podcast.author}
             </h3>
             <h4 className="text-xs text-gray-700">
-              {`${podcast.totalEpisodes} episodes`}
-              <span className="mx-2 font-extrabold">&middot;</span>
               {`Since ${format(
                 new Date(`${podcast.earliestEpisodePubDate} +0000`),
                 'MMM yyyy',
               )}`}
+              <span className="mx-2 font-extrabold">&middot;</span>
+              {`${podcast.totalEpisodes} episodes`}
             </h4>
           </div>
           <ButtonSubscribe

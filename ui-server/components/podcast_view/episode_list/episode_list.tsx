@@ -46,7 +46,7 @@ const ListEpisodes: React.SFC<Props> = ({
           <div className="flex group mb-3 py-2 cursor-default">
             <div className="flex-auto w-11/12">
               <EpisodeMeta episodeId={episode.id} />
-              <EpisodeLink episodeId={episode.id}>
+              <EpisodeLink episodeUrlParam={episode.urlParam}>
                 <a
                   className="font-medium text-sm md:text-base text-black tracking-wide line-clamp-1"
                   style={{ marginTop: '1px' }}
@@ -54,7 +54,7 @@ const ListEpisodes: React.SFC<Props> = ({
                   {episode.title}
                 </a>
               </EpisodeLink>
-              <EpisodeLink episodeId={episode.id}>
+              <EpisodeLink episodeUrlParam={episode.urlParam}>
                 <a
                   className="mt-1 text-sm text-gray-700 line-clamp-2 tracking-wide"
                   style={{ hyphens: 'auto' }}

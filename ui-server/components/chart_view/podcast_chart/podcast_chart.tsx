@@ -22,7 +22,7 @@ const PodcastChart: React.FC<StateToProps & OwnProps> = ({
       <hr className="mt-1 mb-4 border-gray-400" />
       <ol>
         {podcasts.map((p, i) => (
-          <PodcastLink key={p.id} podcastId={p.id}>
+          <PodcastLink key={p.id} podcastUrlParam={p.urlParam}>
             <a>
               <li className="block flex items-center py-2 md:px-2 my-1 hover:bg-gray-200 rounded-lg">
                 <div className="w-6 md:ml-1 md:mr-4 mr-2 text-sm text-gray-600">

@@ -22,7 +22,7 @@ const Subscriptions: React.FC<StateToProps> = ({ subscriptions }) => {
         className="md:mb-4 mb-2"
       >
         {subscriptions.map((podcast) => (
-          <PodcastLink podcastId={podcast.id} key={podcast.id}>
+          <PodcastLink podcastUrlParam={podcast.urlParam} key={podcast.id}>
             <a>
               <img
                 className="w-full h-auto flex-none object-contain rounded-lg border cursor-pointer"

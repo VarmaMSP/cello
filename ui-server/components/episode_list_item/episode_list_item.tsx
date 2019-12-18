@@ -37,12 +37,12 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
         src={getImageUrl(podcast.urlParam)}
       />
       <div className="pl-3">
-        <EpisodeLink episodeId={episode.id}>
+        <EpisodeLink episodeUrlParam={episode.urlParam}>
           <a className="block md:text-base text-sm font-medium tracking-wide line-clamp-2">
             {episode.title}
           </a>
         </EpisodeLink>
-        <PodcastLink podcastId={podcast.id}>
+        <PodcastLink podcastUrlParam={podcast.urlParam}>
           <a
             className="block text-xs text-grey-800 hover:text-black tracking-wide line-clamp-1"
             style={{ margin: '3px 0px' }}
@@ -52,7 +52,7 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
         </PodcastLink>
 
         <EpisodeMeta episodeId={episode.id} />
-        <EpisodeLink episodeId={episode.id}>
+        <EpisodeLink episodeUrlParam={episode.urlParam}>
           <a
             className="mt-1 text-xs text-gray-700 leading-snug tracking-wider line-clamp-2"
             style={{ hyphens: 'auto' }}

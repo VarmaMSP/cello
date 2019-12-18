@@ -5,35 +5,34 @@ interface Props {
   children: JSX.Element
 }
 
-export const PodcastLink: React.FC<Props & { podcastId: string }> = ({
+export const PodcastLink: React.FC<Props & { podcastUrlParam: string }> = ({
   children,
-  podcastId,
+  podcastUrlParam,
 }) => {
   return (
     <Link
       href={{
         pathname: '/podcasts',
-        query: { podcastId: podcastId, activeTab: 'about' },
+        query: { podcastUrlParam: podcastUrlParam, activeTab: 'about' },
       }}
-      as={`/podcasts/${podcastId}`}
-      key={podcastId}
+      as={`/podcasts/${podcastUrlParam}`}
     >
       {children}
     </Link>
   )
 }
 
-export const EpisodeLink: React.FC<Props & { episodeId: string }> = ({
+export const EpisodeLink: React.FC<Props & { episodeUrlParam: string }> = ({
   children,
-  episodeId,
+  episodeUrlParam,
 }) => {
   return (
     <Link
       href={{
         pathname: '/episodes',
-        query: { episodeId: episodeId, skipLoad: true },
+        query: { episodeUrlParam: episodeUrlParam, skipLoad: true },
       }}
-      as={`/episodes/${episodeId}`}
+      as={`/episodes/${episodeUrlParam}`}
     >
       {children}
     </Link>
