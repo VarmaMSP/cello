@@ -11,6 +11,106 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
+func (app *App) GetUser(userId int64) (*model.User, *model.AppError) {
+	return app.Store.User().Get(userId)
+}
+
+func (app *App) GoogleSignIn() http.Handler {
+	return googleLogin.StateHandler(
+		gologin.DebugOnlyCookieConfig,
+		googleLogin.LoginHandler(
+			app.GoogleOAuthConfig,
+			nil,
+		),
+	)
+}
+
+func (app *App) FacebookSignIn() http.Handler {
+	return facebookLogin.StateHandler(
+		gologin.DebugOnlyCookieConfig,
+		facebookLogin.LoginHandler(
+			app.FacebookOAuthConfig,
+			nil,
+		),
+	)
+}
+
+func (app *App) TwitterSignIn() http.Handler {
+	return twitterLogin.LoginHandler(
+		app.TwitterOAuthConfig,
+		nil,
+	)
+}
+
+func (app *App) GoogleCallback() http.Handler {
+	return googleLogin.StateHandler(
+		gologin.DebugOnlyCookieConfig,
+		googleLogin.CallbackHandler(
+			app.GoogleOAuthConfig,
+			app.SessionManager.LoadAndSave(
+				http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+					user, err := app.CreateUserWithGoogle(req.Context())
+					if err != nil {
+						w.Header().Set("Location", app.HostName)
+						w.WriteHeader(http.StatusFound)
+						return
+					}
+
+					app.CreateSession(req.Context(), user)
+					w.Header().Set("Location", app.HostName)
+					w.WriteHeader(http.StatusFound)
+				}),
+			),
+			nil,
+		),
+	)
+}
+
+func (app *App) FacebookCallback() http.Handler {
+	return facebookLogin.StateHandler(
+		gologin.DebugOnlyCookieConfig,
+		facebookLogin.CallbackHandler(
+			app.FacebookOAuthConfig,
+			app.SessionManager.LoadAndSave(
+				http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+					user, err := app.CreateUserWithFacebook(req.Context())
+					if err != nil {
+						w.Header().Set("Location", app.HostName)
+						w.WriteHeader(http.StatusFound)
+						return
+					}
+
+					app.CreateSession(req.Context(), user)
+					w.Header().Set("Location", app.HostName)
+					w.WriteHeader(http.StatusFound)
+				}),
+			),
+			nil,
+		),
+	)
+}
+
+func (app *App) TwitterCallback() http.Handler {
+	return twitterLogin.CallbackHandler(
+		app.TwitterOAuthConfig,
+		app.SessionManager.LoadAndSave(
+			http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+				user, err := app.CreateUserWithTwitter(req.Context())
+				if err != nil {
+					w.Header().Set("Location", app.HostName)
+					w.WriteHeader(http.StatusFound)
+					return
+				}
+
+				app.CreateSession(req.Context(), user)
+				w.Header().Set("Location", app.HostName)
+				w.WriteHeader(http.StatusFound)
+			}),
+		),
+		nil,
+	)
+}
+
 func (app *App) CreateUserWithGoogle(ctx context.Context) (*model.User, *model.AppError) {
 	googleUser, err := googleLogin.UserFromContext(ctx)
 	if err != nil {
@@ -134,10 +234,6 @@ func (app *App) CreateSession(ctx context.Context, user *model.User) *model.Sess
 	return session
 }
 
-func (app *App) GetUser(userId int64) (*model.User, *model.AppError) {
-	return app.Store.User().Get(userId)
-}
-
 func (app *App) GetSession(ctx context.Context) *model.Session {
 	session := &model.Session{}
 
@@ -157,28 +253,4 @@ func (app *App) DeleteSession(ctx context.Context) *model.AppError {
 		return model.NewAppError("app.delete_session", err.Error(), http.StatusInternalServerError, nil)
 	}
 	return nil
-}
-
-func (app *App) GoogleSignIn() http.Handler {
-	return googleLogin.StateHandler(gologin.DebugOnlyCookieConfig, googleLogin.LoginHandler(app.GoogleOAuthConfig, nil))
-}
-
-func (app *App) GoogleCallback(onSuccess http.Handler) http.Handler {
-	return googleLogin.StateHandler(gologin.DebugOnlyCookieConfig, googleLogin.CallbackHandler(app.GoogleOAuthConfig, onSuccess, nil))
-}
-
-func (app *App) FacebookSignIn() http.Handler {
-	return facebookLogin.StateHandler(gologin.DebugOnlyCookieConfig, facebookLogin.LoginHandler(app.FacebookOAuthConfig, nil))
-}
-
-func (app *App) FacebookCallback(onSuccess http.Handler) http.Handler {
-	return facebookLogin.StateHandler(gologin.DebugOnlyCookieConfig, facebookLogin.CallbackHandler(app.FacebookOAuthConfig, onSuccess, nil))
-}
-
-func (app *App) TwitterSignIn() http.Handler {
-	return twitterLogin.LoginHandler(app.TwitterOAuthConfig, nil)
-}
-
-func (app *App) TwitterCallback(onSuccess http.Handler) http.Handler {
-	return twitterLogin.CallbackHandler(app.TwitterOAuthConfig, onSuccess, nil)
 }
