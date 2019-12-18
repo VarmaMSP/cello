@@ -5,7 +5,7 @@ import NavbarSide from 'components/navbar_side'
 import NavbarTop from 'components/navbar_top'
 import withRedux from 'next-redux-wrapper'
 import { DefaultSeo } from 'next-seo'
-import { AppProps, Container } from 'next/app'
+import { AppProps } from 'next/app'
 import Router from 'next/router'
 import NProgress from 'nprogress'
 import React, { Component } from 'react'
@@ -20,10 +20,10 @@ import '../styles/index.css'
 NProgress.configure({
   showSpinner: false,
   trickle: true,
-  trickleSpeed: 30,
+  trickleSpeed: 200,
   easing: 'ease',
-  speed: 200,
-  minimum: 0.3,
+  speed: 500,
+  minimum: 0.2,
 })
 
 export default withRedux(makeStore)(
@@ -135,7 +135,7 @@ export default withRedux(makeStore)(
     render() {
       const { Component, pageProps, store } = this.props
       return (
-        <Container>
+        <>
           {/* Default seo that can be overidden by individual pages */}
           <DefaultSeo
             openGraph={{
@@ -168,7 +168,7 @@ export default withRedux(makeStore)(
             <NavbarSide />
             <ModalSelector />
           </Provider>
-        </Container>
+        </>
       )
     }
   },
