@@ -90,7 +90,7 @@ func (s *SqlPodcastStore) UpdateEpisodeStats(stats *model.PodcastEpisodeStats) *
 	sql := fmt.Sprintf(
 		`UPDATE podcast 
 			SET total_episodes = %d, total_seasons = %d, latest_episode_pub_date = '%s', updated_at = %d
-			WHERE podcast_id = %d`,
+			WHERE id = %d`,
 		stats.TotalEpisodes, stats.TotalSeasons, stats.LastestEpisodePubDate, model.Now(), stats.Id,
 	)
 

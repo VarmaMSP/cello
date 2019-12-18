@@ -76,7 +76,7 @@ func (s *SqlEpisodeStore) GetByPodcast(podcastId int64) (res []*model.Episode, a
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.Query(copyTo, sql, podcastId); err != nil {
+	if err := s.Query(copyTo, sql); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_episode_store.get_by_podcast", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"podcast_id": podcastId},
@@ -154,5 +154,13 @@ func (s *SqlEpisodeStore) GetByPlaylistPaginated(playlistId int64, offset, limit
 }
 
 func (s *SqlEpisodeStore) Block(episodeId int64) *model.AppError {
+	sql := fmt.Sprintf(`UPDATE episode SET block = 1 WHERE id = %d`, episodeId)
+
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_episode_store.block", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"episode_id": episodeId},
+		)
+	}
 	return nil
 }

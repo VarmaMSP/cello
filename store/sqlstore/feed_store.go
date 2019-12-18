@@ -63,7 +63,7 @@ func (s *SqlFeedStore) GetBySourceId(source, sourceId string) (*model.Feed, *mod
 
 func (s *SqlFeedStore) GetBySourcePaginated(source string, offset, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := fmt.Sprintf(
-		`SELECT %s FROM feed WHERE source = %s LIMIT %d, %d`,
+		`SELECT %s FROM feed WHERE source = '%s' LIMIT %d, %d`,
 		joinStrings((&model.Feed{}).DbColumns(), ","), source, offset, limit,
 	)
 
