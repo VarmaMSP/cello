@@ -6,22 +6,21 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (api *Api) RegisterPlaybackHandlers() {
-	api.router.Handler("GET", "/playback", api.NewHandlerSessionRequired(GetPlaybacks))
-	api.router.Handler("POST", "/playback/:episodeId", api.NewHandlerSessionRequired(StartPlayback))
-	api.router.Handler("POST", "/playback/:episodeId/sync", api.NewHandlerSessionRequired(SyncPlayback))
-}
+const (
+	ACTION_PLAYBACK_BEGIN    = "playback_begin"
+	ACTION_PLAYBACK_PROGRESS = "playback_progress"
+)
 
-func GetPlaybacks(c *Context, w http.ResponseWriter) {
-	req := &GetPlaybacksReq{}
-	if err := req.Load(c); err != nil {
-		c.err = model.NewAppError("api.start_playback_req.load", err.Error(), 400, nil)
+func ServiceGetPlaybacks(c *Context, w http.ResponseWriter, req *http.Request) {
+	episodeIds, err_ := GetIds(c.Body["episode_ids"])
+	if err_ != nil {
+		c.SetInvalidBodyParam("episode_ids")
 		return
 	}
 
-	playbacks, err := c.app.GetUserPlaybacksForEpisodes(req.UserId, req.EpisodeIds)
+	playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Params.UserId, episodeIds)
 	if err != nil {
-		c.err = err
+		c.Err = err
 		return
 	}
 
@@ -32,30 +31,57 @@ func GetPlaybacks(c *Context, w http.ResponseWriter) {
 	}))
 }
 
-func StartPlayback(c *Context, w http.ResponseWriter) {
-	req := &StartPlaybackReq{}
-	if err := req.Load(c); err != nil {
-		c.err = model.NewAppError("api.start_playback_req.load", err.Error(), 400, nil)
+func ServicePlaybackSync(c *Context, w http.ResponseWriter, req *http.Request) {
+	switch c.Params.Action {
+	case ACTION_PLAYBACK_BEGIN:
+		c.RequireBody(req)
+		if c.Err == nil {
+			PlaybackBegin(c, w, req)
+		}
+
+	case ACTION_PLAYBACK_PROGRESS:
+		c.RequireBody(req)
+		if c.Err == nil {
+			PlaybackProgress(c, w, req)
+		}
+
+	default:
+		c.SetInvalidQueryParam("action")
+	}
+}
+
+func PlaybackBegin(c *Context, w http.ResponseWriter, req *http.Request) {
+	episodeId, err_ := GetId(c.Body["episode_id"])
+	if err_ != nil {
+		c.SetInvalidBodyParam("episode_id")
 		return
 	}
 
-	if err := c.app.SyncPlayback(req.EpisodeId, req.UserId, model.PLAYBACK_EVENT_COMPLETE, 0); err != nil {
-		c.err = err
+	err := c.App.SyncPlayback(episodeId, c.Params.UserId, model.PLAYBACK_EVENT_COMPLETE, 0)
+	if err != nil {
+		c.Err = err
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 }
 
-func SyncPlayback(c *Context, w http.ResponseWriter) {
-	req := &SyncPlaybackReq{}
-	if err := req.Load(c); err != nil {
-		c.err = model.NewAppError("api.sync_playback_req.load", err.Error(), 400, nil)
+func PlaybackProgress(c *Context, w http.ResponseWriter, req *http.Request) {
+	episodeId, err_ := GetId(c.Body["episode_id"])
+	if err_ != nil {
+		c.SetInvalidBodyParam("episode_id")
 		return
 	}
 
-	if err := c.app.SyncPlayback(req.EpisodeId, req.UserId, model.PLAYBACK_EVENT_COMPLETE, req.Progress); err != nil {
-		c.err = err
+	progress, ok := c.Body["progress"].(float32)
+	if !ok {
+		c.SetInvalidBodyParam("progress")
+		return
+	}
+
+	err := c.App.SyncPlayback(episodeId, c.Params.UserId, model.PLAYBACK_EVENT_COMPLETE, progress)
+	if err != nil {
+		c.Err = err
 		return
 	}
 	w.WriteHeader(http.StatusOK)

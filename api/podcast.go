@@ -7,25 +7,20 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (api *Api) RegisterPodcastHandlers() {
-	api.router.Handler("GET", "/podcasts/:podcastId", api.NewHandler(GetPodcast))
-}
-
-func GetPodcast(c *Context, w http.ResponseWriter) {
-	req := &GetPodcastReq{}
-	if err := req.Load(c); err != nil {
-		c.err = model.NewAppError("api.get_podcast_req.load", err.Error(), 400, nil)
+func GetPodcastPageData(c *Context, w http.ResponseWriter, req *http.Request) {
+	c.RequirePodcastId()
+	if c.Err != nil {
 		return
 	}
 
-	feed, err := c.app.GetFeed(req.PodcastId)
+	feed, err := c.App.GetFeed(c.Params.PodcastId)
 	if err != nil {
-		c.err = err
+		c.Err = err
 		return
 	}
 	w.Header().Set(headers.CacheControl, "private, max-age=300, must-revalidate")
 	if feed.ETag != "" {
-		ifNoneMatch := c.req.Header.Get(headers.IfNoneMatch)
+		ifNoneMatch := req.Header.Get(headers.IfNoneMatch)
 		w.Header().Set(headers.ETag, feed.ETag)
 		if ifNoneMatch != "" && ifNoneMatch == feed.ETag {
 			w.WriteHeader(http.StatusNotModified)
@@ -33,7 +28,7 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 		}
 	}
 	if feed.LastModified != "" {
-		ifModifiedSince := c.req.Header.Get(headers.IfModifiedSince)
+		ifModifiedSince := req.Header.Get(headers.IfModifiedSince)
 		w.Header().Set(headers.LastModified, feed.LastModified)
 		if ifModifiedSince != "" && ifModifiedSince == feed.LastModified {
 			w.WriteHeader(http.StatusNotModified)
@@ -41,15 +36,15 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 		}
 	}
 
-	podcast, err := c.app.GetPodcast(req.PodcastId)
+	podcast, err := c.App.GetPodcast(c.Params.PodcastId)
 	if err != nil {
-		c.err = err
+		c.Err = err
 		return
 	}
 
-	episodes, err := c.app.GetEpisodesInPodcast(req.PodcastId, "pub_date_desc", 0, 15)
+	episodes, err := c.App.GetEpisodesInPodcast(c.Params.PodcastId, "pub_date_desc", 0, 15)
 	if err != nil {
-		c.err = err
+		c.Err = err
 		return
 	}
 
@@ -57,6 +52,29 @@ func GetPodcast(c *Context, w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(model.EncodeToJson(map[string]interface{}{
 		"podcast":  podcast,
+		"episodes": episodes,
+	}))
+}
+
+func BrowsePodcastEpisodes(c *Context, w http.ResponseWriter, req *http.Request) {
+	episodes, err := c.App.GetEpisodesInPodcast(c.Params.PodcastId, c.Params.Order, c.Params.Offset, c.Params.Limit)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	if c.Session != nil && c.Session.UserId != 0 {
+		playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Session.UserId, model.GetEpisodeIds(episodes))
+		if err != nil {
+			c.Err = err
+			return
+		}
+		model.EpisodesJoinPlaybacks(episodes, playbacks)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(model.EncodeToJson(map[string]interface{}{
 		"episodes": episodes,
 	}))
 }

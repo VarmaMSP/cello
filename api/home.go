@@ -9,21 +9,16 @@ import (
 	"github.com/varmamsp/cello/service/s3"
 )
 
-func (api *Api) RegisterHomeHandlers() {
-	api.router.Handler("GET", "/home", api.NewHandler(GetHomePageDate))
-	api.router.Handler("GET", "/charts/:chartId", api.NewHandler(GetPodcastsInChart))
-}
-
-func GetHomePageDate(c *Context, w http.ResponseWriter) {
-	recommended, err := c.app.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_DISCOVER, "recommended.json")
+func GetHomePageData(c *Context, w http.ResponseWriter, req *http.Request) {
+	recommended, err := c.App.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_DISCOVER, "recommended.json")
 	if err != nil {
-		c.err = err
+		c.Err = err
 		return
 	}
 
-	categories, err := c.app.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_DISCOVER, "categories.json")
+	categories, err := c.App.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_DISCOVER, "categories.json")
 	if err != nil {
-		c.err = err
+		c.Err = err
 		return
 	}
 
@@ -40,11 +35,15 @@ func GetHomePageDate(c *Context, w http.ResponseWriter) {
 	)
 }
 
-func GetPodcastsInChart(c *Context, w http.ResponseWriter) {
-	chartId := c.Param("chartId")
-	podcasts, err := c.app.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_CHARTS, fmt.Sprintf("%s.json", chartId))
+func GetChart(c *Context, w http.ResponseWriter, req *http.Request) {
+	c.RequireChartId()
+	if c.Err != nil {
+		return
+	}
+
+	podcasts, err := c.App.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_CHARTS, fmt.Sprintf("%s.json", c.Params.ChartId))
 	if err != nil {
-		c.err = err
+		c.Err = err
 		return
 	}
 

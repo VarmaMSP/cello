@@ -6,20 +6,10 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (api *Api) RegisterHistoryHandlers() {
-	api.router.Handler("GET", "/history/feed", api.NewHandlerSessionRequired(GetHistoryFeed))
-}
-
-func GetHistoryFeed(c *Context, w http.ResponseWriter) {
-	req := &GetHistoryFeedReq{}
-	if err := req.Load(c); err != nil {
-		c.err = model.NewAppError("api.subscribe_to_podcast_req.load", err.Error(), 400, nil)
-		return
-	}
-
-	playbacks, err := c.app.GetUserPlaybacks(req.UserId, req.Offset, req.Limit)
+func GetHistoryPageData(c *Context, w http.ResponseWriter, req *http.Request) {
+	playbacks, err := c.App.GetUserPlaybacks(c.Params.UserId, 0, 15)
 	if err != nil {
-		c.err = err
+		c.Err = err
 		return
 	}
 
@@ -27,9 +17,9 @@ func GetHistoryFeed(c *Context, w http.ResponseWriter) {
 	for i, playback := range playbacks {
 		episodeIds[i] = playback.EpisodeId
 	}
-	episodes, err := c.app.GetEpisodesByIds(episodeIds)
+	episodes, err := c.App.GetEpisodesByIds(episodeIds)
 	if err != nil {
-		c.err = err
+		c.Err = err
 		return
 	}
 	model.EpisodesJoinPlaybacks(episodes, playbacks)
@@ -38,9 +28,45 @@ func GetHistoryFeed(c *Context, w http.ResponseWriter) {
 	for i, episode := range episodes {
 		podcastIds[i] = episode.PodcastId
 	}
-	podcasts, err := c.app.GetPodcastsByIs(model.RemoveDuplicatesInt64(podcastIds))
+	podcasts, err := c.App.GetPodcastsByIs(model.RemoveDuplicatesInt64(podcastIds))
 	if err != nil {
-		c.err = err
+		c.Err = err
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(model.EncodeToJson(map[string]interface{}{
+		"episodes": episodes,
+		"podcasts": podcasts,
+	}))
+}
+
+func BrowseHistoryFeed(c *Context, w http.ResponseWriter, req *http.Request) {
+	playbacks, err := c.App.GetUserPlaybacks(c.Params.UserId, c.Params.Offset, c.Params.Limit)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	episodeIds := make([]int64, len(playbacks))
+	for i, playback := range playbacks {
+		episodeIds[i] = playback.EpisodeId
+	}
+	episodes, err := c.App.GetEpisodesByIds(episodeIds)
+	if err != nil {
+		c.Err = err
+		return
+	}
+	model.EpisodesJoinPlaybacks(episodes, playbacks)
+
+	podcastIds := make([]int64, len(episodes))
+	for i, episode := range episodes {
+		podcastIds[i] = episode.PodcastId
+	}
+	podcasts, err := c.App.GetPodcastsByIs(model.RemoveDuplicatesInt64(podcastIds))
+	if err != nil {
+		c.Err = err
 		return
 	}
 

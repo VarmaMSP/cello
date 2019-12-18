@@ -6,34 +6,22 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (api *Api) RegisterSubscriptionHandlers() {
-	api.router.Handler("GET", "/subscriptions/feed", api.NewHandlerSessionRequired(GetSubscriptionsFeed))
-	api.router.Handler("PUT", "/podcasts/:podcastId/subscribe", api.NewHandlerSessionRequired(SubscribeToPodcast))
-	api.router.Handler("PUT", "/podcasts/:podcastId/unsubscribe", api.NewHandlerSessionRequired(UnsubscribeToPodcast))
-}
-
-func GetSubscriptionsFeed(c *Context, w http.ResponseWriter) {
-	req := &GetSubscriptionFeedReq{}
-	if err := req.Load(c); err != nil {
-		c.err = model.NewAppError("api.get_feed_req.load", err.Error(), 400, nil)
+func GetSubscriptionsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
+	subscriptions, err := c.App.GetUserSubscriptions(c.Params.UserId)
+	if err != nil {
+		c.Err = err
 		return
 	}
 
-	subscriptions, err := c.app.GetUserSubscriptions(req.UserId)
+	episodes, err := c.App.GetEpisodesInPodcastIds(model.GetPodcastIds(subscriptions), 0, 15)
 	if err != nil {
-		c.err = err
+		c.Err = err
 		return
 	}
 
-	episodes, err := c.app.GetEpisodesInPodcastIds(model.GetPodcastIds(subscriptions), req.Offset, req.Limit)
+	playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Params.UserId, model.GetEpisodeIds(episodes))
 	if err != nil {
-		c.err = err
-		return
-	}
-
-	playbacks, err := c.app.GetUserPlaybacksForEpisodes(req.UserId, model.GetEpisodeIds(episodes))
-	if err != nil {
-		c.err = err
+		c.Err = err
 		return
 	}
 	model.EpisodesJoinPlaybacks(episodes, playbacks)
@@ -45,28 +33,66 @@ func GetSubscriptionsFeed(c *Context, w http.ResponseWriter) {
 	}))
 }
 
-func SubscribeToPodcast(c *Context, w http.ResponseWriter) {
-	req := &SubscribeToPodcastReq{}
-	if err := req.Load(c); err != nil {
-		c.err = model.NewAppError("api.subscribe_to_podcast_req.load", err.Error(), 400, nil)
+func BrowseSubscriptionsFeed(c *Context, w http.ResponseWriter, req *http.Request) {
+	subscriptions, err := c.App.GetUserSubscriptions(c.Params.UserId)
+	if err != nil {
+		c.Err = err
 		return
 	}
-	if err := c.app.SaveSubscription(req.UserId, req.PodcastId); err != nil {
-		c.err = err
+
+	episodes, err := c.App.GetEpisodesInPodcastIds(model.GetPodcastIds(subscriptions), c.Params.Offset, c.Params.Limit)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Params.UserId, model.GetEpisodeIds(episodes))
+	if err != nil {
+		c.Err = err
+		return
+	}
+	model.EpisodesJoinPlaybacks(episodes, playbacks)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(model.EncodeToJson(map[string]interface{}{
+		"episodes": episodes,
+	}))
+}
+
+func ServiceSubscribePodcast(c *Context, w http.ResponseWriter, req *http.Request) {
+	podcastHashId, ok := c.Body["podcast_id"].(string)
+	if !ok {
+		c.SetInvalidBodyParam("podcast_id")
+		return
+	}
+	podcastId, err := model.Int64FromHashId(podcastHashId)
+	if !ok {
+		c.SetError(err)
+		return
+	}
+
+	if err := c.App.SaveSubscription(c.Params.UserId, podcastId); err != nil {
+		c.Err = err
 		return
 	}
 	w.WriteHeader(http.StatusOK)
 }
 
-func UnsubscribeToPodcast(c *Context, w http.ResponseWriter) {
-	req := &UnsubscribeToPodcastReq{}
-	if err := req.Load(c); err != nil {
-		c.err = model.NewAppError("api.unsubscribe_to_podcast_req.load", err.Error(), 400, nil)
+func ServiceUnsubscribePodcast(c *Context, w http.ResponseWriter, req *http.Request) {
+	podcastHashId, ok := c.Body["podcast_id"].(string)
+	if !ok {
+		c.SetInvalidBodyParam("podcast_id")
+		return
+	}
+	podcastId, err := model.Int64FromHashId(podcastHashId)
+	if !ok {
+		c.SetError(err)
 		return
 	}
 
-	if err := c.app.DeleteSubscription(req.UserId, req.PodcastId); err != nil {
-		c.err = err
+	if err := c.App.DeleteSubscription(c.Params.UserId, podcastId); err != nil {
+		c.Err = err
 		return
 	}
 	w.WriteHeader(http.StatusOK)
