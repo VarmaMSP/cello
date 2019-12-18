@@ -56,15 +56,27 @@ type PodcastIndex struct {
 	Complete    int    `json:"complete"`
 }
 
+func (p *Podcast) Sanitize() {
+	p.Description = ""
+	p.Language = ""
+	p.Explicit = 0
+	p.Author = ""
+	p.TotalEpisodes = 0
+	p.TotalSeasons = 0
+	p.Type = ""
+	p.EarliestEpisodePubDate = ""
+	p.Copyright = ""
+}
+
 func (p *Podcast) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		Id                     string `json:"id"`
 		UrlParam               string `json:"url_param"`
 		Title                  string `json:"title"`
-		Description            string `json:"description"`
+		Description            string `json:"description,omitempty"`
 		Language               string `json:"language,omitempty"`
 		Explicit               int    `json:"explicit,omitempty"`
-		Author                 string `json:"author"`
+		Author                 string `json:"author,omitempty"`
 		TotalEpisodes          int    `json:"total_episodes,omitempty"`
 		TotalSeasons           int    `json:"total_seasons,omiempty"`
 		Type                   string `json:"type,omitempty"`

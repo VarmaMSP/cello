@@ -20,6 +20,8 @@ import (
 const (
 	MYSQL_DATETIME = "2006-01-02 15:04:05"
 
+	MIN_HASH_ID_LENGTH = 6
+
 	secondsInHour  = 60 * 60
 	secondsInDay   = 60 * 60 * 24
 	secondsInWeek  = 60 * 60 * 24 * 7
@@ -235,6 +237,10 @@ func HashIdFromInt64(i int64) string {
 
 // Int64FromHashId Decodes hashId
 func Int64FromHashId(h string) (int64, error) {
+	if h == "" {
+		return 0, errors.New("HashId is empty")
+	}
+
 	res, err := hashid.DecodeInt64WithError(h)
 	if err != nil {
 		return 0, err
@@ -256,7 +262,6 @@ func UrlParamFromId(title string, id int64) string {
 		if runeCount == maxRuneCount || wordCount == maxWordCount {
 			break
 		}
-
 		// replace space in title with hyphen while making sure
 		// consequent hyphens do not occur
 		if unicode.IsSpace(r) {
@@ -271,7 +276,6 @@ func UrlParamFromId(title string, id int64) string {
 			lastChar = rune('-')
 			continue
 		}
-
 		// retain hyphen from title while making sure
 		// consequent hyphens do not occur
 		if r == hyphen {
@@ -282,7 +286,6 @@ func UrlParamFromId(title string, id int64) string {
 			}
 			continue
 		}
-
 		// retain all language alphabet and numbers from title
 		if unicode.IsLetter(r) || unicode.IsNumber(r) {
 			sb.WriteRune(unicode.ToLower(r))
@@ -300,10 +303,15 @@ func UrlParamFromId(title string, id int64) string {
 
 // IdFromUrlParam return integer from urlparam's hashId
 func IdFromUrlParam(urlParam string) (int64, error) {
-	x := strings.Split(urlParam, "-")
-	if len(x) < 2 {
-		return 0, errors.New("Invalid urlParam")
+	if urlParam == "" {
+		return 0, errors.New("UrlParam is empty")
 	}
+
+	x := strings.Split(urlParam, "-")
+	if len(x) < 2 || len(x[len(x)-1]) < MIN_HASH_ID_LENGTH {
+		return 0, errors.New("UrlParam is invalid")
+	}
+
 	return Int64FromHashId(x[len(x)-1])
 }
 
