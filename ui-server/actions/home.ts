@@ -8,13 +8,24 @@ export function getHomePageData() {
     () => client.getHomePageData(),
     (dispatch, _, { podcasts, categories }) => {
       dispatch({
-        type: T.RECEIVED_PODCAST_CHARTS,
-        charts: [...categories, { id: 'recommended', title: 'recommended', type: 'NORMAL' }],
+        type: T.PODCAST_ADD,
+        podcasts,
       })
       dispatch({
-        type: T.RECEIVED_CHART_PODCASTS,
-        chartId: 'recommended',
-        podcasts,
+        type: T.CURATION_ADD,
+        curations: [
+          ...categories,
+          {
+            id: 'recommended',
+            title: 'recommended',
+            type: 'NORMAL',
+          },
+        ],
+      })
+      dispatch({
+        type: T.CURATION_ADD_PODCASTS,
+        curationId: 'recommended',
+        podcastIds: podcasts.map((x) => x.id),
       })
     },
     {

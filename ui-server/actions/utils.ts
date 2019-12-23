@@ -1,7 +1,7 @@
 import { FetchException } from 'client/fetch'
 import { Dispatch } from 'redux'
-import { getCurrentUserId } from 'selectors/entities/users'
 import { requestStatus } from 'selectors/request'
+import { getIsUserSignedIn } from 'selectors/session'
 import { AppState } from 'store'
 import * as AT from 'types/actions'
 
@@ -22,6 +22,7 @@ type RequestActionOpts = {
 type RequestActionSkipCond =
   | { cond: 'USER_NOT_SIGNED_IN' }
   | { cond: 'REQUEST_ALREADY_MADE' }
+  | { cond: 'CUSTOM'; p: (g: () => AppState) => boolean }
 
 export function requestAction<T extends Promise<any>>(
   makeRequest: MakeRequest<T>,
@@ -39,8 +40,15 @@ export function requestAction<T extends Promise<any>>(
             return
           }
           break
+
         case 'USER_NOT_SIGNED_IN':
-          if (getCurrentUserId(getState()) === '') {
+          if (!getIsUserSignedIn(getState())) {
+            return
+          }
+          break
+
+        case 'CUSTOM':
+          if (skip.p(getState)) {
             return
           }
           break
@@ -55,7 +63,7 @@ export function requestAction<T extends Promise<any>>(
       !!requestId && dispatch({ type: AT.REQUEST_SUCCESS, requestId })
     } catch (err) {
       if ((err as FetchException).statusCode === 401) {
-        dispatch({ type: AT.SIGN_OUT_USER_FORCEFULLY })
+        dispatch({ type: AT.SESSION_DELETE })
       }
       !!requestId && dispatch({ type: AT.REQUEST_FAILURE, requestId })
     }

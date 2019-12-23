@@ -7,18 +7,16 @@ export function getHistoryPageData() {
   return requestAction(
     () => client.getHistoryPageData(),
     (dispatch, _, { podcasts, episodes }) => {
+      dispatch({ type: T.PODCAST_ADD, podcasts })
+      dispatch({ type: T.EPISODE_ADD, episodes })
       dispatch({
-        type: T.RECEIVED_PODCASTS,
-        podcasts,
-      })
-      dispatch({
-        type: T.RECEIVED_HISTORY_FEED,
-        offset: 0,
-        episodes,
+        type: T.HISTORY_FEED_LOAD_PAGE,
+        page: 0,
+        episodeIds: episodes.map((x) => x.id),
       })
 
-      if (episodes.length < 15) {
-        dispatch({ type: T.RECEIVED_ALL_HISTORY_FEED })
+      if (episodes.length < 10) {
+        dispatch({ type: T.HISTORY_FEED_RECEIVED_ALL })
       }
     },
     { requestId: RequestId.getHistoryPageData() },
@@ -29,18 +27,16 @@ export function getHistoryFeed(offset: number, limit: number) {
   return requestAction(
     () => client.getHistoryFeed(offset, limit),
     (dispatch, _, { podcasts, episodes }) => {
+      dispatch({ type: T.PODCAST_ADD, podcasts })
+      dispatch({ type: T.EPISODE_ADD, episodes })
       dispatch({
-        type: T.RECEIVED_PODCASTS,
-        podcasts,
-      })
-      dispatch({
-        type: T.RECEIVED_HISTORY_FEED,
-        offset,
-        episodes,
+        type: T.HISTORY_FEED_LOAD_PAGE,
+        page: Math.floor(offset / 10),
+        episodeIds: episodes.map((x) => x.id),
       })
 
       if (episodes.length < limit) {
-        dispatch({ type: T.RECEIVED_ALL_HISTORY_FEED })
+        dispatch({ type: T.HISTORY_FEED_RECEIVED_ALL })
       }
     },
     { requestId: RequestId.getHistoryFeed() },

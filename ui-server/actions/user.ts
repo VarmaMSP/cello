@@ -9,6 +9,13 @@ export function getCurrentUser() {
     (dispatch, _, { user, subscriptions }) => {
       if (!!user) {
         gtag.userId(user.id)
+        dispatch({ type: T.USER_ADD, users: [user] })
+        dispatch({ type: T.PODCAST_ADD, podcasts: subscriptions })
+        dispatch({ type: T.SESSION_INIT, userId: user.id })
+        dispatch({
+          type: T.SESSION_SUBSCRIBE_PODCASTS,
+          podcastIds: subscriptions.map((x) => x.id),
+        })
         dispatch({ type: T.RECEIVED_SIGNED_IN_USER, user, subscriptions })
       }
     },
@@ -20,6 +27,7 @@ export function signOutUser() {
     () => client.signOut(),
     (dispatch) => {
       dispatch({ type: T.SIGN_OUT_USER })
+      dispatch({ type: T.SESSION_DELETE })
     },
   )
 }

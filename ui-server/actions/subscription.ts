@@ -7,13 +7,15 @@ export function getSubscriptionsPageData() {
   return requestAction(
     () => client.getSubscriptionsPageData(),
     (dispatch, _, { episodes }) => {
+      dispatch({ type: T.EPISODE_ADD, episodes })
       dispatch({
-        type: T.RECEIVED_SUBSCRIPTION_FEED,
-        offset: 0,
-        episodes,
+        type: T.SUBSCRIPTIONS_FEED_LOAD_PAGE,
+        page: 0,
+        episodeIds: episodes.map((x) => x.id),
       })
+
       if (episodes.length < 15) {
-        dispatch({ type: T.RECEIVED_ALL_SUBSCRIPTION_FEED })
+        dispatch({ type: T.SUBSCRIPTIONS_FEED_RECEIVED_ALL })
       }
     },
     { requestId: RequestId.getSubscriptionsPageData() },
@@ -24,9 +26,15 @@ export function getSubscriptionsFeed(offset: number, limit: number) {
   return requestAction(
     () => client.getSubscriptionsFeed(offset, limit),
     (dispatch, _, { episodes }) => {
-      dispatch({ type: T.RECEIVED_SUBSCRIPTION_FEED, offset, episodes })
+      dispatch({ type: T.EPISODE_ADD, episodes })
+      dispatch({
+        type: T.SUBSCRIPTIONS_FEED_LOAD_PAGE,
+        page: Math.floor(offset / 10),
+        episodeIds: episodes.map((x) => x.id),
+      })
+
       if (episodes.length < limit) {
-        dispatch({ type: T.RECEIVED_ALL_SUBSCRIPTION_FEED })
+        dispatch({ type: T.SUBSCRIPTIONS_FEED_RECEIVED_ALL })
       }
     },
     { requestId: RequestId.getSubscriptionsFeed() },
@@ -37,7 +45,10 @@ export function subscribeToPodcast(podcastId: string) {
   return requestAction(
     () => client.subscribePodcast(podcastId),
     (dispatch) => {
-      dispatch({ type: T.SUBSCRIBED_TO_PODCAST, podcastId })
+      dispatch({
+        type: T.SESSION_SUBSCRIBE_PODCASTS,
+        podcasts: [podcastId]
+      })
     },
   )
 }
@@ -46,7 +57,10 @@ export function unsubscribeToPodcast(podcastId: string) {
   return requestAction(
     () => client.unsubscribePodcast(podcastId),
     (dispatch) => {
-      dispatch({ type: T.UNSUBSCRIBED_TO_PODCAST, podcastId })
+      dispatch({
+        type: T.SESSION_UNSUBSCRIBE_PODCASTS,
+        podcasts: [podcastId]
+      })
     },
   )
 }

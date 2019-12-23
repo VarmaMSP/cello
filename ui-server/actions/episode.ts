@@ -6,8 +6,8 @@ export function getEpisodePageData(episodeUrlParam: string) {
   return requestAction(
     () => client.getEpisodePageData(episodeUrlParam),
     (dispatch, _, { podcast, episode }) => {
-      dispatch({ type: T.RECEIVED_EPISODE, episode })
-      dispatch({ type: T.RECEIVED_PODCAST, podcast })
+      dispatch({ type: T.EPISODE_ADD, episodes: [episode] })
+      dispatch({ type: T.PODCAST_ADD, podcasts: [podcast] })
     },
   )
 }
