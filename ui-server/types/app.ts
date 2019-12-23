@@ -8,6 +8,8 @@ export type Modal =
   | { type: 'ADD_TO_PLAYLIST_MODAL'; episodeId: string }
   | { type: 'CREATE_PLAYLIST_MODAL'; episodeId: string }
 
+export type PodcastType = 'SERIAL' | 'EPISODE'
+
 export interface Podcast {
   id: string
   urlParam: string
@@ -18,11 +20,13 @@ export interface Podcast {
   explicit: boolean
   author: string
   totalEpisodes: number
-  type: 'SERIAL' | 'EPISODE'
+  type: PodcastType
   complete: boolean
   earliestEpisodePubDate: string
   copyright: string
 }
+
+type EpisodeType = 'TRAILER' | 'BONUS' | 'FULL'
 
 export interface Episode {
   id: string
@@ -37,7 +41,7 @@ export interface Episode {
   explicit: boolean
   episode: number
   season: number
-  type: 'TRAILER' | 'BONUS' | 'FULL'
+  type: EpisodeType
   progress: number
   lastPlayedAt: string
 }
@@ -64,10 +68,24 @@ export interface Playlist {
   privacy: PlaylistPrivacy
 }
 
-export interface Chart {
+export interface PlaylistMember {
+  id: string
+  episodeId: string
+  playlistId: string
+}
+
+export type CurationType = 'CATEGORY' | 'NORMAL'
+
+export interface Curation {
   id: string
   parentId?: string
   title: string
   subTitle?: string
-  type: 'CATEGORY' | 'NORMAL'
+  type: CurationType
+}
+
+export interface CurationMember {
+  id: string
+  curationId: string
+  podcastId: string
 }
