@@ -19,7 +19,7 @@ export interface ReceivedSubscriptionFeedAction {
   type: typeof RECEIVED_SUBSCRIPTION_FEED
   offset: number
   episodes: Episode[]
-}
+} 
 
 export interface ReceivedAllSubscriptionFeedAction {
   type: typeof RECEIVED_ALL_SUBSCRIPTION_FEED
