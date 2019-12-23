@@ -1,21 +1,14 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
 import { Playlist } from 'types/app'
+import { addKeyToArr } from 'utils/immutable'
 
-const playlists: Reducer<{ [playlistId: string]: Playlist }, T.AppActions> = (
+const byId: Reducer<{ [playlistId: string]: Playlist }, T.AppActions> = (
   state = {},
   action,
 ) => {
   switch (action.type) {
-    case T.RECEIVED_PLAYLIST:
-      return {
-        ...state,
-        [action.playlist.id]: {
-          ...(state[action.playlist.id] || {}),
-          ...action.playlist,
-        },
-      }
-    case T.RECEIVED_USER_PLAYLISTS:
+    case T.PLAYLIST_ADD:
       return {
         ...state,
         ...action.playlists.reduce<{ [playlistId: string]: Playlist }>(
@@ -23,54 +16,35 @@ const playlists: Reducer<{ [playlistId: string]: Playlist }, T.AppActions> = (
           {},
         ),
       }
+
     default:
       return state
   }
 }
 
-const playlistsByUser: Reducer<
-  {
-    [userId: string]: {
-      byCreateDateDesc: { [offset: string]: string[] }
-      receivedAll: 'create_date_desc'[]
-    }
-  },
-  T.AppActions
-> = (state = {}, action) => {
+const byUserId: Reducer<{ [userId: string]: string[] }, T.AppActions> = (
+  state = {},
+  action,
+) => {
   switch (action.type) {
-    case T.RECEIVED_USER_PLAYLISTS:
-      switch (action.order) {
-        case 'create_date_desc':
-          return {
-            ...state,
-            [action.userId]: {
-              ...(state[action.userId] || {}),
-              byCreateDateDesc: {
-                ...((state[action.userId] || {}).byCreateDateDesc || {}),
-                [action.offset.toString()]: action.playlists.map((p) => p.id),
-              },
-            },
-          }
-        default:
-          return state
-      }
-    case T.RECEIVED_ALL_USER_PLAYLISTS:
+    case T.PLAYLIST_ADD:
       return {
         ...state,
-        [action.userId]: {
-          ...(state[action.userId] || {}),
-          receivedAll: [
-            ...((state[action.userId] || {}).receivedAll || []),
-            action.order,
-          ],
-        },
+        ...action.playlists.reduce<{ [playlistId: string]: string[] }>(
+          (acc, p) => ({
+            ...acc,
+            [p.id]: addKeyToArr(p.id, state[p.userId] || []),
+          }),
+          {},
+        ),
       }
+
     default:
       return state
   }
 }
 
 export default combineReducers({
-  playlists,
-  playlistsByUser,
+  byId,
+  byUserId,
 })

@@ -1,18 +1,22 @@
 import { combineReducers } from 'redux'
-import charts from './charts'
+import curations from './curations'
+import curationMember from './curation_member'
 import episodes from './episodes'
 import feed from './feed'
 import playlists from './playlists'
+import playlistMember from './playlist_member'
 import podcasts from './podcasts'
 import search from './search'
-import user from './users'
+import users from './users'
 
 export default combineReducers({
-  user,
+  users,
   podcasts,
   episodes,
+  curations,
+  curationMember,
   playlists,
+  playlistMember,
   search,
   feed,
-  charts,
 })

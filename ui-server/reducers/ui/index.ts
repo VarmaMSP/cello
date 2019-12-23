@@ -1,7 +1,9 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { Modal } from 'types/app'
-import player from './player'
+import audioPlayer from './audio_player'
+import historyFeed from './history_feed'
+import modalManager from './modal_manager'
+import subscriptionsFeed from './subscriptions_feed'
 
 const searchText: Reducer<string, T.AppActions> = (state = '', action) => {
   switch (action.type) {
@@ -12,26 +14,10 @@ const searchText: Reducer<string, T.AppActions> = (state = '', action) => {
   }
 }
 
-const showModal: Reducer<Modal, T.AppActions> = (
-  state = { type: 'NONE' },
-  action,
-) => {
-  switch (action.type) {
-    case T.SHOW_SIGNIN_MODAL:
-      return { type: 'SIGNIN_MODAL' }
-    case T.SHOW_ADD_TO_PLAYLIST_MODAL:
-      return { type: 'ADD_TO_PLAYLIST_MODAL', episodeId: action.episodeId }
-    case T.SHOW_CREATE_PLAYLIST_MODAL:
-      return { type: 'CREATE_PLAYLIST_MODAL', episodeId: action.episodeId }
-    case T.CLOSE_MODAL:
-      return { type: 'NONE' }
-    default:
-      return state
-  }
-}
-
 export default combineReducers({
   searchText,
-  showModal,
-  player,
+  audioPlayer,
+  modalManager,
+  historyFeed,
+  subscriptionsFeed,
 })

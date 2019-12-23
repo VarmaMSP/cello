@@ -1,24 +1,14 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
 import { Episode } from 'types/app'
+import { addKeyToArr } from 'utils/immutable'
 
-const episodes: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
+const byId: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
   state = {},
   action,
 ) => {
   switch (action.type) {
-    case T.RECEIVED_EPISODE:
-      return {
-        ...state,
-        [action.episode.id]: {
-          ...(state[action.episode.id] || {}),
-          ...action.episode,
-        },
-      }
-    case T.RECEIVED_HISTORY_FEED:
-    case T.RECEIVED_PODCAST_EPISODES:
-    case T.RECEIVED_PLAYLIST_EPISODES:
-    case T.RECEIVED_SUBSCRIPTION_FEED:
+    case T.EPISODE_ADD:
       return {
         ...state,
         ...action.episodes.reduce<{ [episodeId: string]: Episode }>(
@@ -26,7 +16,8 @@ const episodes: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
           {},
         ),
       }
-    case T.RECEIVED_PLAYBACKS:
+
+    case T.EPISODE_JOIN_PLAYBACK:
       return {
         ...state,
         ...action.playbacks.reduce<{ [episodeId: string]: Episode }>(
@@ -37,80 +28,35 @@ const episodes: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
           {},
         ),
       }
+
     default:
       return state
   }
 }
 
-const episodesInPodcast: Reducer<
-  {
-    [podcastId: string]: {
-      byPubDateDesc: { [offset: string]: string[] }
-      byPubDateAsc: { [offset: string]: string[] }
-      receivedAll: ('pub_date_desc' | 'pub_date_asc')[]
-    }
-  },
-  T.AppActions
-> = (state = {}, action) => {
+const byPodcastId: Reducer<{ [podcastId: string]: string[] }, T.AppActions> = (
+  state = {},
+  action,
+) => {
   switch (action.type) {
-    case T.RECEIVED_PODCAST_EPISODES:
-      switch (action.order) {
-        case 'pub_date_desc':
-          return {
-            ...state,
-            [action.podcastId]: {
-              ...(state[action.podcastId] || {}),
-              byPubDateDesc: {
-                ...((state[action.podcastId] || {}).byPubDateDesc || {}),
-                [action.offset.toString()]: action.episodes.map((e) => e.id),
-              },
-            },
-          }
-        case 'pub_date_asc':
-          return {
-            ...state,
-            [action.podcastId]: {
-              ...(state[action.podcastId] || {}),
-              byPubDateAsc: {
-                ...((state[action.podcastId] || {}).byPubDateAsc || {}),
-                [action.offset.toString()]: action.episodes.map((e) => e.id),
-              },
-            },
-          }
-      }
-    case T.RECEIVED_ALL_PODCAST_EPISODES:
+    case T.EPISODE_ADD:
       return {
         ...state,
-        [action.podcastId]: {
-          ...(state[action.podcastId] || {}),
-          receivedAll: [
-            ...((state[action.podcastId] || {}).receivedAll || []),
-            action.order,
-          ],
-        },
+        ...action.episodes.reduce<{ [podcastId: string]: string[] }>(
+          (acc, e) => ({
+            ...acc,
+            [e.podcastId]: addKeyToArr(e.id, state[e.podcastId] || []),
+          }),
+          {},
+        ),
       }
-    default:
-      return state
-  }
-}
 
-const episodesInPlaylist: Reducer<
-  { [playlistId: string]: string[] },
-  T.AppActions
-> = (state = {}, action) => {
-  switch (action.type) {
-    case T.RECEIVED_PLAYLIST_EPISODES:
-      return {
-        ...state,
-        [action.playlistId]: action.episodes.map((e) => e.id),
-      }
     default:
       return state
   }
 }
 
 export default combineReducers({
-  episodes,
-  episodesInPodcast,
-  episodesInPlaylist,
+  byId,
+  byPodcastId,
 })
