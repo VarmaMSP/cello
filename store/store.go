@@ -66,9 +66,11 @@ type PlaybackStore interface {
 type PlaylistStore interface {
 	Save(playlist *model.Playlist) *model.AppError
 	Get(playlistId int64) (*model.Playlist, *model.AppError)
+	GetByUser(userId int64) ([]*model.Playlist, *model.AppError)
 	GetByUserPaginated(userId int64, offset, limit int) ([]*model.Playlist, *model.AppError)
 	UpdateMemberStats(stats *model.PlaylistMemberStats) *model.AppError
 	SaveMember(member *model.PlaylistMember) *model.AppError
+	GetMembers(episodeId, playlistIds []int64) ([]*model.PlaylistMember, *model.AppError)
 	DeleteMember(playlistId, episodeId int64) *model.AppError
 }
 

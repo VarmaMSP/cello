@@ -46,6 +46,27 @@ func (s *SqlPlaylistStore) Get(playlistId int64) (*model.Playlist, *model.AppErr
 	return playlist, nil
 }
 
+func (s *SqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		"SELECT %s FROM playlist WHERE user_id = %d",
+		joinStrings((&model.Playlist{}).DbColumns(), ","), userId,
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.Playlist{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_playlist_store.get_by_user", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"user_id": userId},
+		)
+	}
+	return
+}
+
 func (s *SqlPlaylistStore) GetByUserPaginated(userId int64, offset, limit int) (res []*model.Playlist, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		"SELECT %s FROM playlist WHERE user_id = %d LIMIT %d, %d",
@@ -92,6 +113,29 @@ func (s *SqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppEr
 		)
 	}
 	return nil
+}
+
+func (s *SqlPlaylistStore) GetMembers(episodeId, playlistIds []int64) (res []*model.PlaylistMember, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		"SELECT %s FROM playlist_member WHERE episode_id IN (%s) AND playlist_id IN (%s)",
+		joinStrings((&model.PlaylistMember{}).DbColumns(), ","),
+		joinInt64s(episodeId, ","),
+		joinInt64s(playlistIds, ","),
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.PlaylistMember{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_playlist_store.get_memberships", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"episode_id": episodeId},
+		)
+	}
+	return
 }
 
 func (s *SqlPlaylistStore) DeleteMember(playlistId, episodeId int64) *model.AppError {
