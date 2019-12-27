@@ -1,11 +1,24 @@
 package model
 
+import "encoding/json"
+
 type PlaylistMember struct {
 	PlaylistId int64
 	EpisodeId  int64
+	Position   int
 	Active     int
 	CreatedAt  int64
 	UpdatedAt  int64
+}
+
+func (p *PlaylistMember) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		EpisodeId string `json:"episode_id"`
+		Position  int    `json:"position"`
+	}{
+		EpisodeId: HashIdFromInt64(p.EpisodeId),
+		Position:  p.Position,
+	})
 }
 
 func (p *PlaylistMember) DbColumns() []string {

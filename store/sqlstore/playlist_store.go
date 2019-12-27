@@ -138,6 +138,80 @@ func (s *SqlPlaylistStore) GetMembers(episodeId, playlistIds []int64) (res []*mo
 	return
 }
 
+func (s *SqlPlaylistStore) GetMembersByPlaylist(playlistId int64) (res []*model.PlaylistMember, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		"SELECT %s FROM playlist_member WHERE playlist_id = %d",
+		joinStrings((&model.PlaylistMember{}).DbColumns(), ","), playlistId,
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.PlaylistMember{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_playlist_store.get_members_by_playlist", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"playlist_id": playlistId},
+		)
+	}
+	return
+}
+
+func (s *SqlPlaylistStore) GetMembersCount(playlistId int64) (count int, appE *model.AppError) {
+	sql := fmt.Sprintf("SELECT COUNT(*) FROM playlist_member WHERE playlist_id = %d", playlistId)
+
+	if err := s.GetMaster().QueryRow(sql).Scan(&count); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_playlist_store.get_members_count", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"playlist_id": playlistId},
+		)
+	}
+	return
+}
+
+func (s *SqlPlaylistStore) ChangeMemberPosition(playlistId, episodeId int64, from, to int) *model.AppError {
+	var sql string
+
+	// Modify positions for other members
+	if to < from {
+		sql = fmt.Sprintf(
+			"UPDATE playlist_member SET position = position + 1, updated_at = %d WHERE position < %d AND position >= %d",
+			model.Now(), from, to,
+		)
+	} else if to > from {
+		sql = fmt.Sprintf(
+			"UPDATE playlist_member SET position = position - 1, updated_at = %d WHERE position > %d AND position <= %d",
+			model.Now(), from, to,
+		)
+	} else {
+		return nil
+	}
+
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_playlist_store.change_member_position", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"playlist_id": playlistId, "episode_id": episodeId, "from": from, "to": to},
+		)
+	}
+
+	// set position of member
+	sql = fmt.Sprintf(
+		"UPDATE playlist_member SET position = %d, updated_at = %d WHERE playlist_id = %d AND episode_id = %d",
+		to, model.Now(), playlistId, episodeId,
+	)
+
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_playlist_store.change_member_position", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"playlist_id": playlistId, "episode_id": episodeId, "from": from, "to": to},
+		)
+	}
+
+	return nil
+}
+
 func (s *SqlPlaylistStore) DeleteMember(playlistId, episodeId int64) *model.AppError {
 	sql := fmt.Sprintf(
 		"UPDATE playlist_member SET active = 0, updated_at = %d WHERE playlist_id = %d AND episode_id = %d",
