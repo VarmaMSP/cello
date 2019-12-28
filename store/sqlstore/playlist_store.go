@@ -88,16 +88,11 @@ func (s *SqlPlaylistStore) GetByUserPaginated(userId int64, offset, limit int) (
 	return
 }
 
-func (s *SqlPlaylistStore) UpdateMemberStats(stats *model.PlaylistMemberStats) *model.AppError {
-	sql := fmt.Sprintf(
-		"UPDATE playlist SET preview_image = %s, episode_count = %d, updated_at = %d WHERE id = %d",
-		stats.PreviewImage, stats.EpisodeCount, model.Now(), stats.Id,
-	)
-
-	if _, err := s.GetMaster().Exec(sql); err != nil {
+func (s *SqlPlaylistStore) Update(old, new *model.Playlist) *model.AppError {
+	if _, err := s.Update_("playlist", old, new, fmt.Sprintf("id = %d", new.Id)); err != nil {
 		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.update_member_stats", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": stats.Id},
+			"store.sqlstore.sql_playlist_store.update", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"id": new.Id},
 		)
 	}
 	return nil
@@ -140,7 +135,7 @@ func (s *SqlPlaylistStore) GetMembers(episodeId, playlistIds []int64) (res []*mo
 
 func (s *SqlPlaylistStore) GetMembersByPlaylist(playlistId int64) (res []*model.PlaylistMember, appE *model.AppError) {
 	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist_member WHERE playlist_id = %d",
+		"SELECT %s FROM playlist_member WHERE playlist_id = %d AND active = 1",
 		joinStrings((&model.PlaylistMember{}).DbColumns(), ","), playlistId,
 	)
 
