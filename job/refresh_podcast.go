@@ -8,6 +8,7 @@ import (
 	"github.com/streadway/amqp"
 
 	h "github.com/go-http-utils/headers"
+	"github.com/rs/zerolog"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/rabbitmq"
@@ -16,6 +17,7 @@ import (
 
 type RefreshPodcastJob struct {
 	*app.App
+	log         zerolog.Logger
 	input       <-chan amqp.Delivery
 	httpClient  *http.Client
 	rateLimiter chan struct{}
@@ -37,6 +39,7 @@ func NewRefreshPodcastJob(app *app.App, config *model.Config) (model.Job, error)
 
 	return &RefreshPodcastJob{
 		App:   app,
+		log:   app.Log.With().Str("job", "refresh_podcast").Logger(),
 		input: refreshPodcastC.D,
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
@@ -155,12 +158,15 @@ func (job *RefreshPodcastJob) updateEpisodes(podcastId int64, rssFeed *rss.Feed)
 		latestEpisode := &model.Episode{}
 		latestEpisode.LoadDetails(rssFeed.Items[0])
 
-		job.Store.Podcast().UpdateEpisodeStats(&model.PodcastEpisodeStats{
+		err := job.Store.Podcast().UpdateEpisodeStats(&model.PodcastEpisodeStats{
 			Id:                    podcastId,
 			TotalEpisodes:         len(episodes) + newEpisodesCount - blockedEpisodesCount,
 			TotalSeasons:          latestEpisode.Season,
 			LastestEpisodePubDate: latestEpisode.PubDate,
 		})
+		if err != nil {
+			job.log.Err(err)
+		}
 	}
 
 	return nil
