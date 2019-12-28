@@ -49,7 +49,7 @@ func (app *App) AddEpisodeToPlaylist(playlistId, episodeId int64) *model.AppErro
 }
 
 func (app *App) RemoveEpisodeFromPlaylist(playlistId, episodeId int64) *model.AppError {
-	members, err := app.Store.Playlist().GetMembers([]int64{episodeId}, []int64{playlistId})
+	members, err := app.GetPlaylistMembers([]int64{playlistId}, []int64{episodeId})
 	if err != nil {
 		return err
 	}

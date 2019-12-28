@@ -135,13 +135,13 @@ func ServiceEditPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 	switch c.Params.Action {
 	case ACTION_ADD_EPISODE:
 		c.RequireBody(req)
-		if c.Err != nil {
+		if c.Err == nil {
 			AddEpisodeToPlaylist(c, w, req)
 		}
 
 	case ACTION_REMOVE_EPISODE:
 		c.RequireBody(req)
-		if c.Err != nil {
+		if c.Err == nil {
 			RemoveEpisodeFromPlaylist(c, w, req)
 		}
 
