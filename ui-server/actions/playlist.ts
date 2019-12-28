@@ -1,10 +1,20 @@
 import * as client from 'client/playlist'
-import { getSignedInUserId } from 'selectors/session'
 import * as T from 'types/actions'
 import { PlaylistPrivacy } from 'types/app'
-import { getIdFromUrlParam } from 'utils/format'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
+
+export function getPlaylistPageData() {
+  return requestAction(
+    () => client.getPlaylistsPageData(),
+    (dispatch, _, { playlists }) => {
+      dispatch({
+        type: T.PLAYLIST_ADD,
+        playlists,
+      })
+    },
+  )
+}
 
 export function getPlaylist(playlistId: string) {
   return requestAction(
@@ -25,7 +35,7 @@ export function getPlaylist(playlistId: string) {
 
 export function loadAndShowAddToPlaylistModal(episodeId: string) {
   return requestAction(
-    () => client.getSignedInUserPlaylists(),
+    () => client.serviceAddToPlaylist(episodeId),
     (dispatch, _, { playlists }) => {
       dispatch({
         type: T.PLAYLIST_ADD,
@@ -45,14 +55,11 @@ export function createPlaylist(
   episodeId: string,
 ) {
   return requestAction(
-    () => client.createPlaylist(title, privacy),
-    (dispatch, getState, { urlParam }) => {
-      const id = getIdFromUrlParam(urlParam)
-      const userId = getSignedInUserId(getState())
-
+    () => client.serviceCreatePlaylist(title, privacy, episodeId),
+    (dispatch, _, { playlist }) => {
       dispatch({
         type: T.PLAYLIST_ADD,
-        playlists: [{ id, urlParam, title, privacy, userId }],
+        playlists: [playlist],
       })
       dispatch({
         type: T.MODAL_MANAGER_SHOW_ADD_TO_PLAYLIST_MODAL,

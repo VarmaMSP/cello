@@ -16,7 +16,6 @@ export function getCurrentUser() {
           type: T.SESSION_SUBSCRIBE_PODCASTS,
           podcastIds: subscriptions.map((x) => x.id),
         })
-        dispatch({ type: T.RECEIVED_SIGNED_IN_USER, user, subscriptions })
       }
     },
   )
@@ -26,7 +25,6 @@ export function signOutUser() {
   return requestAction(
     () => client.signOut(),
     (dispatch) => {
-      dispatch({ type: T.SIGN_OUT_USER })
       dispatch({ type: T.SESSION_DELETE })
     },
   )

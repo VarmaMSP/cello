@@ -34,14 +34,10 @@ export function startPlayback(episodeId: string, beginAt: number) {
   )
 }
 
-// export function syncPlayback(episodeId: string) {
-//   return async (_: Dispatch<T.AppActions>, getState: () => AppState) => {
-//     try {
-//       if (getIsUserSignedIn(getState())) {
-//         await client.syncPlayback(episodeId)
-//       }
-//     } catch (err) {
-//       console.log(err)
-//     }
-//   }
-// }
+export function syncPlayback(episodeId: string) {
+  return requestAction(
+    () => client.syncPlayback(episodeId),
+    () => {},
+    { skip: { cond: 'USER_NOT_SIGNED_IN' } },
+  )
+}

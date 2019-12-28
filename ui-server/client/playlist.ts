@@ -16,70 +16,71 @@ export async function getPlaylist(
   }
 }
 
-export async function getUserPlaylists(
-  userId: string,
-  offset: number,
-  limit: number,
-  order: 'create_date_desc',
-): Promise<{
-  playlists: Playlist[]
-  episodesByPlaylist: { [playlist: string]: Episode[] }
-}> {
-  const { data } = await doFetch({
-    method: 'GET',
-    urlPath: `/playlists?full_details=true&user_id=${userId}&limit=${limit}&offset=${offset}&order=${order}`,
-  })
-
-  return {
-    playlists: (data.playlists || []).map(unmarshal.playlist),
-    episodesByPlaylist: Object.keys(data.episodes_by_playlist || {}).reduce<{
-      [playlistId: string]: Episode[]
-    }>(
-      (acc, playlistId) => ({
-        ...acc,
-        [playlistId]: (data.episodes_by_playlist || {})[playlistId].map(
-          unmarshal.episode,
-        ),
-      }),
-      {},
-    ),
-  }
-}
-
-export async function getSignedInUserPlaylists(): Promise<{
+export async function getPlaylistsPageData(): Promise<{
   playlists: Playlist[]
 }> {
   const { data } = await doFetch({
     method: 'GET',
-    urlPath: `/playlists?full_details=false`,
+    urlPath: `/playlists`,
   })
 
   return { playlists: (data.playlists || []).map(unmarshal.playlist) }
 }
 
-export async function createPlaylist(
-  title: string,
-  privacy: string,
-): Promise<{ urlParam: string }> {
-  const { responseHeaders } = await doFetch({
+export async function serviceAddToPlaylist(
+  episodeId: string,
+): Promise<{
+  playlists: Playlist[]
+}> {
+  const { data } = await doFetch({
     method: 'POST',
-    urlPath: `/playlists`,
-    body: { title, privacy },
+    urlPath: '/ajax/service?endpoint=add_to_playlist',
+    body: {
+      episode_ids: [episodeId],
+    },
   })
 
-  return { urlParam: responseHeaders['Location'] }
+  return { playlists: (data.playlists || []).map(unmarshal.playlist) }
 }
 
-export async function addEpisodeToPlaylists(
+export async function serviceCreatePlaylist(
+  title: string,
+  privacy: string,
   episodeId: string,
-  playlistIds: string[],
+): Promise<{ playlist: Playlist }> {
+  const { data } = await doFetch({
+    method: 'POST',
+    urlPath: `/ajax/service?endpoint=create_playlist`,
+    body: { title, privacy, description: '', episode_ids: [episodeId] },
+  })
+
+  return { playlist: unmarshal.playlist(data.playlist) }
+}
+
+export async function serviceAddEpisodeToPlaylist(
+  episodeId: string,
+  playlistId: string,
 ): Promise<void> {
   await doFetch({
     method: 'POST',
-    urlPath: `/playlists/episodes`,
+    urlPath: `/ajax/service?endpoint=edit_playlist&action=add_episode`,
     body: {
       episode_id: episodeId,
-      playlist_ids: playlistIds,
+      playlist_id: playlistId,
+    },
+  })
+}
+
+export async function serviceRemoveEpisodeFromPlaylist(
+  episodeId: string,
+  playlistId: string,
+): Promise<void> {
+  await doFetch({
+    method: 'POST',
+    urlPath: `/ajax/service?endpoint=edit_playlist&action=remove_episode`,
+    body: {
+      episode_id: episodeId,
+      playlist_id: playlistId,
     },
   })
 }

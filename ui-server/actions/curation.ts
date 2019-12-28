@@ -3,9 +3,9 @@ import * as T from 'types/actions'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
-export function getCurationPageData(chartId: string) {
+export function getCurationPageData(curationId: string) {
   return requestAction(
-    () => client.getChartPageData(chartId),
+    () => client.getChartPageData(curationId),
     (dispatch, _, { podcasts }) => {
       dispatch({
         type: T.PODCAST_ADD,
@@ -13,12 +13,12 @@ export function getCurationPageData(chartId: string) {
       })
       dispatch({
         type: T.CURATION_ADD_PODCASTS,
-        chartId,
+        curationId,
         podcastIds: podcasts.map((x) => x.id),
       })
     },
     {
-      requestId: RequestId.getPodcastsInChart(chartId),
+      requestId: RequestId.getPodcastsInChart(curationId),
       skip: { cond: 'REQUEST_ALREADY_MADE' },
     },
   )

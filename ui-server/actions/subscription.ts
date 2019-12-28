@@ -47,7 +47,7 @@ export function subscribeToPodcast(podcastId: string) {
     (dispatch) => {
       dispatch({
         type: T.SESSION_SUBSCRIBE_PODCASTS,
-        podcasts: [podcastId]
+        podcasts: [podcastId],
       })
     },
   )
@@ -59,7 +59,7 @@ export function unsubscribeToPodcast(podcastId: string) {
     (dispatch) => {
       dispatch({
         type: T.SESSION_UNSUBSCRIBE_PODCASTS,
-        podcasts: [podcastId]
+        podcasts: [podcastId],
       })
     },
   )
