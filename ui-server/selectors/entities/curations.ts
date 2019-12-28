@@ -3,6 +3,10 @@ import { AppState } from 'store'
 import { Curation, CurationMember } from 'types/app'
 import { $Id, MapById } from 'types/utilities'
 
+export function getCurationById(state: AppState, curationId: string) {
+  return state.entities.curations.byId[curationId]
+}
+
 export const getAllCategories = createSelector<
   AppState,
   MapById<Curation>,

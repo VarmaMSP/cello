@@ -3,8 +3,12 @@ import { AppState } from 'store'
 import { Episode, Podcast } from 'types/app'
 import { $Id, MapById } from 'types/utilities'
 
-export function getEpisodeById(state: AppState, id: string): Episode {
-  return state.entities.episodes.byId[id]
+export function getEpisodeById(state: AppState, episodeId: string) {
+  return state.entities.episodes.byId[episodeId]
+}
+
+export function getEpisodesByIds(state: AppState, episodeIds: string[]) {
+  return episodeIds.map((id) => getEpisodeById(state, id))
 }
 
 export function makeGetEpisodesByPodcast() {

@@ -7,7 +7,7 @@ export function makeGetEpisodeIds() {
   return createSelector<AppState, { [page: number]: string[] }, $Id<Episode>[]>(
     (state) => state.ui.subscriptionsFeed.feed,
     (obj) =>
-      Object.keys(obj).reduce<string[]>((acc, ids) => [...acc, ...ids], []),
+      Object.keys(obj).reduce<string[]>((acc, id) => [...acc, ...obj[+id]], []),
   )
 }
 
