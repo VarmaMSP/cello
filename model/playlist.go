@@ -12,31 +12,20 @@ type Playlist struct {
 	PreviewImage string
 	CreatedAt    int64
 	UpdatedAt    int64
-}
-
-type PlaylistMemberStats struct {
-	Id           int64
-	EpisodeCount int
-	PreviewImage string
-}
-
-func (p *Playlist) DbColumns() []string {
-	return []string{"id", "user_id", "title", "description", "privacy", "episode_count", "preview_image", "created_at", "updated_at"}
-}
-
-func (p *Playlist) FieldAddrs() []interface{} {
-	return []interface{}{&p.Id, &p.UserId, &p.Title, &p.Description, &p.Privacy, &p.EpisodeCount, &p.PreviewImage, &p.CreatedAt, &p.UpdatedAt}
+	// Members for response
+	Members []*PlaylistMember
 }
 
 func (p *Playlist) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
-		Id           string `json:"id"`
-		UserId       string `json:"user_id,omitempty"`
-		Title        string `json:"title"`
-		Description  string `json:"description,omitempty"`
-		Privacy      string `json:"privacy,omirempty"`
-		EpisodeCount int    `json:"episode_count,omitempty"`
-		PreviewImage string `json:"preview_image,omitempty"`
+		Id           string            `json:"id"`
+		UserId       string            `json:"user_id,omitempty"`
+		Title        string            `json:"title"`
+		Description  string            `json:"description,omitempty"`
+		Privacy      string            `json:"privacy,omirempty"`
+		EpisodeCount int               `json:"episode_count,omitempty"`
+		PreviewImage string            `json:"preview_image,omitempty"`
+		Members      []*PlaylistMember `json:"members"`
 	}{
 		Id:           HashIdFromInt64(p.Id),
 		UserId:       HashIdFromInt64(p.UserId),
@@ -45,7 +34,16 @@ func (p *Playlist) MarshalJSON() ([]byte, error) {
 		Privacy:      p.Privacy,
 		EpisodeCount: p.EpisodeCount,
 		PreviewImage: p.PreviewImage,
+		Members:      p.Members,
 	})
+}
+
+func (p *Playlist) DbColumns() []string {
+	return []string{"id", "user_id", "title", "description", "privacy", "episode_count", "preview_image", "created_at", "updated_at"}
+}
+
+func (p *Playlist) FieldAddrs() []interface{} {
+	return []interface{}{&p.Id, &p.UserId, &p.Title, &p.Description, &p.Privacy, &p.EpisodeCount, &p.PreviewImage, &p.CreatedAt, &p.UpdatedAt}
 }
 
 func (p *Playlist) PreSave() {
