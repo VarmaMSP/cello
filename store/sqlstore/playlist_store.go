@@ -110,13 +110,15 @@ func (s *SqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppEr
 	return nil
 }
 
-func (s *SqlPlaylistStore) GetMembers(episodeId, playlistIds []int64) (res []*model.PlaylistMember, appE *model.AppError) {
+func (s *SqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*model.PlaylistMember, appE *model.AppError) {
 	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist_member WHERE episode_id IN (%s) AND playlist_id IN (%s)",
+		"SELECT %s FROM playlist_member WHERE playlist_id IN (%s) AND episode_id IN (%s)",
 		joinStrings((&model.PlaylistMember{}).DbColumns(), ","),
-		joinInt64s(episodeId, ","),
 		joinInt64s(playlistIds, ","),
+		joinInt64s(episodeIds, ","),
 	)
+
+	fmt.Println(sql)
 
 	copyTo := func() []interface{} {
 		tmp := &model.PlaylistMember{}
@@ -127,7 +129,7 @@ func (s *SqlPlaylistStore) GetMembers(episodeId, playlistIds []int64) (res []*mo
 	if err := s.Query(copyTo, sql); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_playlist_store.get_memberships", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"episode_id": episodeId},
+			map[string]interface{}{"episode_ids": episodeIds},
 		)
 	}
 	return
@@ -135,7 +137,7 @@ func (s *SqlPlaylistStore) GetMembers(episodeId, playlistIds []int64) (res []*mo
 
 func (s *SqlPlaylistStore) GetMembersByPlaylist(playlistId int64) (res []*model.PlaylistMember, appE *model.AppError) {
 	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist_member WHERE playlist_id = %d AND active = 1",
+		"SELECT %s FROM playlist_member WHERE playlist_id = %d AND active = 1 ORDER BY position ASC",
 		joinStrings((&model.PlaylistMember{}).DbColumns(), ","), playlistId,
 	)
 
@@ -148,18 +150,6 @@ func (s *SqlPlaylistStore) GetMembersByPlaylist(playlistId int64) (res []*model.
 	if err := s.Query(copyTo, sql); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_playlist_store.get_members_by_playlist", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId},
-		)
-	}
-	return
-}
-
-func (s *SqlPlaylistStore) GetMembersCount(playlistId int64) (count int, appE *model.AppError) {
-	sql := fmt.Sprintf("SELECT COUNT(*) FROM playlist_member WHERE playlist_id = %d", playlistId)
-
-	if err := s.GetMaster().QueryRow(sql).Scan(&count); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_playlist_store.get_members_count", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"playlist_id": playlistId},
 		)
 	}
