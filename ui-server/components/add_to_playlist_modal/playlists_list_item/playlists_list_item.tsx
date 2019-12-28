@@ -1,36 +1,33 @@
 import { Playlist } from 'types/app'
 
-export interface StateToProps {
-  playlist: Playlist
-  containsEpisode: boolean
-}
-
 export interface DispatchToProps {
   addEpisode: () => void
   removeEpisode: () => void
 }
 
 export interface OwnProps {
+  playlist: Playlist
   episodeId: string
-  playlistId: string
 }
 
-type Props = StateToProps & DispatchToProps & OwnProps
-
-const AddToPlaylistItem: React.FC<Props> = ({
+const PlaylistsListItem: React.FC<DispatchToProps & OwnProps> = ({
   playlist,
-  containsEpisode,
+  episodeId,
   addEpisode,
   removeEpisode,
 }) => {
+  const containsEpisode = playlist.members.some(
+    (member) => member.episodeId === episodeId,
+  )
+
   return (
-    <div>
+    <div className="mb-1">
       <label className="inline-flex items-center">
         <input
           type="checkbox"
           className="form-checkbox"
           checked={containsEpisode}
-          onChange={(e) => (e.target.checked ? addEpisode() : removeEpisode())}
+          onChange={() => (containsEpisode ? removeEpisode() : addEpisode())}
         />
         <span className="ml-2">{playlist.title}</span>
       </label>
@@ -38,4 +35,4 @@ const AddToPlaylistItem: React.FC<Props> = ({
   )
 }
 
-export default AddToPlaylistItem
+export default PlaylistsListItem
