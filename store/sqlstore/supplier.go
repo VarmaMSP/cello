@@ -78,13 +78,12 @@ func (s *SqlSupplier) InsertOrUpdate(tableName string, m model.DbModel, updateSq
 	return s.db.Exec(query+" ON DUPLICATE KEY UPDATE "+updateSql, append(insertValues, updateValues...)...)
 }
 
-func (s *SqlSupplier) UpdateChanges(tableName string, old, new model.DbModel, where string, values ...interface{}) (sql.Result, error) {
-	query, updateValues, noChanges := UpdateQuery(tableName, old, new, where, values)
+func (s *SqlSupplier) Update_(tableName string, old, new model.DbModel, whereClause string) (sql.Result, error) {
+	query, noChanges := UpdateQuery(tableName, old, new, whereClause)
 	if noChanges {
 		return nil, nil
 	}
-
-	return s.db.Exec(query, updateValues...)
+	return s.db.Exec(query)
 }
 
 func (s *SqlSupplier) Query(copyTo func() []interface{}, sql string, values ...interface{}) error {

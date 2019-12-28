@@ -107,7 +107,7 @@ func (s *SqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) (res []*m
 }
 
 func (s *SqlFeedStore) Update(old, new *model.Feed) *model.AppError {
-	if _, err := s.UpdateChanges("feed", old, new, "id = ?", new.Id); err != nil {
+	if _, err := s.Update_("feed", old, new, fmt.Sprintf("id = %d", new.Id)); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_feed_store.update", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"id": new.Id},

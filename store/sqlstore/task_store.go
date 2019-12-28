@@ -38,7 +38,7 @@ func (s *SqlTaskStore) GetAll() (res []*model.Task, appE *model.AppError) {
 }
 
 func (s *SqlTaskStore) Update(old, new *model.Task) *model.AppError {
-	if _, err := s.UpdateChanges("task", old, new, "name = ?", new.Name); err != nil {
+	if _, err := s.Update_("task", old, new, fmt.Sprintf("name = %d", new.Id)); err != nil {
 		return model.NewAppError(
 			"sqlstore.sql_task_store.update", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"name": new.Name},

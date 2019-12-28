@@ -14,7 +14,7 @@ type SqlStore interface {
 	InsertWithoutPK(tableName string, item model.DbModel) (int64, error)
 	InsertOrUpdate(tableName string, m model.DbModel, updateSql string, updateValues ...interface{}) (sql.Result, error)
 
-	UpdateChanges(tableName string, old, new model.DbModel, where string, values ...interface{}) (sql.Result, error)
+	Update_(tableName string, old, new model.DbModel, whereClause string) (sql.Result, error)
 	Query(copyTo func() []interface{}, sql string, values ...interface{}) error
 
 	User() store.UserStore

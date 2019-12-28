@@ -1,6 +1,7 @@
 package sqlstore
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
@@ -52,8 +53,7 @@ func UpdateQuery(
 	tableName string,
 	old, new model.DbModel,
 	whereClause string,
-	values []interface{},
-) (sql string, updateValues []interface{}, noChanges bool) {
+) (sql string, noUpdates bool) {
 	cols := old.DbColumns()
 	oldValues := ValuesFromAddrs(old.FieldAddrs())
 	newValues := ValuesFromAddrs(new.FieldAddrs())
@@ -61,18 +61,19 @@ func UpdateQuery(
 	var updates []string
 	for i := 0; i < len(oldValues); i++ {
 		if oldValues[i] != newValues[i] {
-			updates = append(updates, cols[i]+" = ?")
-			updateValues = append(updateValues, newValues[i])
+			updates = append(updates, fmt.Sprintf("%s = %v", cols[i], newValues[i]))
 		}
 	}
 
-	if len(updateValues) == 0 {
-		noChanges = true
+	if len(updates) == 0 {
+		noUpdates = true
 		return
 	}
 
-	sql = "UPDATE " + tableName + " SET " + strings.Join(updates, ",") + " WHERE " + whereClause
-	updateValues = append(updateValues, values...)
+	sql = fmt.Sprintf(
+		"UPDATE %s SET %s WHERE %s",
+		tableName, joinStrings(updates, ","), whereClause,
+	)
 	return
 }
 
