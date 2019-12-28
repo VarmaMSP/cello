@@ -69,3 +69,31 @@ export function createPlaylist(
     { requestId: RequestId.createPlaylist() },
   )
 }
+
+export function addEpisodeToPlaylist(playlistId: string, episodeId: string) {
+  return requestAction(
+    () => client.serviceAddEpisodeToPlaylist(playlistId, episodeId),
+    () => {},
+    {
+      preAction: {
+        type: T.PLAYLIST_ADD_EPISODES,
+        playlistId: playlistId,
+        episodeIds: [episodeId],
+      },
+    },
+  )
+}
+
+export function removeEpisodeFromPlaylist(playlistId: string, episodeId: string) {
+  return requestAction(
+    () => client.serviceRemoveEpisodeFromPlaylist(playlistId, episodeId),
+    () => {},
+    {
+      preAction: {
+        type: T.PLAYLIST_REMOVE_EPISODES,
+        playlistId: playlistId,
+        episodeIds: [episodeId],
+      }
+    }
+  )
+}

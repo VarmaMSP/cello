@@ -17,6 +17,7 @@ type RequestActionOpts = {
   requestId: string
   skip: RequestActionSkipCond
   notifyError: boolean
+  preAction: AT.AppActions
 }
 
 type RequestActionSkipCond =
@@ -27,12 +28,14 @@ type RequestActionSkipCond =
 export function requestAction<T extends Promise<any>>(
   makeRequest: MakeRequest<T>,
   processData: ProcessData<T>,
-  { skip, requestId }: Partial<RequestActionOpts> = {},
+  { skip, requestId, preAction }: Partial<RequestActionOpts> = {},
 ) {
   return async (
     dispatch: Dispatch<AT.AppActions>,
     getState: () => AppState,
   ) => {
+    !!preAction && dispatch(preAction)
+    
     if (!!skip) {
       switch (skip.cond) {
         case 'REQUEST_ALREADY_MADE':
