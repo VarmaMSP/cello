@@ -112,7 +112,7 @@ func (s *SqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppEr
 
 func (s *SqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*model.PlaylistMember, appE *model.AppError) {
 	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist_member WHERE playlist_id IN (%s) AND episode_id IN (%s)",
+		"SELECT %s FROM playlist_member WHERE playlist_id IN (%s) AND episode_id IN (%s) AND active = 1",
 		joinStrings((&model.PlaylistMember{}).DbColumns(), ","),
 		joinInt64s(playlistIds, ","),
 		joinInt64s(episodeIds, ","),
