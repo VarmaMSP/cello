@@ -17,6 +17,44 @@ const byId: Reducer<{ [playlistId: string]: Playlist }, T.AppActions> = (
         ),
       }
 
+    case T.PLAYLIST_ADD_EPISODES: {
+      let obj = state[action.playlistId]
+      return {
+        ...state,
+        ...(!!obj
+          ? {
+              [action.playlistId]: {
+                ...obj,
+                members: [
+                  ...obj.members,
+                  ...action.episodeIds.map((id, i) => ({
+                    episodeId: id,
+                    position: obj.members.length + i + 1,
+                  })),
+                ],
+              },
+            }
+          : {}),
+      }
+    }
+
+    case T.PLAYLIST_REMOVE_EPISODES: {
+      let obj = state[action.playlistId]
+      return {
+        ...state,
+        ...(!!obj
+          ? {
+              [action.playlistId]: {
+                ...obj,
+                members: obj.members.filter(
+                  ({ episodeId }) => !action.episodeIds.includes(episodeId),
+                ),
+              },
+            }
+          : {}),
+      }
+    }
+
     default:
       return state
   }
@@ -28,16 +66,13 @@ const byUserId: Reducer<{ [userId: string]: string[] }, T.AppActions> = (
 ) => {
   switch (action.type) {
     case T.PLAYLIST_ADD:
-      return {
-        ...state,
-        ...action.playlists.reduce<{ [playlistId: string]: string[] }>(
-          (acc, p) => ({
-            ...acc,
-            [p.id]: addKeyToArr(p.id, state[p.userId] || []),
-          }),
-          {},
-        ),
-      }
+      return action.playlists.reduce<{ [userId: string]: string[] }>(
+        (acc, p) => ({
+          ...acc,
+          [p.userId]: addKeyToArr(p.id, acc[p.userId] || []),
+        }),
+        state,
+      )
 
     default:
       return state
