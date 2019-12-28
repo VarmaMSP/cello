@@ -1,12 +1,24 @@
 package app
 
-import "github.com/varmamsp/cello/model"
+import (
+	"net/http"
 
-func (app *App) SavePlaylist(title, privacy string, userId int64) (*model.Playlist, *model.AppError) {
+	"github.com/varmamsp/cello/model"
+)
+
+func (app *App) CreatePlaylist(title, privacy, description string, userId int64) (*model.Playlist, *model.AppError) {
+	if privacy != "PUBLIC" && privacy != "PRIVATE" {
+		return nil, model.NewAppError(
+			"app.save_playlist", "invalid privacy", http.StatusBadRequest,
+			map[string]interface{}{"privacy": privacy},
+		)
+	}
+
 	playlist := &model.Playlist{
-		UserId:  userId,
-		Title:   title,
-		Privacy: privacy,
+		UserId:      userId,
+		Title:       title,
+		Description: description,
+		Privacy:     privacy,
 	}
 
 	if err := app.Store.Playlist().Save(playlist); err != nil {
@@ -15,30 +27,79 @@ func (app *App) SavePlaylist(title, privacy string, userId int64) (*model.Playli
 	return playlist, nil
 }
 
-func (app *App) GetPlaylist(playlistId int64) (*model.Playlist, *model.AppError) {
-	return app.Store.Playlist().Get(playlistId)
-}
+func (app *App) AddEpisodeToPlaylist(playlistId, episodeId int64) *model.AppError {
+	playlist, err := app.Store.Playlist().Get(playlistId)
+	if err != nil {
+		return err
+	}
 
-func (app *App) GetPlaylistsByUser(userId int64, offset, limit int) ([]*model.Playlist, *model.AppError) {
-	return app.Store.Playlist().GetByUserPaginated(userId, offset, limit)
-}
-
-func (app *App) GetEpisodesInPlaylist(playlistId int64, offset, limit int) ([]*model.Episode, *model.AppError) {
-	return app.Store.Episode().GetByPlaylistPaginated(playlistId, offset, limit)
-}
-
-func (app *App) SaveEpisodeToPlaylist(episodeId, playlistId int64) (*model.PlaylistMember, *model.AppError) {
-	playlistMember := &model.PlaylistMember{
+	if err := app.Store.Playlist().SaveMember(&model.PlaylistMember{
 		PlaylistId: playlistId,
 		EpisodeId:  episodeId,
+		Position:   playlist.EpisodeCount + 1,
+	}); err != nil {
+		return err
 	}
 
-	if err := app.Store.Playlist().SaveMember(playlistMember); err != nil {
-		return nil, err
-	}
-	return playlistMember, nil
+	playlistU := playlist
+	playlistU.EpisodeCount += 1
+	playlistU.UpdatedAt = model.Now()
+
+	return app.Store.Playlist().Update(playlist, playlistU)
 }
 
-func (app *App) DeleteEpisodeFromPlaylist(episodeId, playlistId int64) *model.AppError {
-	return app.Store.Playlist().DeleteMember(playlistId, episodeId)
+func (app *App) RemoveEpisodeFromPlaylist(playlistId, episodeId int64) *model.AppError {
+	members, err := app.Store.Playlist().GetMembers([]int64{episodeId}, []int64{playlistId})
+	if err != nil {
+		return err
+	}
+	if len(members) == 0 {
+		return model.NewAppError(
+			"app.remove_episode_from_playlist", "member not found", http.StatusNotFound,
+			map[string]interface{}{"playlist_id": playlistId, "episode_id": episodeId},
+		)
+	}
+
+	if err := app.Store.Playlist().ChangeMemberPosition(playlistId, episodeId, members[0].Position, 0); err != nil {
+		return err
+	}
+	if err := app.Store.Playlist().DeleteMember(playlistId, episodeId); err != nil {
+		return err
+	}
+
+	playlist, err := app.Store.Playlist().Get(playlistId)
+	if err != nil {
+		return err
+	}
+
+	playlistU := playlist
+	playlistU.EpisodeCount -= 1
+	playlistU.UpdatedAt = model.Now()
+
+	return app.Store.Playlist().Update(playlist, playlistU)
+}
+
+func (app *App) GetPlaylist(playlistId int64, loadMembers bool) (*model.Playlist, *model.AppError) {
+	playlist, err := app.Store.Playlist().Get(playlistId)
+	if err != nil {
+		return nil, err
+	}
+
+	if loadMembers {
+		members, err := app.Store.Playlist().GetMembersByPlaylist(playlistId)
+		if err != nil {
+			return nil, err
+		}
+		playlist.Members = members
+	}
+
+	return playlist, nil
+}
+
+func (app *App) GetPlaylistsByUser(userId int64) ([]*model.Playlist, *model.AppError) {
+	return app.Store.Playlist().GetByUser(userId)
+}
+
+func (app *App) GetPlaylistMembers(playlistIds, episodeIds []int64) ([]*model.PlaylistMember, *model.AppError) {
+	return app.Store.Playlist().GetMembers(episodeIds, playlistIds)
 }
