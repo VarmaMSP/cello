@@ -1,44 +1,37 @@
 package api
 
 import (
-	"errors"
-
 	"github.com/varmamsp/cello/model"
 )
 
-func GetId(i interface{}) (int64, error) {
+func GetId(i interface{}) (int64, *model.AppError) {
 	hashId, ok := i.(string)
 	if !ok {
-		return 0, errors.New("")
+		return 0, model.NewAppError("api.get_id", "invalid_body_param", 400, nil)
 	}
 
 	id, err := model.Int64FromHashId(hashId)
 	if err != nil {
-		return 0, err
+		return 0, model.NewAppError("api.get_id", "invalid_body_param", 400, nil)
 	}
 
 	return id, nil
 }
 
-func GetIds(i interface{}) ([]int64, error) {
+func GetIds(i interface{}) ([]int64, *model.AppError) {
 	x, ok := i.([]interface{})
 	if !ok {
-		return nil, errors.New("")
+		return []int64{}, nil
 	}
 
 	ids := make([]int64, len(x))
 	for i := 0; i < len(x); i++ {
-		hashId, ok := x[i].(string)
-		if !ok {
-			return nil, errors.New("")
-		}
-
-		id, err := model.Int64FromHashId(hashId)
+		tmp, err := GetId(x[i])
 		if err != nil {
 			return nil, err
 		}
 
-		ids[i] = id
+		ids[i] = tmp
 	}
 
 	return ids, nil

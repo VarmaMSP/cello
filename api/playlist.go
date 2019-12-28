@@ -8,8 +8,22 @@ import (
 
 const (
 	ACTION_ADD_EPISODE    = "add_episode"
-	ACTION_DELETE_EPISODE = "delete_episode"
+	ACTION_REMOVE_EPISODE = "remove_episode"
 )
+
+func GetPlaylistsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
+	playlists, err := c.App.GetPlaylistsByUser(c.Params.UserId)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(model.EncodeToJson(map[string]interface{}{
+		"playlists": playlists,
+	}))
+}
 
 func GetPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 	c.RequirePlaylistId()
@@ -17,20 +31,24 @@ func GetPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	playlist, err := c.App.GetPlaylist(c.Params.PlaylistId)
+	playlist, err := c.App.GetPlaylist(c.Params.PlaylistId, true)
 	if err != nil {
 		c.Err = err
 		return
 	}
 
-	episodes, err := c.App.GetEpisodesInPlaylist(c.Params.PlaylistId, 0, 1000)
+	episodeIds := make([]int64, len(playlist.Members))
+	for i, member := range playlist.Members {
+		episodeIds[i] = member.EpisodeId
+	}
+	episodes, err := c.App.GetEpisodesByIds(episodeIds)
 	if err != nil {
 		c.Err = err
 		return
 	}
 
 	if c.Session != nil && c.Session.UserId != 0 {
-		playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Session.UserId, model.GetEpisodeIds(episodes))
+		playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Session.UserId, episodeIds)
 		if err != nil {
 			c.Err = err
 			return
@@ -46,33 +64,8 @@ func GetPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 	}))
 }
 
-func GetUserPlaylists(c *Context, w http.ResponseWriter, req *http.Request) {
-	playlists, err := c.App.GetPlaylistsByUser(c.Params.UserId, c.Params.Offset, c.Params.Limit)
-	if err != nil {
-		c.Err = err
-		return
-	}
-
-	episodesByPlaylist := map[string]([]*model.Episode){}
-	for _, playlist := range playlists {
-		e, err := c.App.GetEpisodesInPlaylist(playlist.Id, 0, 3)
-		if err != nil {
-			c.Err = err
-			return
-		}
-		episodesByPlaylist[model.HashIdFromInt64(playlist.Id)] = e
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"playlists":            playlists,
-		"episodes_by_playlist": episodesByPlaylist,
-	}))
-}
-
 func ServiceAddToPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
-	playlists, err := c.App.GetPlaylistsByUser(c.Params.UserId, 0, 1000)
+	playlists, err := c.App.GetPlaylistsByUser(c.Params.UserId)
 	if err != nil {
 		c.Err = err
 		return
@@ -96,10 +89,27 @@ func ServiceCreatePlaylist(c *Context, w http.ResponseWriter, req *http.Request)
 		c.SetInvalidBodyParam("privacy")
 	}
 
-	playlist, err := c.App.SavePlaylist(title, privacy, c.Params.UserId)
+	description, ok := c.Body["description"].(string)
+	if !ok {
+		c.SetInvalidBodyParam("description")
+	}
+
+	episodeIds, err := GetIds(c.Body["episode_ids"])
+	if err != nil {
+		c.SetInvalidBodyParam("episode_ids")
+	}
+
+	playlist, err := c.App.CreatePlaylist(title, privacy, description, c.Params.UserId)
 	if err != nil {
 		c.Err = err
 		return
+	}
+
+	for _, episodeId := range episodeIds {
+		if err := c.App.AddEpisodeToPlaylist(episodeId, playlist.Id); err != nil {
+			c.Err = err
+			return
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -118,10 +128,10 @@ func ServiceEditPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 			AddEpisodeToPlaylist(c, w, req)
 		}
 
-	case ACTION_DELETE_EPISODE:
+	case ACTION_REMOVE_EPISODE:
 		c.RequireBody(req)
 		if c.Err != nil {
-			DeleteEpisodeFromPlaylist(c, w, req)
+			RemoveEpisodeFromPlaylist(c, w, req)
 		}
 
 	default:
@@ -142,7 +152,7 @@ func AddEpisodeToPlaylist(c *Context, w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if _, err := c.App.SaveEpisodeToPlaylist(episodeId, playlistId); err != nil {
+	if err := c.App.AddEpisodeToPlaylist(episodeId, playlistId); err != nil {
 		c.Err = err
 		return
 	}
@@ -150,7 +160,7 @@ func AddEpisodeToPlaylist(c *Context, w http.ResponseWriter, req *http.Request) 
 	w.WriteHeader(http.StatusOK)
 }
 
-func DeleteEpisodeFromPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
+func RemoveEpisodeFromPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 	episodeId, err := GetId(c.Body["episode_id"])
 	if err != nil {
 		c.SetInvalidBodyParam("episode_id")
@@ -163,7 +173,7 @@ func DeleteEpisodeFromPlaylist(c *Context, w http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	if _, err := c.App.SaveEpisodeToPlaylist(episodeId, playlistId); err != nil {
+	if err := c.App.RemoveEpisodeFromPlaylist(episodeId, playlistId); err != nil {
 		c.Err = err
 		return
 	}

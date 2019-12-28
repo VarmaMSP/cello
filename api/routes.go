@@ -34,7 +34,7 @@ func (api *Api) RegisterHandlers() {
 	r.Handler("GET", "/results", api.H(GetResultsPageData))
 	r.Handler("GET", "/history", api.HAuth(GetHistoryPageData))
 	r.Handler("GET", "/subscriptions", api.HAuth(GetSubscriptionsPageData))
-	r.Handler("GET", "/playlists", api.HAuth(GetUserPlaylists))
+	r.Handler("GET", "/playlists", api.HAuth(GetPlaylistsPageData))
 
 	r.Handler("GET", "/charts/:chartId", api.H(GetChart))
 	r.Handler("GET", "/podcasts/:podcastUrlParam", api.H(GetPodcastPageData))
@@ -95,7 +95,7 @@ func AjaxService(c *Context, w http.ResponseWriter, req *http.Request) {
 		}
 
 	case SERVICE_ADD_TO_PLAYLIST:
-		c.RequireSession()
+		c.RequireSession().RequireBody(req)
 		if c.Err == nil {
 			ServiceAddToPlaylist(c, w, req)
 		}
