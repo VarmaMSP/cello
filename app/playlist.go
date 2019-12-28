@@ -79,6 +79,27 @@ func (app *App) RemoveEpisodeFromPlaylist(playlistId, episodeId int64) *model.Ap
 	return app.Store.Playlist().Update(playlist, playlistU)
 }
 
+func (app *App) JoinPlaylistsToEpisodes(playlists []*model.Playlist, episodeIds []int64) *model.AppError {
+	playlistMap := map[int64]*model.Playlist{}
+	playlistIds := make([]int64, len(playlists))
+	for i, playlist := range playlists {
+		playlistIds[i] = playlist.Id
+		playlistMap[playlist.Id] = playlist
+	}
+
+	members, err := app.Store.Playlist().GetMembers(episodeIds, playlistIds)
+	if err != nil {
+		return err
+	}
+
+	for _, member := range members {
+		if playlist, ok := playlistMap[member.PlaylistId]; !ok {
+			playlist.Members = append(playlist.Members, member)
+		}
+	}
+	return nil
+}
+
 func (app *App) GetPlaylist(playlistId int64, loadMembers bool) (*model.Playlist, *model.AppError) {
 	playlist, err := app.Store.Playlist().Get(playlistId)
 	if err != nil {

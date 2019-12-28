@@ -65,8 +65,19 @@ func GetPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 }
 
 func ServiceAddToPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
+	episodeIds, err := GetIds(c.Body["episode_ids"])
+	if err != nil {
+		c.Err = err
+		return
+	}
+
 	playlists, err := c.App.GetPlaylistsByUser(c.Params.UserId)
 	if err != nil {
+		c.Err = err
+		return
+	}
+
+	if err := c.App.JoinPlaylistsToEpisodes(playlists, episodeIds); err != nil {
 		c.Err = err
 		return
 	}
