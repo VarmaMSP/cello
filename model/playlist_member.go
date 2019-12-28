@@ -22,11 +22,11 @@ func (p *PlaylistMember) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PlaylistMember) DbColumns() []string {
-	return []string{"playlist_id", "episode_id", "active", "created_at", "updated_at"}
+	return []string{"playlist_id", "episode_id", "position", "active", "created_at", "updated_at"}
 }
 
 func (p *PlaylistMember) FieldAddrs() []interface{} {
-	return []interface{}{&p.PlaylistId, &p.EpisodeId, &p.Active, &p.CreatedAt, &p.UpdatedAt}
+	return []interface{}{&p.PlaylistId, &p.EpisodeId, &p.Position, &p.Active, &p.CreatedAt, &p.UpdatedAt}
 }
 
 func (p *PlaylistMember) PreSave() {

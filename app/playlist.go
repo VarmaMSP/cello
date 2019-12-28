@@ -87,16 +87,17 @@ func (app *App) JoinPlaylistsToEpisodes(playlists []*model.Playlist, episodeIds 
 		playlistMap[playlist.Id] = playlist
 	}
 
-	members, err := app.Store.Playlist().GetMembers(episodeIds, playlistIds)
+	members, err := app.GetPlaylistMembers(playlistIds, episodeIds)
 	if err != nil {
 		return err
 	}
 
 	for _, member := range members {
-		if playlist, ok := playlistMap[member.PlaylistId]; !ok {
+		if playlist, ok := playlistMap[member.PlaylistId]; ok {
 			playlist.Members = append(playlist.Members, member)
 		}
 	}
+
 	return nil
 }
 
@@ -122,5 +123,8 @@ func (app *App) GetPlaylistsByUser(userId int64) ([]*model.Playlist, *model.AppE
 }
 
 func (app *App) GetPlaylistMembers(playlistIds, episodeIds []int64) ([]*model.PlaylistMember, *model.AppError) {
-	return app.Store.Playlist().GetMembers(episodeIds, playlistIds)
+	if len(playlistIds) == 0 || len(episodeIds) == 0 {
+		return []*model.PlaylistMember{}, nil
+	}
+	return app.Store.Playlist().GetMembers(playlistIds, episodeIds)
 }

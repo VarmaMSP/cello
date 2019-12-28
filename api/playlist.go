@@ -116,15 +116,15 @@ func ServiceCreatePlaylist(c *Context, w http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	for _, episodeId := range episodeIds {
-		if err := c.App.AddEpisodeToPlaylist(episodeId, playlist.Id); err != nil {
+	for i, episodeId := range episodeIds {
+		if err := c.App.AddEpisodeToPlaylist(playlist.Id, episodeId); err != nil {
 			c.Err = err
 			return
 		}
+		playlist.Members = append(playlist.Members, &model.PlaylistMember{EpisodeId: episodeId, Position: i + 1})
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Location", model.UrlParamFromId(playlist.Title, playlist.Id))
 	w.WriteHeader(http.StatusCreated)
 	w.Write(model.EncodeToJson(map[string]interface{}{
 		"playlist": playlist,
@@ -163,7 +163,7 @@ func AddEpisodeToPlaylist(c *Context, w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if err := c.App.AddEpisodeToPlaylist(episodeId, playlistId); err != nil {
+	if err := c.App.AddEpisodeToPlaylist(playlistId, episodeId); err != nil {
 		c.Err = err
 		return
 	}
@@ -184,7 +184,7 @@ func RemoveEpisodeFromPlaylist(c *Context, w http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	if err := c.App.RemoveEpisodeFromPlaylist(episodeId, playlistId); err != nil {
+	if err := c.App.RemoveEpisodeFromPlaylist(playlistId, episodeId); err != nil {
 		c.Err = err
 		return
 	}
