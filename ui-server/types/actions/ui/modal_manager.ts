@@ -6,20 +6,26 @@ export const MODAL_MANAGER_SHOW_CREATE_PLAYLIST_MODAL =
   'modal_manager/show_create_playlist_modal'
 export const MODAL_MANAGER_CLOSE_MODAL = 'modal_manager/close_modal'
 
-export interface ShowSigninModalAction {
+interface ShowSigninModalAction {
   type: typeof MODAL_MANAGER_SHOW_SIGN_IN_MODAL
 }
 
-export interface ShowAddToPlaylistModalAction {
+interface ShowAddToPlaylistModalAction {
   type: typeof MODAL_MANAGER_SHOW_ADD_TO_PLAYLIST_MODAL
   episodeId: string
 }
 
-export interface ShowCreatePlaylistModalAction {
+interface ShowCreatePlaylistModalAction {
   type: typeof MODAL_MANAGER_SHOW_CREATE_PLAYLIST_MODAL
   episodeId: string
 }
 
-export interface CloseModalAction {
+interface CloseModalAction {
   type: typeof MODAL_MANAGER_CLOSE_MODAL
 }
+
+export type ModalManagerActionTypes =
+  | ShowSigninModalAction
+  | ShowAddToPlaylistModalAction
+  | ShowCreatePlaylistModalAction
+  | CloseModalAction

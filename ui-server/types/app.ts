@@ -66,12 +66,12 @@ export interface Playlist {
   title: string
   userId: string
   privacy: PlaylistPrivacy
+  members: PlaylistMember[]
 }
 
 export interface PlaylistMember {
-  id: string
   episodeId: string
-  playlistId: string
+  position: number
 }
 
 export type CurationType = 'CATEGORY' | 'NORMAL'

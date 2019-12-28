@@ -61,5 +61,9 @@ export function playlist(j: any): Playlist {
     title: j.title,
     privacy: j.privacy || 'PRIVATE',
     userId: j.user_id,
+    members: (j.members || []).map((k: any) => ({
+      episodeId: k.episode_id,
+      position: k.position,
+    })),
   }
 }

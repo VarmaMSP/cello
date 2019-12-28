@@ -16,9 +16,9 @@ export function isKeyInArr(key: string, arr: string[]) {
 
 export function addKeyToArr(key: string, arr: string[]) {
   if (isKeyInArr(key, arr)) {
-    return [...arr, key]
+    return arr
   }
-  return arr
+  return [...arr, key]
 }
 
 export function delKeyFromArr(key: string, arr: string[]) {
@@ -27,7 +27,7 @@ export function delKeyFromArr(key: string, arr: string[]) {
 
 export function addKeysToArr(keys: string[], arr: string[]) {
   return keys.reduce<string[]>(
-    (acc, key) => isKeyInArr(key, acc) ? acc : [...acc, key],
+    (acc, key) => (isKeyInArr(key, acc) ? acc : [...acc, key]),
     arr,
   )
 }

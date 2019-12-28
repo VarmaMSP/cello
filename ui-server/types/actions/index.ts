@@ -11,6 +11,7 @@ import { UiActionTypes } from './ui'
 import { AudioPlayerActionTypes } from './ui/audio_player'
 import { HistoryFeedActionTypes } from './ui/history_feed'
 import { ModalManagerActionTypes } from './ui/modal_manager'
+import { PodcastEpisodesListActionTypes } from './ui/podcast_episodes_list'
 import { SubscriptionsFeedActionTypes } from './ui/subscriptions_feed'
 
 export type AppActions =
@@ -28,6 +29,7 @@ export type AppActions =
   | HistoryFeedActionTypes
   | SubscriptionsFeedActionTypes
   | ModalManagerActionTypes
+  | PodcastEpisodesListActionTypes
 
 export * from './browser'
 export * from './entities/curation'
@@ -43,5 +45,5 @@ export * from './ui'
 export * from './ui/audio_player'
 export * from './ui/history_feed'
 export * from './ui/modal_manager'
+export * from './ui/podcast_episodes_list'
 export * from './ui/subscriptions_feed'
-
