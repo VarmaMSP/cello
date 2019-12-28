@@ -1,13 +1,19 @@
 import { connect } from 'react-redux'
-import { makeGetPodcastsInChart } from 'selectors/entities/charts'
+import { makeGetPodcastsInCuration } from 'selectors/entities/curations'
+import { getPodcastsByIds } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
 import Recommended, { StateToProps } from './recommended'
 
 function makeMapStateToProps() {
-  const getPodcastsInChart = makeGetPodcastsInChart()
+  const getPodcastsInCuration = makeGetPodcastsInCuration()
 
   return (state: AppState): StateToProps => {
-    return { podcasts: getPodcastsInChart(state, 'recommended')}
+    return {
+      podcasts: getPodcastsByIds(
+        state,
+        getPodcastsInCuration(state, 'recommended'),
+      ),
+    }
   }
 }
 

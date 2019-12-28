@@ -1,4 +1,4 @@
-import { getChartPageData } from 'actions/chart'
+import { getCurationPageData } from 'actions/curation'
 import { getHomePageData } from 'actions/home'
 import ChartView from 'components/chart_view/chart_view'
 import React, { Component } from 'react'
@@ -13,7 +13,7 @@ interface OwnProps {
 export default class ChartPage extends Component<OwnProps> {
   static async getInitialProps({ query, store }: PageContext): Promise<void> {
     await bindActionCreators(
-      getChartPageData,
+      getCurationPageData,
       store.dispatch,
     )(query['chartId'] as string)
 

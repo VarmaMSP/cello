@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { getIsUserSignedIn } from 'selectors/entities/users'
+import { getIsUserSignedIn } from 'selectors/session'
 import { getSearchBarText } from 'selectors/ui/search'
 import { AppState } from 'store'
 import { AppActions, SEARCH_BAR_TEXT_CHANGE } from 'types/actions'

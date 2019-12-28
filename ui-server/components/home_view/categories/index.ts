@@ -1,13 +1,11 @@
 import { connect } from 'react-redux'
-import { makeGetCategories } from 'selectors/entities/charts'
+import { getMainCategories } from 'selectors/entities/curations'
 import { AppState } from 'store'
 import Categories, { StateToProps } from './categories'
 
 function makeMapStateToProps() {
-  const getCategories = makeGetCategories()
-
   return (state: AppState): StateToProps => {
-    return { categories: getCategories(state) }
+    return { categories: getMainCategories(state) }
   }
 }
 

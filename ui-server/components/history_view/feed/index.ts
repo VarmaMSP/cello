@@ -1,21 +1,20 @@
 import { getHistoryFeed } from 'actions/history'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import { makeGetHistoryFeed } from 'selectors/entities/feed'
+import { getEpisodesByIds } from 'selectors/entities/episodes'
 import { getHistoryFeedStatus } from 'selectors/request'
+import { getReceivedAll, makeGetEpisodeIds } from 'selectors/ui/history_feed'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 import Feed, { DispatchToProps, StateToProps } from './feed'
 
 function makeMapStateToProps() {
-  const getHistoryFeed = makeGetHistoryFeed()
+  const getEpisodeIds = makeGetEpisodeIds()
 
   return (state: AppState): StateToProps => {
-    const { episodes, receivedAll } = getHistoryFeed(state)
-
     return {
-      history: episodes,
-      receivedAll: receivedAll,
+      history: getEpisodesByIds(state, getEpisodeIds(state)),
+      receivedAll: getReceivedAll(state),
       isLoadingMore: getHistoryFeedStatus(state) === 'IN_PROGRESS',
     }
   }

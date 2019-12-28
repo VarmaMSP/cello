@@ -4,7 +4,7 @@ import Link from 'next/link'
 import React from 'react'
 import { connect } from 'react-redux'
 import { getCurrentUrlPath } from 'selectors/browser/urlPath'
-import { getIsUserSignedIn } from 'selectors/entities/users'
+import { getIsUserSignedIn } from 'selectors/session'
 import { AppState } from 'store'
 
 interface StateToProps {
@@ -23,7 +23,7 @@ const MenuItem: React.SFC<{
     <div className="w-1/3 flex-none text-center cursor-pointer">
       <Link href={href} scroll={false}>
         <a>
-          <Icon
+          <Icon 
             className={classNames('w-5 h-5 mx-auto fill-current', {
               'text-gray-700': !active,
               'text-green-600': active,

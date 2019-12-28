@@ -1,16 +1,15 @@
 import { connect } from 'react-redux'
-import { makeGetSubscriptions } from 'selectors/entities/podcasts'
+import { getPodcastsByIds } from 'selectors/entities/podcasts'
+import { getSubscriptions } from 'selectors/session'
 import { AppState } from 'store'
 import Subscriptions, { StateToProps } from './subscriptions'
 
-function makeMapStateToProps() {
-  const getSubscriptions = makeGetSubscriptions()
-
-  return (state: AppState): StateToProps => ({
-    subscriptions: getSubscriptions(state),
-  })
+function mapStateToProps(state: AppState): StateToProps {
+  return {
+    subscriptions: getPodcastsByIds(state, getSubscriptions(state)),
+  }
 }
 
-export default connect<StateToProps, {}, {}, AppState>(makeMapStateToProps())(
+export default connect<StateToProps, {}, {}, AppState>(mapStateToProps)(
   Subscriptions,
 )

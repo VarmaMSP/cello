@@ -1,15 +1,16 @@
 import { connect } from 'react-redux'
-import { getChartById, makeGetPodcastsInChart } from 'selectors/entities/charts'
+import { getCurationById, makeGetPodcastsInCuration } from 'selectors/entities/curations'
+import { getPodcastsByIds } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
 import PodcastList, { OwnProps, StateToProps } from './podcast_chart'
 
 function makeMapStateToProps() {
-  const getPodcastsInChart = makeGetPodcastsInChart()
+  const getPodcastsInChart = makeGetPodcastsInCuration()
 
   return (state: AppState, { chartId }: OwnProps): StateToProps => {
     return {
-      chart: getChartById(state, chartId),
-      podcasts: getPodcastsInChart(state, chartId),
+      chart: getCurationById(state, chartId),
+      podcasts: getPodcastsByIds(state, getPodcastsInChart(state, chartId)),
     }
   }
 }

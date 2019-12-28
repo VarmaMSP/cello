@@ -23,6 +23,8 @@ const Feed: React.SFC<StateToProps & DispatchToProps> = (props) => {
     { title: 'Earlier', episodes: [] },
   ]
 
+  console.log(feed)
+
   for (let i = 0; i < feed.length; ++i) {
     const episode = feed[i]
     const pubDate = new Date(`${episode.pubDate} +0000`)

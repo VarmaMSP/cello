@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import { getIsUserSubscribedToPodcast } from 'selectors/entities/podcasts'
+import { getIsSubscribed } from 'selectors/session'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 
@@ -49,7 +49,7 @@ function mapStateToProps(
   { podcastId }: OwnProps,
 ): StateToProps {
   return {
-    isSubscribed: getIsUserSubscribedToPodcast(state, podcastId),
+    isSubscribed: getIsSubscribed(state, podcastId),
   }
 }
 

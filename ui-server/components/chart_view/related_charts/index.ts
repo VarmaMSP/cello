@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
-import { makeGetChartChildren } from 'selectors/entities/charts'
+import { makeGetSubCategories } from 'selectors/entities/curations'
 import { AppState } from 'store'
 import RelatedCharts, { OwnProps, StateToProps } from './related_charts'
 
 function makeMapStateToProps() {
-  const getChartChildren = makeGetChartChildren()
+  const getChartChildren = makeGetSubCategories()
 
   return (state: AppState, { chartId }: OwnProps): StateToProps => {
     return {

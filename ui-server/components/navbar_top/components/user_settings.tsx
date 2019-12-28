@@ -4,7 +4,8 @@ import Dropdown from 'components/dropdown'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import { getCurrenUser } from 'selectors/entities/users'
+import { getUserById } from 'selectors/entities/users'
+import { getSignedInUserId } from 'selectors/session'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 import { User } from 'types/app'
@@ -50,7 +51,7 @@ const UserSettings: React.SFC<StateToProps & DispatchToProps> = (props) => {
 
 function mapStateToProps(state: AppState): StateToProps {
   return {
-    user: getCurrenUser()(state),
+    user: getUserById(state, getSignedInUserId(state)),
   }
 }
 

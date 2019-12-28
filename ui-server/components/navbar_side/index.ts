@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { getCurrentUrlPath } from 'selectors/browser/urlPath'
-import { getIsUserSignedIn } from 'selectors/entities/users'
+import { getIsUserSignedIn } from 'selectors/session'
 import { AppState } from 'store'
-import { AppActions, SHOW_SIGNIN_MODAL } from 'types/actions'
+import { AppActions, MODAL_MANAGER_SHOW_SIGN_IN_MODAL } from 'types/actions'
 import Navbar, { DispatchToProps, StateToProps } from './navbar_side'
 
 function mapStateToProps(state: AppState): StateToProps {
@@ -15,7 +15,7 @@ function mapStateToProps(state: AppState): StateToProps {
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
-    showSigninModal: () => dispatch({ type: SHOW_SIGNIN_MODAL }),
+    showSigninModal: () => dispatch({ type: MODAL_MANAGER_SHOW_SIGN_IN_MODAL }),
   }
 }
 

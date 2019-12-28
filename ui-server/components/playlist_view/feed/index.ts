@@ -1,22 +1,18 @@
 import { Dispatch } from 'react'
 import { connect } from 'react-redux'
-import { makeGetUserPlaylists } from 'selectors/entities/playlists'
-import { getCurrentUserId } from 'selectors/entities/users'
+import { makeGetPlaylistsByUser } from 'selectors/entities/playlists'
+import { getSignedInUserId } from 'selectors/session'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 import Feed, { DispatchToProps, StateToProps } from './feed'
 
 function makeMapStateToProps() {
-  const getPlaylists = makeGetUserPlaylists()
+  const getPlaylists = makeGetPlaylistsByUser()
 
   return (state: AppState): StateToProps => {
-    const { playlists, receivedAll } = getPlaylists(
-      state,
-      getCurrentUserId(state),
-    )
     return {
-      playlists,
-      receivedAll,
+      playlists: getPlaylists(state, getSignedInUserId(state)),
+      receivedAll: true,
       isLoadingMore: false,
     }
   }

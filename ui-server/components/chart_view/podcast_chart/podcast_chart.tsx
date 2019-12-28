@@ -1,10 +1,10 @@
 import { PodcastLink } from 'components/link'
 import React from 'react'
-import { Chart, Podcast } from 'types/app'
+import { Curation, Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {
-  chart: Chart
+  chart: Curation
   podcasts: Podcast[]
 }
 

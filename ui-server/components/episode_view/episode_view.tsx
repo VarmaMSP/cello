@@ -36,10 +36,15 @@ const EpisodeView: React.FC<StateToProps & OwnProps> = ({
     <div className="flex md:flex-row flex-col">
       <div className="lg:w-2/3 w-full">
         <div className="flex">
-          <img
-            className="lg:h-36 h-24 lg:w-36 w-24 flex-none object-contain object-center rounded-lg border"
-            src={getImageUrl(podcast.urlParam)}
-          />
+          <div className="flex items-center">
+            <img
+              className="lg:h-36 h-24 lg:w-36 w-24 flex-none object-contain object-center rounded-lg border"
+              src={getImageUrl(podcast.urlParam)}
+            />
+            <div className="w-3 h-32 bg-gray-500 rounded-r border-l border-white" />
+            <div className="w-3 h-28 bg-gray-400 rounded-r border-l border-white" />
+          </div>
+
           <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
             <div className="w-full">
               <div className="w-16 mb-2 text-center text-2xs leading-relaxed tracking-wider bg-gray-300 rounded-full">

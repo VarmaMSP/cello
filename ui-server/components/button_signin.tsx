@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { AppState } from 'store'
-import { AppActions, SHOW_SIGNIN_MODAL } from 'types/actions'
+import { AppActions, MODAL_MANAGER_SHOW_SIGN_IN_MODAL } from 'types/actions'
 
 interface DispatchToProps {
   showSigninModal: () => void
@@ -14,16 +14,14 @@ const ButtonSignin: React.SFC<DispatchToProps> = (props) => {
       className="w-full h-full rounded bg-orange-600 focus:outline-none focus:shadow-outline"
       onClick={props.showSigninModal}
     >
-      <p className="text-sm text-white font-semibold leading-loose">
-        SIGN IN
-      </p>
+      <p className="text-sm text-white font-semibold leading-loose">SIGN IN</p>
     </button>
   )
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
-    showSigninModal: () => dispatch({ type: SHOW_SIGNIN_MODAL }),
+    showSigninModal: () => dispatch({ type: MODAL_MANAGER_SHOW_SIGN_IN_MODAL }),
   }
 }
 

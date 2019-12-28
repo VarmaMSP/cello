@@ -6,7 +6,6 @@ import { Playlist } from 'types/app'
 
 export interface StateToProps {
   playlists: Playlist[]
-  isLoading: boolean
 }
 
 export interface DispatchToProps {
