@@ -21,7 +21,7 @@ const PlaylistsListItem: React.FC<DispatchToProps & OwnProps> = ({
   )
 
   return (
-    <div className="mb-1">
+    <div className="mb-1 px-1">
       <label className="inline-flex items-center">
         <input
           type="checkbox"

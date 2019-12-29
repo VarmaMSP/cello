@@ -20,10 +20,9 @@ type Props = StateToProps & DispatchToProps & OwnProps
 
 const CreatePlaylistModal: React.FC<Props> = ({ createPlaylist }) => {
   return (
-    <Overlay background="rgba(0, 0, 0, 0.8)">
-      <ModalContainer closeUponClicking="CROSS">
+    <Overlay background="rgba(0, 0, 0, 0.61)">
+      <ModalContainer header="Create Playlist">
         <div className="flex flex-col h-full">
-          <h4 className="flex-none block text-2xl mb-6">{'Create Playlist'}</h4>
           <Formik
             initialValues={{ title: '', privacy: 'PUBLIC' }}
             validate={() => ({})}

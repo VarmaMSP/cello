@@ -8,8 +8,8 @@ const SignInModal: React.FC<{}> = () => {
   const LogoIcon = iconMap['logo-lg']
 
   return (
-    <Overlay background="rgba(255, 255, 255, 0.45)">
-      <ModalContainer closeUponClicking="CROSS">
+    <Overlay background="rgba(0, 0, 0, 0.75)">
+      <ModalContainer>
         <div className="h-full pt-8">
           <LogoIcon className="mx-auto" />
           <div className="text-center mt-3 mb-10">

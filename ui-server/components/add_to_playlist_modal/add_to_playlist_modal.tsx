@@ -25,10 +25,9 @@ const AddToPlaylistModal: React.FC<Props> = ({
   showCreatePlaylistModal,
 }) => {
   return (
-    <Overlay background="rgba(0, 0, 0, 0.8)">
-      <ModalContainer closeUponClicking="CROSS">
-        <div className="flex flex-col h-full">
-          <h4 className="flex-none block text-lg mb-4">{'Add to Playlist'}</h4>
+    <Overlay background="rgba(0, 0, 0, 0.61)">
+      <ModalContainer header="Add to Playlist">
+        <div className="h-full flex flex-col">
           <div className="flex-1 overflow-y-auto">
             {playlists.map((playlist) => (
               <PlaylistsListItem
@@ -38,14 +37,12 @@ const AddToPlaylistModal: React.FC<Props> = ({
               />
             ))}
           </div>
-          <div className="flex-none mb-4">
-            <button
-              className="w-full text-sm font-medium text-center text-purple-400 py-1 mr-6 border-2 border-purple-400 rounded-lg"
-              onClick={() => showCreatePlaylistModal()}
-            >
-              NEW PLAYLIST
-            </button>
-          </div>
+          <button
+            className="block flex-none w-full text-sm font-medium text-center text-purple-700 py-1 mr-6 border-2 border-purple-600 rounded-lg"
+            onClick={() => showCreatePlaylistModal()}
+          >
+            NEW PLAYLIST
+          </button>
         </div>
       </ModalContainer>
     </Overlay>
