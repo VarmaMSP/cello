@@ -9,7 +9,7 @@ const SignInModal: React.FC<{}> = () => {
 
   return (
     <Overlay background="rgba(0, 0, 0, 0.75)">
-      <ModalContainer>
+      <ModalContainer className="modal">
         <div className="h-full pt-8">
           <LogoIcon className="mx-auto" />
           <div className="text-center mt-3 mb-10">

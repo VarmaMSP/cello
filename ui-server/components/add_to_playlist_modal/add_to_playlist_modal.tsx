@@ -25,8 +25,8 @@ const AddToPlaylistModal: React.FC<Props> = ({
   showCreatePlaylistModal,
 }) => {
   return (
-    <Overlay background="rgba(0, 0, 0, 0.61)">
-      <ModalContainer header="Add to Playlist">
+    <Overlay background="rgba(0, 0, 0, 0.63)">
+      <ModalContainer className="modal-slim" header="Add to Playlist">
         <div className="h-full flex flex-col">
           <div className="flex-1 overflow-y-auto">
             {playlists.map((playlist) => (

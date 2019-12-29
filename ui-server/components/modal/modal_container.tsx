@@ -13,6 +13,7 @@ interface DispatchToProps {
 interface OwnProps {
   header?: string
   closeUponClicking?: 'OVERLAY' | 'CROSS'
+  className: string
   children: JSX.Element | JSX.Element[]
 }
 
@@ -20,6 +21,7 @@ const ModalContainer: React.SFC<DispatchToProps & OwnProps> = ({
   closeModal,
   header,
   closeUponClicking,
+  className,
   children,
 }) => {
   const ref = useRef(null) as React.RefObject<HTMLDivElement>
@@ -43,7 +45,7 @@ const ModalContainer: React.SFC<DispatchToProps & OwnProps> = ({
       ref={ref}
       className={classNames(
         'flex flex-col bg-white border shadow z-20',
-        'modal',
+        className,
       )}
     >
       <div className="w-full flex flex-row-reverse flex-none items-center px-4 py-3">
