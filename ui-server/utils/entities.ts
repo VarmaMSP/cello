@@ -57,7 +57,7 @@ export function playback(j: any): Playback {
 export function playlist(j: any): Playlist {
   return {
     id: j.id,
-    urlParam: j.url_param,
+    urlParam: j.url_param || '',
     title: j.title,
     privacy: j.privacy || 'PRIVATE',
     previewImage: j.preview_image || '',

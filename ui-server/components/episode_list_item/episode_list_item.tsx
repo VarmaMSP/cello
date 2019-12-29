@@ -39,7 +39,7 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
         />
       </div>
 
-      <div className="pl-3">
+      <div className="pl-4">
         <EpisodeLink episodeUrlParam={episode.urlParam}>
           <a className="block md:text-base text-sm font-medium tracking-wide line-clamp-2">
             {episode.title}
