@@ -41,11 +41,7 @@ func (app *App) AddEpisodeToPlaylist(playlistId, episodeId int64) *model.AppErro
 		return err
 	}
 
-	playlistU := *playlist
-	playlistU.EpisodeCount += 1
-	playlistU.UpdatedAt = model.Now()
-
-	return app.Store.Playlist().Update(playlist, &playlistU)
+	return app.Store.Playlist().UpdateMemberStats(playlistId)
 }
 
 func (app *App) RemoveEpisodeFromPlaylist(playlistId, episodeId int64) *model.AppError {
@@ -67,16 +63,7 @@ func (app *App) RemoveEpisodeFromPlaylist(playlistId, episodeId int64) *model.Ap
 		return err
 	}
 
-	playlist, err := app.Store.Playlist().Get(playlistId)
-	if err != nil {
-		return err
-	}
-
-	playlistU := *playlist
-	playlistU.EpisodeCount -= 1
-	playlistU.UpdatedAt = model.Now()
-
-	return app.Store.Playlist().Update(playlist, &playlistU)
+	return app.Store.Playlist().UpdateMemberStats(playlistId)
 }
 
 func (app *App) JoinPlaylistsToEpisodes(playlists []*model.Playlist, episodeIds []int64) *model.AppError {

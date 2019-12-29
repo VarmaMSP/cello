@@ -1,6 +1,7 @@
 package sqlstore
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -98,6 +99,54 @@ func (s *SqlPlaylistStore) Update(old, new *model.Playlist) *model.AppError {
 	return nil
 }
 
+func (s *SqlPlaylistStore) UpdateMemberStats(playlistId int64) *model.AppError {
+	count := 0
+	sql_ := fmt.Sprintf("SELECT COUNT(*) FROM playlist_member WHERE playlist_id = %d AND active = 1", playlistId)
+
+	if err := s.GetMaster().QueryRow(sql_).Scan(&count); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_playlist_store.update_member_stats", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"playlist_id": playlistId},
+		)
+	}
+
+	firstMember := &model.PlaylistMember{}
+	sql_ = fmt.Sprintf(
+		"SELECT %s FROM playlist_member WHERE playlist_id = %d AND position = 1 AND active = 1",
+		joinStrings(firstMember.DbColumns(), ","), playlistId,
+	)
+
+	if err := s.GetMaster().QueryRow(sql_).Scan(firstMember.FieldAddrs()...); err != nil && err != sql.ErrNoRows {
+		return model.NewAppError(
+			"store.sqlstore.sql_playlist_store.update_member_stats", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"playlist_id": playlistId},
+		)
+	}
+
+	previewImage := "placeholder"
+	if firstMember.EpisodeId != 0 {
+		if episode, err := s.Episode().Get(firstMember.EpisodeId); err == nil {
+			if podcast, err := s.Podcast().Get(episode.PodcastId); err == nil {
+				previewImage = model.UrlParamFromId(podcast.Title, podcast.Id)
+			}
+		}
+	}
+
+	sql_ = fmt.Sprintf(
+		`UPDATE playlist SET episode_count = %d, preview_image = "%s" WHERE id = %d`,
+		count, previewImage, playlistId,
+	)
+
+	if _, err := s.GetMaster().Exec(sql_); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_playlist_store.update_member_stats", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"playlist_id": playlistId},
+		)
+	}
+
+	return nil
+}
+
 func (s *SqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppError {
 	member.PreSave()
 
@@ -117,8 +166,6 @@ func (s *SqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*m
 		joinInt64s(playlistIds, ","),
 		joinInt64s(episodeIds, ","),
 	)
-
-	fmt.Println(sql)
 
 	copyTo := func() []interface{} {
 		tmp := &model.PlaylistMember{}
