@@ -20,7 +20,7 @@ type Props = StateToProps & DispatchToProps & OwnProps
 
 const CreatePlaylistModal: React.FC<Props> = ({ createPlaylist }) => {
   return (
-    <Overlay background="rgba(0, 0, 0, 0.63)">
+    <Overlay background="rgba(0, 0, 0, 0.65)">
       <ModalContainer className="modal-slim" header="Create Playlist">
         <Formik
           initialValues={{ title: '', privacy: 'PUBLIC' }}
