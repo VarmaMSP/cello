@@ -14,18 +14,14 @@ export interface DispatchToProps {
 
 export interface OwnProps {
   episodeId: string
-  closeModal: () => void
 }
 
 type Props = StateToProps & DispatchToProps & OwnProps
 
-const CreatePlaylistModal: React.FC<Props> = ({
-  closeModal,
-  createPlaylist,
-}) => {
+const CreatePlaylistModal: React.FC<Props> = ({ createPlaylist }) => {
   return (
     <Overlay background="rgba(0, 0, 0, 0.8)">
-      <ModalContainer handleClose={closeModal} closeUponClicking="CROSS">
+      <ModalContainer closeUponClicking="CROSS">
         <div className="flex flex-col h-full">
           <h4 className="flex-none block text-2xl mb-6">{'Create Playlist'}</h4>
           <Formik

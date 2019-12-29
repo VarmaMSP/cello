@@ -58,12 +58,12 @@ export async function serviceCreatePlaylist(
 }
 
 export async function serviceAddEpisodeToPlaylist(
-  episodeId: string,
   playlistId: string,
+  episodeId: string,
 ): Promise<void> {
   await doFetch({
     method: 'POST',
-    urlPath: `/ajax/service?endpoint=edit_playlist&action=add_episode`,
+    urlPath: '/ajax/service?endpoint=edit_playlist&action=add_episode',
     body: {
       episode_id: episodeId,
       playlist_id: playlistId,
@@ -72,8 +72,8 @@ export async function serviceAddEpisodeToPlaylist(
 }
 
 export async function serviceRemoveEpisodeFromPlaylist(
-  episodeId: string,
   playlistId: string,
+  episodeId: string,
 ): Promise<void> {
   await doFetch({
     method: 'POST',

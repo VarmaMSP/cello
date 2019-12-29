@@ -15,7 +15,6 @@ export interface DispatchToProps {
 export interface OwnProps {
   skipLoad?: boolean
   episodeId: string
-  closeModal: () => void
 }
 
 type Props = StateToProps & DispatchToProps & OwnProps
@@ -23,12 +22,11 @@ type Props = StateToProps & DispatchToProps & OwnProps
 const AddToPlaylistModal: React.FC<Props> = ({
   playlists,
   episodeId,
-  closeModal,
   showCreatePlaylistModal,
 }) => {
   return (
     <Overlay background="rgba(0, 0, 0, 0.8)">
-      <ModalContainer handleClose={closeModal} closeUponClicking="CROSS">
+      <ModalContainer closeUponClicking="CROSS">
         <div className="flex flex-col h-full">
           <h4 className="flex-none block text-lg mb-4">{'Add to Playlist'}</h4>
           <div className="flex-1 overflow-y-auto">
