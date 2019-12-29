@@ -101,7 +101,7 @@ func (s *SqlPlaylistStore) Update(old, new *model.Playlist) *model.AppError {
 
 func (s *SqlPlaylistStore) UpdateMemberStats(playlistId int64) *model.AppError {
 	count := 0
-	sql_ := fmt.Sprintf("SELECT COUNT(*) FROM playlist_member WHERE playlist_id = %d AND active = 1", playlistId)
+	sql_ := fmt.Sprintf("SELECT COUNT(*) FROM playlist_member WHERE playlist_id = %d", playlistId)
 
 	if err := s.GetMaster().QueryRow(sql_).Scan(&count); err != nil {
 		return model.NewAppError(
@@ -112,7 +112,7 @@ func (s *SqlPlaylistStore) UpdateMemberStats(playlistId int64) *model.AppError {
 
 	firstMember := &model.PlaylistMember{}
 	sql_ = fmt.Sprintf(
-		"SELECT %s FROM playlist_member WHERE playlist_id = %d AND position = 1 AND active = 1",
+		"SELECT %s FROM playlist_member WHERE playlist_id = %d AND position = 1",
 		joinStrings(firstMember.DbColumns(), ","), playlistId,
 	)
 
@@ -161,7 +161,7 @@ func (s *SqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppEr
 
 func (s *SqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*model.PlaylistMember, appE *model.AppError) {
 	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist_member WHERE playlist_id IN (%s) AND episode_id IN (%s) AND active = 1",
+		"SELECT %s FROM playlist_member WHERE playlist_id IN (%s) AND episode_id IN (%s)",
 		joinStrings((&model.PlaylistMember{}).DbColumns(), ","),
 		joinInt64s(playlistIds, ","),
 		joinInt64s(episodeIds, ","),
@@ -184,7 +184,7 @@ func (s *SqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*m
 
 func (s *SqlPlaylistStore) GetMembersByPlaylist(playlistId int64) (res []*model.PlaylistMember, appE *model.AppError) {
 	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist_member WHERE playlist_id = %d AND active = 1 ORDER BY position ASC",
+		"SELECT %s FROM playlist_member WHERE playlist_id = %d ORDER BY position ASC",
 		joinStrings((&model.PlaylistMember{}).DbColumns(), ","), playlistId,
 	)
 
@@ -246,8 +246,8 @@ func (s *SqlPlaylistStore) ChangeMemberPosition(playlistId, episodeId int64, fro
 
 func (s *SqlPlaylistStore) DeleteMember(playlistId, episodeId int64) *model.AppError {
 	sql := fmt.Sprintf(
-		"UPDATE playlist_member SET active = 0, updated_at = %d WHERE playlist_id = %d AND episode_id = %d",
-		model.Now(), playlistId, episodeId,
+		"DELETE FROM playlist_member WHERE playlist_id = %d AND episode_id = %d",
+		playlistId, episodeId,
 	)
 
 	if _, err := s.GetMaster().Exec(sql); err != nil {

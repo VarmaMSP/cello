@@ -6,7 +6,6 @@ type PlaylistMember struct {
 	PlaylistId int64
 	EpisodeId  int64
 	Position   int
-	Active     int
 	CreatedAt  int64
 	UpdatedAt  int64
 }
@@ -22,18 +21,14 @@ func (p *PlaylistMember) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PlaylistMember) DbColumns() []string {
-	return []string{"playlist_id", "episode_id", "position", "active", "created_at", "updated_at"}
+	return []string{"playlist_id", "episode_id", "position", "created_at", "updated_at"}
 }
 
 func (p *PlaylistMember) FieldAddrs() []interface{} {
-	return []interface{}{&p.PlaylistId, &p.EpisodeId, &p.Position, &p.Active, &p.CreatedAt, &p.UpdatedAt}
+	return []interface{}{&p.PlaylistId, &p.EpisodeId, &p.Position, &p.CreatedAt, &p.UpdatedAt}
 }
 
 func (p *PlaylistMember) PreSave() {
-	if p.Active == 0 {
-		p.Active = 1
-	}
-
 	if p.CreatedAt == 0 {
 		p.CreatedAt = Now()
 	}
