@@ -55,3 +55,20 @@ export const ChartLink: React.FC<Props & { chartId: string }> = ({
     </Link>
   )
 }
+
+export const PlaylistLink: React.FC<Props & { playlistUrlParam: string }> = ({
+  children,
+  playlistUrlParam,
+}) => {
+  return (
+    <Link
+      href={{
+        pathname: '/playlists',
+        query: { playlistUrlParam: playlistUrlParam },
+      }}
+      as={`/playlists/${playlistUrlParam}`}
+    >
+      {children}
+    </Link>
+  )
+}
