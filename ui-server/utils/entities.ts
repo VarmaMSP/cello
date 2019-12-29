@@ -60,6 +60,8 @@ export function playlist(j: any): Playlist {
     urlParam: j.url_param,
     title: j.title,
     privacy: j.privacy || 'PRIVATE',
+    previewImage: j.preview_image || '',
+    episodeCount: j.episode_count || 0,
     userId: j.user_id,
     members: (j.members || []).map((k: any) => ({
       episodeId: k.episode_id,
