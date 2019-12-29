@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { StateToProps } from 'components/add_to_playlist_modal/add_to_playlist_modal'
 import ButtonWithIcon from 'components/button_with_icon'
 import React, { Dispatch, useEffect, useRef } from 'react'
@@ -10,12 +11,14 @@ interface DispatchToProps {
 }
 
 interface OwnProps {
-  closeUponClicking: 'OVERLAY' | 'CROSS'
+  header?: string
+  closeUponClicking?: 'OVERLAY' | 'CROSS'
   children: JSX.Element | JSX.Element[]
 }
 
 const ModalContainer: React.SFC<DispatchToProps & OwnProps> = ({
   closeModal,
+  header,
   closeUponClicking,
   children,
 }) => {
@@ -23,7 +26,8 @@ const ModalContainer: React.SFC<DispatchToProps & OwnProps> = ({
 
   const handleClickOutside = (e: any) => {
     if (ref.current && !ref.current.contains(e.target as Node)) {
-      closeUponClicking === 'OVERLAY' && closeModal()
+      ;(closeUponClicking === undefined || closeUponClicking === 'OVERLAY') &&
+        closeModal()
     }
   }
 
@@ -37,18 +41,27 @@ const ModalContainer: React.SFC<DispatchToProps & OwnProps> = ({
   return (
     <div
       ref={ref}
-      className="modal md:px-6 px-4 py-6 bg-white border shadow z-20"
+      className={classNames(
+        'flex flex-col bg-white border shadow z-20',
+        'modal',
+      )}
     >
-      {closeUponClicking === 'CROSS' && (
-        <div className="w-full h-5 relative">
+      <div className="w-full flex flex-row-reverse flex-none items-center px-4 py-3">
+        {(closeUponClicking === undefined || closeUponClicking === 'CROSS') && (
           <ButtonWithIcon
-            className="absolute right-0 w-4 text-gray-600 hover:text-black"
+            className="flex-none w-4 text-gray-600 hover:text-black"
             icon="close"
             onClick={closeModal}
           />
-        </div>
-      )}
-      <div className="h-full">{children}</div>
+        )}
+        {header && (
+          <h4 className="flex-1 text-2xl text-gray-900 tracking-wide">
+            {header}
+          </h4>
+        )}
+      </div>
+
+      <div className="flex-1 px-4 py-3">{children}</div>
     </div>
   )
 }
