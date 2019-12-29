@@ -32,15 +32,11 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
 
   return (
     <div className="flex mb-12">
-      <div className="flex-none mr-2">
-        <div className="flex items-center">
-          <img
-            className="w-24 h-24 object-contain rounded-lg border cursor-default"
-            src={getImageUrl(podcast.urlParam)}
-          />
-          <div className="w-2 h-20 bg-gray-500 rounded-r border-l border-white" />
-          <div className="w-2 h-16 bg-gray-400 rounded-r border-l border-white" />
-        </div>
+      <div className="flex-none mr-1">
+        <img
+          className="w-24 h-24 object-contain rounded-lg border cursor-default"
+          src={getImageUrl(podcast.urlParam)}
+        />
       </div>
 
       <div className="pl-3">
