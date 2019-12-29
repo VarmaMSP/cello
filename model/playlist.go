@@ -19,6 +19,7 @@ type Playlist struct {
 func (p *Playlist) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		Id           string            `json:"id"`
+		UrlParam     string            `json:"url_param"`
 		UserId       string            `json:"user_id,omitempty"`
 		Title        string            `json:"title"`
 		Description  string            `json:"description,omitempty"`
@@ -28,6 +29,7 @@ func (p *Playlist) MarshalJSON() ([]byte, error) {
 		Members      []*PlaylistMember `json:"members"`
 	}{
 		Id:           HashIdFromInt64(p.Id),
+		UrlParam:     UrlParamFromId(p.Title, p.Id),
 		UserId:       HashIdFromInt64(p.UserId),
 		Title:        p.Title,
 		Description:  p.Description,
