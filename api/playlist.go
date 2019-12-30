@@ -47,6 +47,16 @@ func GetPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	podcastIds := make([]int64, len(episodes))
+	for i, episode := range episodes {
+		podcastIds[i] = episode.PodcastId
+	}
+	podcasts, err := c.App.GetPodcastsByIds(podcastIds)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
 	if c.Session != nil && c.Session.UserId != 0 {
 		playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Session.UserId, episodeIds)
 		if err != nil {
@@ -61,6 +71,7 @@ func GetPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 	w.Write(model.EncodeToJson(map[string]interface{}{
 		"playlist": playlist,
 		"episodes": episodes,
+		"podcasts": podcasts,
 	}))
 }
 

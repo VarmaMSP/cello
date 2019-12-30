@@ -28,7 +28,7 @@ func GetHistoryPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 	for i, episode := range episodes {
 		podcastIds[i] = episode.PodcastId
 	}
-	podcasts, err := c.App.GetPodcastsByIs(model.RemoveDuplicatesInt64(podcastIds))
+	podcasts, err := c.App.GetPodcastsByIds(model.RemoveDuplicatesInt64(podcastIds))
 	if err != nil {
 		c.Err = err
 		return
@@ -64,7 +64,7 @@ func BrowseHistoryFeed(c *Context, w http.ResponseWriter, req *http.Request) {
 	for i, episode := range episodes {
 		podcastIds[i] = episode.PodcastId
 	}
-	podcasts, err := c.App.GetPodcastsByIs(model.RemoveDuplicatesInt64(podcastIds))
+	podcasts, err := c.App.GetPodcastsByIds(model.RemoveDuplicatesInt64(podcastIds))
 	if err != nil {
 		c.Err = err
 		return
