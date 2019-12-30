@@ -112,6 +112,11 @@ func TimeFromTimestamp(t int64) *time.Time {
 	return &res
 }
 
+// DateTimeFromTimestamp converts timestamp to mysql time stamp
+func DateTimeFromTimestamp(t int64) string {
+	return TimeFromTimestamp(t).UTC().Format(MYSQL_DATETIME)
+}
+
 var (
 	regexpUrlWithQuery    = regexp.MustCompile(`(https?:\/\/.+)\?.*`)
 	regexpUrlWithFragment = regexp.MustCompile(`(https?:\/\/.+)#.*`)
@@ -230,8 +235,8 @@ var hashid, _ = hashids.NewWithData(&hashids.HashIDData{
 })
 
 // HashIdFromInt64 Encodes hashId
-func HashIdFromInt64(i int64) string {
-	hid, _ := hashid.EncodeInt64(([]int64{i}))
+func HashIdFromInt64(val int64) string {
+	hid, _ := hashid.EncodeInt64(([]int64{val}))
 	return hid
 }
 

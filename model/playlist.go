@@ -26,6 +26,7 @@ func (p *Playlist) MarshalJSON() ([]byte, error) {
 		Privacy      string            `json:"privacy,omirempty"`
 		EpisodeCount int               `json:"episode_count,omitempty"`
 		PreviewImage string            `json:"preview_image,omitempty"`
+		UpdatedAt    string            `json:"updated_at"`
 		Members      []*PlaylistMember `json:"members"`
 	}{
 		Id:           HashIdFromInt64(p.Id),
@@ -36,6 +37,7 @@ func (p *Playlist) MarshalJSON() ([]byte, error) {
 		Privacy:      p.Privacy,
 		EpisodeCount: p.EpisodeCount,
 		PreviewImage: p.PreviewImage,
+		UpdatedAt:    DateTimeFromTimestamp(p.UpdatedAt),
 		Members:      p.Members,
 	})
 }
