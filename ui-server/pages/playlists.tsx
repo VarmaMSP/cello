@@ -1,44 +1,51 @@
-import { getPlaylistPageData } from 'actions/playlist'
+import { getPlaylist, getPlaylistLibrary } from 'actions/playlist'
 import ButtonSignin from 'components/button_signin'
 import { iconMap } from 'components/icon'
-import PlaylistView from 'components/playlist_view/playlist_view'
+import PageLayout from 'components/page_layout'
+import PlaylistsLibrary from 'components/playlist_library'
+import PlaylistView from 'components/playlist_view'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import { getPlaylistPageStatus } from 'selectors/request'
 import { getIsUserSignedIn } from 'selectors/session'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 import { PageContext } from 'types/utilities'
+import { getIdFromUrlParam } from 'utils/utils'
 
 interface StateToProps {
   isUserSignedIn: boolean
-  isLoading: boolean
 }
 
 interface DispatchToProps {
-  loadPageData: () => void
+  loadPlaylistLibrary: () => void
 }
 
 interface OwnProps {
+  playlistUrlParam?: string
   scrollY: number
 }
 
 type Props = StateToProps & DispatchToProps & OwnProps
 
 class PlaylistPage extends React.Component<Props> {
-  static async getInitialProps(ctx: PageContext): Promise<void> {
-    const { store } = ctx
+  static async getInitialProps({ query, store }: PageContext): Promise<void> {
+    if (!!query['playlistUrlParam']) {
+      await bindActionCreators(
+        getPlaylist,
+        store.dispatch,
+      )(query['playlistUrlParam'] as string)
+    }
 
     if (getIsUserSignedIn(store.getState())) {
-      await bindActionCreators(getPlaylistPageData, store.dispatch)()
+      await bindActionCreators(getPlaylistLibrary, store.dispatch)()
     }
   }
 
   componentDidUpdate(prevProps: Props) {
     const { isUserSignedIn } = this.props
     if (isUserSignedIn && !prevProps.isUserSignedIn) {
-      this.props.loadPageData()
+      this.props.loadPlaylistLibrary()
     }
   }
 
@@ -47,9 +54,20 @@ class PlaylistPage extends React.Component<Props> {
   }
 
   render() {
-    const { isUserSignedIn, isLoading } = this.props
+    const { isUserSignedIn, playlistUrlParam } = this.props
 
-    if (!isUserSignedIn || isLoading) {
+    // Playlist Page
+    if (!!playlistUrlParam) {
+      const playlistId = getIdFromUrlParam(playlistUrlParam)
+      return (
+        <PageLayout>
+          <PlaylistView playlistId={playlistId} />
+          <div />
+        </PageLayout>
+      )
+    }
+
+    if (!isUserSignedIn) {
       const PlaylistIcon = iconMap['playlist']
       return (
         <>
@@ -66,10 +84,12 @@ class PlaylistPage extends React.Component<Props> {
       )
     }
 
+    // Playlist Library Page
     return (
-      <div>
-        <PlaylistView />
-      </div>
+      <PageLayout>
+        <PlaylistsLibrary />
+        <div />
+      </PageLayout>
     )
   }
 }
@@ -77,13 +97,12 @@ class PlaylistPage extends React.Component<Props> {
 function mapStateToProps(state: AppState): StateToProps {
   return {
     isUserSignedIn: getIsUserSignedIn(state),
-    isLoading: getPlaylistPageStatus(state) === 'IN_PROGRESS',
   }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
   return {
-    loadPageData: bindActionCreators(getPlaylistPageData, dispatch),
+    loadPlaylistLibrary: bindActionCreators(getPlaylistLibrary, dispatch),
   }
 }
 
