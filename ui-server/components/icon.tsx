@@ -26,6 +26,7 @@ export type Icon =
   | 'play-outline'
   | 'search'
   | 'share'
+  | 'trash'
   | 'twitter-color'
   | 'user-solid-circle'
   | 'volume'
@@ -62,7 +63,7 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
     </svg>
   ),
 
-  'explore': (props) => (
+  explore: (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M10 20a10 10 0 110-20 10 10 0 010 20zM7.88 7.88l-3.54 7.78 7.78-3.54 3.54-7.78-7.78 3.54zM10 11a1 1 0 110-2 1 1 0 010 2z" />
     </svg>
@@ -187,7 +188,7 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
     </svg>
   ),
 
-  'playlist': (props) => (
+  playlist: (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M0 3h20v2H0V3zm0 4h20v2H0V7zm0 4h20v2H0v-2zm0 4h20v2H0v-2z" />
     </svg>
@@ -214,6 +215,12 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
   share: (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M5.08 12.16A2.99 2.99 0 010 10a3 3 0 015.08-2.16l8.94-4.47a3 3 0 11.9 1.79L5.98 9.63a3.03 3.03 0 010 .74l8.94 4.47A2.99 2.99 0 0120 17a3 3 0 11-5.98-.37l-8.94-4.47z" />
+    </svg>
+  ),
+
+  trash: (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6h14l-1 14H4L3 6zm5 2v10h1V8H8zm3 0v10h1V8h-1z" />
     </svg>
   ),
 
