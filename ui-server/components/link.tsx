@@ -13,7 +13,7 @@ export const PodcastLink: React.FC<Props & { podcastUrlParam: string }> = ({
     <Link
       href={{
         pathname: '/podcasts',
-        query: { podcastUrlParam: podcastUrlParam, activeTab: 'about' },
+        query: { podcastUrlParam: podcastUrlParam },
       }}
       as={`/podcasts/${podcastUrlParam}`}
     >
@@ -30,7 +30,7 @@ export const EpisodeLink: React.FC<Props & { episodeUrlParam: string }> = ({
     <Link
       href={{
         pathname: '/episodes',
-        query: { episodeUrlParam: episodeUrlParam, skipLoad: true },
+        query: { episodeUrlParam: episodeUrlParam },
       }}
       as={`/episodes/${episodeUrlParam}`}
     >

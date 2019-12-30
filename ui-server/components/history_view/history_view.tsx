@@ -2,13 +2,7 @@ import React from 'react'
 import Feed from './feed'
 
 const HistoryView: React.FC<{}> = () => {
-  return (
-    <div className="flex md:flex-row flex-col">
-      <div className="lg:w-2/3 w-full lg:mr-5">
-        <Feed />
-      </div>
-    </div>
-  )
+  return <Feed />
 }
 
 export default HistoryView

@@ -1,5 +1,6 @@
 import { getEpisodePageData } from 'actions/episode'
 import EpisodeView from 'components/episode_view'
+import PageLayout from 'components/page_layout'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { PageContext } from 'types/utilities'
@@ -7,6 +8,7 @@ import { getIdFromUrlParam } from 'utils/format'
 
 interface OwnProps {
   episodeUrlParam: string
+  activeTab?: string
   scrollY: number
 }
 
@@ -27,8 +29,13 @@ export default class EpisodePage extends Component<OwnProps> {
   }
 
   render() {
+    const { episodeUrlParam } = this.props
+
     return (
-      <EpisodeView episodeId={getIdFromUrlParam(this.props.episodeUrlParam)} />
+      <PageLayout>
+        <EpisodeView episodeId={getIdFromUrlParam(episodeUrlParam)} />
+        <div />
+      </PageLayout>
     )
   }
 }

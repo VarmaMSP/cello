@@ -24,7 +24,6 @@ interface DispatchToProps {
 interface OwnProps {
   playlistUrlParam?: string
   activeTab?: string
-  skipLoad?: boolean
   scrollY: number
 }
 
