@@ -10,7 +10,7 @@ interface OwnProps {
 const PlaylistInfo: React.SFC<OwnProps> = ({ playlist }) => {
   return (
     <div className="flex">
-      <div className="flex flex-none items-center mb-3 mx-auto cursor-pointer">
+      <div className="flex flex-none items-center mx-auto cursor-pointer">
         <img
           className="w-36 h-36 object-contain rounded-lg border"
           src={getImageUrl(playlist.previewImage)}

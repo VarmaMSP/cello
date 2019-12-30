@@ -47,12 +47,12 @@ const PlaylistEpisodeListItem: React.FC<Props> = ({
         </EpisodeLink>
 
         <PodcastLink podcastUrlParam={podcast.urlParam}>
-          <a className="text-gray-700 tracking-wide line-clamp-1">
+          <a className="text-sm text-gray-700 tracking-wide line-clamp-1">
             {podcast.title}
           </a>
         </PodcastLink>
       </div>
-      <button onClick={playEpisode}>
+      <button onClick={playEpisode} className="ml-4">
         <PlayIcon className="w-6 h-auto fill-current text-gray-700" />
       </button>
       <button onClick={removeEpisode} className="ml-4">

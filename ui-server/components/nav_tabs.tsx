@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 
 interface Tab {
-  name: string
+  name?: string
   pathname: string
   query: { [x: string]: number | string | boolean }
   as: string
@@ -11,12 +11,13 @@ interface Tab {
 
 interface OwnProps {
   tabs: Tab[]
-  active: string
+  active?: string
+  defaultTab?: string
 }
 
-const NavTabs: React.FC<OwnProps> = ({ tabs, active }) => {
+const NavTabs: React.FC<OwnProps> = ({ tabs, active, defaultTab }) => {
   return (
-    <div className="flex">
+    <div className="flex border-b">
       {tabs.map((t) => (
         <div key={t.name} className="w-20 mr-2 text-center">
           <Link
@@ -26,7 +27,7 @@ const NavTabs: React.FC<OwnProps> = ({ tabs, active }) => {
           >
             <a
               className={classNames(
-                'block px-3 py-1 text-sm capitalize rounded-br-lg rounded-bl-lg',
+                'block px-3 py-1 text-sm capitalize leading-loose',
                 {
                   'cursor-default': t.name === active,
                   'cursor-pointer': t.name !== active,
@@ -38,7 +39,9 @@ const NavTabs: React.FC<OwnProps> = ({ tabs, active }) => {
           </Link>
           <div
             className={classNames('h-1 w-20 rounded-full', {
-              'bg-green-500': t.name === active,
+              'bg-green-500':
+                (!!active && t.name === active) ||
+                (!!!active && t.name === defaultTab),
             })}
           />
         </div>

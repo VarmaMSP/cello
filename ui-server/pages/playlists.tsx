@@ -59,14 +59,14 @@ class PlaylistPage extends React.Component<Props> {
   }
 
   render() {
-    const { isUserSignedIn, playlistUrlParam } = this.props
+    const { isUserSignedIn, playlistUrlParam, activeTab } = this.props
 
     // Playlist Page
     if (!!playlistUrlParam) {
       const playlistId = getIdFromUrlParam(playlistUrlParam)
       return (
         <PageLayout>
-          <PlaylistView playlistId={playlistId} />
+          <PlaylistView playlistId={playlistId} activeTab={activeTab} />
           <div />
         </PageLayout>
       )
