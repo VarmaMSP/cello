@@ -10,10 +10,22 @@ export function registerRoutes(app: NextServer, router: Router) {
   // Index page
   router.get('/', servePage('/', 'public,max-age=7200,must-revalidate'))
 
-  // Subscriptions Page
+  // Subscriptions Feed Page
   router.get(
     '/subscriptions',
     servePage('/subscriptions', 'public,max-age=86400,must-revalidate'),
+  )
+
+  // History Feed Page
+  router.get(
+    '/history',
+    servePage('/history', 'public,max-age=86400,must-revalidate'),
+  )
+
+  // Playlist Library Page
+  router.get(
+    '/playlists',
+    servePage('/playlists', 'public,max-age=86400,must-revalidate'),
   )
 
   // Podcast Page
@@ -27,9 +39,19 @@ export function registerRoutes(app: NextServer, router: Router) {
 
   // Episode Page
   router.get(
-    '/episodes/:episodeUrlParam',
+    '/episodes/:episodeUrlParam/:activeTab*',
     servePage('/episodes', 'public,max-age=7200,must-revalidate', (ctx) => ({
       episodeUrlParam: ctx.params['episodeurlParam'],
+      activeTab: ctx.params['activeTab'],
+    })),
+  )
+
+  // Playlist Page
+  router.get(
+    '/playlists/:playlistUrlParam/:activeTab*',
+    servePage('/playlists', 'public,max-age=7200,must-revalidate', (ctx) => ({
+      playlistUrlParam: ctx.params['playlistUrlParam'],
+      activeTab: ctx.params['activeTab'],
     })),
   )
 

@@ -38,9 +38,9 @@ const PlaylistLibrary: React.FC<StateToProps> = ({ playlists }) => {
                 {p.title}
               </a>
             </PlaylistLink>
-            <div className="text-2xs text-gray-700 leading-relaxed">{`updated on ${formatUpdateDate(
-              p.updatedAt,
-            )}`}</div>
+            <div className="text-2xs text-gray-700 leading-relaxed">
+              {`updated on ${formatUpdateDate(p.updatedAt)}`}
+            </div>
             <span className="inline-block px-2 text-2xs text-gray-700 bg-gray-300 rounded-full">
               {p.privacy.toLowerCase()}
             </span>
