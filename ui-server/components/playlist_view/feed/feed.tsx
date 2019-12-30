@@ -1,5 +1,6 @@
 import GridResponsive from 'components/grid_responsive'
 import { PlaylistLink } from 'components/link'
+import format from 'date-fns/format'
 import React from 'react'
 import { Playlist } from 'types/app'
 import { getImageUrl } from 'utils/dom'
@@ -21,9 +22,9 @@ const Feed: React.FC<StateToProps & DispatchToProps> = ({ playlists }) => {
       <hr className="mt-2 mb-6 border-gray-400" />
       <GridResponsive cols={{ LG: 3, MD: 3, SM: 2 }}>
         {playlists.map((p) => (
-          <div key={p.id} className="flex-none mb-10 md:px-3">
+          <div key={p.id} className="flex-none mb-12 md:px-3">
             <PlaylistLink playlistUrlParam={p.urlParam}>
-              <a className="block flex items-center mb-2 mx-auto cursor-pointer">
+              <a className="block flex items-center mb-3 mx-auto cursor-pointer">
                 <img
                   className="w-24 h-24 object-contain rounded-lg border"
                   src={getImageUrl(p.previewImage)}
@@ -39,15 +40,30 @@ const Feed: React.FC<StateToProps & DispatchToProps> = ({ playlists }) => {
               </a>
             </PlaylistLink>
             <PlaylistLink playlistUrlParam={p.urlParam}>
-              <a className="block text-sm text-gray-800 tracking-wide line-clamp-2 hover:text-gray-900 cursor-pointer">
+              <a className="block text-sm text-gray-800 font-medium tracking-wide line-clamp-1 hover:text-gray-900 cursor-pointer">
                 {p.title}
               </a>
             </PlaylistLink>
+            <div className="text-2xs text-gray-700 leading-relaxed">{`updated on ${formatUpdateDate(
+              p.updatedAt,
+            )}`}</div>
+            <span className="inline-block px-2 text-2xs text-gray-700 bg-gray-300 rounded-full">
+              {p.privacy.toLowerCase()}
+            </span>
           </div>
         ))}
       </GridResponsive>
     </div>
   )
+}
+
+function formatUpdateDate(updateDate: string) {
+  let pubDate: string | undefined
+  try {
+    pubDate = format(new Date(`${updateDate} +0000`), 'PP')
+  } catch (err) {}
+
+  return pubDate
 }
 
 export default Feed

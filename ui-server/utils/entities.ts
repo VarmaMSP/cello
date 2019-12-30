@@ -63,6 +63,7 @@ export function playlist(j: any): Playlist {
     previewImage: j.preview_image || '',
     episodeCount: j.episode_count || 0,
     userId: j.user_id,
+    updatedAt: j.updated_at || '',
     members: (j.members || []).map((k: any) => ({
       episodeId: k.episode_id,
       position: k.position,

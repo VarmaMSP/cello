@@ -29,7 +29,7 @@ const PlaylistsListItem: React.FC<DispatchToProps & OwnProps> = ({
           checked={containsEpisode}
           onChange={() => (containsEpisode ? removeEpisode() : addEpisode())}
         />
-        <span className="ml-2">{playlist.title}</span>
+        <span className="ml-2 line-clamp-1">{playlist.title}</span>
       </label>
     </div>
   )

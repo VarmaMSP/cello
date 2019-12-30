@@ -66,6 +66,7 @@ export interface Playlist {
   title: string
   userId: string
   privacy: PlaylistPrivacy
+  updatedAt: string
   previewImage: string
   episodeCount: number
   members: PlaylistMember[]
