@@ -20,16 +20,11 @@ export function getPlaylist(playlistId: string) {
   return requestAction(
     () => client.getPlaylist(playlistId),
     (dispatch, _, { playlist, episodes, podcasts }) => {
-      dispatch({type: T.PODCAST_ADD, podcasts})
-      dispatch({ type: T.EPISODE_ADD, episodes})
+      dispatch({ type: T.PODCAST_ADD, podcasts })
+      dispatch({ type: T.EPISODE_ADD, episodes })
       dispatch({
         type: T.PLAYLIST_ADD,
         playlists: [playlist],
-      })
-      dispatch({
-        type: T.PLAYLIST_ADD_EPISODES,
-        playlistId: playlist.id,
-        episodeIds: episodes.map((x) => x.id),
       })
     },
   )

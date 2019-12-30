@@ -1,7 +1,7 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
 import { Playlist } from 'types/app'
-import { addKeyToArr } from 'utils/immutable'
+import { addKeyToArr, addToArr } from 'utils/immutable'
 
 const byId: Reducer<{ [playlistId: string]: Playlist }, T.AppActions> = (
   state = {},
@@ -25,13 +25,14 @@ const byId: Reducer<{ [playlistId: string]: Playlist }, T.AppActions> = (
           ? {
               [action.playlistId]: {
                 ...obj,
-                members: [
-                  ...obj.members,
-                  ...action.episodeIds.map((id, i) => ({
+                members: addToArr(
+                  obj.members,
+                  action.episodeIds.map((id, i) => ({
                     episodeId: id,
                     position: obj.members.length + i + 1,
                   })),
-                ],
+                  (x) => x.position,
+                ),
               },
             }
           : {}),

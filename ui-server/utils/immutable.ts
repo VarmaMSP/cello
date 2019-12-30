@@ -35,3 +35,19 @@ export function addKeysToArr(keys: string[], arr: string[]) {
 export function delKeysFromArr(keys: string[], arr: string[]) {
   return arr.filter((val) => !isKeyInArr(val, keys))
 }
+
+export function addToArr<T>(
+  arr: T[],
+  vals: T[],
+  id: (a: T) => string | number,
+): T[] {
+  const objMap = vals.reduce<{ [key: string]: T }>(
+    (acc, obj) => ({ ...acc, [id(obj)]: obj }),
+    arr.reduce<{ [key: string]: T }>(
+      (acc, obj) => ({ ...acc, [id(obj)]: obj }),
+      {},
+    ),
+  )
+
+  return Object.keys(objMap).map((key) => objMap[key])
+}
