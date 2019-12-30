@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { getPlaylistById } from 'selectors/entities/playlists'
 import { AppState } from 'store'
 import { Playlist } from 'types/app'
+import HomeTab from './home_tab/home_tab'
 import PlaylistInfo from './playlist_info'
 
 export interface StateToProps {
@@ -17,6 +18,9 @@ const PlaylistView: React.FC<StateToProps & OwnProps> = ({ playlist }) => {
   return (
     <div>
       <PlaylistInfo playlist={playlist} />
+      <div className="mt-6 mb-4">
+        <HomeTab playlist={playlist} />
+      </div>
     </div>
   )
 }
