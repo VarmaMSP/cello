@@ -19,7 +19,7 @@ const PodcastView: React.FC<OwnProps> = ({ podcastUrlParam, activeTab }) => {
         <PodcastInfo podcastId={podcastId} />
         <div className="mt-6 mb-4">
           <NavTabs
-            tabs={[
+            tabs={[ 
               {
                 name: 'about',
                 pathname: '/podcasts',

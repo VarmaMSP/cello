@@ -1,10 +1,10 @@
-import { Episode, Playlist } from 'types/app'
+import { Episode, Playlist, Podcast } from 'types/app'
 import * as unmarshal from 'utils/entities'
 import { doFetch } from './fetch'
 
 export async function getPlaylist(
   playlistId: string,
-): Promise<{ playlist: Playlist; episodes: Episode[] }> {
+): Promise<{ playlist: Playlist; episodes: Episode[], podcasts: Podcast[] }> {
   const { data } = await doFetch({
     method: 'GET',
     urlPath: `/playlists/${playlistId}`,
@@ -13,6 +13,7 @@ export async function getPlaylist(
   return {
     playlist: unmarshal.playlist(data.playlist),
     episodes: (data.episodes || []).map(unmarshal.episode),
+    podcasts: (data.podcasts || []).map(unmarshal.podcast),
   }
 }
 

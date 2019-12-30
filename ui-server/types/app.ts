@@ -64,6 +64,7 @@ export interface Playlist {
   id: string
   urlParam: string
   title: string
+  description: string
   userId: string
   privacy: PlaylistPrivacy
   updatedAt: string

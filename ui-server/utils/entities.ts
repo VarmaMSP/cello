@@ -59,6 +59,7 @@ export function playlist(j: any): Playlist {
     id: j.id,
     urlParam: j.url_param || '',
     title: j.title,
+    description: j.description || '',
     privacy: j.privacy || 'PRIVATE',
     previewImage: j.preview_image || '',
     episodeCount: j.episode_count || 0,

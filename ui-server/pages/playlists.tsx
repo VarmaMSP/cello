@@ -23,6 +23,8 @@ interface DispatchToProps {
 
 interface OwnProps {
   playlistUrlParam?: string
+  activeTab?: string
+  skipLoad?: boolean
   scrollY: number
 }
 
@@ -30,21 +32,24 @@ type Props = StateToProps & DispatchToProps & OwnProps
 
 class PlaylistPage extends React.Component<Props> {
   static async getInitialProps({ query, store }: PageContext): Promise<void> {
+    // load for playlist page
     if (!!query['playlistUrlParam']) {
       await bindActionCreators(
         getPlaylist,
         store.dispatch,
       )(query['playlistUrlParam'] as string)
+      return
     }
 
+    // load data for playlist library page
     if (getIsUserSignedIn(store.getState())) {
       await bindActionCreators(getPlaylistLibrary, store.dispatch)()
     }
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { isUserSignedIn } = this.props
-    if (isUserSignedIn && !prevProps.isUserSignedIn) {
+    const { isUserSignedIn, playlistUrlParam } = this.props
+    if (!!!playlistUrlParam && isUserSignedIn && !prevProps.isUserSignedIn) {
       this.props.loadPlaylistLibrary()
     }
   }

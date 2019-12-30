@@ -19,7 +19,9 @@ export function getPlaylistLibrary() {
 export function getPlaylist(playlistId: string) {
   return requestAction(
     () => client.getPlaylist(playlistId),
-    (dispatch, _, { playlist, episodes }) => {
+    (dispatch, _, { playlist, episodes, podcasts }) => {
+      dispatch({type: T.PODCAST_ADD, podcasts})
+      dispatch({ type: T.EPISODE_ADD, episodes})
       dispatch({
         type: T.PLAYLIST_ADD,
         playlists: [playlist],
