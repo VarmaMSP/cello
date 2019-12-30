@@ -4,9 +4,9 @@ import { PlaylistPrivacy } from 'types/app'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
-export function getPlaylistPageData() {
+export function getPlaylistLibrary() {
   return requestAction(
-    () => client.getPlaylistsPageData(),
+    () => client.getPlaylistLibrary(),
     (dispatch, _, { playlists }) => {
       dispatch({
         type: T.PLAYLIST_ADD,
@@ -84,7 +84,10 @@ export function addEpisodeToPlaylist(playlistId: string, episodeId: string) {
   )
 }
 
-export function removeEpisodeFromPlaylist(playlistId: string, episodeId: string) {
+export function removeEpisodeFromPlaylist(
+  playlistId: string,
+  episodeId: string,
+) {
   return requestAction(
     () => client.serviceRemoveEpisodeFromPlaylist(playlistId, episodeId),
     () => {},
@@ -93,7 +96,7 @@ export function removeEpisodeFromPlaylist(playlistId: string, episodeId: string)
         type: T.PLAYLIST_REMOVE_EPISODES,
         playlistId: playlistId,
         episodeIds: [episodeId],
-      }
-    }
+      },
+    },
   )
 }

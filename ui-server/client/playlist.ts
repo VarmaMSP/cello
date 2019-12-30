@@ -16,7 +16,7 @@ export async function getPlaylist(
   }
 }
 
-export async function getPlaylistsPageData(): Promise<{
+export async function getPlaylistLibrary(): Promise<{
   playlists: Playlist[]
 }> {
   const { data } = await doFetch({

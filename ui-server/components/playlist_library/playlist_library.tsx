@@ -7,15 +7,9 @@ import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {
   playlists: Playlist[]
-  receivedAll: boolean
-  isLoadingMore: boolean
 }
 
-export interface DispatchToProps {
-  loadMore: (offset: number) => void
-}
-
-const Feed: React.FC<StateToProps & DispatchToProps> = ({ playlists }) => {
+const PlaylistLibrary: React.FC<StateToProps> = ({ playlists }) => {
   return (
     <div>
       <h1 className="text-xl text-gray-900">{'Your Playlists'}</h1>
@@ -66,4 +60,4 @@ function formatUpdateDate(updateDate: string) {
   return pubDate
 }
 
-export default Feed
+export default PlaylistLibrary
