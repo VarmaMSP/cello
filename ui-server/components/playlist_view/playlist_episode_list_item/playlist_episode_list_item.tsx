@@ -11,10 +11,12 @@ export interface StateToProps {
 
 export interface DispatchToProps {
   playEpisode: () => void
+  removeEpisode: () => void
 }
 
 export interface OwnProps {
   position: number
+  playlistId: string
   episodeId: string
 }
 
@@ -25,8 +27,10 @@ const PlaylistEpisodeListItem: React.FC<Props> = ({
   podcast,
   position,
   playEpisode,
+  removeEpisode,
 }) => {
   const PlayIcon = iconMap['play-outline']
+  const DeleteIcon = iconMap['trash']
 
   return (
     <div className="flex items-center py-2">
@@ -50,6 +54,9 @@ const PlaylistEpisodeListItem: React.FC<Props> = ({
       </div>
       <button onClick={playEpisode}>
         <PlayIcon className="w-6 h-auto fill-current text-gray-700" />
+      </button>
+      <button onClick={removeEpisode} className="ml-4">
+        <DeleteIcon className="w-6 h-auto fill-current text-gray-700" />
       </button>
     </div>
   )

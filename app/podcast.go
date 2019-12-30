@@ -9,6 +9,10 @@ func (app *App) GetPodcast(podcastId int64) (*model.Podcast, *model.AppError) {
 }
 
 func (app *App) GetPodcastsByIds(podcastIds []int64) ([]*model.Podcast, *model.AppError) {
+	if len(podcastIds) == 0 {
+		return []*model.Podcast{}, nil
+	}
+
 	return app.Store.Podcast().GetByIds(podcastIds)
 }
 

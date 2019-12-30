@@ -22,7 +22,11 @@ const HomeTab: React.FC<OwnProps> = ({ playlist }) => {
       {playlist.members.length > 0 ? (
         <div className="text-gray-800 tracking-wide">
           {playlist.members.map(({ episodeId }, i) => (
-            <PlaylistEpisodeListItem position={i + 1} episodeId={episodeId} />
+            <PlaylistEpisodeListItem
+              playlistId={playlist.id}
+              position={i + 1}
+              episodeId={episodeId}
+            />
           ))}
         </div>
       ) : (

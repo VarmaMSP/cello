@@ -1,5 +1,6 @@
+import { removeEpisodeFromPlaylist } from 'actions/playlist'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { getEpisodeById } from 'selectors/entities/episodes'
 import { getPodcastById } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
@@ -18,7 +19,7 @@ function mapStateToProps(
 
 function mapDispatchToProps(
   dispatch: Dispatch<T.AppActions>,
-  { episodeId }: OwnProps,
+  { playlistId, episodeId }: OwnProps,
 ): DispatchToProps {
   return {
     playEpisode: () =>
@@ -27,6 +28,8 @@ function mapDispatchToProps(
         episodeId: episodeId,
         beginAt: 0,
       }),
+    removeEpisode: () => 
+      bindActionCreators(removeEpisodeFromPlaylist, dispatch)(playlistId, episodeId)
   }
 }
 
