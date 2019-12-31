@@ -30,10 +30,11 @@ export default class EpisodePage extends Component<OwnProps> {
 
   render() {
     const { episodeUrlParam } = this.props
+    const episodeId = getIdFromUrlParam(episodeUrlParam)
 
     return (
       <PageLayout>
-        <EpisodeView episodeId={getIdFromUrlParam(episodeUrlParam)} />
+        <EpisodeView episodeId={episodeId} />
         <div />
       </PageLayout>
     )

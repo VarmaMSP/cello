@@ -18,14 +18,14 @@ const SearchBar: React.SFC<Props> = (props) => {
       onSubmit={handleSearchTextSubmit}
     >
       <ButtonWithIcon
-        className="absolute inset-y-0 right-0 w-5 mr-4 text-gray-600"
+        className="absolute inset-y-0 right-0 w-5 mr-4 text-gray-700"
         icon="search"
         type="submit"
       />
       <input
         className={classnames(
-          'w-full h-9 pl-2 pr-8 py-1 text-gray-900 placeholder-gray-600 border border-gray-400 rounded-lg',
-          'appearance-none focus:outline-none focus:bg-white focus:border-gray-400',
+          'w-full h-9 pl-4 pr-8 py-1 text-gray-900 placeholder-gray-700 border border-gray-500 rounded-full',
+          'appearance-none focus:outline-none',
         )}
         type="text"
         placeholder="Search podcasts"

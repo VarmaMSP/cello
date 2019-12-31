@@ -41,7 +41,7 @@ export function registerRoutes(app: NextServer, router: Router) {
   router.get(
     '/episodes/:episodeUrlParam/:activeTab*',
     servePage('/episodes', 'public,max-age=7200,must-revalidate', (ctx) => ({
-      episodeUrlParam: ctx.params['episodeurlParam'],
+      episodeUrlParam: ctx.params['episodeUrlParam'],
       activeTab: ctx.params['activeTab'],
     })),
   )
