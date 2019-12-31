@@ -7,23 +7,16 @@ import { getPodcastById } from 'selectors/entities/podcasts'
 import { getPodcastEpisodesStatus } from 'selectors/request'
 import { AppState } from 'store'
 import * as T from 'types/actions'
-import ListEpisodes, {
-  DispatchToProps,
-  OwnProps,
-  StateToProps,
-} from './episode_list'
+import ListEpisodes, { DispatchToProps, OwnProps, StateToProps } from './episode_list'
 
 function makeMapStateToProps() {
   const getPodcastEpisodes = makeGetEpisodesByPodcast()
 
   return (state: AppState, { podcastId }: OwnProps): StateToProps => {
-    const podcast = getPodcastById(state, podcastId)
-    const { episodes, receivedAll } = getPodcastEpisodes(state, podcastId)
-
     return {
-      podcast,
-      episodes,
-      receivedAll,
+      podcast: getPodcastById(state, podcastId),
+      episodes: getPodcastEpisodes(state, podcastId),
+      receivedAll: false,
       isLoadingMore:
         getPodcastEpisodesStatus(state, podcastId) === 'IN_PROGRESS',
     }

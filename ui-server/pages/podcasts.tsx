@@ -4,6 +4,7 @@ import PodcastView from 'components/podcast_view/podcast_view'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { PageContext } from 'types/utilities'
+import { getIdFromUrlParam } from 'utils/utils'
 
 interface OwnProps {
   podcastUrlParam: string
@@ -25,10 +26,11 @@ export default class PodcastsPage extends Component<OwnProps> {
 
   render() {
     const { podcastUrlParam, activeTab } = this.props
+    const podcastId = getIdFromUrlParam(podcastUrlParam)
 
     return (
       <PageLayout>
-        <PodcastView podcastUrlParam={podcastUrlParam} activeTab={activeTab} />
+        <PodcastView podcastId={podcastId} activeTab={activeTab} />
         <div></div>
       </PageLayout>
     )

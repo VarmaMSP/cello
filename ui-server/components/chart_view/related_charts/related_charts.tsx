@@ -18,7 +18,7 @@ const RelatedCharts: React.FC<StateToProps & OwnProps> = ({
   }
 
   return (
-    <div className="py-4 px-3 border border-gray-500 rounded-xl">
+    <div className="py-4 pl-6 pr-2">
       <h2 className="text-lg text-gray-700 px-2">{'More related charts'}</h2>
       <hr className="mt-2 mb-4 border-gray-400" />
       {relatedCharts.map((c) => (

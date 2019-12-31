@@ -56,7 +56,7 @@ const PlaylistEpisodeListItem: React.FC<Props> = ({
         <PlayIcon className="w-6 h-auto fill-current text-gray-700" />
       </button>
       <button onClick={removeEpisode} className="ml-4">
-        <DeleteIcon className="w-6 h-auto fill-current text-gray-700" />
+        <DeleteIcon className="w-4 h-auto fill-current text-gray-700" />
       </button>
     </div>
   )

@@ -33,7 +33,7 @@ export function registerRoutes(app: NextServer, router: Router) {
     '/podcasts/:podcastUrlParam/:activeTab*',
     servePage('/podcasts', 'public,max-age=3600,must-revalidate', (ctx) => ({
       podcastUrlParam: ctx.params['podcastUrlParam'],
-      activeTab: ctx.params['activeTab'] || 'about',
+      activeTab: ctx.params['activeTab'],
     })),
   )
 
