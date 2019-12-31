@@ -76,7 +76,6 @@ const ListEpisodes: React.SFC<Props> = ({
               />
             </div>
           </div>
-          <hr className="my-3" />
         </div>
       ))}
       {episodes.length < podcast.totalEpisodes && !receivedAll && (

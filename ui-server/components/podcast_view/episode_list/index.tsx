@@ -1,4 +1,5 @@
 import { getEpisodePlaybacks } from 'actions/playback'
+import { loadAndShowAddToPlaylistModal } from 'actions/playlist'
 import { getPodcastEpisodes as getPodcastEpisodes_ } from 'actions/podcast'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
@@ -7,7 +8,11 @@ import { getPodcastById } from 'selectors/entities/podcasts'
 import { getPodcastEpisodesStatus } from 'selectors/request'
 import { AppState } from 'store'
 import * as T from 'types/actions'
-import ListEpisodes, { DispatchToProps, OwnProps, StateToProps } from './episode_list'
+import ListEpisodes, {
+  DispatchToProps,
+  OwnProps,
+  StateToProps,
+} from './episode_list'
 
 function makeMapStateToProps() {
   const getPodcastEpisodes = makeGetEpisodesByPodcast()
@@ -28,11 +33,10 @@ function dispatchToProps(
   { podcastId }: OwnProps,
 ): DispatchToProps {
   return {
-    showAddToPlaylistModal: (episodeId: string) =>
-      dispatch({
-        type: T.MODAL_MANAGER_SHOW_ADD_TO_PLAYLIST_MODAL,
-        episodeId,
-      }),
+    showAddToPlaylistModal: bindActionCreators(
+      loadAndShowAddToPlaylistModal,
+      dispatch,
+    ),
     loadEpisodes: (offset: number) =>
       bindActionCreators(getPodcastEpisodes_, dispatch)(
         podcastId,

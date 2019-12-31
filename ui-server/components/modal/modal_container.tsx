@@ -57,7 +57,7 @@ const ModalContainer: React.SFC<DispatchToProps & OwnProps> = ({
           />
         )}
         {header && (
-          <h4 className="flex-1 text-2xl text-gray-900 tracking-wide">
+          <h4 className="flex-1 text-lg text-gray-800 tracking-wide">
             {header}
           </h4>
         )}

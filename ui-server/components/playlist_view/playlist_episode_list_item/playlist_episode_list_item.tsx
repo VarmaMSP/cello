@@ -36,7 +36,7 @@ const PlaylistEpisodeListItem: React.FC<Props> = ({
     <div className="flex items-center py-2">
       <div className="w-6 md:ml-2 mr-2 text-sm text-gray-600">{position}</div>
       <img
-        className="w-16 h-16 mr-4 flex-none object-contain rounded border"
+        className="w-14 h-14 mr-4 flex-none object-contain rounded border"
         src={getImageUrl(podcast.urlParam)}
       />
       <div className="flex-auto">

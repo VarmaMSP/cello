@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { PodcastLink } from 'components/link'
 import React, { useEffect, useRef } from 'react'
 import { Episode, Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
@@ -48,18 +48,11 @@ const EpisodeView: React.FC<StateToProps & OwnProps> = ({
             <h2 className="text-lg text-gray-900 leading-tight line-clamp-2">
               {episode.title}
             </h2>
-            <Link
-              href={{
-                pathname: '/podcasts',
-                query: { podcastId: podcast.id, activeTab: 'episodes' },
-              }}
-              as={`/podcasts/${podcast.id}/episodes`}
-              key={podcast.id}
-            >
+            <PodcastLink podcastUrlParam={podcast.urlParam}>
               <a className="md:text-base text-sm text-gray-800 hover:text-gray-900 leading-loose truncate">
                 {podcast.title}
               </a>
-            </Link>
+            </PodcastLink>
           </div>
         </div>
       </div>
