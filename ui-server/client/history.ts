@@ -1,5 +1,6 @@
 import { Episode, Podcast } from 'types/app'
 import * as unmarshal from 'utils/entities'
+import { qs } from 'utils/utils'
 import { doFetch } from './fetch'
 
 export async function getHistoryPageData(): Promise<{
@@ -26,7 +27,11 @@ export async function getHistoryFeed(
 }> {
   const { data } = await doFetch({
     method: 'GET',
-    urlPath: `/history/feed?limit=${limit}&offset=${offset}`,
+    urlPath: `/ajax/browse?${qs({
+      endpoint: 'history_feed',
+      offset,
+      limit,
+    })}`,
   })
 
   return {
