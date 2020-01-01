@@ -5,6 +5,7 @@ import (
 )
 
 const (
+	BROWSE_SEARCH_RESULTS    = "search_results"
 	BROWSE_SUBSCRIPTION_FEED = "subscriptions_feed"
 	BROWSE_HISTORY_FEED      = "history_feed"
 	BROWSE_PODCAST_EPISODES  = "podcast_episodes"
@@ -52,6 +53,12 @@ func AjaxBrowse(c *Context, w http.ResponseWriter, req *http.Request) {
 	}
 
 	switch c.Params.Endpoint {
+	case BROWSE_SEARCH_RESULTS:
+		c.RequireQuery()
+		if c.Err == nil {
+			BrowseResults(c, w, req)
+		}
+
 	case BROWSE_SUBSCRIPTION_FEED:
 		c.RequireSession()
 		if c.Err == nil {
