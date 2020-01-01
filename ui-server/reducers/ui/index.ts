@@ -4,6 +4,7 @@ import audioPlayer from './audio_player'
 import historyFeed from './history_feed'
 import modalManager from './modal_manager'
 import subscriptionsFeed from './subscriptions_feed'
+import podcastEpisodeList from './podcast_episode_list'
 
 const searchText: Reducer<string, T.AppActions> = (state = '', action) => {
   switch (action.type) {
@@ -20,4 +21,5 @@ export default combineReducers({
   modalManager,
   historyFeed,
   subscriptionsFeed,
+  podcastEpisodeList,
 })
