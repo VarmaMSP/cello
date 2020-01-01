@@ -3,11 +3,12 @@ import { PodcastLink } from 'components/link'
 import React from 'react'
 import { Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
+
 export interface StateToProps {
   subscriptions: Podcast[]
 }
 
-const Subscriptions: React.FC<StateToProps> = ({ subscriptions }) => {
+const SubscriptionsList: React.FC<StateToProps> = ({ subscriptions }) => {
   return (
     <div className="pl-8 pr-2 rounded-xl">
       <h2 className="text-lg text-gray-700">{"You're subscribed to"}</h2>
@@ -32,4 +33,4 @@ const Subscriptions: React.FC<StateToProps> = ({ subscriptions }) => {
   )
 }
 
-export default Subscriptions
+export default SubscriptionsList

@@ -13,7 +13,7 @@ export interface DispatchToProps {
   loadMore: (offset: number) => void
 }
 
-const Feed: React.FC<StateToProps & DispatchToProps> = ({
+const HistoryFeed: React.FC<StateToProps & DispatchToProps> = ({
   history,
   loadMore,
   receivedAll,
@@ -39,4 +39,4 @@ const Feed: React.FC<StateToProps & DispatchToProps> = ({
   )
 }
 
-export default Feed
+export default HistoryFeed

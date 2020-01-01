@@ -14,7 +14,7 @@ export interface DispatchToProps {
   loadMore: (offset: number) => void
 }
 
-const Feed: React.SFC<StateToProps & DispatchToProps> = (props) => {
+const SubscriptionsFeed: React.SFC<StateToProps & DispatchToProps> = (props) => {
   const { feed, loadMore, isLoadingMore } = props
 
   const feedList: { title: string; episodes: Episode[] }[] = [
@@ -70,4 +70,4 @@ const Feed: React.SFC<StateToProps & DispatchToProps> = (props) => {
   )
 }
 
-export default Feed
+export default SubscriptionsFeed

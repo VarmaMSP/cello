@@ -1,7 +1,9 @@
 import { getSubscriptionsPageData } from 'actions/subscription'
 import ButtonSignin from 'components/button_signin'
 import { iconMap } from 'components/icon'
-import SubscriptionsView from 'components/subscriptions_view/subscriptions_view'
+import PageLayout from 'components/page_layout'
+import SubscriptionsFeed from 'components/subscriptions_feed'
+import SubscriptionsList from 'components/subscriptions_list'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -77,7 +79,10 @@ class SubscriptionsPage extends React.Component<Props> {
           description="Subscriptions"
           canonical="https://phenopod.com/subscripitions"
         />
-        <SubscriptionsView />
+        <PageLayout>
+          <SubscriptionsFeed />
+          <SubscriptionsList />
+        </PageLayout>
       </>
     )
   }

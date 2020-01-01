@@ -1,6 +1,6 @@
 import { getHistoryPageData } from 'actions/history'
 import ButtonSignin from 'components/button_signin'
-import HistoryView from 'components/history_view/history_view'
+import HistoryFeed from 'components/history_feed'
 import { iconMap } from 'components/icon'
 import PageLayout from 'components/page_layout'
 import { NextSeo } from 'next-seo'
@@ -79,7 +79,7 @@ class FeedPage extends React.Component<Props> {
           canonical="https://phenopod.com/feed"
         />
         <PageLayout>
-          <HistoryView />
+          <HistoryFeed />
           <div />
         </PageLayout>
       </>

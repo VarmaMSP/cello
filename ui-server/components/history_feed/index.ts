@@ -6,7 +6,7 @@ import { getHistoryFeedStatus } from 'selectors/request'
 import { getReceivedAll, makeGetEpisodeIds } from 'selectors/ui/history_feed'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import Feed, { DispatchToProps, StateToProps } from './feed'
+import HistoryFeed, { DispatchToProps, StateToProps } from './history_feed'
 
 function makeMapStateToProps() {
   const getEpisodeIds = makeGetEpisodeIds()
@@ -30,4 +30,4 @@ function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
 export default connect<StateToProps, DispatchToProps, {}, AppState>(
   makeMapStateToProps(),
   mapDispatchToProps,
-)(Feed)
+)(HistoryFeed)

@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { getPodcastsByIds } from 'selectors/entities/podcasts'
 import { getSubscriptions } from 'selectors/session'
 import { AppState } from 'store'
-import Subscriptions, { StateToProps } from './subscriptions'
+import SubscriptionsList, { StateToProps } from './subscriptions_list'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {
@@ -11,5 +11,5 @@ function mapStateToProps(state: AppState): StateToProps {
 }
 
 export default connect<StateToProps, {}, {}, AppState>(mapStateToProps)(
-  Subscriptions,
+  SubscriptionsList,
 )

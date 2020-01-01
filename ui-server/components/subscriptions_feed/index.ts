@@ -9,7 +9,7 @@ import {
 } from 'selectors/ui/subscriptions_feed'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import Feed, { DispatchToProps, StateToProps } from './feed'
+import SubscriptionsFeed, { DispatchToProps, StateToProps } from './subscriptions_feed'
 
 function makeMapStateToProps() {
   const getSubscriptionsFeed = makeGetEpisodeIds()
@@ -33,4 +33,4 @@ function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
 export default connect<StateToProps, DispatchToProps, {}, AppState>(
   makeMapStateToProps(),
   mapDispatchToProps,
-)(Feed)
+)(SubscriptionsFeed)
