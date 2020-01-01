@@ -14,9 +14,12 @@ export interface DispatchToProps {
   loadMore: (offset: number) => void
 }
 
-const SubscriptionsFeed: React.SFC<StateToProps & DispatchToProps> = (props) => {
-  const { feed, loadMore, isLoadingMore } = props
-
+const SubscriptionsFeed: React.SFC<StateToProps & DispatchToProps> = ({
+  feed,
+  receivedAll,
+  isLoadingMore,
+  loadMore,
+}) => {
   const feedList: { title: string; episodes: Episode[] }[] = [
     { title: 'Today', episodes: [] },
     { title: 'Yesterday', episodes: [] },
@@ -60,12 +63,14 @@ const SubscriptionsFeed: React.SFC<StateToProps & DispatchToProps> = (props) => 
         </div>
       ))}
 
-      <div className="w-full h-10 mx-auto my-6">
-        <ButtonShowMore
-          isLoading={isLoadingMore}
-          loadMore={() => loadMore(feed.length)}
-        />
-      </div>
+      {!receivedAll && (
+        <div className="w-full h-10 mx-auto my-6">
+          <ButtonShowMore
+            isLoading={isLoadingMore}
+            loadMore={() => loadMore(feed.length)}
+          />
+        </div>
+      )}
     </>
   )
 }
