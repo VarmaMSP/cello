@@ -3,21 +3,20 @@ import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { getEpisodesByIds } from 'selectors/entities/episodes'
 import { getSubscriptionsFeedStatus } from 'selectors/request'
-import {
-  getReceivedAll,
-  makeGetEpisodeIds,
-} from 'selectors/ui/subscriptions_feed'
+import { makeSelectSubscriptionsFeed } from 'selectors/ui/subscriptions_feed'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 import SubscriptionsFeed, { DispatchToProps, StateToProps } from './subscriptions_feed'
 
 function makeMapStateToProps() {
-  const getSubscriptionsFeed = makeGetEpisodeIds()
+  const selectSubscriptionsFeed = makeSelectSubscriptionsFeed()
 
   return (state: AppState): StateToProps => {
+    const [episodeIds, receivedAll] = selectSubscriptionsFeed(state)
+
     return {
-      feed: getEpisodesByIds(state, getSubscriptionsFeed(state)),
-      receivedAll: getReceivedAll(state),
+      feed: getEpisodesByIds(state, episodeIds),
+      receivedAll,
       isLoadingMore: getSubscriptionsFeedStatus(state) === 'IN_PROGRESS',
     }
   }

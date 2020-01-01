@@ -3,14 +3,21 @@ import { AppState } from 'store'
 import { Episode } from 'types/app'
 import { $Id } from 'types/utilities'
 
-export function makeGetEpisodeIds() {
-  return createSelector<AppState, { [page: number]: string[] }, $Id<Episode>[]>(
+export function makeSelectSubscriptionsFeed() {
+  return createSelector<
+    AppState,
+    { [page: string]: $Id<Episode>[] },
+    string[],
+    [$Id<Episode>[], boolean]
+  >(
     (state) => state.ui.subscriptionsFeed.feed,
-    (obj) =>
-      Object.keys(obj).reduce<string[]>((acc, id) => [...acc, ...obj[+id]], []),
+    (state) => state.ui.subscriptionsFeed.receivedAll,
+    (obj, x) => [
+      Object.keys(obj).reduce<$Id<Episode>[]>(
+        (acc, key) => [...acc, ...obj[key]],
+        [],
+      ),
+      x.includes('default'),
+    ],
   )
-}
-
-export function getReceivedAll(state: AppState) {
-  return state.ui.subscriptionsFeed.receivedAll.some((x) => x === 'default')
 }

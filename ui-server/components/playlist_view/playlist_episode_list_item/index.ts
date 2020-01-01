@@ -28,11 +28,15 @@ function mapDispatchToProps(
         episodeId: episodeId,
         beginAt: 0,
       }),
-    removeEpisode: () => 
-      bindActionCreators(removeEpisodeFromPlaylist, dispatch)(playlistId, episodeId)
+    removeEpisode: () =>
+      bindActionCreators(removeEpisodeFromPlaylist, dispatch)(
+        playlistId,
+        episodeId,
+      ),
   }
 }
 
-export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps, mapDispatchToProps)(
-  PlaylistEpisodeListItem,
-)
+export default connect<StateToProps, DispatchToProps, OwnProps, AppState>(
+  mapStateToProps,
+  mapDispatchToProps,
+)(PlaylistEpisodeListItem)
