@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 
 interface Tab {
-  name?: string
+  name: string
   pathname: string
   query: { [x: string]: number | string | boolean }
   as: string
@@ -11,7 +11,7 @@ interface Tab {
 
 interface OwnProps {
   tabs: Tab[]
-  active?: string
+  active: string | undefined
   defaultTab?: string
 }
 
@@ -40,8 +40,8 @@ const NavTabs: React.FC<OwnProps> = ({ tabs, active, defaultTab }) => {
           <div
             className={classNames('h-1 w-20 rounded-full', {
               'bg-green-500':
-                (!!active && t.name === active) ||
-                (!!!active && t.name === defaultTab),
+                (active !== undefined && t.name === active) ||
+                (active === undefined && t.name === defaultTab),
             })}
           />
         </div>
