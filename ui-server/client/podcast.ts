@@ -21,7 +21,7 @@ export async function getPodcastEpisodes(
   podcastId: string,
   limit: number,
   offset: number,
-  order: 'pub_date_desc' | 'pub_date_asc',
+  order: string,
 ): Promise<{
   episodes: Episode[]
 }> {

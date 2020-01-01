@@ -8,6 +8,7 @@ export function getSubscriptionsPageData() {
     () => client.getSubscriptionsPageData(),
     (dispatch, _, { episodes }) => {
       dispatch({ type: T.EPISODE_ADD, episodes })
+      
       dispatch({
         type: T.SUBSCRIPTIONS_FEED_LOAD_PAGE,
         page: 0,
@@ -27,12 +28,13 @@ export function getSubscriptionsFeed(offset: number, limit: number) {
     () => client.getSubscriptionsFeed(offset, limit),
     (dispatch, _, { episodes }) => {
       dispatch({ type: T.EPISODE_ADD, episodes })
+
       dispatch({
         type: T.SUBSCRIPTIONS_FEED_LOAD_PAGE,
         page: Math.floor(offset / 10),
         episodeIds: episodes.map((x) => x.id),
       })
- 
+
       if (episodes.length < limit) {
         dispatch({ type: T.SUBSCRIPTIONS_FEED_RECEIVED_ALL })
       }
