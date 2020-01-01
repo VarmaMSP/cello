@@ -2,9 +2,11 @@ package model
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	strip "github.com/grokify/html-strip-tags-go"
+	"github.com/olivere/elastic/v7"
 	"github.com/varmamsp/gofeed/rss"
 )
 
@@ -205,6 +207,31 @@ func (p *Podcast) LoadDetails(rssFeed *rss.Feed) *AppError {
 	} else {
 		p.Copyright = ""
 	}
+
+	return nil
+}
+
+func (p *Podcast) LoadFromESHit(hit *elastic.SearchHit) *AppError {
+	appErrorC := NewAppErrorC("model.podcast.load_from_elastic_search_hit", http.StatusBadRequest, nil)
+
+	if hit.Source == nil {
+		return appErrorC("source is nil")
+	}
+
+	index := PodcastIndex{}
+	if err := json.Unmarshal(hit.Source, &index); err != nil {
+		return appErrorC(err.Error())
+	}
+
+	id, err := Int64FromHashId(index.Id)
+	if err != nil {
+		return appErrorC(fmt.Sprintf("Invalid id: %s", err.Error()))
+	}
+
+	p.Id = id
+	p.Title = HighlightString(index.Title, hit.Highlight["title"])
+	p.Author = HighlightString(index.Author, hit.Highlight["author"])
+	p.Type = index.Type
 
 	return nil
 }

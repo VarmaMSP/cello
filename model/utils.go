@@ -332,3 +332,11 @@ func RemoveDuplicatesInt64(arr []int64) []int64 {
 	}
 	return res
 }
+
+func HighlightString(src string, highlights []string) string {
+	if highlights == nil || len(highlights) == 0 {
+		return src
+	}
+
+	return strings.Join(highlights, " ")
+}
