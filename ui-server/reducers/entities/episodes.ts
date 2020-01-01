@@ -40,16 +40,13 @@ const byPodcastId: Reducer<{ [podcastId: string]: string[] }, T.AppActions> = (
 ) => {
   switch (action.type) {
     case T.EPISODE_ADD:
-      return {
-        ...state,
-        ...action.episodes.reduce<{ [podcastId: string]: string[] }>(
-          (acc, e) => ({
-            ...acc,
-            [e.podcastId]: addKeyToArr(e.id, state[e.podcastId] || []),
-          }),
-          {},
-        ),
-      }
+      return action.episodes.reduce<{ [podcastId: string]: string[] }>(
+        (acc, e) => ({
+          ...acc,
+          [e.podcastId]: addKeyToArr(e.id, acc[e.podcastId] || []),
+        }),
+        state,
+      )
 
     default:
       return state

@@ -79,7 +79,7 @@ const byUserId: Reducer<{ [userId: string]: string[] }, T.AppActions> = (
       return state
   }
 }
-
+ 
 export default combineReducers({
   byId,
   byUserId,
