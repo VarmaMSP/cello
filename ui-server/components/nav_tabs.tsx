@@ -27,7 +27,7 @@ const NavTabs: React.FC<OwnProps> = ({ tabs, active, defaultTab }) => {
           >
             <a
               className={classNames(
-                'block px-3 py-1 text-sm capitalize leading-loose',
+                'block px-3 py-1 text-sm capitalize leading-loose tracking-wider',
                 {
                   'cursor-default': t.name === active,
                   'cursor-pointer': t.name !== active,

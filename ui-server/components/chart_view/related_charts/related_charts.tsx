@@ -1,9 +1,9 @@
 import { ChartLink } from 'components/link'
 import React from 'react'
-import { Chart } from 'types/app'
+import { Curation } from 'types/app'
 
 export interface StateToProps {
-  relatedCharts: Chart[]
+  relatedCharts: Curation[]
 }
 
 export interface OwnProps {

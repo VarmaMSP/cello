@@ -34,29 +34,31 @@ const PlaylistEpisodeListItem: React.FC<Props> = ({
 
   return (
     <div className="flex items-center py-2">
-      <div className="w-6 md:ml-2 mr-2 text-sm text-gray-600">{position}</div>
+      <div className="w-6 flex-none md:ml-2 md:mr-2 text-sm text-gray-600">
+        {position}
+      </div>
       <img
-        className="w-14 h-14 mr-4 flex-none object-contain rounded border"
+        className="md:w-14 w-12 md:h-14 h-12 md:mr-4 mr-2 flex-none object-contain rounded border"
         src={getImageUrl(podcast.urlParam)}
       />
       <div className="flex-auto">
         <EpisodeLink episodeUrlParam={episode.urlParam}>
-          <a className="inline mb-2 text-gray-900 tracking-wide leading-tight line-clamp-1">
+          <a className="inline mb-2 md:text-base text-sm text-gray-900 tracking-wide leading-tight line-clamp-1">
             {episode.title}
           </a>
         </EpisodeLink>
 
         <PodcastLink podcastUrlParam={podcast.urlParam}>
-          <a className="text-sm text-gray-700 tracking-wide line-clamp-1">
+          <a className="md:text-sm text-xs text-gray-700 tracking-wide line-clamp-1">
             {podcast.title}
           </a>
         </PodcastLink>
       </div>
-      <button onClick={playEpisode} className="ml-4">
-        <PlayIcon className="w-6 h-auto fill-current text-gray-700" />
+      <button onClick={playEpisode} className="flex-none md:ml-4 ml-2">
+        <PlayIcon className="md:w-6 w-5 h-auto fill-current text-gray-700" />
       </button>
-      <button onClick={removeEpisode} className="ml-4">
-        <DeleteIcon className="w-4 h-auto fill-current text-gray-700" />
+      <button onClick={removeEpisode} className="flex-none md:ml-4 ml-2">
+        <DeleteIcon className="w-4 h-auto fill-current text-gray-600" />
       </button>
     </div>
   )

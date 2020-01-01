@@ -16,7 +16,7 @@ const PlaylistLibrary: React.FC<StateToProps> = ({ playlists }) => {
       <hr className="mt-2 mb-6 border-gray-400" />
       <GridResponsive cols={{ LG: 3, MD: 3, SM: 2 }}>
         {playlists.map((p) => (
-          <div key={p.id} className="flex-none mb-12 md:px-3">
+          <div key={p.id} className="flex-none mb-12 px-3">
             <PlaylistLink playlistUrlParam={p.urlParam}>
               <a className="block flex items-center mb-3 mx-auto cursor-pointer">
                 <img

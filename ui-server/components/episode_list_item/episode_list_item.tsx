@@ -34,12 +34,12 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
     <div className="flex mb-12">
       <div className="flex-none mr-1">
         <img
-          className="w-24 h-24 object-contain rounded-lg border cursor-default"
+          className="md:w-24 w-16 md:h-24 w-16 object-contain rounded-lg border cursor-default"
           src={getImageUrl(podcast.urlParam)}
         />
       </div>
 
-      <div className="pl-4">
+      <div className="md:pl-4 pl-1">
         <EpisodeLink episodeUrlParam={episode.urlParam}>
           <a className="block md:text-base text-sm font-medium tracking-wide line-clamp-2">
             {episode.title}

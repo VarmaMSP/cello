@@ -43,7 +43,7 @@ const ListEpisodes: React.SFC<Props> = ({
     <>
       {episodes.map((episode) => (
         <div key={episode.id}>
-          <div className="flex group px-2 py-4 mb-2 md:hover:bg-gray-100 rounded-lg cursor-default">
+          <div className="flex group md:px-2 py-4 mb-2 md:hover:bg-gray-100 rounded-lg cursor-default">
             <div className="flex-auto w-11/12">
               <EpisodeMeta episodeId={episode.id} />
               <EpisodeLink episodeUrlParam={episode.urlParam}>

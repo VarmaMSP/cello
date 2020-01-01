@@ -20,9 +20,6 @@ const PlaylistInfo: React.SFC<OwnProps> = ({ playlist }) => {
       </div>
       <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
         <div className="w-full">
-          <div className="w-16 mb-2 text-center text-2xs leading-relaxed tracking-wider bg-gray-300 rounded-full">
-            Playlist
-          </div>
           <h2 className="text-lg text-gray-900 leading-relaxed line-clamp-2">
             {playlist.title}
           </h2>

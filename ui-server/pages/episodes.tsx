@@ -29,12 +29,12 @@ export default class EpisodePage extends Component<OwnProps> {
   }
 
   render() {
-    const { episodeUrlParam } = this.props
+    const { episodeUrlParam, activeTab } = this.props
     const episodeId = getIdFromUrlParam(episodeUrlParam)
 
     return (
       <PageLayout>
-        <EpisodeView episodeId={episodeId} />
+        <EpisodeView episodeId={episodeId} activeTab={activeTab}  />
         <div />
       </PageLayout>
     )
