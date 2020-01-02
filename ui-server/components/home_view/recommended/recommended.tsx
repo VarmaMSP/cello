@@ -12,7 +12,7 @@ const Recommended: React.FC<StateToProps> = ({ podcasts }) => {
   return (
     <div className="mb-6">
       <h2 className="text-xl text-gray-700">{'Trending'}</h2>
-      <hr className="mt-1 mb-4 border-gray-400" />
+      <hr className="mt-1 mb-4" />
       <GridResponsive cols={{ SM: 4, MD: 5, LG: 8 }}>
         {podcasts.map((p) => (
           <div key={p.id} className="flex-none px-1 mb-4">

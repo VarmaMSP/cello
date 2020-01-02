@@ -48,7 +48,7 @@ const SubscriptionsFeed: React.SFC<StateToProps & DispatchToProps> = ({
       {feedList.map(({ title, episodes }) => (
         <div key={title}>
           <h1 className="text-xl text-gray-900">{`Published ${title}`}</h1>
-          <hr className="mt-2 mb-6 border-gray-400" />
+          <hr className="mt-2 mb-6" />
           {episodes.length > 0 ? (
             <div>
               {episodes.map((episode) => (

@@ -10,7 +10,7 @@ const Categories: React.FC<StateToProps> = ({ categories }) => {
   return (
     <div>
       <h2 className="text-xl text-gray-700">{'Browse by categories'}</h2>
-      <hr className="mt-2 mb-4 border-gray-400" />
+      <hr className="mt-2 mb-4" />
       <ul>
         {categories.map((c) => (
           <ChartLink key={c.id} chartId={c.id}>
