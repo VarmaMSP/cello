@@ -1,5 +1,6 @@
 import { getResultsPageData } from 'actions/results'
-import ListSearchResults from 'components/list_search_results'
+import PageLayout from 'components/page_layout'
+import SearchResultsList from 'components/search_results_list'
 import { NextSeo } from 'next-seo'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
@@ -22,8 +23,6 @@ export default class ResultsPage extends Component<OwnProps> {
 
   componentDidMount() {
     gtag.search(this.props.query)
-    gtag.pageview(`/results?query=${this.props.query}`)
-
     window.window.scrollTo(0, this.props.scrollY)
   }
 
@@ -44,10 +43,10 @@ export default class ResultsPage extends Component<OwnProps> {
             description: `${query} - Phenopod`,
           }}
         />
-        <div>
-          <div className="-mt-1 mb-5 text-gray-700 text-lg lg:text-xl">{`Podcasts matching "${query}"`}</div>
-          <ListSearchResults query={this.props.query} />
-        </div>
+        <PageLayout>
+          <SearchResultsList searchQuery={query} />
+          <div />
+        </PageLayout>
       </>
     )
   }
