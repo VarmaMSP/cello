@@ -24,6 +24,9 @@ export interface Podcast {
   complete: boolean
   earliestEpisodePubDate: string
   copyright: string
+  titleHighlighted: string
+  authorHighlighted: string
+  summaryHighlighted: string
 }
 
 type EpisodeType = 'TRAILER' | 'BONUS' | 'FULL'
