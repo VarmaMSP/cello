@@ -4,9 +4,46 @@ import { requestAction } from './utils'
 
 export function getResultsPageData(query: string) {
   return requestAction(
-    () => client.searchPodcasts(query),
+    () => client.getResultsPageData(query),
     (dispatch, _, { podcasts }) => {
-      dispatch({ type: T.RECEIVED_SEARCH_PODCASTS, query, podcasts })
+      dispatch({ type: T.PODCAST_ADD, podcasts })
+
+      dispatch({
+        type: T.SEARCH_RESULTS_LIST_LOAD_PAGE,
+        searchQuery: query,
+        page: 0,
+        podcastIds: podcasts.map((x) => x.id),
+      })
+
+      if (podcasts.length < 25) {
+        dispatch({
+          type: T.SEARCH_RESULTS_LIST_RECEIVED_ALL,
+          searchQuery: query,
+        })
+      }
+    },
+  )
+}
+
+export function getResults(query: string, offset: number, limit: number) {
+  return requestAction(
+    () => client.getResults(query, offset, limit),
+    (dispatch, _, { podcasts }) => {
+      dispatch({ type: T.PODCAST_ADD, podcasts })
+
+      dispatch({
+        type: T.SEARCH_RESULTS_LIST_LOAD_PAGE,
+        searchQuery: query,
+        page: Math.floor(offset / 10),
+        podcastIds: podcasts.map((x) => x.id),
+      })
+
+      if (podcasts.length < limit) {
+        dispatch({
+          type: T.SEARCH_RESULTS_LIST_RECEIVED_ALL,
+          searchQuery: query,
+        })
+      }
     },
   )
 }
