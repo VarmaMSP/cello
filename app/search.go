@@ -8,16 +8,20 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (app *App) SearchPodcasts(searchQuery string, offset, limit int) ([]*model.Podcast, *model.AppError) {
+func (app *App) SearchPodcasts(searchQuery string, offset, limit int) ([]*model.PodcastSearchResult, *model.AppError) {
 	results, err := app.ElasticSearch.Search().
 		Index("podcast").
 		Query(elastic.NewMultiMatchQuery(searchQuery).
 			FieldWithBoost("title", 3).
-			Field("author")).
+			Field("author"),
+		).
 		Highlight(elastic.NewHighlight().
 			PreTags("<span class=\"result-highlight\">").
 			PostTags("</span>").
-			Field("title"),
+			Fields(
+				elastic.NewHighlighterField("title"),
+				elastic.NewHighlighterField("author"),
+			),
 		).
 		From(offset).
 		Size(limit).
@@ -28,15 +32,15 @@ func (app *App) SearchPodcasts(searchQuery string, offset, limit int) ([]*model.
 	}
 
 	if results.Hits == nil || results.Hits.Hits == nil || len(results.Hits.Hits) == 0 {
-		return []*model.Podcast{}, nil
+		return []*model.PodcastSearchResult{}, nil
 	}
 
-	podcasts := []*model.Podcast{}
+	podcastSearchResults := []*model.PodcastSearchResult{}
 	for _, hit := range results.Hits.Hits {
-		tmp := &model.Podcast{}
-		if err := tmp.LoadFromESHit(hit); err == nil {
-			podcasts = append(podcasts, tmp)
+		tmp := &model.PodcastSearchResult{}
+		if err := tmp.LoadDetails(hit); err == nil {
+			podcastSearchResults = append(podcastSearchResults, tmp)
 		}
 	}
-	return podcasts, nil
+	return podcastSearchResults, nil
 }

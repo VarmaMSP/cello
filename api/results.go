@@ -13,8 +13,19 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	podcasts, err := c.App.SearchPodcasts(c.Params.Query, 0, 25)
+	podcastSearchResults, err := c.App.SearchPodcasts(c.Params.Query, 0, 25)
 	if err != nil {
+		c.Err = err
+		return
+	}
+
+	podcastIds := make([]int64, len(podcastSearchResults))
+	for i, podcastSearchResult := range podcastSearchResults {
+		podcastIds[i] = podcastSearchResult.Id
+	}
+	podcasts, err := c.App.GetPodcastsByIds(podcastIds)
+	if err != nil {
+		c.Err = err
 		return
 	}
 
@@ -22,13 +33,30 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 	w.Header().Set(headers.ContentType, "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(model.EncodeToJson(map[string]interface{}{
-		"results": podcasts,
+		"podcasts":               podcasts,
+		"podcast_search_results": podcastSearchResults,
 	}))
 }
 
 func BrowseResults(c *Context, w http.ResponseWriter, req *http.Request) {
-	podcasts, err := c.App.SearchPodcasts(c.Params.Query, c.Params.Offset, c.Params.Limit)
+	c.RequireQuery()
+	if c.Err != nil {
+		return
+	}
+
+	podcastSearchResults, err := c.App.SearchPodcasts(c.Params.Query, c.Params.Offset, c.Params.Limit)
 	if err != nil {
+		c.Err = err
+		return
+	}
+
+	podcastIds := make([]int64, len(podcastSearchResults))
+	for i, podcastSearchResult := range podcastSearchResults {
+		podcastIds[i] = podcastSearchResult.Id
+	}
+	podcasts, err := c.App.GetPodcastsByIds(podcastIds)
+	if err != nil {
+		c.Err = err
 		return
 	}
 
@@ -36,6 +64,7 @@ func BrowseResults(c *Context, w http.ResponseWriter, req *http.Request) {
 	w.Header().Set(headers.ContentType, "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(model.EncodeToJson(map[string]interface{}{
-		"results": podcasts,
+		"podcasts":               podcasts,
+		"podcast_search_results": podcastSearchResults,
 	}))
 }
