@@ -9,6 +9,7 @@ import (
 )
 
 const (
+	EPISODE_SUMMARY_MAX_LENGTH   = 250
 	EPISODE_TITLE_MAX_LENGTH     = 500
 	EPISODE_MEDIA_URL_MAX_LENGTH = 700
 	EPISODE_DESCRIPTION_MAX_SIZE = 65535
@@ -23,6 +24,7 @@ type Episode struct {
 	MediaType   string
 	MediaSize   int64
 	PubDate     string
+	Summary     string
 	Description string
 	Duration    int
 	Link        string
@@ -39,21 +41,27 @@ type Episode struct {
 	LastPlayedAt string
 }
 
-type GetEpisodesOptions struct {
-	PodcastId int64
+type EpisodeIndex struct {
+	Id          int64  `json:"id"`
+	PodcastId   int64  `json:"podcast_id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	PubDate     string `json:"pub_date"`
+	Duration    int    `json:"duration"`
+	Type        string `json:"type"`
 }
 
 func (e *Episode) DbColumns() []string {
 	return []string{
-		"id", "podcast_id", "guid", "title", "media_url", "media_type", "media_size", "pub_date", "description", "duration",
-		"link", "image_link", "explicit", "episode", "season", "type", "block", "created_at", "updated_at",
+		"id", "podcast_id", "guid", "title", "media_url", "media_type", "media_size", "pub_date", "summary", "description",
+		"duration", "link", "image_link", "explicit", "episode", "season", "type", "block", "created_at", "updated_at",
 	}
 }
 
 func (e *Episode) FieldAddrs() []interface{} {
 	return []interface{}{
-		&e.Id, &e.PodcastId, &e.Guid, &e.Title, &e.MediaUrl, &e.MediaType, &e.MediaSize, &e.PubDate, &e.Description, &e.Duration,
-		&e.Link, &e.ImageLink, &e.Explicit, &e.Episode, &e.Season, &e.Type, &e.Block, &e.CreatedAt, &e.UpdatedAt,
+		&e.Id, &e.PodcastId, &e.Guid, &e.Title, &e.MediaUrl, &e.MediaType, &e.MediaSize, &e.PubDate, &e.Summary, &e.Description,
+		&e.Duration, &e.Link, &e.ImageLink, &e.Explicit, &e.Episode, &e.Season, &e.Type, &e.Block, &e.CreatedAt, &e.UpdatedAt,
 	}
 }
 
@@ -65,8 +73,9 @@ func (e *Episode) MarshalJSON() ([]byte, error) {
 		Title        string  `json:"title"`
 		MediaUrl     string  `json:"media_url"`
 		PubDate      string  `json:"pub_date"`
-		Description  string  `json:"description"`
-		Duration     int     `json:"duration"`
+		Summary      string  `json:"summary,omitempty"`
+		Description  string  `json:"description,omitempty"`
+		Duration     int     `json:"duration,omitempty"`
 		Explicit     int     `json:"explicit,omitempty"`
 		Episode      int     `json:"episode,omitempty"`
 		Season       int     `json:"season,omitempty"`
@@ -80,6 +89,7 @@ func (e *Episode) MarshalJSON() ([]byte, error) {
 		Title:        e.Title,
 		MediaUrl:     e.MediaUrl,
 		PubDate:      e.PubDate,
+		Summary:      e.Summary,
 		Description:  e.Description,
 		Duration:     e.Duration,
 		Explicit:     e.Explicit,
@@ -128,9 +138,22 @@ func (e *Episode) LoadDetails(rssItem *rss.Item) *AppError {
 		return appErrorC("No pubdate found")
 	}
 
-	// Description
+	// Summary
 	if rssItem.Description != "" {
+		e.Summary = StripHTMLTags(rssItem.Description)
+	} else if rssItem.Content != "" {
+		e.Summary = StripHTMLTags(rssItem.Content)
+	} else {
+		e.Summary = ""
+	}
+
+	// Description
+	if rssItem.Content != "" {
+		e.Description = rssItem.Content
+	} else if rssItem.Description != "" {
 		e.Description = rssItem.Description
+	} else if rssItem.ITunesExt != nil && rssItem.ITunesExt.Summary != "" {
+		e.Description = rssItem.ITunesExt.Summary
 	} else {
 		e.Description = ""
 	}
@@ -209,6 +232,10 @@ func (e *Episode) PreSave() {
 		e.MediaType = ""
 	}
 
+	if summary := []rune(e.Summary); len(summary) > EPISODE_SUMMARY_MAX_LENGTH {
+		e.Summary = string(summary[0:EPISODE_SUMMARY_MAX_LENGTH-3]) + "..."
+	}
+
 	if len(e.Description) > EPISODE_DESCRIPTION_MAX_SIZE {
 		e.Description = e.Description[0:EPISODE_DESCRIPTION_MAX_SIZE-50] + "..."
 	}
@@ -228,14 +255,6 @@ func (e *Episode) PreSave() {
 	if e.UpdatedAt == 0 {
 		e.UpdatedAt = Now()
 	}
-}
-
-func GetEpisodeIds(episodes []*Episode) []int64 {
-	episodeIds := make([]int64, len(episodes))
-	for i, episode := range episodes {
-		episodeIds[i] = episode.Id
-	}
-	return episodeIds
 }
 
 func EpisodesJoinPlaybacks(episodes []*Episode, playbacks []*Playback) {

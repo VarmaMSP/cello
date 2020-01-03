@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 
-	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/varmamsp/gofeed/rss"
 )
 
 const (
+	PODCAST_SUMMARY_MAX_LENGTH   = 250
 	PODCAST_TITLE_MAX_LENGTH     = 500
 	PODCAST_COPYRIGHT_MAX_LENGTH = 500
 	PODCAST_DESCRIPTION_MAX_SIZE = 65535
@@ -18,6 +18,7 @@ const (
 type Podcast struct {
 	Id                     int64
 	Title                  string
+	Summary                string
 	Description            string
 	ImagePath              string
 	Language               string
@@ -48,7 +49,7 @@ type PodcastEpisodeStats struct {
 
 // Elasticsearch podcast index
 type PodcastIndex struct {
-	Id          string `json:"id"`
+	Id          int64  `json:"id"`
 	Title       string `json:"title"`
 	Author      string `json:"author"`
 	Description string `json:"description"`
@@ -73,6 +74,7 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 		Id                     string `json:"id"`
 		UrlParam               string `json:"url_param"`
 		Title                  string `json:"title"`
+		Summary                string `json:"summary,omitempty"`
 		Description            string `json:"description,omitempty"`
 		Language               string `json:"language,omitempty"`
 		Explicit               int    `json:"explicit,omitempty"`
@@ -87,6 +89,7 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 		Id:                     HashIdFromInt64(p.Id),
 		UrlParam:               UrlParamFromId(p.Title, p.Id),
 		Title:                  p.Title,
+		Summary:                p.Summary,
 		Description:            p.Description,
 		Language:               p.Language,
 		Explicit:               p.Explicit,
@@ -102,15 +105,17 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 
 func (p *Podcast) DbColumns() []string {
 	return []string{
-		"id", "title", "description", "image_path", "language", "explicit", "author", "type", "block", "complete",
-		"link", "owner_name", "owner_email", "copyright", "total_episodes", "total_seasons", "latest_episode_pub_date", "earliest_episode_pub_date", "created_at", "updated_at",
+		"id", "title", "summary", "description", "image_path", "language", "explicit", "author", "type", "block",
+		"complete", "link", "owner_name", "owner_email", "copyright", "total_episodes", "total_seasons", "latest_episode_pub_date", "earliest_episode_pub_date", "created_at",
+		"updated_at",
 	}
 }
 
 func (p *Podcast) FieldAddrs() []interface{} {
 	return []interface{}{
-		&p.Id, &p.Title, &p.Description, &p.ImagePath, &p.Language, &p.Explicit, &p.Author, &p.Type, &p.Block, &p.Complete,
-		&p.Link, &p.OwnerName, &p.OwnerEmail, &p.Copyright, &p.TotalEpisodes, &p.TotalSeasons, &p.LastestEpisodePubDate, &p.EarliestEpisodePubDate, &p.CreatedAt, &p.UpdatedAt,
+		&p.Id, &p.Title, &p.Summary, &p.Description, &p.ImagePath, &p.Language, &p.Explicit, &p.Author, &p.Type, &p.Block,
+		&p.Complete, &p.Link, &p.OwnerName, &p.OwnerEmail, &p.Copyright, &p.TotalEpisodes, &p.TotalSeasons, &p.LastestEpisodePubDate, &p.EarliestEpisodePubDate, &p.CreatedAt,
+		&p.UpdatedAt,
 	}
 }
 
@@ -130,12 +135,15 @@ func (p *Podcast) LoadDetails(rssFeed *rss.Feed) *AppError {
 
 	// Description
 	if rssFeed.Description != "" {
-		p.Description = rssFeed.Description
+		p.Description = StripHTMLTags(rssFeed.Description)
 	} else if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Summary != "" {
-		p.Description = rssFeed.ITunesExt.Summary
+		p.Description = StripHTMLTags(rssFeed.ITunesExt.Summary)
 	} else {
 		return appErrorC("No Description found")
 	}
+
+	// Summary
+	p.Summary = p.Description
 
 	// Image path
 	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Image != "" {
@@ -214,7 +222,11 @@ func (p *Podcast) PreSave() {
 		p.Title = string(title[0:PODCAST_TITLE_MAX_LENGTH-10]) + "..."
 	}
 
-	if p.Description = strip.StripTags(p.Description); len(p.Description) > PODCAST_DESCRIPTION_MAX_SIZE {
+	if summary := []rune(p.Summary); len(summary) > PODCAST_SUMMARY_MAX_LENGTH {
+		p.Summary = string(summary[0:PODCAST_SUMMARY_MAX_LENGTH-3]) + "..."
+	}
+
+	if len(p.Description) > PODCAST_DESCRIPTION_MAX_SIZE {
 		p.Description = p.Description[0:PODCAST_DESCRIPTION_MAX_SIZE-50] + "..."
 	}
 
@@ -241,12 +253,4 @@ func (p *Podcast) PreSave() {
 	if p.UpdatedAt == 0 {
 		p.UpdatedAt = Now()
 	}
-}
-
-func GetPodcastIds(podcasts []*Podcast) []int64 {
-	podcastIds := make([]int64, len(podcasts))
-	for i, podcast := range podcasts {
-		podcastIds[i] = podcast.Id
-	}
-	return podcastIds
 }
