@@ -29,7 +29,7 @@ const ResultPodcastItem: React.FC<StateToProps & OwnProps> = ({
       <div className="md:pl-4 pl-1">
         <PodcastLink podcastUrlParam={podcast.urlParam}>
           <a
-            className="line-clamp-2"
+            className="md:text-base text-sm font-medium tracking-wide line-clamp-2"
             dangerouslySetInnerHTML={{
               __html: podcastSearchResult.title || podcast.title,
             }}
@@ -37,9 +37,18 @@ const ResultPodcastItem: React.FC<StateToProps & OwnProps> = ({
         </PodcastLink>
 
         <div
-          className="line-clamp-1"
+          className="text-sm text-grey-800 hover:text-black tracking-wide line-clamp-1"
+          style={{ margin: '3px 0px' }}
           dangerouslySetInnerHTML={{
             __html: podcastSearchResult.author || podcast.author,
+          }}
+        />
+
+        <div
+          className="mt-1 text-xs text-gray-700 leading-snug tracking-wider line-clamp-2"
+          style={{ hyphens: 'auto' }}
+          dangerouslySetInnerHTML={{
+            __html: podcastSearchResult.summary,
           }}
         />
       </div>

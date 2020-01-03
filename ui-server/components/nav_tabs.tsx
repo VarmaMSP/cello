@@ -39,7 +39,7 @@ const NavTabs: React.FC<OwnProps> = ({ tabs, active, defaultTab }) => {
           </Link>
           <div
             className={classNames('h-1 w-20 rounded-full', {
-              'bg-green-500':
+              'bg-yellow-600':
                 (active !== undefined && t.name === active) ||
                 (active === undefined && t.name === defaultTab),
             })}
