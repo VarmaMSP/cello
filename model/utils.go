@@ -13,12 +13,15 @@ import (
 	"time"
 	"unicode"
 
+	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/speps/go-hashids"
 	"github.com/varmamsp/gofeed/rss"
 )
 
 const (
 	MYSQL_DATETIME = "2006-01-02 15:04:05"
+
+	MAX_SUMMARY_SIZE = 230
 
 	MIN_HASH_ID_LENGTH = 6
 
@@ -27,6 +30,10 @@ const (
 	secondsInWeek  = 60 * 60 * 24 * 7
 	secondsInMonth = 60 * 60 * 24 * 30
 	secondsInYear  = 60 * 60 * 24 * 365
+)
+
+var (
+	regexpNbsp = regexp.MustCompile(`&nbsp;`)
 )
 
 type DbModel interface {
@@ -333,10 +340,10 @@ func RemoveDuplicatesInt64(arr []int64) []int64 {
 	return res
 }
 
-func HighlightString(src string, highlights []string) string {
-	if highlights == nil || len(highlights) == 0 {
-		return src
-	}
-
-	return strings.Join(highlights, " ")
+// StripHTMLTags removes all HTML elements from given string
+func StripHTMLTags(str string) string {
+	return regexpNbsp.ReplaceAllString(
+		strip.StripTags(str),
+		" ",
+	)
 }
