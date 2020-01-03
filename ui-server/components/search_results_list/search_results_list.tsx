@@ -1,4 +1,5 @@
 import React from 'react'
+import ResultPodcastItem from './result_podcast_item'
 
 export interface StateToProps {
   podcastIds: string[]
@@ -17,7 +18,7 @@ const SearchResultsList: React.FC<StateToProps & OwnProps> = ({
     <>
       <div className="-mt-1 mb-5 text-gray-700 text-lg lg:text-xl">{`Podcasts matching "${searchQuery}"`}</div>
       {podcastIds.map((id) => (
-        <h1 key={id}>{id}</h1>
+        <ResultPodcastItem key={id} podcastId={id} searchQuery={searchQuery}/>
       ))}
     </>
   )

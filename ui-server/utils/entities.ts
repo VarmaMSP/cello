@@ -1,4 +1,11 @@
-import { Episode, Playback, Playlist, Podcast, User } from 'types/app'
+import {
+  Episode,
+  Playback,
+  Playlist,
+  Podcast,
+  PodcastSearchResult,
+  User,
+} from 'types/app'
 
 export function user(j: any): User {
   return {
@@ -72,5 +79,14 @@ export function playlist(j: any): Playlist {
       episodeId: k.episode_id,
       position: k.position,
     })),
+  }
+}
+
+export function podcastSearchResult(j: any): PodcastSearchResult {
+  return {
+    id: j.id,
+    title: j.title || '',
+    author: j.author || '',
+    summary: j.summary || '',
   }
 }
