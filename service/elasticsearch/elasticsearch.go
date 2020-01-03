@@ -22,6 +22,10 @@ func NewClient(config *model.Config) (*elastic.Client, error) {
 		return nil, err
 	}
 
+	if err := createIndex(client, EpisodeIndexName, EpisodeMapping); err != nil {
+		return nil, err
+	}
+
 	return client, nil
 }
 
