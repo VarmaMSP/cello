@@ -96,3 +96,10 @@ export interface CurationMember {
   curationId: string
   podcastId: string
 }
+
+export interface PodcastSearchResult {
+  id: string
+  title: string
+  author: string
+  summary: string
+}

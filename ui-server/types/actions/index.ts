@@ -4,6 +4,7 @@ import { EpisodeActionTypes } from './entities/episode'
 import { PlaylistActionTypes } from './entities/playlist'
 import { PodcastActionTypes } from './entities/podcast'
 import { SearchActionTypes } from './entities/search'
+import { SearchResultActionTypes } from './entities/search_result'
 import { UserActionTypes } from './entities/user'
 import { RequestActionTypes } from './request'
 import { SessionActionTypes } from './session'
@@ -32,6 +33,7 @@ export type AppActions =
   | ModalManagerActionTypes
   | PodcastEpisodesListActionTypes
   | SearchResultsListActionTypes
+  | SearchResultActionTypes
 
 export * from './browser'
 export * from './entities/curation'
@@ -40,6 +42,7 @@ export * from './entities/feed'
 export * from './entities/playlist'
 export * from './entities/podcast'
 export * from './entities/search'
+export * from './entities/search_result'
 export * from './entities/user'
 export * from './request'
 export * from './session'
