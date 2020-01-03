@@ -5,8 +5,14 @@ import { requestAction } from './utils'
 export function getResultsPageData(query: string) {
   return requestAction(
     () => client.getResultsPageData(query),
-    (dispatch, _, { podcasts }) => {
+    (dispatch, _, { podcasts, podcastSearchResults }) => {
       dispatch({ type: T.PODCAST_ADD, podcasts })
+
+      dispatch({
+        type: T.SEARCH_RESULT_ADD_PODCAST,
+        podcastSearchResults,
+        searchQuery: query,
+      })
 
       dispatch({
         type: T.SEARCH_RESULTS_LIST_LOAD_PAGE,
@@ -28,8 +34,14 @@ export function getResultsPageData(query: string) {
 export function getResults(query: string, offset: number, limit: number) {
   return requestAction(
     () => client.getResults(query, offset, limit),
-    (dispatch, _, { podcasts }) => {
+    (dispatch, _, { podcasts, podcastSearchResults }) => {
       dispatch({ type: T.PODCAST_ADD, podcasts })
+
+      dispatch({
+        type: T.SEARCH_RESULT_ADD_PODCAST,
+        podcastSearchResults,
+        searchQuery: query,
+      })
 
       dispatch({
         type: T.SEARCH_RESULTS_LIST_LOAD_PAGE,
