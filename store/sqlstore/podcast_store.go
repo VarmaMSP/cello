@@ -86,18 +86,11 @@ func (s *SqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, 
 	return
 }
 
-func (s *SqlPodcastStore) UpdateEpisodeStats(stats *model.PodcastEpisodeStats) *model.AppError {
-	sql := fmt.Sprintf(
-		`UPDATE podcast 
-			SET total_episodes = %d, total_seasons = %d, latest_episode_pub_date = '%s', updated_at = %d
-			WHERE id = %d`,
-		stats.TotalEpisodes, stats.TotalSeasons, stats.LastestEpisodePubDate, model.Now(), stats.Id,
-	)
-
-	if _, err := s.GetMaster().Exec(sql); err != nil {
+func (s *SqlPodcastStore) Update(old, new *model.Podcast) *model.AppError {
+	if _, err := s.Update_("podcast", old, new, fmt.Sprintf("id = %d", new.Id)); err != nil {
 		return model.NewAppError(
-			"sqlstore.sql_curation_store.update_episode_stats", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"podcast_id": stats.Id},
+			"sqlstore.sql_curation_store.update", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"podcast_id": new.Id},
 		)
 	}
 	return nil

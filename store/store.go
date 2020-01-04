@@ -37,7 +37,7 @@ type PodcastStore interface {
 	Get(podcastId int64) (*model.Podcast, *model.AppError)
 	GetByIds(podcastIds []int64) ([]*model.Podcast, *model.AppError)
 	GetSubscriptions(userId int64) ([]*model.Podcast, *model.AppError)
-	UpdateEpisodeStats(stats *model.PodcastEpisodeStats) *model.AppError
+	Update(old, new *model.Podcast) *model.AppError
 }
 
 type SubscriptionStore interface {
@@ -53,7 +53,7 @@ type EpisodeStore interface {
 	GetByPodcastPaginated(podcastId int64, order string, offset, limit int) ([]*model.Episode, *model.AppError)
 	GetByPodcastIdsPaginated(podcastIds []int64, offset, limit int) ([]*model.Episode, *model.AppError)
 	GetByPlaylistPaginated(playlistId int64, offset, limit int) ([]*model.Episode, *model.AppError)
-	Block(episodeId int64) *model.AppError
+	Block(episodeIds []int64) *model.AppError
 }
 
 type PlaybackStore interface {

@@ -153,13 +153,16 @@ func (s *SqlEpisodeStore) GetByPlaylistPaginated(playlistId int64, offset, limit
 	return
 }
 
-func (s *SqlEpisodeStore) Block(episodeId int64) *model.AppError {
-	sql := fmt.Sprintf(`UPDATE episode SET block = 1 WHERE id = %d`, episodeId)
+func (s *SqlEpisodeStore) Block(episodeIds []int64) *model.AppError {
+	sql := fmt.Sprintf(
+		`UPDATE episode SET block = 1 WHERE id IN (%s)`,
+		joinInt64s(episodeIds, ","),
+	)
 
 	if _, err := s.GetMaster().Exec(sql); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_episode_store.block", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"episode_id": episodeId},
+			map[string]interface{}{"episode_ids": episodeIds},
 		)
 	}
 	return nil
