@@ -241,7 +241,7 @@ func (job *ImportPodcastJob) index(toIndex *EntitiesToIndex) *model.AppError {
 				Id:          episode.Id,
 				PodcastId:   episode.PodcastId,
 				Title:       episode.Title,
-				Description: episode.Description,
+				Description: model.StripHTMLTags(episode.Description),
 				PubDate:     episode.PubDate,
 				Duration:    episode.Duration,
 				Type:        episode.Type,

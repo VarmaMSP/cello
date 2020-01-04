@@ -265,7 +265,7 @@ func (job *RefreshPodcastJob) index(data *RefreshData) *model.AppError {
 				Id:          episode.Id,
 				PodcastId:   podcast.Id,
 				Title:       episode.Title,
-				Description: episode.Description,
+				Description: model.StripHTMLTags(episode.Description),
 				PubDate:     episode.PubDate,
 				Duration:    episode.Duration,
 				Type:        episode.Type,

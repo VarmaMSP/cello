@@ -36,7 +36,7 @@ const (
 	EpisodeMapping   = `{
 		"settings": {
 			"number_of_shards": 2,
-			"number_of_replicas": 2, 
+			"number_of_replicas": 2
 		},
 		"mappings": {
 			"properties": {
@@ -58,7 +58,7 @@ const (
 					"format": "yyyy-MM-dd HH:mm:ss"
 				},
 				"duration": {
-					"type": "short",
+					"type": "short"
 				},
 				"type": {
 					"type": "keyword"
