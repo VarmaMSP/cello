@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS `playlist_member`;
 DROP TABLE IF EXISTS `playlist`;
+
 CREATE TABLE `playlist` (
     `id`                         INT AUTO_INCREMENT,
     `user_id`                    INT,
@@ -18,7 +19,6 @@ CREATE TABLE `playlist_member` (
     `playlist_id`                INT,
     `episode_id`                 INT,
     `position`                   SMALLINT,
-    `active`                     TINYINT,
     `created_at`                 BIGINT,
     `updated_at`                 BIGINT,
     PRIMARY KEY (`playlist_id`, `episode_id`),

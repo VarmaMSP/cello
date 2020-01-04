@@ -23,6 +23,7 @@ CREATE TABLE `feed` (
 CREATE TABLE `podcast` (
     `id`                         INT,
     `title`                      VARCHAR(500),
+    `summary`                    VARCHAR(300),
     `description`                BLOB,
     `image_path`                 VARCHAR(500),
     `language`                   VARCHAR(10),
@@ -54,6 +55,7 @@ CREATE TABLE `episode` (
     `media_type`                 VARCHAR(50),
     `media_size`                 BIGINT,
     `pub_date`                   DATETIME,
+    `summary`                    VARCHAR(300),
     `description`                BLOB,
     `duration`                   INT,
     `link`                       VARCHAR(500),

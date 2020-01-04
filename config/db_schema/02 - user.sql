@@ -1,4 +1,13 @@
+DROP TABLE IF EXISTS `email_account`;
+DROP TABLE IF EXISTS `google_account`;
+DROP TABLE IF EXISTS `facebook_account`;
+DROP TABLE IF EXISTS `twitter_account`;
+
+DROP TABLE IF EXISTS `playback`;
+DROP TABLE IF EXISTS `subscription`;
+
 DROP TABLE IF EXISTS `user`;
+
 CREATE TABLE `user` (
     `id`                         INT AUTO_INCREMENT,
     `name`                       VARCHAR(100),
@@ -11,7 +20,6 @@ CREATE TABLE `user` (
     PRIMARY KEY(`id`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `email_account`;
 CREATE TABLE `email_account` (
     `email`                      VARCHAR(100),
     `user_id`                    INT,
@@ -21,7 +29,6 @@ CREATE TABLE `email_account` (
     FOREIGN KEY(`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE 
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `google_account`;
 CREATE TABLE `google_account` (
     `id`                         VARCHAR(50),
     `user_id`                    INT,
@@ -39,7 +46,6 @@ CREATE TABLE `google_account` (
     FOREIGN KEY(`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `facebook_account`;
 CREATE TABLE `facebook_account` (
     `id`                         VARCHAR(50),
     `user_id`                    INT,
@@ -51,7 +57,6 @@ CREATE TABLE `facebook_account` (
     FOREIGN KEY(`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `twitter_account`;
 CREATE TABLE `twitter_account` (
     `id`                         VARCHAR(50), 
     `user_id`                    INT,
@@ -70,7 +75,6 @@ CREATE TABLE `twitter_account` (
     FOREIGN KEY(`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `playback`;
 CREATE TABLE `playback` (
     `user_id`                   INT,
     `episode_id`                SMALLINT,
@@ -86,7 +90,6 @@ CREATE TABLE `playback` (
     FOREIGN KEY (`episode_id`) REFERENCES `episode` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-DROP TABLE IF EXISTS `subscription`;
 CREATE TABLE `subscription` (
     `user_id`                    INT,
     `podcast_id`                 INT,
