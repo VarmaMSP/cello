@@ -65,7 +65,7 @@ type Queue_ struct {
 
 // Job
 type Jobs struct {
-	Scheduler       Job_ `mapstructure:"scheduler"`
+	TaskScheduler   Job_ `mapstructure:"task_scheduler"`
 	ImportPodcast   Job_ `mapstructure:"import_podcast"`
 	RefreshPodcast  Job_ `mapstructure:"refresh_podcast"`
 	CreateThumbnail Job_ `mapstructure:"create_thumbnail"`

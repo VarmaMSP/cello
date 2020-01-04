@@ -50,7 +50,7 @@ func NewScrapeItunesDirectory(app *app.App, config *model.Config) (*ScrapeItunes
 		return nil, err
 	}
 
-	workerLimit := config.Jobs.Scheduler.WorkerLimit
+	workerLimit := config.Jobs.TaskScheduler.WorkerLimit
 
 	scrapeItunesDirectory := &ScrapeItunesDirectory{
 		App:            app,

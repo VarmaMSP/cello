@@ -38,7 +38,7 @@ func NewApi(config model.Config) (*Api, error) {
 	}
 	api.App = app
 
-	if config.Jobs.Scheduler.Enable {
+	if config.Jobs.TaskScheduler.Enable {
 		api.App.Log.Info().Msg("Starting scheduler job...")
 		job, err := job.NewTaskSchedulerJob(api.App, &config)
 		if err != nil {

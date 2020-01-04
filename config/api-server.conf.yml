@@ -57,18 +57,18 @@ queues:
 jobs:
   import_podcast:
     enable: true
-    worker_limit: 5
+    worker_limit: 30
 
   refresh_podcast:
     enable: false
-    worker_limit: 90
+    worker_limit: 50
 
   create_thumbnail:
-    enable: true
-    worker_limit: 3
-
-  scheduler:
     enable: false
+    worker_limit: 4
+
+  task_scheduler:
+    enable: true
     worker_limit: 10
 
   sync_playback:
