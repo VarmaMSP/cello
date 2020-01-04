@@ -13,13 +13,21 @@ func GetSubscriptionsPageData(c *Context, w http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	episodes, err := c.App.GetEpisodesInPodcastIds(model.GetPodcastIds(subscriptions), 0, 15)
+	podcastIds := make([]int64, len(subscriptions))
+	for i, podcast := range subscriptions {
+		podcastIds[i] = podcast.Id
+	}
+	episodes, err := c.App.GetEpisodesInPodcastIds(podcastIds, 0, 15)
 	if err != nil {
 		c.Err = err
 		return
 	}
 
-	playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Params.UserId, model.GetEpisodeIds(episodes))
+	episodeIds := make([]int64, len(episodes))
+	for i, episode := range episodes {
+		episodeIds[i] = episode.Id
+	}
+	playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Params.UserId, episodeIds)
 	if err != nil {
 		c.Err = err
 		return
@@ -40,13 +48,21 @@ func BrowseSubscriptionsFeed(c *Context, w http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	episodes, err := c.App.GetEpisodesInPodcastIds(model.GetPodcastIds(subscriptions), c.Params.Offset, c.Params.Limit)
+	podcastIds := make([]int64, len(subscriptions))
+	for i, podcast := range subscriptions {
+		podcastIds[i] = podcast.Id
+	}
+	episodes, err := c.App.GetEpisodesInPodcastIds(podcastIds, c.Params.Offset, c.Params.Limit)
 	if err != nil {
 		c.Err = err
 		return
 	}
 
-	playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Params.UserId, model.GetEpisodeIds(episodes))
+	episodeIds := make([]int64, len(episodes))
+	for i, episode := range episodes {
+		episodeIds[i] = episode.Id
+	}
+	playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Params.UserId, episodeIds)
 	if err != nil {
 		c.Err = err
 		return

@@ -64,7 +64,12 @@ func BrowsePodcastEpisodes(c *Context, w http.ResponseWriter, req *http.Request)
 	}
 
 	if c.Session != nil && c.Session.UserId != 0 {
-		playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Session.UserId, model.GetEpisodeIds(episodes))
+		episodeIds := make([]int64, len(episodes))
+		for i, episode := range episodes {
+			episodeIds[i] = episode.Id
+		}
+
+		playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Session.UserId, episodeIds)
 		if err != nil {
 			c.Err = err
 			return
