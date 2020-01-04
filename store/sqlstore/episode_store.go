@@ -19,12 +19,14 @@ func NewSqlEpisodeStore(store SqlStore) store.EpisodeStore {
 func (s *SqlEpisodeStore) Save(episode *model.Episode) *model.AppError {
 	episode.PreSave()
 
-	if _, err := s.Insert("episode", []model.DbModel{episode}); err != nil {
+	id, err := s.InsertWithoutPK("episode", episode)
+	if err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_episode_store.save", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"podcast_id": episode.PodcastId, "title": episode.Title},
 		)
 	}
+	episode.Id = id
 	return nil
 }
 
