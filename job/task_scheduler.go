@@ -9,7 +9,7 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-type SchedulerJob struct {
+type TaskSchedulerJob struct {
 	*app.App
 	scrapeTrending         *task.ScrapeTrending
 	scrapeCategories       *task.ScrapeCategories
@@ -17,10 +17,10 @@ type SchedulerJob struct {
 	schedulePodcastRefresh *task.SchedulePodcastRefresh
 }
 
-func NewSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
+func NewTaskSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
 	var err error
 
-	s := &SchedulerJob{App: app}
+	s := &TaskSchedulerJob{App: app}
 
 	s.scrapeTrending, err = task.NewScrapeTrending(app)
 	if err != nil {
@@ -45,7 +45,7 @@ func NewSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
 	return s, nil
 }
 
-func (job *SchedulerJob) Run() {
+func (job *TaskSchedulerJob) Run() {
 	ticker := time.NewTicker(10 * time.Second)
 
 	for _ = range ticker.C {
@@ -73,7 +73,7 @@ func (job *SchedulerJob) Run() {
 	}
 }
 
-func (job *SchedulerJob) periodic(task *model.Task) {
+func (job *TaskSchedulerJob) periodic(task *model.Task) {
 	now := model.Now()
 	if task.NextRunAt > now {
 		return
@@ -89,7 +89,7 @@ func (job *SchedulerJob) periodic(task *model.Task) {
 	job.callTask(task)
 }
 
-func (job *SchedulerJob) oneoff(task *model.Task) {
+func (job *TaskSchedulerJob) oneoff(task *model.Task) {
 	now := model.Now()
 	if task.NextRunAt > now {
 		return
@@ -104,7 +104,7 @@ func (job *SchedulerJob) oneoff(task *model.Task) {
 	job.callTask(task)
 }
 
-func (job *SchedulerJob) immediate(task *model.Task) {
+func (job *TaskSchedulerJob) immediate(task *model.Task) {
 	now := model.Now()
 
 	taskU := *task
@@ -116,7 +116,7 @@ func (job *SchedulerJob) immediate(task *model.Task) {
 	job.callTask(task)
 }
 
-func (job *SchedulerJob) callTask(task *model.Task) {
+func (job *TaskSchedulerJob) callTask(task *model.Task) {
 	switch task.Name {
 	case model.TASK_NAME_SCRAPE_TRENDING:
 		job.scrapeTrending.Call()

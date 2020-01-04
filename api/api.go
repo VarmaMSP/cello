@@ -16,7 +16,7 @@ type Api struct {
 	Server *http.Server
 	Router *httprouter.Router
 
-	SchedulerJob           model.Job
+	TaskSchedulerJob       model.Job
 	ImportPodcastJob       model.Job
 	RefreshPodcastJob      model.Job
 	CreateThumbnailJob     model.Job
@@ -40,12 +40,12 @@ func NewApi(config model.Config) (*Api, error) {
 
 	if config.Jobs.Scheduler.Enable {
 		api.App.Log.Info().Msg("Starting scheduler job...")
-		job, err := job.NewSchedulerJob(api.App, &config)
+		job, err := job.NewTaskSchedulerJob(api.App, &config)
 		if err != nil {
 			return nil, err
 		}
-		api.SchedulerJob = job
-		go api.SchedulerJob.Run()
+		api.TaskSchedulerJob = job
+		go api.TaskSchedulerJob.Run()
 	}
 
 	if config.Jobs.ImportPodcast.Enable {
