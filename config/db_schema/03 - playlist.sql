@@ -1,3 +1,5 @@
+USE `phenopod`;
+
 DROP TABLE IF EXISTS `playlist_member`;
 DROP TABLE IF EXISTS `playlist`;
 
