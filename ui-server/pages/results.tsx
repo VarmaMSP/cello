@@ -9,16 +9,23 @@ import * as gtag from 'utils/gtag'
 
 interface OwnProps {
   query: string
+  sortBy: 'relevance' | 'publish_date'
+  resultType: 'episode' | 'podcast'
   scrollY: number
 }
 
 export default class ResultsPage extends Component<OwnProps> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
-    const { query, store } = ctx
-    await bindActionCreators(
-      getResultsPageData,
-      store.dispatch,
-    )(query['query'] as string)
+    const { store } = ctx
+    const query = ctx.query['query'] as string
+    const sortBy = ctx.query['sortBy'] as 'relevance' | 'publish_date'
+    const resultType = ctx.query['resultType'] as 'podcast' | 'episode'
+
+    await bindActionCreators(getResultsPageData, store.dispatch)(
+      query,
+      resultType,
+      sortBy,
+    )
   }
 
   componentDidMount() {
@@ -27,7 +34,7 @@ export default class ResultsPage extends Component<OwnProps> {
   }
 
   render() {
-    const { query } = this.props
+    const { query, resultType, sortBy } = this.props
 
     return (
       <>
@@ -44,7 +51,11 @@ export default class ResultsPage extends Component<OwnProps> {
           }}
         />
         <PageLayout>
-          <SearchResultsList searchQuery={query} />
+          <SearchResultsList
+            searchQuery={query}
+            resultType={resultType}
+            sortBy={sortBy}
+          />
           <div />
         </PageLayout>
       </>

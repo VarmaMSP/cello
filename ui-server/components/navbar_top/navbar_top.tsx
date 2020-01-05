@@ -47,10 +47,17 @@ export default class TopNavbar extends Component<Props, State> {
 
     const searchText = this.props.searchText.trim()
     if (searchText.length > 0) {
-      Router.push({
-        pathname: '/results',
-        query: { query: searchText },
-      })
+      Router.push(
+        {
+          pathname: '/results',
+          query: {
+            query: searchText,
+            resultType: 'podcast',
+            sortBy: 'relevance',
+          },
+        },
+        `/results?query=${searchText}&type=podcast&sort_by=relevance`,
+      )
     }
   }
 
