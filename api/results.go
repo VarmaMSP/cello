@@ -13,7 +13,7 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if c.Params.Type == "" || c.Params.Type == "episode" {
+	if c.Params.Type == "podcast" {
 		podcastSearchResults, err := c.App.SearchPodcasts(c.Params.Query, 0, 25)
 		if err != nil {
 			c.Err = err
@@ -38,7 +38,7 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 			"podcast_search_results": podcastSearchResults,
 		}))
 
-	} else if c.Params.Type == "podcast" {
+	} else if c.Params.Type == "episode" {
 		episodeSearchResults, err := c.App.SearchEpisodes(c.Params.Query, "", 0, 25)
 		if err != nil {
 			c.Err = err
@@ -55,10 +55,21 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		podcastIds := make([]int64, len(episodes))
+		for i, episode := range episodes {
+			podcastIds[i] = episode.PodcastId
+		}
+		podcasts, err := c.App.GetPodcastsByIds(podcastIds)
+		if err != nil {
+			c.Err = err
+			return
+		}
+
 		w.Header().Set(headers.CacheControl, "private, max-age=3600")
 		w.Header().Set(headers.ContentType, "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(model.EncodeToJson(map[string]interface{}{
+			"podcasts":               podcasts,
 			"episodes":               episodes,
 			"episode_search_results": episodeSearchResults,
 		}))
