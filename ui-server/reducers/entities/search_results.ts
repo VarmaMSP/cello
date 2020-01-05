@@ -1,6 +1,6 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { PodcastSearchResult } from 'types/app'
+import { EpisodeSearchResult, PodcastSearchResult } from 'types/app'
 
 const byPodcastId: Reducer<
   { [searchQuery: string]: { [podcastId: string]: PodcastSearchResult } },
@@ -23,6 +23,28 @@ const byPodcastId: Reducer<
   }
 }
 
+const byEpisodeId: Reducer<
+  { [searchQuery: string]: { [episodeId: string]: EpisodeSearchResult } },
+  T.AppActions
+> = (state = {}, action) => {
+  switch (action.type) {
+    case T.SEARCH_RESULT_ADD_EPISODE:
+      return {
+        ...state,
+        [action.searchQuery]: action.episodeSearchResults.reduce<{
+          [episodeId: string]: EpisodeSearchResult
+        }>(
+          (acc, e) => ({ ...acc, [e.id]: e }),
+          state[action.searchQuery] || {},
+        ),
+      }
+
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   byPodcastId,
+  byEpisodeId,
 })

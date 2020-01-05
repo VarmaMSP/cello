@@ -103,3 +103,9 @@ export interface PodcastSearchResult {
   author: string
   summary: string
 }
+
+export interface EpisodeSearchResult {
+  id: string
+  title: string
+  summary: string
+}

@@ -1,13 +1,13 @@
-import rootReducer from 'reducers'
 import { applyMiddleware, compose, createStore } from 'redux'
 import thunk, { ThunkMiddleware } from 'redux-thunk'
+import rootReducer from 'reducers'
 import { AppActions } from 'types/actions'
 
 // NOTE: Do not export this as type
 // doing so will make the editor show the entire AppState in suggestions
 export interface AppState extends ReturnType<typeof rootReducer> {}
 
-export const makeStore = (initalState?: object) => {
+export const makeStore = (initalState?: AppState) => {
   const composeEnhancers =
     typeof window != 'undefined' &&
     (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__

@@ -1,5 +1,6 @@
 import {
   Episode,
+  EpisodeSearchResult,
   Playback,
   Playlist,
   Podcast,
@@ -87,6 +88,14 @@ export function podcastSearchResult(j: any): PodcastSearchResult {
     id: j.id,
     title: j.title || '',
     author: j.author || '',
+    summary: j.summary || '',
+  }
+}
+
+export function episodeSearchResult(j: any): EpisodeSearchResult {
+  return {
+    id: j.id,
+    title: j.title || '',
     summary: j.summary || '',
   }
 }
