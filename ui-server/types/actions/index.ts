@@ -7,16 +7,15 @@ import { SearchResultActionTypes } from './entities/search_result'
 import { UserActionTypes } from './entities/user'
 import { RequestActionTypes } from './request'
 import { SessionActionTypes } from './session'
-import { UiActionTypes } from './ui'
 import { AudioPlayerActionTypes } from './ui/audio_player'
 import { HistoryFeedActionTypes } from './ui/history_feed'
 import { ModalManagerActionTypes } from './ui/modal_manager'
 import { PodcastEpisodesListActionTypes } from './ui/podcast_episodes_list'
+import { SearchBarActionTypes } from './ui/search_bar'
 import { SearchResultsListActionTypes } from './ui/search_results_list'
 import { SubscriptionsFeedActionTypes } from './ui/subscriptions_feed'
 
 export type AppActions =
-  | UiActionTypes
   | UserActionTypes
   | PodcastActionTypes
   | EpisodeActionTypes
@@ -32,6 +31,7 @@ export type AppActions =
   | PodcastEpisodesListActionTypes
   | SearchResultsListActionTypes
   | SearchResultActionTypes
+  | SearchBarActionTypes
 
 export * from './browser'
 export * from './entities/curation'
@@ -43,11 +43,10 @@ export * from './entities/search_result'
 export * from './entities/user'
 export * from './request'
 export * from './session'
-export * from './ui'
 export * from './ui/audio_player'
 export * from './ui/history_feed'
 export * from './ui/modal_manager'
 export * from './ui/podcast_episodes_list'
+export * from './ui/search_bar'
 export * from './ui/search_results_list'
 export * from './ui/subscriptions_feed'
-

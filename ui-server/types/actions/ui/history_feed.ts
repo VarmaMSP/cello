@@ -1,4 +1,3 @@
-
 export const HISTORY_FEED_LOAD_PAGE = 'history_feed/load_page'
 export const HISTORY_FEED_RECEIVED_ALL = 'history_feed/received_all'
 
