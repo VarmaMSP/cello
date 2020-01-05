@@ -22,7 +22,6 @@ const SearchResultsList: React.FC<StateToProps & OwnProps> = ({
 }) => {
   return (
     <>
-      <div className="-mt-1 mb-5 text-gray-700 text-lg lg:text-xl">{`Podcasts matching "${searchQuery}"`}</div>
       {resultType === 'podcast' &&
         podcastIds.map((id) => (
           <ResultPodcastItem

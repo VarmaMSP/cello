@@ -1,5 +1,6 @@
 import { getResultsPageData } from 'actions/results'
 import PageLayout from 'components/page_layout'
+import SearchResultsFilter from 'components/search_results_filter/search_results_filter'
 import SearchResultsList from 'components/search_results_list'
 import { NextSeo } from 'next-seo'
 import React, { Component } from 'react'
@@ -51,11 +52,18 @@ export default class ResultsPage extends Component<OwnProps> {
           }}
         />
         <PageLayout>
-          <SearchResultsList
-            searchQuery={query}
-            resultType={resultType}
-            sortBy={sortBy}
-          />
+          <div>
+            <SearchResultsFilter
+              searchQuery={query}
+              resultType={resultType}
+              sortBy={sortBy}
+            />
+            <SearchResultsList
+              searchQuery={query}
+              resultType={resultType}
+              sortBy={sortBy}
+            />
+          </div>
           <div />
         </PageLayout>
       </>
