@@ -88,7 +88,7 @@ export function podcastSearchResult(j: any): PodcastSearchResult {
     id: j.id,
     title: j.title || '',
     author: j.author || '',
-    summary: j.summary || '',
+    description: j.description || '',
   }
 }
 
@@ -96,6 +96,6 @@ export function episodeSearchResult(j: any): EpisodeSearchResult {
   return {
     id: j.id,
     title: j.title || '',
-    summary: j.summary || '',
+    description: j.description || '',
   }
 }

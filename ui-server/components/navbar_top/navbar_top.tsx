@@ -52,11 +52,11 @@ export default class TopNavbar extends Component<Props, State> {
           pathname: '/results',
           query: {
             query: searchText,
-            resultType: 'podcast',
+            resultType: 'episode',
             sortBy: 'relevance',
           },
         },
-        `/results?query=${searchText}&type=podcast&sort_by=relevance`,
+        `/results?query=${searchText}&type=episode&sort_by=relevance`,
       )
     }
   }

@@ -1,4 +1,5 @@
 import React from 'react'
+import ResultEpisodeItem from './result_episode_item'
 import ResultPodcastItem from './result_podcast_item'
 
 export interface StateToProps {
@@ -15,6 +16,7 @@ export interface OwnProps {
 
 const SearchResultsList: React.FC<StateToProps & OwnProps> = ({
   podcastIds,
+  episodeIds,
   searchQuery,
   resultType,
 }) => {
@@ -26,6 +28,14 @@ const SearchResultsList: React.FC<StateToProps & OwnProps> = ({
           <ResultPodcastItem
             key={id}
             podcastId={id}
+            searchQuery={searchQuery}
+          />
+        ))}
+      {resultType === 'episode' &&
+        episodeIds.map((id) => (
+          <ResultEpisodeItem
+            key={id}
+            episodeId={id}
             searchQuery={searchQuery}
           />
         ))}

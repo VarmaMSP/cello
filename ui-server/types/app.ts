@@ -101,11 +101,11 @@ export interface PodcastSearchResult {
   id: string
   title: string
   author: string
-  summary: string
+  description: string
 }
 
 export interface EpisodeSearchResult {
   id: string
   title: string
-  summary: string
+  description: string
 }

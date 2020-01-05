@@ -48,7 +48,7 @@ const ResultPodcastItem: React.FC<StateToProps & OwnProps> = ({
           className="mt-1 text-xs text-gray-700 leading-snug tracking-wider line-clamp-2"
           style={{ hyphens: 'auto' }}
           dangerouslySetInnerHTML={{
-            __html: podcastSearchResult.summary,
+            __html: podcastSearchResult.description || podcast.summary,
           }}
         />
       </div>

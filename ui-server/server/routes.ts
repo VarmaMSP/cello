@@ -68,6 +68,8 @@ export function registerRoutes(app: NextServer, router: Router) {
     '/results',
     servePage('/results', 'public,max-age=300,must-revalidate', (ctx) => ({
       query: ctx.request.query['query'],
+      resultType: ctx.request.query['type'] || 'episode',
+      sortBy: ctx.request.query['sort_by'] || 'relevance',
     })),
   )
 

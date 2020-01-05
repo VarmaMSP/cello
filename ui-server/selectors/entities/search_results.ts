@@ -9,3 +9,13 @@ export function getPodcastSearchResultById(
     podcastId
   ]
 }
+
+export function getEpisodeSearchResultById(
+  state: AppState,
+  searchQuery: string,
+  episodeId: string,
+) {
+  return (state.entities.searchResults.byEpisodeId[searchQuery] || {})[
+    episodeId
+  ]
+}
