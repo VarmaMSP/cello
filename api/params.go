@@ -23,6 +23,8 @@ type Params struct {
 	Limit      int
 	Order      string
 	Query      string
+	Type       string
+	SortBy     string
 	Endpoint   string
 	Action     string
 }
@@ -72,6 +74,10 @@ func ParamsFromRequest(r *http.Request) *Params {
 	params.Order = queryProps.Get("order")
 
 	params.Query = queryProps.Get("query")
+
+	params.Type = queryProps.Get("type")
+
+	params.SortBy = queryProps.Get("sort_by")
 
 	params.Endpoint = queryProps.Get("endpoint")
 
