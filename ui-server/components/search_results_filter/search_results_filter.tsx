@@ -1,57 +1,42 @@
 import classNames from 'classnames'
 import React from 'react'
+import { SearchResultType, SearchSortBy } from 'types/search'
 
 export interface StateToProps {
-  searchQuery: string
+  searchBarText: string
 }
 
 export interface OwnProps {
-  resultType: 'podcast' | 'episode'
-  sortBy: 'relevance' | 'publish_date'
+  resultType: SearchResultType
+  sortBy: SearchSortBy
 }
 
-const SearchResultsFilter: React.FC<StateToProps & OwnProps> = ({
-  resultType,
-}) => {
+const resultTypes: SearchResultType[] = ['episode', 'podcast']
+
+const SearchResultsFilter: React.FC<StateToProps & OwnProps> = (props) => {
   return (
     <div className="flex mb-8">
       <div className="flex flex-initial w-1/2 border-b">
-        <div className="w-20 mr-2 text-center">
-          <div
-            className={classNames(
-              'block px-3 py-1 text-sm capitalize leading-loose tracking-wider',
-              {
-                'cursor-default': resultType === 'episode',
-                'cursor-pointer': resultType !== 'episode',
-              },
-            )}
-          >
-            {'episode'}
+        {resultTypes.map((t) => (
+          <div className="w-20 mr-2 text-center">
+            <div
+              className={classNames(
+                'block px-3 py-1 text-sm capitalize leading-loose tracking-wider',
+                {
+                  'cursor-default': props.resultType === t,
+                  'cursor-pointer': props.resultType !== t,
+                },
+              )}
+            >
+              {t}
+            </div>
+            <div
+              className={classNames('h-1 w-20 rounded-full', {
+                'bg-yellow-600': props.resultType === t,
+              })}
+            />
           </div>
-          <div
-            className={classNames('h-1 w-20 rounded-full', {
-              'bg-yellow-600': resultType === 'episode',
-            })}
-          />
-        </div>
-        <div className="w-20 mr-2 text-center">
-          <div
-            className={classNames(
-              'block px-3 py-1 text-sm capitalize leading-loose tracking-wider',
-              {
-                'cursor-default': resultType === 'podcast',
-                'cursor-pointer': resultType !== 'podcast',
-              },
-            )}
-          >
-            {'podcast'}
-          </div>
-          <div
-            className={classNames('h-1 w-20 rounded-full', {
-              'bg-yellow-600': resultType === 'podcast',
-            })}
-          />
-        </div>
+        ))}
       </div>
     </div>
   )

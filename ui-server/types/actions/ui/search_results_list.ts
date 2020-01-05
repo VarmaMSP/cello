@@ -1,3 +1,5 @@
+import { SearchResultType, SearchSortBy } from 'types/search'
+
 export const SEARCH_RESULTS_LIST_LOAD_PODCAST_PAGE =
   'search_results_list/load_podcast_page'
 export const SEARCH_RESULTS_LIST_LOAD_EPISODE_PAGE =
@@ -8,7 +10,7 @@ export const SEARCH_RESULTS_LIST_RECEIVED_ALL =
 interface LoadPodcastPageAction {
   type: typeof SEARCH_RESULTS_LIST_LOAD_PODCAST_PAGE
   searchQuery: string
-  sortBy: 'relevance' | 'publish_date'
+  sortBy: SearchSortBy
   page: number
   podcastIds: string[]
 }
@@ -16,7 +18,7 @@ interface LoadPodcastPageAction {
 interface LoadEpisodePageAction {
   type: typeof SEARCH_RESULTS_LIST_LOAD_EPISODE_PAGE
   searchQuery: string
-  sortBy: 'relevance' | 'publish_date'
+  sortBy: SearchSortBy
   page: number
   episodeIds: string[]
 }
@@ -24,8 +26,8 @@ interface LoadEpisodePageAction {
 interface ReceivedAllAction {
   type: typeof SEARCH_RESULTS_LIST_RECEIVED_ALL
   searchQuery: string
-  resultType: string
-  sortBy: 'relevance' | 'publish_date'
+  resultType: SearchResultType
+  sortBy: SearchSortBy
 }
 
 export type SearchResultsListActionTypes =

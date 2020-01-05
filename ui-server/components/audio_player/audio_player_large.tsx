@@ -5,6 +5,7 @@ import { formatPlaybackRate, formatVolume } from 'utils/format'
 import ActionButton from './components/action_button'
 import RangeControl from './components/range_control'
 import SeekBar from './components/seek_bar'
+
 interface Props {
   episode: Episode
   podcast: Podcast

@@ -1,31 +1,35 @@
 import { getResultsPageData } from 'actions/results'
 import PageLayout from 'components/page_layout'
-import SearchResultsFilter from 'components/search_results_filter/search_results_filter'
+import SearchResultsFilter from 'components/search_results_filter'
 import SearchResultsList from 'components/search_results_list'
 import { NextSeo } from 'next-seo'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
+import { SEARCH_BAR_UPDATE_TEXT } from 'types/actions'
+import { SearchResultType, SearchSortBy } from 'types/search'
 import { PageContext } from 'types/utilities'
 import * as gtag from 'utils/gtag'
 
 interface OwnProps {
   query: string
-  sortBy: 'relevance' | 'publish_date'
-  resultType: 'episode' | 'podcast'
+  sortBy: SearchSortBy
+  resultType: SearchResultType
   scrollY: number
 }
 
 export default class ResultsPage extends Component<OwnProps> {
   static async getInitialProps(ctx: PageContext): Promise<void> {
-    const { store } = ctx
-    const query = ctx.query['query'] as string
-    const sortBy = ctx.query['sortBy'] as 'relevance' | 'publish_date'
-    const resultType = ctx.query['resultType'] as 'podcast' | 'episode'
+    const { store, query } = ctx
+
+    store.dispatch({
+      type: SEARCH_BAR_UPDATE_TEXT,
+      text: query['query'] as string,
+    })
 
     await bindActionCreators(getResultsPageData, store.dispatch)(
-      query,
-      resultType,
-      sortBy,
+      query['query'] as string,
+      query['resultType'] as SearchResultType,
+      query['sortBy'] as SearchSortBy,
     )
   }
 
@@ -53,11 +57,7 @@ export default class ResultsPage extends Component<OwnProps> {
         />
         <PageLayout>
           <div>
-            <SearchResultsFilter
-              searchQuery={query}
-              resultType={resultType}
-              sortBy={sortBy}
-            />
+            <SearchResultsFilter resultType={resultType} sortBy={sortBy} />
             <SearchResultsList
               searchQuery={query}
               resultType={resultType}
