@@ -1,9 +1,4 @@
-import {
-  Episode,
-  EpisodeSearchResult,
-  Podcast,
-  PodcastSearchResult,
-} from 'types/app'
+import { Episode, EpisodeSearchResult, Podcast, PodcastSearchResult } from 'types/app'
 import * as unmarshal from 'utils/entities'
 import { qs } from 'utils/utils'
 import { doFetch } from './fetch'
@@ -18,10 +13,9 @@ export async function getResultsPageData(
   podcastSearchResults: PodcastSearchResult[]
   episodeSearchResults: EpisodeSearchResult[]
 }> {
-  console.log('something is working')
   const { data } = await doFetch({
     method: 'GET',
-    urlPath: `/results?query=${qs({
+    urlPath: `/results?${qs({
       query: searchQuery,
       type: resultType,
       sort_by: sortBy,

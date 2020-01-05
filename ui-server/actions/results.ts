@@ -42,6 +42,8 @@ export function getResultsPageData(
       }
 
       if (resultType === 'episode') {
+        dispatch({ type: T.PODCAST_ADD, podcasts })
+
         dispatch({ type: T.EPISODE_ADD, episodes })
 
         dispatch({
