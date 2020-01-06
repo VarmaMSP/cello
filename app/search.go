@@ -12,10 +12,11 @@ import (
 func (app *App) SearchPodcasts(searchQuery string, offset, limit int) ([]*model.PodcastSearchResult, *model.AppError) {
 	results, err := app.ElasticSearch.Search().
 		Index(elasticsearch.PodcastIndexName).
-		Query(elastic.NewMultiMatchQuery(searchQuery).Type("best_fields").
-			FieldWithBoost("title", 1).
-			FieldWithBoost("author", 2).
-			Field("description"),
+		Query(elastic.NewMultiMatchQuery(searchQuery).
+			FieldWithBoost("title", 2).
+			FieldWithBoost("author", 1).
+			Field("description").
+			TieBreaker(0.5),
 		).
 		Highlight(elastic.NewHighlight().
 			PreTags("<span class=\"result-highlight\">").
@@ -51,9 +52,10 @@ func (app *App) SearchPodcasts(searchQuery string, offset, limit int) ([]*model.
 func (app *App) SearchEpisodes(searchQuery, sortBy string, offset, limit int) ([]*model.EpisodeSearchResult, *model.AppError) {
 	results, err := app.ElasticSearch.Search().
 		Index(elasticsearch.EpisodeIndexName).
-		Query(elastic.NewMultiMatchQuery(searchQuery).Type("best_fields").
+		Query(elastic.NewMultiMatchQuery(searchQuery).
 			FieldWithBoost("title", 2).
-			Field("description"),
+			Field("description").
+			TieBreaker(0.4),
 		).
 		Highlight(elastic.NewHighlight().
 			PreTags("<span class=\"result-highlight\">").

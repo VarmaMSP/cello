@@ -28,7 +28,7 @@ export function getResultsPageData(
           searchQuery: query,
           sortBy: sortBy,
           page: 0,
-          podcastIds: podcasts.map((x) => x.id),
+          podcastIds: podcastSearchResults.map((x) => x.id),
         })
 
         if (podcasts.length < 25) {
@@ -57,7 +57,7 @@ export function getResultsPageData(
           searchQuery: query,
           sortBy: sortBy,
           page: 0,
-          episodeIds: episodes.map((x) => x.id),
+          episodeIds: episodeSearchResults.map((x) => x.id),
         })
 
         if (episodes.length < 25) {
