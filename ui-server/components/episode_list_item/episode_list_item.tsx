@@ -2,13 +2,13 @@ import EpisodeMeta from 'components/episode_meta'
 import { iconMap } from 'components/icon'
 import { EpisodeLink, PodcastLink } from 'components/link'
 import React from 'react'
-import striptags from 'striptags'
-import { Episode, Podcast } from 'types/app'
+import { Episode, EpisodeSearchResult, Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {
   episode: Episode
   podcast: Podcast
+  episodeSearchResult: EpisodeSearchResult | undefined
 }
 
 export interface DispatchToProps {
@@ -23,6 +23,7 @@ export interface OwnProps {
 const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
   episode,
   podcast,
+  episodeSearchResult,
   playEpisode,
   showAddToPlaylistModal,
 }) => {
@@ -31,20 +32,26 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
   const ShareIcon = iconMap['share']
 
   return (
-    <div className="flex mb-12">
+    <div className="flex mb-14">
       <div className="flex-none mr-1">
         <img
-          className="md:w-24 w-16 md:h-24 w-16 object-contain rounded-lg border cursor-default"
+          className="md:w-28 w-16 md:h-28 w-16 object-contain rounded-lg border cursor-default"
           src={getImageUrl(podcast.urlParam)}
         />
       </div>
 
       <div className="md:pl-4 pl-1">
         <EpisodeLink episodeUrlParam={episode.urlParam}>
-          <a className="block md:text-base text-sm font-medium tracking-wide line-clamp-2">
-            {episode.title}
-          </a>
+          <a
+            className="md:text-base text-sm font-medium tracking-wide line-clamp-2"
+            dangerouslySetInnerHTML={{
+              __html:
+                (episodeSearchResult && episodeSearchResult.title) ||
+                episode.title,
+            }}
+          />
         </EpisodeLink>
+
         <PodcastLink podcastUrlParam={podcast.urlParam}>
           <a
             className="block text-xs text-grey-800 hover:text-black tracking-wide line-clamp-1"
@@ -55,13 +62,17 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
         </PodcastLink>
 
         <EpisodeMeta episodeId={episode.id} />
+
         <EpisodeLink episodeUrlParam={episode.urlParam}>
           <a
             className="mt-1 text-xs text-gray-700 leading-snug tracking-wider line-clamp-2"
             style={{ hyphens: 'auto' }}
-          >
-            {striptags(episode.description)}
-          </a>
+            dangerouslySetInnerHTML={{
+              __html:
+                (episodeSearchResult && episodeSearchResult.description) ||
+                episode.summary,
+            }}
+          />
         </EpisodeLink>
 
         <div className="flex mt-4">
@@ -74,6 +85,7 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
             <PlayIcon className="fill-current w-4 h-auto" />
             <span className="ml-1 font-medium">PLAY</span>
           </button>
+
           <button
             className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-gray-700 bg-gray-200 border rounded-lg focus:outline-none focus:shadow-outline"
             onClick={() => showAddToPlaylistModal()}
@@ -81,6 +93,7 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
             <AddToPlaylistIcon className="fill-current w-4 h-auto" />
             <span className="ml-2 font-medium">ADD</span>
           </button>
+
           <button className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-gray-700 bg-gray-200 border rounded-lg focus:outline-none focus:shadow-outline">
             <ShareIcon className="fill-current w-3 h-auto" />
             <span className="ml-2 font-medium">SHARE</span>

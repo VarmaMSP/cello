@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { getEpisodeById } from 'selectors/entities/episodes'
 import { getPodcastById } from 'selectors/entities/podcasts'
+import { makeGetEpisodeSearchResultById } from 'selectors/entities/search_results'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 import EpisodeListItem, {
@@ -12,14 +13,16 @@ import EpisodeListItem, {
   StateToProps,
 } from './episode_list_item'
 
-function mapStateToProps(
-  state: AppState,
-  { episodeId }: OwnProps,
-): StateToProps {
-  const episode = getEpisodeById(state, episodeId)
-  const podcast = getPodcastById(state, episode.podcastId)
+function makeMapStateToProps() {
+  const getEpisodeSearchResultById = makeGetEpisodeSearchResultById()
 
-  return { episode, podcast }
+  return (state: AppState, { episodeId }: OwnProps): StateToProps => {
+    const episode = getEpisodeById(state, episodeId)
+    const podcast = getPodcastById(state, episode.podcastId)
+    const episodeSearchResult = getEpisodeSearchResultById(state, episodeId)
+
+    return { episode, podcast, episodeSearchResult }
+  }
 }
 
 function mapDispatchToProps(
@@ -35,6 +38,6 @@ function mapDispatchToProps(
 }
 
 export default connect<StateToProps, DispatchToProps, OwnProps, AppState>(
-  mapStateToProps,
+  makeMapStateToProps(),
   mapDispatchToProps,
 )(EpisodeListItem)

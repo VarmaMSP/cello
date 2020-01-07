@@ -1,6 +1,6 @@
+import EpisodeListItem from 'components/episode_list_item'
 import React from 'react'
 import { SearchResultType } from 'types/search'
-import ResultEpisodeItem from './result_episode_item'
 import ResultPodcastItem from './result_podcast_item'
 
 export interface StateToProps {
@@ -18,19 +18,9 @@ const SearchResultsList: React.FC<StateToProps> = ({
   return (
     <>
       {resultType === 'podcast' &&
-        podcastIds.map((id) => (
-          <ResultPodcastItem
-            key={id}
-            podcastId={id}
-          />
-        ))}
+        podcastIds.map((id) => <ResultPodcastItem key={id} podcastId={id} />)}
       {resultType === 'episode' &&
-        episodeIds.map((id) => (
-          <ResultEpisodeItem
-            key={id}
-            episodeId={id}
-          />
-        ))}
+        episodeIds.map((id) => <EpisodeListItem episodeId={id} key={id} />)}
     </>
   )
 }
