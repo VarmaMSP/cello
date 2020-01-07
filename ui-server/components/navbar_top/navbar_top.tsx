@@ -1,6 +1,5 @@
 import ButtonSignIn from 'components/button_signin'
 import ButtonWithIcon from 'components/button_with_icon'
-import Router from 'next/router'
 import React, { Component } from 'react'
 import AppLogo from './components/app_logo'
 import SearchBar from './components/search_bar'
@@ -14,6 +13,7 @@ export interface StateToProps {
 
 export interface DispatchToProps {
   searchTextChange: (text: string) => void
+  loadResultsPage: () => void
 }
 
 interface Props extends StateToProps, DispatchToProps {}
@@ -45,20 +45,7 @@ export default class TopNavbar extends Component<Props, State> {
       this.setState({ showFullWidthSearchBar: false })
     }
 
-    const searchText = this.props.searchText.trim()
-    if (searchText.length > 0) {
-      Router.push(
-        {
-          pathname: '/results',
-          query: {
-            query: searchText,
-            resultType: 'episode',
-            sortBy: 'relevance',
-          },
-        },
-        `/results?query=${searchText}&type=episode&sort_by=relevance`,
-      )
-    }
+    this.props.loadResultsPage()
   }
 
   render() {

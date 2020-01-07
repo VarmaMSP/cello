@@ -1,44 +1,32 @@
 import classNames from 'classnames'
-import Router from 'next/router'
 import React from 'react'
 import { SearchResultType, SearchSortBy } from 'types/search'
 
 export interface StateToProps {
-  searchBarText: string
   resultType: SearchResultType
   sortBy: SearchSortBy
 }
 
-const SearchResultsFilter: React.FC<StateToProps> = (props) => {
+export interface DispatchToProps {
+  setResultType: (t: SearchResultType) => void
+  setSortBy: (s: SearchSortBy) => void
+  loadResultsPage: () => void
+}
+
+const SearchResultsFilter: React.FC<StateToProps & DispatchToProps> = (
+  props,
+) => {
   const onResultTypeChange = (t: SearchResultType) => {
     if (props.resultType !== t) {
-      Router.push(
-        {
-          pathname: '/results',
-          query: {
-            query: props.searchBarText,
-            resultType: t,
-            sortBy: props.sortBy,
-          },
-        },
-        `/results?query=${props.searchBarText}&type=${t}&sort_by=${props.sortBy}`,
-      )
+      props.setResultType(t)
+      props.loadResultsPage()
     }
   }
 
   const onSortByChange = (s: SearchSortBy) => {
     if (props.sortBy !== s) {
-      Router.push(
-        {
-          pathname: '/results',
-          query: {
-            query: props.searchBarText,
-            resultType: props.resultType,
-            sortBy: s,
-          },
-        },
-        `/results?query=${props.searchBarText}&type=${props.resultType}&sort_by=${s}`,
-      )
+      props.setSortBy(s)
+      props.loadResultsPage()
     }
   }
 
