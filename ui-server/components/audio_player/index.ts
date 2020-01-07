@@ -1,7 +1,6 @@
 import { syncPlayback } from 'actions/playback'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import { getViewportSize } from 'selectors/browser/viewport'
 import { getEpisodeById } from 'selectors/entities/episodes'
 import { getPodcastById } from 'selectors/entities/podcasts'
 import {
@@ -13,6 +12,7 @@ import {
   getState,
   getVolume,
 } from 'selectors/ui/audio_player'
+import { getViewportSize } from 'selectors/window'
 import { AppState } from 'store'
 import * as T from 'types/actions'
 import { AudioState } from 'types/app'

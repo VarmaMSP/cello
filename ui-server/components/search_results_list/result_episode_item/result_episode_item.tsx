@@ -24,7 +24,7 @@ const ResultEpisodeItem: React.FC<StateToProps & OwnProps> = ({
       <div className="flex-none mr-1">
         <img
           className="md:w-24 w-16 md:h-24 w-16 object-contain rounded-lg border cursor-default"
-          src={getImageUrl(episode.urlParam)}
+          src={getImageUrl(podcast.urlParam)}
         />
       </div>
 

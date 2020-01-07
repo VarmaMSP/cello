@@ -1,11 +1,11 @@
 import { iconMap } from 'components/icon'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React from 'react'
 import MenuItem from './components/menu_item'
 
 export interface StateToProps {
   userSignedIn: boolean
-  currentUrlPath: string
 }
 
 export interface DispatchToProps {
@@ -14,10 +14,10 @@ export interface DispatchToProps {
 
 const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
   userSignedIn,
-  currentUrlPath,
   showSigninModal,
 }) => {
   const LogoIcon = iconMap['phenopod']
+  const currentUrlPath = useRouter().asPath
 
   return (
     <div className="fixed left-0 top-0 lg:flex hidden flex-col justify-between h-screen w-56 px-3 bg-white border-r">
@@ -33,6 +33,7 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
               />
             </li>
           </Link>
+
           <Link href="/subscriptions" scroll={false}>
             <li className="h-8">
               <MenuItem
@@ -42,7 +43,7 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
               />
             </li>
           </Link>
-          
+
           <Link href="/history" scroll={false}>
             <li className="h-8">
               <MenuItem
@@ -52,7 +53,9 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
               />
             </li>
           </Link>
+
           <hr className="my-2" />
+
           <Link href="/playlists" scroll={false}>
             <li className="h-8">
               <MenuItem

@@ -1,6 +1,6 @@
 import React, { cloneElement } from 'react'
 import { connect } from 'react-redux'
-import { getViewportSize } from 'selectors/browser/viewport'
+import { getViewportSize } from 'selectors/window'
 import { AppState } from 'store'
 import { ViewportSize } from 'types/app'
 

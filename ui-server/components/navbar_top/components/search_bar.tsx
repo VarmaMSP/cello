@@ -24,7 +24,7 @@ const SearchBar: React.SFC<Props> = (props) => {
       />
       <input
         className={classnames(
-          'w-full h-9 pl-4 pr-8 py-1 text-gray-900 placeholder-gray-700 border border-gray-400 rounded-full',
+          'w-full h-9 pl-4 pr-8 py-1 text-gray-900 tracking-wide placeholder-gray-700 border border-gray-400 rounded-full',
           'appearance-none focus:outline-none',
         )}
         type="text"
