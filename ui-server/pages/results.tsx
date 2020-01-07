@@ -55,6 +55,13 @@ export default class ResultsPage extends Component<OwnProps> {
     )
   }
 
+  componentDidUpdate(prevProps: OwnProps) {
+    const { scrollY } = this.props
+    if (scrollY !== prevProps.scrollY) {
+      window.window.scrollTo(0, this.props.scrollY)
+    }
+  }
+
   componentDidMount() {
     gtag.search(this.props.query)
     window.window.scrollTo(0, this.props.scrollY)
