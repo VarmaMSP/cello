@@ -1,11 +1,53 @@
-import Link from 'next/link'
-import React from 'react'
+import Router from 'next/router'
+import React, { cloneElement, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { Dispatch } from 'redux'
+import * as T from 'types/actions'
+import { UrlObject } from 'url'
 
-interface Props {
+interface LinkChild {
   children: JSX.Element
 }
 
-export const PodcastLink: React.FC<Props & { podcastUrlParam: string }> = ({
+interface LinkProps extends LinkChild {
+  href: string | UrlObject
+  as?: string | UrlObject
+  prefetch?: boolean
+  scroll?: boolean
+}
+
+export const Link: React.FC<LinkProps> = (props) => {
+  const dispatch = useDispatch<Dispatch<T.AppActions>>()
+
+  useEffect(() => {
+    if (!!props.prefetch) {
+      typeof props.href === 'string'
+        ? Router.prefetch(props.href)
+        : Router.prefetch(props.href.pathname!)
+    }
+  })
+
+  return cloneElement(props.children, {
+    href: props.as,
+    onClick: (e: React.SyntheticEvent<HTMLAnchorElement>) => {
+      e.preventDefault()
+
+      dispatch({
+        type: T.HISTORY_PUSH_ENTRY,
+        entry: {
+          urlPath: Router.asPath,
+          scrollY: window.scrollY,
+        },
+      })
+
+      Router.push(props.href, props.as, {
+        scroll: props.scroll,
+      })
+    },
+  })
+}
+
+export const PodcastLink: React.FC<LinkChild & { podcastUrlParam: string }> = ({
   children,
   podcastUrlParam,
 }) => {
@@ -22,7 +64,7 @@ export const PodcastLink: React.FC<Props & { podcastUrlParam: string }> = ({
   )
 }
 
-export const EpisodeLink: React.FC<Props & { episodeUrlParam: string }> = ({
+export const EpisodeLink: React.FC<LinkChild & { episodeUrlParam: string }> = ({
   children,
   episodeUrlParam,
 }) => {
@@ -39,7 +81,7 @@ export const EpisodeLink: React.FC<Props & { episodeUrlParam: string }> = ({
   )
 }
 
-export const ChartLink: React.FC<Props & { chartId: string }> = ({
+export const ChartLink: React.FC<LinkChild & { chartId: string }> = ({
   children,
   chartId,
 }) => {
@@ -56,10 +98,9 @@ export const ChartLink: React.FC<Props & { chartId: string }> = ({
   )
 }
 
-export const PlaylistLink: React.FC<Props & { playlistUrlParam: string }> = ({
-  children,
-  playlistUrlParam,
-}) => {
+export const PlaylistLink: React.FC<LinkChild & {
+  playlistUrlParam: string
+}> = ({ children, playlistUrlParam }) => {
   return (
     <Link
       href={{
