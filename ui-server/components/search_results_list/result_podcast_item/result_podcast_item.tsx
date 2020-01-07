@@ -10,7 +10,6 @@ export interface StateToProps {
 
 export interface OwnProps {
   podcastId: string
-  searchQuery: string
 }
 
 const ResultPodcastItem: React.FC<StateToProps & OwnProps> = ({

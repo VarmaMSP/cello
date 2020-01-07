@@ -1,23 +1,18 @@
 import React from 'react'
+import { SearchResultType } from 'types/search'
 import ResultEpisodeItem from './result_episode_item'
 import ResultPodcastItem from './result_podcast_item'
 
 export interface StateToProps {
+  resultType: SearchResultType
   podcastIds: string[]
   episodeIds: string[]
   receivedAll: boolean
 }
 
-export interface OwnProps {
-  searchQuery: string
-  resultType: 'podcast' | 'episode'
-  sortBy: 'relevance' | 'publish_date'
-}
-
-const SearchResultsList: React.FC<StateToProps & OwnProps> = ({
+const SearchResultsList: React.FC<StateToProps> = ({
   podcastIds,
   episodeIds,
-  searchQuery,
   resultType,
 }) => {
   return (
@@ -27,7 +22,6 @@ const SearchResultsList: React.FC<StateToProps & OwnProps> = ({
           <ResultPodcastItem
             key={id}
             podcastId={id}
-            searchQuery={searchQuery}
           />
         ))}
       {resultType === 'episode' &&
@@ -35,7 +29,6 @@ const SearchResultsList: React.FC<StateToProps & OwnProps> = ({
           <ResultEpisodeItem
             key={id}
             episodeId={id}
-            searchQuery={searchQuery}
           />
         ))}
     </>

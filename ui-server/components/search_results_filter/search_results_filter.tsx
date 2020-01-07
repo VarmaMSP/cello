@@ -5,14 +5,11 @@ import { SearchResultType, SearchSortBy } from 'types/search'
 
 export interface StateToProps {
   searchBarText: string
-}
-
-export interface OwnProps {
   resultType: SearchResultType
   sortBy: SearchSortBy
 }
 
-const SearchResultsFilter: React.FC<StateToProps & OwnProps> = (props) => {
+const SearchResultsFilter: React.FC<StateToProps> = (props) => {
   const onResultTypeChange = (t: SearchResultType) => {
     if (props.resultType !== t) {
       Router.push(
@@ -49,7 +46,7 @@ const SearchResultsFilter: React.FC<StateToProps & OwnProps> = (props) => {
     <div className="flex items-center mb-8 justify-between">
       <div className="flex flex-initial w-3/5 border-b">
         {(['episode', 'podcast'] as SearchResultType[]).map((t) => (
-          <div className="w-20 mr-2 text-center">
+          <div key={t} className="w-20 mr-2 text-center">
             <div
               className={classNames(
                 'block px-3 py-1 text-sm capitalize leading-loose tracking-wider',

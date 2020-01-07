@@ -11,7 +11,6 @@ export interface StateToProps {
 
 export interface OwnProps {
   episodeId: string
-  searchQuery: string
 }
 
 const ResultEpisodeItem: React.FC<StateToProps & OwnProps> = ({
