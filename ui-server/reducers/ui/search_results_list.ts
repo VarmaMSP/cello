@@ -1,5 +1,42 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
+import { SearchResultType, SearchSortBy } from 'types/search'
+
+const query: Reducer<string, T.AppActions> = (state = '', action) => {
+  switch (action.type) {
+    case T.SEARCH_RESULTS_QUERY:
+      return action.query
+
+    default:
+      return state
+  }
+}
+
+const resultType: Reducer<SearchResultType, T.AppActions> = (
+  state = 'episode',
+  action,
+) => {
+  switch (action.type) {
+    case T.SEARCH_RESULTS_RESULT_TYPE:
+      return action.resultType
+
+    default:
+      return state
+  }
+}
+
+const sortBy: Reducer<SearchSortBy, T.AppActions> = (
+  state = 'relevance',
+  action,
+) => {
+  switch (action.type) {
+    case T.SEARCH_RESULTS_SORT_BY:
+      return action.sortBy
+
+    default:
+      return state
+  }
+}
 
 const podcasts: Reducer<
   {
@@ -71,6 +108,9 @@ const receivedAll: Reducer<string[], T.AppActions> = (state = [], action) => {
 }
 
 export default combineReducers({
+  query,
+  resultType,
+  sortBy,
   podcasts,
   episodes,
   receivedAll,
