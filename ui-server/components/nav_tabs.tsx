@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import Link from 'next/link'
+import { Link } from 'components/link'
 import React from 'react'
 
 interface Tab {
