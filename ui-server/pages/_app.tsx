@@ -13,10 +13,8 @@ import { Provider } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { makeStore } from 'store'
 import * as T from 'types/actions'
-import { ViewportSize } from 'types/app'
 import { AppContext, PageContext } from 'types/utilities'
 import '../styles/index.css'
-
 NProgress.configure({
   showSpinner: false,
   trickle: true,
@@ -51,7 +49,7 @@ export default withRedux(makeStore)(
       } = this.props
 
       /*
-       * Dont let browser restore scroll position
+       * Don't let browser restore scroll position
        */
       window.history.scrollRestoration = 'manual'
 
@@ -92,16 +90,23 @@ export default withRedux(makeStore)(
     }
 
     setViewportSize = () => {
-      const setViewportSize = (s: ViewportSize) =>
-        this.props.store.dispatch({ type: T.SET_VIEWPORT_SIZE, size: s })
-
       const width = window.innerWidth
+
       if (width >= 1024) {
-        return setViewportSize('LG')
+        return this.props.store.dispatch({
+          type: T.WINDOW_VIEWPORT_SIZE,
+          size: 'LG',
+        })
       } else if (width >= 768) {
-        return setViewportSize('MD')
+        return this.props.store.dispatch({
+          type: T.WINDOW_VIEWPORT_SIZE,
+          size: 'MD',
+        })
       } else {
-        return setViewportSize('SM')
+        return this.props.store.dispatch({
+          type: T.WINDOW_VIEWPORT_SIZE,
+          size: 'SM',
+        })
       }
     }
 

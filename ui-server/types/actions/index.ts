@@ -1,4 +1,3 @@
-import { BrowserActionTypes } from './browser'
 import { CurationActionTypes } from './entities/curation'
 import { EpisodeActionTypes } from './entities/episode'
 import { PlaylistActionTypes } from './entities/playlist'
@@ -15,14 +14,13 @@ import { PodcastEpisodesListActionTypes } from './ui/podcast_episodes_list'
 import { SearchBarActionTypes } from './ui/search_bar'
 import { SearchResultsListActionTypes } from './ui/search_results_list'
 import { SubscriptionsFeedActionTypes } from './ui/subscriptions_feed'
+import { WindowActionTypes } from './window'
 
 export type AppActions =
   | UserActionTypes
   | PodcastActionTypes
   | EpisodeActionTypes
-  | BrowserActionTypes
   | PlaylistActionTypes
-  | RequestActionTypes
   | SessionActionTypes
   | CurationActionTypes
   | AudioPlayerActionTypes
@@ -34,8 +32,9 @@ export type AppActions =
   | SearchResultActionTypes
   | SearchBarActionTypes
   | HistoryActionTypes
+  | WindowActionTypes
+  | RequestActionTypes
 
-export * from './browser'
 export * from './entities/curation'
 export * from './entities/episode'
 export * from './entities/feed'
@@ -53,3 +52,5 @@ export * from './ui/podcast_episodes_list'
 export * from './ui/search_bar'
 export * from './ui/search_results_list'
 export * from './ui/subscriptions_feed'
+export * from './window'
+
