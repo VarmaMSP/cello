@@ -1,4 +1,4 @@
-import { NextPageContext as Page } from 'next'
+import { NextComponentType, NextPageContext as Page } from 'next'
 import { NextJSContext as Wrapper } from 'next-redux-wrapper'
 import { AppContext as App } from 'next/app'
 import { AppState } from 'store'
@@ -11,6 +11,9 @@ export interface PageContext extends Page, Wrapper<AppState, AppActions> {}
 
 export interface AppContext extends App {
   ctx: PageContext
+  Component: NextComponentType<PageContext> & {
+    loadPropsIntoStore?: (context: PageContext) => void
+  }
 }
 
 //
