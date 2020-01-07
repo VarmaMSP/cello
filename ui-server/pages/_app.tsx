@@ -30,16 +30,19 @@ export default withRedux(makeStore)(
   class MyApp extends Component<AppProps & PageContext> {
     static async getInitialProps({ Component, ctx }: AppContext) {
       const { query, asPath: currentUrlPath, store } = ctx
-      const prevPage = store.getState().browser.previousPage.page
+      const { poppedEntry } = store.getState().history
 
-      let scrollY = 0
-      if (currentUrlPath === prevPage.urlPath) {
-        scrollY = prevPage.scrollY
-      }
-      if (currentUrlPath !== prevPage.urlPath && Component.getInitialProps) {
+      if (currentUrlPath !== poppedEntry.urlPath && Component.getInitialProps) {
         await Component.getInitialProps(ctx)
       }
-      return { pageProps: { ...query, scrollY } }
+
+      return {
+        pageProps: {
+          ...query,
+          scrollY:
+            poppedEntry.urlPath === currentUrlPath ? poppedEntry.scrollY : 0,
+        },
+      }
     }
 
     componentDidMount() {
@@ -48,77 +51,47 @@ export default withRedux(makeStore)(
       } = this.props
 
       /*
-       * previous_page field in redux store is used to store previous pages
-       *  - `stack` contains all the pages that can be reached by clicking back button
-       *    in order
-       *  - When user clicks back the `stack` is poped and the result is store in
-       *    `page` field.
-       *  - When a page loads, it can compare its urlPath to `previous_page.page` and determine
-       *    wheather to set scroll, load data from store etc.
+       * Dont let browser restore scroll position
        */
       window.history.scrollRestoration = 'manual'
-
-      Router.events.on('routeChangeStart', (urlPath) => {
-        NProgress.start()
-
-        const prevPage = getState().browser.previousPage.page
-        // Preventing push when user is going to previous page
-        if (prevPage.urlPath !== urlPath) {
-          dispatch({
-            type: T.PUSH_PREVIOUS_PAGE_STACK,
-            page: { urlPath: Router.asPath, scrollY: window.scrollY }, // Push page from which user clicked on back
-          })
-        }
-      })
-
-      Router.events.on('routeChangeComplete', (toUrlPath) => {
-        NProgress.done()
-        dispatch({ type: T.SET_CURRENT_URL_PATH, urlPath: toUrlPath })
-      })
-
-      Router.events.on('routeChangeError', () => {
-        NProgress.done()
-      })
-
-      Router.beforePopState(({ as: toUrlPath }) => {
-        const state = getState()
-
-        // Close modal if opened and prevent route change
-        if (state.ui.modalManager.activeModal.type !== 'NONE') {
-          dispatch({ type: T.MODAL_MANAGER_CLOSE_MODAL })
-          return false
-        }
-
-        const stack = state.browser.previousPage.stack
-        // Preventing pop_state when user is going to next page
-        if (stack.length > 0 && stack[0].urlPath === toUrlPath) {
-          dispatch({ type: T.SET_PREVIOUS_PAGE, page: stack[0] })
-          dispatch({ type: T.POP_PREVIOUS_PAGE_STACK })
-        }
-        return true
-      })
 
       /*
        * Listen to screen width changes
        */
-      this.handleViewportSizeChange()
-      window.addEventListener('resize', this.handleViewportSizeChange)
+      this.setViewportSize()
+      window.addEventListener('resize', this.setViewportSize)
 
       /*
        * Try to get signed in user session details
        */
       bindActionCreators(getCurrentUser, dispatch)()
 
-      /*
-       * Set initial page url
-       */
-      dispatch({
-        type: T.SET_CURRENT_URL_PATH,
-        urlPath: window.location.pathname,
+      Router.events.on('routeChangeStart', () => NProgress.start())
+
+      Router.events.on('routeChangeComplete', () => NProgress.done())
+
+      Router.events.on('routeChangeError', () => NProgress.done())
+
+      Router.beforePopState(({ as: toUrlPath }) => {
+        const state = getState()
+
+        // Prevent route change if there is a active modal
+        if (state.ui.modalManager.activeModal.type !== 'NONE') {
+          dispatch({ type: T.MODAL_MANAGER_CLOSE_MODAL })
+          return false
+        }
+
+        // Pop history stack
+        const { stack } = state.history
+        if (stack.length > 0 && stack[0].urlPath === toUrlPath) {
+          dispatch({ type: T.HISTORY_POP_ENTRY, entry: stack[0] })
+        }
+
+        return true
       })
     }
 
-    handleViewportSizeChange = () => {
+    setViewportSize = () => {
       const setViewportSize = (s: ViewportSize) =>
         this.props.store.dispatch({ type: T.SET_VIEWPORT_SIZE, size: s })
 

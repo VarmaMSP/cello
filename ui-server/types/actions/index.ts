@@ -5,6 +5,7 @@ import { PlaylistActionTypes } from './entities/playlist'
 import { PodcastActionTypes } from './entities/podcast'
 import { SearchResultActionTypes } from './entities/search_result'
 import { UserActionTypes } from './entities/user'
+import { HistoryActionTypes } from './history'
 import { RequestActionTypes } from './request'
 import { SessionActionTypes } from './session'
 import { AudioPlayerActionTypes } from './ui/audio_player'
@@ -32,6 +33,7 @@ export type AppActions =
   | SearchResultsListActionTypes
   | SearchResultActionTypes
   | SearchBarActionTypes
+  | HistoryActionTypes
 
 export * from './browser'
 export * from './entities/curation'
@@ -41,6 +43,7 @@ export * from './entities/playlist'
 export * from './entities/podcast'
 export * from './entities/search_result'
 export * from './entities/user'
+export * from './history'
 export * from './request'
 export * from './session'
 export * from './ui/audio_player'
