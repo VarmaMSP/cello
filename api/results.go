@@ -39,7 +39,7 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		}))
 
 	} else if c.Params.Type == "episode" {
-		episodeSearchResults, err := c.App.SearchEpisodes(c.Params.Query, "", 0, 25)
+		episodeSearchResults, err := c.App.SearchEpisodes(c.Params.Query, c.Params.SortBy, 0, 25)
 		if err != nil {
 			c.Err = err
 			return

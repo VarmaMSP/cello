@@ -50,7 +50,7 @@ func (app *App) SearchPodcasts(searchQuery string, offset, limit int) ([]*model.
 }
 
 func (app *App) SearchEpisodes(searchQuery, sortBy string, offset, limit int) ([]*model.EpisodeSearchResult, *model.AppError) {
-	results, err := app.ElasticSearch.Search().
+	q := app.ElasticSearch.Search().
 		Index(elasticsearch.EpisodeIndexName).
 		Query(elastic.NewMultiMatchQuery(searchQuery).
 			FieldWithBoost("title", 2).
@@ -66,9 +66,13 @@ func (app *App) SearchEpisodes(searchQuery, sortBy string, offset, limit int) ([
 			),
 		).
 		From(offset).
-		Size(limit).
-		Do(context.TODO())
+		Size(limit)
 
+	if sortBy == "publish_date" {
+		q.Sort("pub_date", false)
+	}
+
+	results, err := q.Do(context.TODO())
 	if err != nil {
 		return nil, model.NewAppError("app.search_podcasts", "no results", http.StatusInternalServerError, nil)
 	}
