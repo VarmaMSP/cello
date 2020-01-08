@@ -59,6 +59,7 @@ const SearchResultsFilter: React.FC<StateToProps & DispatchToProps> = (
         <select
           className="form-select text-sm tracking-wider w-36"
           onChange={(e) => onSortByChange(e.target.value as SearchSortBy)}
+          value={props.sortBy}
         >
           <option value="relevance">{'Relevance'}</option>
           {props.resultType === 'episode' && (
