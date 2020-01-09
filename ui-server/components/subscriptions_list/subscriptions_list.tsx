@@ -9,6 +9,10 @@ export interface StateToProps {
 }
 
 const SubscriptionsList: React.FC<StateToProps> = ({ subscriptions }) => {
+  if (subscriptions.length === 0) {
+    return <></>
+  }
+
   return (
     <div className="pl-8 pr-2 rounded-xl">
       <h2 className="text-lg text-gray-700">{"You're subscribed to"}</h2>

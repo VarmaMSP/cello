@@ -20,13 +20,24 @@ const SubscriptionsFeed: React.SFC<StateToProps & DispatchToProps> = ({
   isLoadingMore,
   loadMore,
 }) => {
+  if (feed.length === 0) {
+    return (
+      <div className="mt-8">
+        <div className="text-2xl text-gray-900 tracking-wide">
+          {'Latest episodes from your subscriptions show up here.'}
+        </div>
+        <div className="mt-2 text-default text-gray-800 tracking-wide">
+          {'Subscribe to your favourite podcasts to get started.'}
+        </div>
+      </div>
+    )
+  }
+
   const feedList: { title: string; episodes: Episode[] }[] = [
     { title: 'Today', episodes: [] },
     { title: 'Yesterday', episodes: [] },
     { title: 'Earlier', episodes: [] },
   ]
-
-  console.log(feed)
 
   for (let i = 0; i < feed.length; ++i) {
     const episode = feed[i]
@@ -45,7 +56,7 @@ const SubscriptionsFeed: React.SFC<StateToProps & DispatchToProps> = ({
 
   return (
     <>
-      {feedList.map(({ title, episodes }) => (
+      {feedList.slice(0, 2).map(({ title, episodes }) => (
         <div key={title}>
           <h1 className="text-xl text-gray-900">{`Published ${title}`}</h1>
           <hr className="mt-2 mb-6" />
@@ -61,6 +72,11 @@ const SubscriptionsFeed: React.SFC<StateToProps & DispatchToProps> = ({
             </p>
           )}
         </div>
+      ))}
+
+      <hr className="mt-2 mb-6" />
+      {feedList[2].episodes.map((episode) => (
+        <EpisodeListItem key={episode.id} episodeId={episode.id} />
       ))}
 
       {!receivedAll && (

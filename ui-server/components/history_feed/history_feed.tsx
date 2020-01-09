@@ -19,6 +19,19 @@ const HistoryFeed: React.FC<StateToProps & DispatchToProps> = ({
   receivedAll,
   isLoadingMore,
 }) => {
+  if (history.length === 0) {
+    return (
+      <div className="mt-8">
+        <div className="text-2xl text-gray-900 tracking-wide">
+          {'Your listen history seems empty.'}
+        </div>
+        <div className="mt-2 text-default text-gray-800 tracking-wide">
+          {'Try playing an episode.'}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <h1 className="text-xl text-gray-900">{`Your Listen History`}</h1>

@@ -10,6 +10,19 @@ export interface StateToProps {
 }
 
 const PlaylistLibrary: React.FC<StateToProps> = ({ playlists }) => {
+  if (playlists.length === 0) {
+    return (
+      <div className="mt-10">
+        <div className="text-2xl text-gray-900 tracking-wide">
+          {"You have'nt created any playlists yet."}
+        </div>
+        <div className="mt-2 text-default text-gray-800 tracking-wide">
+          {'Use + button to create one.'}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <h1 className="text-xl text-gray-900">{'Your Playlists'}</h1>
