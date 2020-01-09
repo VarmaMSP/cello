@@ -2,18 +2,11 @@ import { getResults } from 'actions/results'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { getText } from 'selectors/ui/search_bar'
-import {
-  getResultType,
-  getSortBy,
-  makeGetEpisodes,
-  makeGetPodcasts,
-} from 'selectors/ui/search_results_list'
+import { getResultType, getSortBy, makeGetEpisodes, makeGetPodcasts } from 'selectors/ui/search_results_list'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import SearchResultsList, {
-  DispatchToProps,
-  StateToProps,
-} from './search_results_list'
+import SearchResultsList, { DispatchToProps, StateToProps } from './search_results_list'
+import { getResultsStatus } from 'selectors/request'
 
 function makeMapStateToProps() {
   const getPodcasts = makeGetPodcasts()
@@ -30,6 +23,7 @@ function makeMapStateToProps() {
       podcastIds,
       episodeIds,
       receivedAll: receivedAll || receivedAll_,
+      isLoadingMore: getResultsStatus(state) === 'IN_PROGRESS'
     }
   }
 }

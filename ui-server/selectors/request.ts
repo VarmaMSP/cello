@@ -36,3 +36,7 @@ export function getPlaylistPageStatus(state: AppState) {
 export function getPlaylistFeedStatus(state: AppState) {
   return requestStatus(state, RequestId.getPlaylistFeed())
 }
+
+export function getResultsStatus(state: AppState) {
+  return requestStatus(state, RequestId.getResults())
+}

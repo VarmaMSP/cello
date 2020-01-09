@@ -6,6 +6,7 @@ import { getResultType, getSortBy } from 'selectors/ui/search_results_list'
 import { AppState } from 'store'
 import * as T from 'types/actions'
 import { SearchResultType, SearchSortBy } from 'types/search'
+import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
 export function loadResultsPage() {
@@ -174,5 +175,6 @@ export function getResults(
         }
       }
     },
+    {requestId: RequestId.getResults()},
   )
 }

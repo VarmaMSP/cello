@@ -11,6 +11,7 @@ export interface StateToProps {
   podcastIds: string[]
   episodeIds: string[]
   receivedAll: boolean
+  isLoadingMore: boolean
 }
 
 export interface DispatchToProps {
@@ -30,6 +31,7 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
   podcastIds,
   episodeIds,
   receivedAll,
+  isLoadingMore,
   loadMore,
 }) => {
   if (resultType === 'podcast') {
@@ -42,7 +44,7 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
         {!receivedAll && (
           <div className="w-full h-10 mx-auto my-6">
             <ButtonShowMore
-              isLoading={false}
+              isLoading={isLoadingMore}
               loadMore={() =>
                 loadMore(
                   searchBarText,
@@ -69,7 +71,7 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
         {!receivedAll && (
           <div className="w-full h-10 mx-auto my-6">
             <ButtonShowMore
-              isLoading={false}
+              isLoading={isLoadingMore}
               loadMore={() =>
                 loadMore(
                   searchBarText,

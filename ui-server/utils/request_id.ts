@@ -37,3 +37,7 @@ export function getPodcastsInChart(chartId: string) {
 export function createPlaylist() {
   return '6'
 }
+
+export function getResults() {
+  return '7'
+}
