@@ -1,11 +1,19 @@
+import { getResults } from 'actions/results'
 import { connect } from 'react-redux'
+import { bindActionCreators, Dispatch } from 'redux'
+import { getText } from 'selectors/ui/search_bar'
 import {
   getResultType,
+  getSortBy,
   makeGetEpisodes,
   makeGetPodcasts,
 } from 'selectors/ui/search_results_list'
 import { AppState } from 'store'
-import SearchResultsList, { StateToProps } from './search_results_list'
+import { AppActions } from 'types/actions'
+import SearchResultsList, {
+  DispatchToProps,
+  StateToProps,
+} from './search_results_list'
 
 function makeMapStateToProps() {
   const getPodcasts = makeGetPodcasts()
@@ -16,7 +24,9 @@ function makeMapStateToProps() {
     const [episodeIds, receivedAll_] = getEpisodes(state)
 
     return {
+      searchBarText: getText(state),
       resultType: getResultType(state),
+      sortBy: getSortBy(state),
       podcastIds,
       episodeIds,
       receivedAll: receivedAll || receivedAll_,
@@ -24,6 +34,13 @@ function makeMapStateToProps() {
   }
 }
 
-export default connect<StateToProps, {}, {}, AppState>(makeMapStateToProps())(
-  SearchResultsList,
-)
+function mapDispatchToProps(dispatch: Dispatch<AppActions>): DispatchToProps {
+  return {
+    loadMore: bindActionCreators(getResults, dispatch),
+  }
+}
+
+export default connect<StateToProps, DispatchToProps, {}, AppState>(
+  makeMapStateToProps(),
+  mapDispatchToProps,
+)(SearchResultsList)
