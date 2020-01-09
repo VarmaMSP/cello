@@ -147,6 +147,18 @@ func (s *SqlPlaylistStore) UpdateMemberStats(playlistId int64) *model.AppError {
 	return nil
 }
 
+func (s *SqlPlaylistStore) Delete(playlistId int64) *model.AppError {
+	sql := fmt.Sprintf("DELETE FROM playlist WHERE id = %d", playlistId)
+
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_playlist_store.delete", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"playlist_id": playlistId},
+		)
+	}
+	return nil
+}
+
 func (s *SqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppError {
 	member.PreSave()
 
