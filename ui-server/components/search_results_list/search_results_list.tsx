@@ -35,6 +35,16 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
   loadMore,
 }) => {
   if (resultType === 'podcast') {
+    if (podcastIds.length === 0) {
+      return isLoadingMore ? (
+        <></>
+      ) : (
+        <div className="ml-5 text-gray-800 tracking-wider">
+          {'No results found'}
+        </div>
+      )
+    }
+
     return (
       <div>
         {podcastIds.map((id) => (
@@ -62,6 +72,16 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
   }
 
   if (resultType === 'episode') {
+    if (episodeIds.length === 0) {
+      return isLoadingMore ? (
+        <></>
+      ) : (
+        <div className="ml-5 text-gray-800 tracking-wider">
+          {'No results found'}
+        </div>
+      )
+    }
+
     return (
       <div>
         {episodeIds.map((id) => (

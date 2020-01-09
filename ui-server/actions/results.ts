@@ -102,6 +102,7 @@ export function getResultsPageData(
         }
       }
     },
+    { requestId: RequestId.getResults() },
   )
 }
 
@@ -175,6 +176,6 @@ export function getResults(
         }
       }
     },
-    {requestId: RequestId.getResults()},
+    { requestId: RequestId.getResults() },
   )
 }
