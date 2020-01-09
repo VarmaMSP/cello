@@ -29,7 +29,6 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
 }) => {
   const PlayIcon = iconMap['play']
   const AddToPlaylistIcon = iconMap['playlist-add']
-  const ShareIcon = iconMap['share']
 
   return (
     <div className="flex mb-14">
@@ -92,11 +91,6 @@ const EpisodeListItem: React.FC<StateToProps & DispatchToProps & OwnProps> = ({
           >
             <AddToPlaylistIcon className="fill-current w-4 h-auto" />
             <span className="ml-2 font-medium">ADD</span>
-          </button>
-
-          <button className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-gray-700 bg-gray-200 border rounded-lg focus:outline-none focus:shadow-outline">
-            <ShareIcon className="fill-current w-3 h-auto" />
-            <span className="ml-2 font-medium">SHARE</span>
           </button>
         </div>
       </div>
