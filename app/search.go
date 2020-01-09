@@ -19,6 +19,7 @@ func (app *App) SearchPodcasts(searchQuery string, offset, limit int) ([]*model.
 			TieBreaker(0.5),
 		).
 		Highlight(elastic.NewHighlight().
+			FragmentSize(200).
 			PreTags("<span class=\"result-highlight\">").
 			PostTags("</span>").
 			Fields(
@@ -58,6 +59,7 @@ func (app *App) SearchEpisodes(searchQuery, sortBy string, offset, limit int) ([
 			TieBreaker(0.4),
 		).
 		Highlight(elastic.NewHighlight().
+			FragmentSize(200).
 			PreTags("<span class=\"result-highlight\">").
 			PostTags("</span>").
 			Fields(
