@@ -136,7 +136,7 @@ export function getResults(
           podcastIds: podcastSearchResults.map((x) => x.id),
         })
 
-        if (podcasts.length < 25) {
+        if (podcasts.length < limit) {
           dispatch({
             type: T.SEARCH_RESULTS_LIST_RECEIVED_ALL,
             searchQuery: query,
@@ -165,7 +165,7 @@ export function getResults(
           episodeIds: episodeSearchResults.map((x) => x.id),
         })
 
-        if (episodes.length < 25) {
+        if (episodes.length < limit) {
           dispatch({
             type: T.SEARCH_RESULTS_LIST_RECEIVED_ALL,
             searchQuery: query,
