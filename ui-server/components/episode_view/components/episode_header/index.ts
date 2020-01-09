@@ -1,7 +1,15 @@
+import { startPlayback } from 'actions/playback'
+import { loadAndShowAddToPlaylistModal } from 'actions/playlist'
 import { connect } from 'react-redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { getPodcastById } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
-import EpisodeHeader, { OwnProps, StateToProps } from './episode_header'
+import { AppActions } from 'types/actions'
+import EpisodeHeader, {
+  DispatchToProps,
+  OwnProps,
+  StateToProps,
+} from './episode_header'
 
 function mapStateToProps(state: AppState, { episode }: OwnProps): StateToProps {
   return {
@@ -9,6 +17,19 @@ function mapStateToProps(state: AppState, { episode }: OwnProps): StateToProps {
   }
 }
 
-export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
-  EpisodeHeader,
-)
+function mapDispatchToProps(
+  dispatch: Dispatch<AppActions>,
+  { episode }: OwnProps,
+): DispatchToProps {
+  return {
+    playEpisode: (startTime: number) =>
+      bindActionCreators(startPlayback, dispatch)(episode.id, startTime),
+    showAddToPlaylistModal: () =>
+      bindActionCreators(loadAndShowAddToPlaylistModal, dispatch)(episode.id),
+  }
+}
+
+export default connect<StateToProps, DispatchToProps, OwnProps, AppState>(
+  mapStateToProps,
+  mapDispatchToProps,
+)(EpisodeHeader)
