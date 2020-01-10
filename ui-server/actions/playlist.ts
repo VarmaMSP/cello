@@ -97,3 +97,15 @@ export function removeEpisodeFromPlaylist(
     },
   )
 }
+
+export function deletePlaylist(playlistId: string) {
+  return requestAction(
+    () => client.serviceDeletePlaylist(playlistId),
+    (dispatch) => {
+      dispatch({
+        type: T.PLAYLIST_REMOVE,
+        playlistIds: [playlistId],
+      })
+    },
+  )
+}

@@ -1,12 +1,18 @@
 import { Playlist } from 'types/app'
 
-export const PLAYLIST_ADD = `playlist/add`
+export const PLAYLIST_ADD = 'playlist/add'
+export const PLAYLIST_REMOVE = 'playlist/remove'
 export const PLAYLIST_ADD_EPISODES = 'playlist/add_episodes'
 export const PLAYLIST_REMOVE_EPISODES = 'playlist/remove_episodes'
 
 interface AddAction {
   type: typeof PLAYLIST_ADD
   playlists: Playlist[]
+}
+
+interface RemoveAction {
+  type: typeof PLAYLIST_REMOVE
+  playlistIds: string[]
 }
 
 interface AddEpisodesAction {
@@ -23,5 +29,6 @@ interface RemoveEpisodesAction {
 
 export type PlaylistActionTypes =
   | AddAction
+  | RemoveAction
   | AddEpisodesAction
   | RemoveEpisodesAction

@@ -4,7 +4,7 @@ import { doFetch } from './fetch'
 
 export async function getPlaylist(
   playlistId: string,
-): Promise<{ playlist: Playlist; episodes: Episode[], podcasts: Podcast[] }> {
+): Promise<{ playlist: Playlist; episodes: Episode[]; podcasts: Podcast[] }> {
   const { data } = await doFetch({
     method: 'GET',
     urlPath: `/playlists/${playlistId}`,
@@ -83,5 +83,13 @@ export async function serviceRemoveEpisodeFromPlaylist(
       episode_id: episodeId,
       playlist_id: playlistId,
     },
+  })
+}
+
+export async function serviceDeletePlaylist(playlistId: string): Promise<void> {
+  await doFetch({
+    method: 'POST',
+    urlPath: `/ajax/service?endpoint=delete_playlist`,
+    body: { playlist_id: playlistId },
   })
 }

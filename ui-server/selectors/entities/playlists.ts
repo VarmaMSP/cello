@@ -17,6 +17,6 @@ export function makeGetPlaylistsByUser() {
   >(
     (state) => state.entities.playlists.byId,
     (state, userId) => state.entities.playlists.byUserId[userId] || [],
-    (all, ids) => ids.map((id) => all[id]),
+    (all, ids) => ids.map((id) => all[id]).filter((x) => !!x),
   )
 }

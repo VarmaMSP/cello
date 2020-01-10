@@ -17,6 +17,14 @@ const byId: Reducer<{ [playlistId: string]: Playlist }, T.AppActions> = (
         ),
       }
 
+    case T.PLAYLIST_REMOVE:
+      return Object.keys(state)
+        .filter((id) => !action.playlistIds.includes(id))
+        .reduce<{ [playlistId: string]: Playlist }>(
+          (acc, id) => ({ ...acc, [id]: state[id] }),
+          {},
+        )
+
     case T.PLAYLIST_ADD_EPISODES: {
       let obj = state[action.playlistId]
       return {
@@ -79,7 +87,7 @@ const byUserId: Reducer<{ [userId: string]: string[] }, T.AppActions> = (
       return state
   }
 }
- 
+
 export default combineReducers({
   byId,
   byUserId,
