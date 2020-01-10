@@ -1,13 +1,23 @@
+import { iconMap } from 'components/icon'
 import format from 'date-fns/format'
 import React from 'react'
 import { Playlist } from 'types/app'
 import { getImageUrl } from 'utils/dom'
 
-interface OwnProps {
+export interface DispatchToProps {
+  removePlaylist: () => void
+}
+
+export interface OwnProps {
   playlist: Playlist
 }
 
-const PlaylistInfo: React.SFC<OwnProps> = ({ playlist }) => {
+const PlaylistHeader: React.SFC<DispatchToProps & OwnProps> = ({
+  playlist,
+  removePlaylist,
+}) => {
+  const DeleteIcon = iconMap['trash']
+
   return (
     <div className="flex">
       <div className="flex flex-none items-center mx-auto cursor-pointer">
@@ -18,6 +28,7 @@ const PlaylistInfo: React.SFC<OwnProps> = ({ playlist }) => {
         <div className="w-2 h-32 bg-gray-400 rounded-r border-l border-white" />
         <div className="w-2 h-24 bg-gray-300 rounded-r border-l border-white" />
       </div>
+
       <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
         <div className="w-full">
           <h2 className="text-lg text-gray-900 leading-relaxed line-clamp-2">
@@ -28,6 +39,16 @@ const PlaylistInfo: React.SFC<OwnProps> = ({ playlist }) => {
             <span className="mx-2 font-extrabold">&middot;</span>
             {`${playlist.episodeCount} episodes`}
           </h4>
+        </div>
+
+        <div className="flex">
+          <button
+            className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-gray-700 bg-gray-200 border rounded-lg focus:outline-none focus:shadow-outline"
+            onClick={() => removePlaylist()}
+          >
+            <DeleteIcon className="fill-current w-4 h-auto" />
+            <span className="ml-2 font-medium tracking-wider">DELETE</span>
+          </button>
         </div>
       </div>
     </div>
@@ -43,4 +64,4 @@ function formatUpdateDate(updateDate: string) {
   return pubDate
 }
 
-export default PlaylistInfo
+export default PlaylistHeader

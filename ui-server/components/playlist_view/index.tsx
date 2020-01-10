@@ -4,8 +4,8 @@ import { connect } from 'react-redux'
 import { getPlaylistById } from 'selectors/entities/playlists'
 import { AppState } from 'store'
 import { Playlist } from 'types/app'
+import PlaylistHeader from './components/playlist_header'
 import HomeTab from './home_tab/home_tab'
-import PlaylistInfo from './playlist_info'
 
 export interface StateToProps {
   playlist: Playlist
@@ -20,11 +20,19 @@ const PlaylistView: React.FC<StateToProps & OwnProps> = ({
   playlist,
   activeTab,
 }) => {
+  if (playlist === undefined) {
+    return (
+      <div className="mt-8 text-2xl text-gray-900 tracking-wide">
+        {'Playlist not found.'}
+      </div>
+    )
+  }
+
   const playlistUrlParam = playlist.urlParam
 
   return (
     <div>
-      <PlaylistInfo playlist={playlist} />
+      <PlaylistHeader playlist={playlist} />
       <div className="mt-6 mb-4">
         <NavTabs
           tabs={[
