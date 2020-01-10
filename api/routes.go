@@ -15,6 +15,7 @@ const (
 	SERVICE_CREATE_PLAYLIST     = "create_playlist"
 	SERVICE_ADD_TO_PLAYLIST     = "add_to_playlist"
 	SERVICE_EDIT_PLAYLIST       = "edit_playlist"
+	SERVICE_DELETE_PLAYLIST     = "delete_playlist"
 	SERVICE_GET_PLAYBACKS       = "get_playbacks"
 	SERVICE_PLAYBACK_SYNC       = "playback_sync"
 	SERVICE_SUBSCRIBE_PODCAST   = "subscribe_podcast"
@@ -111,6 +112,12 @@ func AjaxService(c *Context, w http.ResponseWriter, req *http.Request) {
 		c.RequireSession().RequireAction()
 		if c.Err == nil {
 			ServiceEditPlaylist(c, w, req)
+		}
+
+	case SERVICE_DELETE_PLAYLIST:
+		c.RequireSession().RequireBody(req)
+		if c.Err == nil {
+			ServiceDeletePlaylist(c, w, req)
 		}
 
 	case SERVICE_GET_PLAYBACKS:

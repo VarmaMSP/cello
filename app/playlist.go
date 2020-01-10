@@ -115,3 +115,7 @@ func (app *App) GetPlaylistMembers(playlistIds, episodeIds []int64) ([]*model.Pl
 	}
 	return app.Store.Playlist().GetMembers(playlistIds, episodeIds)
 }
+
+func (app *App) DeletePlaylist(playlistId int64) *model.AppError {
+	return app.Store.Playlist().Delete(playlistId)
+}

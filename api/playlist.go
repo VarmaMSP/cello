@@ -202,3 +202,18 @@ func RemoveEpisodeFromPlaylist(c *Context, w http.ResponseWriter, req *http.Requ
 
 	w.WriteHeader(http.StatusOK)
 }
+
+func ServiceDeletePlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
+	playlistId, err := GetId(c.Body["playlist_id"])
+	if err != nil {
+		c.SetInvalidBodyParam("playlist_id")
+		return
+	}
+
+	if err := c.App.DeletePlaylist(playlistId); err != nil {
+		c.Err = err
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
