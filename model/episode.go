@@ -37,7 +37,7 @@ type Episode struct {
 	CreatedAt   int64
 	UpdatedAt   int64
 	// Fields from other models
-	Progress     float32
+	Progress     float64
 	LastPlayedAt string
 }
 
@@ -80,7 +80,7 @@ func (e *Episode) MarshalJSON() ([]byte, error) {
 		Episode      int     `json:"episode,omitempty"`
 		Season       int     `json:"season,omitempty"`
 		Type         string  `json:"type,omitempty"`
-		Progress     float32 `json:"progress,omitempty"`
+		Progress     float64 `json:"progress,omitempty"`
 		LastPlayedAt string  `json:"last_played_at,omitempty"`
 	}{
 		Id:           HashIdFromInt64(e.Id),

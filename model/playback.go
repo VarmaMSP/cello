@@ -6,6 +6,7 @@ const (
 	PLAYBACK_EVENT_PLAY     = "PLAY"
 	PLAYBACK_EVENT_PAUSE    = "PAUSE"
 	PLAYBACK_EVENT_PLAYING  = "PLAYING"
+	PLAYBACK_EVENT_BEGIN    = "BEGIN"
 	PLAYBACK_EVENT_COMPLETE = "COMPLETE"
 	PLAYBACK_EVENT_SEEK     = "SEEK"
 )
@@ -14,11 +15,19 @@ type Playback struct {
 	UserId             int64
 	EpisodeId          int64
 	PlayCount          int
-	CurrentProgress    float32
+	CurrentProgress    float64
 	CumulativeProgress float32
 	LastPlayedAt       string
 	CreatedAt          int64
 	UpdatedAt          int64
+}
+
+type PlaybackEvent struct {
+	Event     string
+	UserId    int64
+	EpisodeId int64
+	Position  float64
+	CreatedAt int64
 }
 
 func (p *Playback) DbColumns() []string {
@@ -32,7 +41,7 @@ func (p *Playback) FieldAddrs() []interface{} {
 func (p *Playback) MarhsalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		EpisodeId    string  `json:"episode_id"`
-		Progress     float32 `json:"progress"`
+		Progress     float64 `json:"progress"`
 		LastPlayedAt string  `json:"last_played_at"`
 	}{
 		EpisodeId:    HashIdFromInt64(p.EpisodeId),
