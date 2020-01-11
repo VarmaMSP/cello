@@ -8,6 +8,7 @@ import striptags from 'striptags'
 import { Episode, Podcast } from 'types/app'
 
 export interface StateToProps {
+  isUserSignedIn: boolean
   podcast: Podcast
   episodes: Episode[]
   receivedAll: boolean
@@ -27,6 +28,7 @@ export interface OwnProps {
 interface Props extends StateToProps, DispatchToProps, OwnProps {}
 
 const ListEpisodes: React.SFC<Props> = ({
+  isUserSignedIn,
   podcast,
   episodes,
   showAddToPlaylistModal,
@@ -38,6 +40,10 @@ const ListEpisodes: React.SFC<Props> = ({
   useEffect(() => {
     loadPlaybacks(episodes.map((e) => e.id))
   }, [])
+
+  useEffect(() => {
+    loadPlaybacks(episodes.map((e) => e.id))
+  }, [isUserSignedIn])
 
   return (
     <>

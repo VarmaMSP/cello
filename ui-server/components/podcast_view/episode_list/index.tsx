@@ -6,10 +6,15 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { getEpisodesByIds } from 'selectors/entities/episodes'
 import { getPodcastById } from 'selectors/entities/podcasts'
 import { getPodcastEpisodesStatus } from 'selectors/request'
+import { getIsUserSignedIn } from 'selectors/session'
 import { makeSelectPodcastEpisodeList } from 'selectors/ui/podcast_episodes_list'
 import { AppState } from 'store'
 import * as T from 'types/actions'
-import ListEpisodes, { DispatchToProps, OwnProps, StateToProps } from './episode_list'
+import ListEpisodes, {
+  DispatchToProps,
+  OwnProps,
+  StateToProps,
+} from './episode_list'
 
 function makeMapStateToProps() {
   const selectPodcastEpisodeList = makeSelectPodcastEpisodeList()
@@ -21,6 +26,7 @@ function makeMapStateToProps() {
     })
 
     return {
+      isUserSignedIn: getIsUserSignedIn(state),
       podcast: getPodcastById(state, podcastId),
       episodes: getEpisodesByIds(state, episodeIds),
       receivedAll,
