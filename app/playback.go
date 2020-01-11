@@ -13,18 +13,21 @@ func (app *App) GetUserPlaybacksForEpisodes(userId int64, episodeIds []int64) ([
 	return app.Store.Playback().GetByUserByEpisodes(userId, episodeIds)
 }
 
-func (app *App) SyncPlayback(episodeId, userId int64, event string, position float32) *model.AppError {
-	if event == model.PLAYBACK_EVENT_COMPLETE {
+func (app *App) SyncPlayback(episodeId, userId int64, event string, position float64) *model.AppError {
+	if event == model.PLAYBACK_EVENT_BEGIN {
 		return app.Store.Playback().Upsert(&model.Playback{
 			UserId:    userId,
 			EpisodeId: episodeId,
 		})
 	}
 
-	app.SyncEpisodePlaybackP.D <- &model.PlaybackEvent{
-		UserId:    userId,
-		EpisodeId: episodeId,
-		Position:  position,
+	if event == model.PLAYBACK_EVENT_PLAYING {
+		app.SyncEpisodePlaybackP.D <- &model.PlaybackEvent{
+			Event:     model.PLAYBACK_EVENT_PLAYING,
+			UserId:    userId,
+			EpisodeId: episodeId,
+			Position:  position,
+		}
 	}
 	return nil
 }

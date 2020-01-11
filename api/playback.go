@@ -57,7 +57,7 @@ func PlaybackBegin(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err := c.App.SyncPlayback(episodeId, c.Params.UserId, model.PLAYBACK_EVENT_COMPLETE, 0)
+	err := c.App.SyncPlayback(episodeId, c.Params.UserId, model.PLAYBACK_EVENT_BEGIN, 0)
 	if err != nil {
 		c.Err = err
 		return
@@ -73,13 +73,13 @@ func PlaybackProgress(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	progress, ok := c.Body["progress"].(float32)
+	position, ok := c.Body["position"].(float64)
 	if !ok {
-		c.SetInvalidBodyParam("progress")
+		c.SetInvalidBodyParam("position")
 		return
 	}
 
-	err := c.App.SyncPlayback(episodeId, c.Params.UserId, model.PLAYBACK_EVENT_COMPLETE, progress)
+	err := c.App.SyncPlayback(episodeId, c.Params.UserId, model.PLAYBACK_EVENT_PLAYING, position)
 	if err != nil {
 		c.Err = err
 		return

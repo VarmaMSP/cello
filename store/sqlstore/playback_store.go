@@ -93,18 +93,19 @@ func (s *SqlPlaybackStore) GetByUserByEpisodes(userId int64, episodeIds []int64)
 	return
 }
 
-func (s *SqlPlaybackStore) Update(progress *model.PlaybackProgress) *model.AppError {
+func (s *SqlPlaybackStore) Update(playback *model.Playback) *model.AppError {
 	sql := fmt.Sprintf(
-		`UPDATE playback 
-			SET progress = %f, total_progress = total_progess + %f, updated_at = %d
-			WHERE user_id = %d AND episode_id = %d`,
-		progress.Progress, progress.ProgressDelta, model.Now(), progress.UserId, progress.EpisodeId,
+		`UPDATE playback SET
+			current_progress = %f,
+			updated_at = %d
+		WHERE user_id = %d AND episode_id = %d`,
+		playback.CurrentProgress, model.Now(), playback.UserId, playback.EpisodeId,
 	)
 
 	if _, err := s.GetMaster().Exec(sql); err != nil {
 		return model.NewAppError(
 			"store.sqlstore.sql_playback_store.update", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"user_id": progress.UserId, "episode_id": progress.EpisodeId, "progress": progress.Progress},
+			map[string]interface{}{"user_id": playback.UserId, "episode_id": playback.EpisodeId},
 		)
 	}
 	return nil
