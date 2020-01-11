@@ -58,6 +58,7 @@ type EpisodeStore interface {
 
 type PlaybackStore interface {
 	Save(playback *model.Playback) *model.AppError
+	Upsert(playback *model.Playback) *model.AppError
 	GetByUserPaginated(userId int64, offset, limit int) ([]*model.Playback, *model.AppError)
 	GetByUserByEpisodes(userId int64, episodeIds []int64) ([]*model.Playback, *model.AppError)
 	Update(progress *model.PlaybackProgress) *model.AppError

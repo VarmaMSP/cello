@@ -28,6 +28,30 @@ func (s *SqlPlaybackStore) Save(playback *model.Playback) *model.AppError {
 	return nil
 }
 
+func (s *SqlPlaybackStore) Upsert(playback *model.Playback) *model.AppError {
+	playback.PreSave()
+
+	sql := fmt.Sprintf(
+		`INSERT INTO playback (%s) VALUES (%s)
+			ON DUPLICATE KEY UPDATE
+				play_count = play_count + 1,
+				last_played_at = '%s',
+				updated_at = %d`,
+		joinStrings(playback.DbColumns(), ","),
+		joinValues(playback.FieldAddrs(), ","),
+		model.NowDateTime(),
+		model.Now(),
+	)
+
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_playback_store.upsert", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"episode_id": playback.EpisodeId, "user_id": playback.UserId},
+		)
+	}
+	return nil
+}
+
 func (s *SqlPlaybackStore) GetByUserPaginated(userId int64, offset, limit int) (res []*model.Playback, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM playback WHERE user_id = %d ORDER by last_played_at DESC LIMIT %d, %d`,

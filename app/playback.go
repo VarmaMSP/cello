@@ -15,7 +15,7 @@ func (app *App) GetUserPlaybacksForEpisodes(userId int64, episodeIds []int64) ([
 
 func (app *App) SyncPlayback(episodeId, userId int64, event string, position float32) *model.AppError {
 	if event == model.PLAYBACK_EVENT_COMPLETE {
-		return app.Store.Playback().Save(&model.Playback{
+		return app.Store.Playback().Upsert(&model.Playback{
 			UserId:    userId,
 			EpisodeId: episodeId,
 		})

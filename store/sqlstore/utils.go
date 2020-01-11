@@ -61,7 +61,10 @@ func UpdateQuery(
 	var updates []string
 	for i := 0; i < len(oldValues); i++ {
 		if oldValues[i] != newValues[i] {
-			updates = append(updates, fmt.Sprintf("%s = %v", cols[i], newValues[i]))
+			updates = append(
+				updates,
+				fmt.Sprintf("%s = %s", cols[i], formatToSqlValue(newValues[i])),
+			)
 		}
 	}
 
@@ -75,6 +78,22 @@ func UpdateQuery(
 		tableName, joinStrings(updates, ","), whereClause,
 	)
 	return
+}
+
+func formatToSqlValue(i interface{}) string {
+	switch v := i.(type) {
+	case int:
+		return fmt.Sprintf("%d", v)
+
+	case int64:
+		return fmt.Sprintf("%d", v)
+
+	case string:
+		return fmt.Sprintf("'%s'", v)
+
+	default:
+		return fmt.Sprintf("%v", v)
+	}
 }
 
 func Replicate(s string, n int) []string {
@@ -113,6 +132,14 @@ func joinInt64s(vals []int64, sep string) string {
 		s[i] = model.StrFromInt64(val)
 	}
 	return joinStrings(s, sep)
+}
+
+func joinValues(addrs []interface{}, sep string) string {
+	s := make([]string, len(addrs))
+	for i, addr := range addrs {
+		s[i] = formatToSqlValue(reflect.ValueOf(addr).Elem().Interface())
+	}
+	return strings.Join(s, sep)
 }
 
 func MakeMysqlDSN(config *model.Config) string {
