@@ -18,7 +18,7 @@ export interface StateToProps {
 }
 
 export interface DispatchToProps {
-  syncPlayback: (episodeId: string, currentTime: number) => void
+  syncPlayback: (episodeId: string, position: number) => void
   setDuration: (t: number) => void
   setAudioState: (s: AudioState) => void
   setCurrentTime: (t: number) => void
@@ -39,7 +39,11 @@ export default class AudioPlayer extends Component<Props> {
     if (episodeId !== '' && episodeId !== prevProps.episodeId) {
       this.audio.src = this.props.episode.mediaUrl
       this.audio.currentTime = this.props.currentTime
-      this.props.syncPlayback(prevProps.episodeId, prevProps.currentTime)
+      this.props.syncPlayback(
+        prevProps.episodeId,
+        (prevProps.currentTime / prevProps.duration) * 100,
+      )
+      console.log(prevProps.currentTime, prevProps.duration)
     }
   }
 
@@ -61,7 +65,10 @@ export default class AudioPlayer extends Component<Props> {
     // Pause
     this.audio.addEventListener('pause', () => {
       this.props.setAudioState('PAUSED')
-      this.props.syncPlayback(this.props.episodeId, this.audio.currentTime)
+      this.props.syncPlayback(
+        this.props.episodeId,
+        (this.audio.currentTime / this.audio.duration) * 100,
+      )
     })
     // Loading
     this.audio.addEventListener('loadstart', () => {
@@ -73,7 +80,7 @@ export default class AudioPlayer extends Component<Props> {
     //Ended
     this.audio.addEventListener('ended', () => {
       this.props.setAudioState('ENDED')
-      this.props.syncPlayback(this.props.episodeId, this.audio.duration)
+      this.props.syncPlayback(this.props.episodeId, 100)
     })
     // Duration
     this.audio.addEventListener('durationchange', () => {
@@ -90,9 +97,15 @@ export default class AudioPlayer extends Component<Props> {
     }
 
     setInterval(() => {
-      const { episodeId, syncPlayback, audioState, currentTime } = this.props
+      const {
+        episodeId,
+        syncPlayback,
+        duration,
+        audioState,
+        currentTime,
+      } = this.props
       if (audioState === 'PLAYING') {
-        syncPlayback(episodeId, currentTime)
+        syncPlayback(episodeId, (currentTime / duration) * 100)
       }
     }, 5000)
   }

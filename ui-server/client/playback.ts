@@ -20,13 +20,17 @@ export async function startPlayback(episodeId: string): Promise<void> {
   await doFetch({
     method: 'POST',
     urlPath: `/ajax/service?endpoint=playback_sync&action=playback_begin`,
-    body: { episode_id: episodeId}
+    body: { episode_id: episodeId },
   })
 }
 
-export async function syncPlayback(episodeId: string): Promise<void> {
+export async function syncPlayback(
+  episodeId: string,
+  position: number,
+): Promise<void> {
   await doFetch({
     method: 'POST',
-    urlPath: `/playback/${episodeId}/sync`,
+    urlPath: `/ajax/service?endpoint=playback_sync&action=playback_progress`,
+    body: { episode_id: episodeId, position: Number(position.toFixed(6)) },
   })
 }

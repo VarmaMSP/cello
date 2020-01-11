@@ -28,15 +28,15 @@ export function startPlayback(episodeId: string, beginAt: number) {
         cond: 'CUSTOM',
         p: (getState) =>
           !getIsUserSignedIn(getState()) ||
-          getPlayingEpisodeId(getState()) == '',
+          getPlayingEpisodeId(getState()) == episodeId,
       },
     },
   )
 }
 
-export function syncPlayback(episodeId: string) {
+export function syncPlayback(episodeId: string, position: number) {
   return requestAction(
-    () => client.syncPlayback(episodeId),
+    () => client.syncPlayback(episodeId, position),
     () => {},
     { skip: { cond: 'USER_NOT_SIGNED_IN' } },
   )
