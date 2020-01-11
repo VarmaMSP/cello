@@ -1,11 +1,13 @@
 import ButtonShowMore from 'components/button_show_more'
 import EpisodeListItem from 'components/episode_list_item'
 import PodcastPreview from 'components/podcast_preview'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SearchResultType, SearchSortBy } from 'types/search'
 
 export interface StateToProps {
+  isUserSignedIn: boolean
   searchBarText: string
+  query: string
   resultType: SearchResultType
   sortBy: SearchSortBy
   podcastIds: string[]
@@ -22,10 +24,13 @@ export interface DispatchToProps {
     d: number,
     e: number,
   ) => void
+  loadPlaybacks: (episodeIds: string[]) => void
 }
 
 const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
+  isUserSignedIn,
   searchBarText,
+  query,
   resultType,
   sortBy,
   podcastIds,
@@ -33,7 +38,20 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
   receivedAll,
   isLoadingMore,
   loadMore,
+  loadPlaybacks,
 }) => {
+  useEffect(() => {
+    if (resultType === 'episode') {
+      loadPlaybacks(episodeIds)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (resultType === 'episode') {
+      loadPlaybacks(episodeIds)
+    }
+  }, [isUserSignedIn, query, resultType, sortBy])
+
   if (resultType === 'podcast') {
     if (podcastIds.length === 0) {
       return isLoadingMore ? (
