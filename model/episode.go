@@ -265,7 +265,7 @@ func EpisodesJoinPlaybacks(episodes []*Episode, playbacks []*Playback) {
 
 	for _, episode := range episodes {
 		if playback, ok := playbackMap[episode.Id]; ok {
-			episode.Progress = playback.Progress
+			episode.Progress = playback.CurrentProgress
 			episode.LastPlayedAt = playback.LastPlayedAt
 		}
 	}

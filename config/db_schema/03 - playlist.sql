@@ -1,8 +1,5 @@
 USE `phenopod`;
 
-DROP TABLE IF EXISTS `playlist_member`;
-DROP TABLE IF EXISTS `playlist`;
-
 CREATE TABLE `playlist` (
     `id`                         INT AUTO_INCREMENT,
     `user_id`                    INT,

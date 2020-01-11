@@ -2,24 +2,31 @@ package model
 
 import "encoding/json"
 
+const (
+	PLAYBACK_EVENT_PLAY     = "PLAY"
+	PLAYBACK_EVENT_PAUSE    = "PAUSE"
+	PLAYBACK_EVENT_PLAYING  = "PLAYING"
+	PLAYBACK_EVENT_COMPLETE = "COMPLETE"
+	PLAYBACK_EVENT_SEEK     = "SEEK"
+)
+
 type Playback struct {
-	UserId          int64
-	EpisodeId       int64
-	PlayCount       int
-	EpisodeDuration int
-	Progress        float32
-	TotalProgress   float32
-	LastPlayedAt    string
-	CreatedAt       int64
-	UpdatedAt       int64
+	UserId             int64
+	EpisodeId          int64
+	PlayCount          int
+	CurrentProgress    float32
+	CumulativeProgress float32
+	LastPlayedAt       string
+	CreatedAt          int64
+	UpdatedAt          int64
 }
 
 func (p *Playback) DbColumns() []string {
-	return []string{"user_id", "episode_id", "play_count", "episode_duration", "progress", "total_progress", "last_played_at", "created_at", "updated_at"}
+	return []string{"user_id", "episode_id", "play_count", "current_progress", "cumulative_progress", "last_played_at", "created_at", "updated_at"}
 }
 
 func (p *Playback) FieldAddrs() []interface{} {
-	return []interface{}{&p.UserId, &p.EpisodeId, &p.PlayCount, &p.EpisodeDuration, &p.Progress, &p.TotalProgress, &p.LastPlayedAt, &p.CreatedAt, &p.UpdatedAt}
+	return []interface{}{&p.UserId, &p.EpisodeId, &p.PlayCount, &p.CurrentProgress, &p.CumulativeProgress, &p.LastPlayedAt, &p.CreatedAt, &p.UpdatedAt}
 }
 
 func (p *Playback) MarhsalJSON() ([]byte, error) {
@@ -29,12 +36,16 @@ func (p *Playback) MarhsalJSON() ([]byte, error) {
 		LastPlayedAt string  `json:"last_played_at"`
 	}{
 		EpisodeId:    HashIdFromInt64(p.EpisodeId),
-		Progress:     p.Progress,
+		Progress:     p.CurrentProgress,
 		LastPlayedAt: p.LastPlayedAt,
 	})
 }
 
 func (p *Playback) PreSave() {
+	if p.PlayCount == 0 {
+		p.PlayCount = 1
+	}
+
 	if p.LastPlayedAt == "" {
 		p.LastPlayedAt = NowDateTime()
 	}

@@ -6,6 +6,8 @@ DROP TABLE IF EXISTS `facebook_account`;
 DROP TABLE IF EXISTS `twitter_account`;
 DROP TABLE IF EXISTS `playback`;
 DROP TABLE IF EXISTS `subscription`;
+DROP TABLE IF EXISTS `playlist_member`;
+DROP TABLE IF EXISTS `playlist`;
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
@@ -79,9 +81,8 @@ CREATE TABLE `playback` (
     `user_id`                   INT,
     `episode_id`                INT,
     `play_count`                SMALLINT,
-    `epiosde_duration`          INT,
-    `progress`                  FLOAT,
-    `total_progress`            FLOAT,
+    `current_progress`          FLOAT,
+    `cumulative_progress`       FLOAT,
     `last_played_at`            DATETIME,
     `created_at`                BIGINT,
     `updated_at`                BIGINT,
