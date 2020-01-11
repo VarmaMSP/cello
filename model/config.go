@@ -69,7 +69,7 @@ type Jobs struct {
 	ImportPodcast   Job_ `mapstructure:"import_podcast"`
 	RefreshPodcast  Job_ `mapstructure:"refresh_podcast"`
 	CreateThumbnail Job_ `mapstructure:"create_thumbnail"`
-	SyncPlayback    Job_ `mapstructure:"sync_episode_playback"`
+	SyncPlayback    Job_ `mapstructure:"sync_playback"`
 }
 
 type Job_ struct {

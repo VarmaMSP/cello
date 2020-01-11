@@ -32,27 +32,29 @@ func NewSyncPlaybackJob(app *app.App, config *model.Config) (model.Job, error) {
 	return &SyncPlaybackJob{
 		App:            app,
 		input:          syncPlaybackC.D,
-		inputBatchSize: config.Queues.SyncPlayback.ConsumerPreFetchCount,
+		inputBatchSize: 1000,
 	}, nil
 }
 
 func (job *SyncPlaybackJob) Run() {
-	timeout := time.NewTimer(time.Minute)
+	timeout := time.NewTimer(10 * time.Second)
 
 	for {
 		var deliveries []amqp.Delivery
 	BATCH_LOOP:
-		for i, _ := 0, timeout.Reset(30*time.Second); i < job.inputBatchSize; i++ {
+		for i, _ := 0, timeout.Reset(10*time.Second); i < job.inputBatchSize; i++ {
 			select {
 			case delivery := <-job.input:
 				deliveries = append(deliveries, delivery)
 				if len(deliveries) == job.inputBatchSize && !timeout.Stop() {
 					<-timeout.C
 				}
+
 			case <-timeout.C:
 				break BATCH_LOOP
 			}
 		}
+
 		if len(deliveries) == 0 {
 			continue
 		}
@@ -81,13 +83,11 @@ func (job *SyncPlaybackJob) Call(deliveries []amqp.Delivery) {
 	for _, x := range eventsByUserByEpisode {
 		for _, y := range x {
 			sort.Slice(y, func(i, j int) bool { return false })
-			progress := &model.PlaybackProgress{
-				UserId:        y[len(y)-1].UserId,
-				EpisodeId:     y[len(y)-1].EpisodeId,
-				Progress:      y[len(y)-1].Position,
-				ProgressDelta: y[len(y)-1].Position - y[0].Position,
-			}
-			job.Store.Playback().Update(progress)
+			job.Store.Playback().Update(&model.Playback{
+				UserId:          y[len(y)-1].UserId,
+				EpisodeId:       y[len(y)-1].EpisodeId,
+				CurrentProgress: y[len(y)-1].Position,
+			})
 		}
 	}
 }
