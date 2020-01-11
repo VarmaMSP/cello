@@ -3,14 +3,17 @@ import React from 'react'
 import { SearchResultType, SearchSortBy } from 'types/search'
 
 export interface StateToProps {
+  query: string
   resultType: SearchResultType
   sortBy: SearchSortBy
 }
 
 export interface DispatchToProps {
-  setResultType: (t: SearchResultType) => void
-  setSortBy: (s: SearchSortBy) => void
-  loadResultsPage: () => void
+  loadResultsPage: (
+    query: string,
+    resultType: SearchResultType,
+    sortBy: SearchSortBy,
+  ) => void
 }
 
 const SearchResultsFilter: React.FC<StateToProps & DispatchToProps> = (
@@ -18,15 +21,13 @@ const SearchResultsFilter: React.FC<StateToProps & DispatchToProps> = (
 ) => {
   const onResultTypeChange = (t: SearchResultType) => {
     if (props.resultType !== t) {
-      props.setResultType(t)
-      props.loadResultsPage()
+      props.loadResultsPage(props.query, t, props.sortBy)
     }
   }
 
   const onSortByChange = (s: SearchSortBy) => {
     if (props.sortBy !== s) {
-      props.setSortBy(s)
-      props.loadResultsPage()
+      props.loadResultsPage(props.query, props.resultType, s)
     }
   }
 

@@ -1,21 +1,17 @@
 import * as client from 'client/search'
 import Router from 'next/router'
 import { Dispatch } from 'redux'
-import { getText } from 'selectors/ui/search_bar'
-import { getResultType, getSortBy } from 'selectors/ui/search_results_list'
-import { AppState } from 'store'
 import * as T from 'types/actions'
 import { SearchResultType, SearchSortBy } from 'types/search'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
-export function loadResultsPage() {
-  return async (dispatch: Dispatch<T.AppActions>, getState: () => AppState) => {
-    const state = getState()
-    const query = getText(state)
-    const resultType = getResultType(state)
-    const sortBy = getSortBy(state)
-
+export function loadResultsPage(
+  query: string,
+  resultType: SearchResultType,
+  sortBy: SearchSortBy,
+) {
+  return async (dispatch: Dispatch<T.AppActions>) => {
     dispatch({
       type: T.HISTORY_PUSH_ENTRY,
       entry: {

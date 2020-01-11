@@ -1,6 +1,7 @@
 import ButtonSignIn from 'components/button_signin'
 import ButtonWithIcon from 'components/button_with_icon'
 import React, { Component } from 'react'
+import { SearchResultType, SearchSortBy } from 'types/search'
 import AppLogo from './components/app_logo'
 import SearchBar from './components/search_bar'
 import FullWidthSearchBar from './components/search_bar_full_width'
@@ -9,11 +10,13 @@ import UserSettings from './components/user_settings'
 export interface StateToProps {
   userSignedIn: boolean
   searchText: string
+  resultType: SearchResultType
+  sortBy: SearchSortBy
 }
 
 export interface DispatchToProps {
   searchTextChange: (text: string) => void
-  loadResultsPage: () => void
+  loadResultsPage: (query: string, resultType: SearchResultType, sortBy: SearchSortBy) => void
 }
 
 interface Props extends StateToProps, DispatchToProps {}
@@ -45,7 +48,7 @@ export default class TopNavbar extends Component<Props, State> {
       this.setState({ showFullWidthSearchBar: false })
     }
 
-    this.props.loadResultsPage()
+    this.props.loadResultsPage(this.props.searchText, this.props.resultType, this.props.sortBy)
   }
 
   render() {
