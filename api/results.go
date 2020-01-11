@@ -127,6 +127,15 @@ func BrowseResults(c *Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		if c.Session != nil && c.Session.UserId != 0 {
+			playbacks, err := c.App.GetUserPlaybacksForEpisodes(c.Session.UserId, episodeIds)
+			if err != nil {
+				c.Err = err
+				return
+			}
+			model.EpisodesJoinPlaybacks(episodes, playbacks)
+		}
+
 		podcastIds := make([]int64, len(episodes))
 		for i, episode := range episodes {
 			podcastIds[i] = episode.PodcastId
