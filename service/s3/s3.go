@@ -15,8 +15,8 @@ const (
 func NewS3Client(config *model.Config) (*minio.Client, error) {
 	s3Client, err := minio.New(
 		config.Minio.Address,
-		config.Minio.AccessKeyId,
-		config.Minio.SecretAccessKey,
+		config.Minio.AccessKey,
+		config.Minio.SecretKey,
 		false,
 	)
 	if err != nil {

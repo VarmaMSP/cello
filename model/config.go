@@ -42,9 +42,9 @@ type Redis struct {
 
 // MINIO CONFIGURATION
 type Minio struct {
-	Address         string `mapstructure:"address"`
-	AccessKeyId     string `mapstructure:"access_key_id"`
-	SecretAccessKey string `mapstructure:"secret_access_key"`
+	Address   string `mapstructure:"address"`
+	AccessKey string `mapstructure:"access_key"`
+	SecretKey string `mapstructure:"secret_key"`
 }
 
 // Queue
