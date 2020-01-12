@@ -27,16 +27,11 @@ func (app *App) CreatePlaylist(title, privacy, description string, userId int64)
 	return playlist, nil
 }
 
-func (app *App) AddEpisodeToPlaylist(playlistId, episodeId int64) *model.AppError {
-	playlist, err := app.Store.Playlist().Get(playlistId)
-	if err != nil {
-		return err
-	}
-
+func (app *App) AddEpisodeToPlaylist(playlistId, episodeId int64, position int) *model.AppError {
 	if err := app.Store.Playlist().SaveMember(&model.PlaylistMember{
 		PlaylistId: playlistId,
 		EpisodeId:  episodeId,
-		Position:   playlist.EpisodeCount + 1,
+		Position:   position,
 	}); err != nil {
 		return err
 	}

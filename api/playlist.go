@@ -37,6 +37,18 @@ func GetPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if playlist.Privacy == "PRIVATE" {
+		if c.Session == nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		if c.Session.UserId != playlist.UserId {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}
+
 	episodeIds := make([]int64, len(playlist.Members))
 	for i, member := range playlist.Members {
 		episodeIds[i] = member.EpisodeId
@@ -128,7 +140,7 @@ func ServiceCreatePlaylist(c *Context, w http.ResponseWriter, req *http.Request)
 	}
 
 	for i, episodeId := range episodeIds {
-		if err := c.App.AddEpisodeToPlaylist(playlist.Id, episodeId); err != nil {
+		if err := c.App.AddEpisodeToPlaylist(playlist.Id, episodeId, i+1); err != nil {
 			c.Err = err
 			return
 		}
@@ -174,7 +186,18 @@ func AddEpisodeToPlaylist(c *Context, w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if err := c.App.AddEpisodeToPlaylist(playlistId, episodeId); err != nil {
+	playlist, err := c.App.GetPlaylist(playlistId, false)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	if c.Session.UserId != playlist.UserId {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if err := c.App.AddEpisodeToPlaylist(playlistId, episodeId, playlist.EpisodeCount+1); err != nil {
 		c.Err = err
 		return
 	}
@@ -195,6 +218,17 @@ func RemoveEpisodeFromPlaylist(c *Context, w http.ResponseWriter, req *http.Requ
 		return
 	}
 
+	playlist, err := c.App.GetPlaylist(playlistId, false)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	if c.Session.UserId != playlist.UserId {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	if err := c.App.RemoveEpisodeFromPlaylist(playlistId, episodeId); err != nil {
 		c.Err = err
 		return
@@ -207,6 +241,17 @@ func ServiceDeletePlaylist(c *Context, w http.ResponseWriter, req *http.Request)
 	playlistId, err := GetId(c.Body["playlist_id"])
 	if err != nil {
 		c.SetInvalidBodyParam("playlist_id")
+		return
+	}
+
+	playlist, err := c.App.GetPlaylist(playlistId, false)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	if c.Session.UserId != playlist.UserId {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
