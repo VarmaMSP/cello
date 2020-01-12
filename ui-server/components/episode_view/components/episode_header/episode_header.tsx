@@ -1,7 +1,7 @@
 import { iconMap } from 'components/icon'
 import { PodcastLink } from 'components/link'
 import format from 'date-fns/format'
-import parseISO from 'date-fns/pareISO'
+import parseISO from 'date-fns/parseISO'
 import React from 'react'
 import { Episode, Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
@@ -65,7 +65,7 @@ const EpisodeHeader: React.FC<Props> = ({
             {duration}
           </div>
         </div>
-      
+
         <div className="flex">
           <button
             className="flex items-center mr-4 px-3 py-1 text-2xs text-center bg-indigo-500 text-white border hover:border-2 rounded-lg focus:outline-none focus:shadow-outline"
