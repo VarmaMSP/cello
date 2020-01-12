@@ -1,0 +1,7 @@
+minio_download_url: https://dl.min.io/server/minio/release/linux-amd64/minio
+
+minio_data_dir: /usr/local/share/minio
+minio_config_dir: /etc/minio
+
+minio_user: minio-user
+minio_group: minio
