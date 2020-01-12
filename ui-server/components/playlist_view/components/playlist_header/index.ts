@@ -1,9 +1,16 @@
 import { deletePlaylist } from 'actions/playlist'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
+import { getSignedInUserId } from 'selectors/session'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import PlaylistHeader, { DispatchToProps, OwnProps } from './playlist_header'
+import PlaylistHeader, { DispatchToProps, OwnProps, StateToProps } from './playlist_header'
+
+function mapStateToProps(state: AppState): StateToProps {
+  return {
+    signedInUserId: getSignedInUserId(state)
+  }
+}
 
 function mapDispatchToProps(
   dispatch: Dispatch<AppActions>,
@@ -15,7 +22,7 @@ function mapDispatchToProps(
   }
 }
 
-export default connect<{}, DispatchToProps, OwnProps, AppState>(
-  null,
+export default connect<StateToProps, DispatchToProps, OwnProps, AppState>(
+  mapStateToProps,
   mapDispatchToProps,
 )(PlaylistHeader)

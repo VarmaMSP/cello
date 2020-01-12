@@ -4,6 +4,10 @@ import React from 'react'
 import { Playlist } from 'types/app'
 import { getImageUrl } from 'utils/dom'
 
+export interface StateToProps {
+  signedInUserId: string
+}
+
 export interface DispatchToProps {
   removePlaylist: () => void
 }
@@ -12,7 +16,10 @@ export interface OwnProps {
   playlist: Playlist
 }
 
-const PlaylistHeader: React.SFC<DispatchToProps & OwnProps> = ({
+type Props = StateToProps & DispatchToProps & OwnProps
+
+const PlaylistHeader: React.SFC<Props> = ({
+  signedInUserId,
   playlist,
   removePlaylist,
 }) => {
@@ -42,13 +49,15 @@ const PlaylistHeader: React.SFC<DispatchToProps & OwnProps> = ({
         </div>
 
         <div className="flex">
-          <button
-            className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-gray-700 bg-gray-200 border rounded-lg focus:outline-none focus:shadow-outline"
-            onClick={() => removePlaylist()}
-          >
-            <DeleteIcon className="fill-current w-4 h-auto" />
-            <span className="ml-2 font-medium tracking-wider">DELETE</span>
-          </button>
+          {signedInUserId === playlist.userId && (
+            <button
+              className="flex items-center mr-4 px-3 py-1 text-2xs text-center text-gray-700 bg-gray-200 border rounded-lg focus:outline-none focus:shadow-outline"
+              onClick={() => removePlaylist()}
+            >
+              <DeleteIcon className="fill-current w-4 h-auto" />
+              <span className="ml-2 font-medium tracking-wider">DELETE</span>
+            </button>
+          )}
         </div>
       </div>
     </div>
