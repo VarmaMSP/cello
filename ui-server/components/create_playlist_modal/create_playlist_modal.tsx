@@ -73,7 +73,12 @@ const CreatePlaylistModal: React.FC<Props> = ({ createPlaylist }) => {
 
                 <label className="block mt-4">
                   <span className="text-gray-700">Privacy</span>
-                  <select className="form-select w-full mt-2">
+                  <select
+                    name="privacy"
+                    onChange={handleChange}
+                    className="form-select w-full mt-2"
+                    value={values.privacy}
+                  >
                     <option value="PUBLIC">Public</option>
                     <option value="PRIVATE">Private</option>
                   </select>
