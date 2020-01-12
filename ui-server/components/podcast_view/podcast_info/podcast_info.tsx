@@ -1,9 +1,9 @@
 import ButtonSubscribe from 'components/button_subscribe'
 import format from 'date-fns/format'
+import parseISO from 'date-fns/parseISO'
 import React from 'react'
 import { Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
-
 export interface OwnProps {
   podcast: Podcast
 }
@@ -25,7 +25,7 @@ const PodcastInfo: React.SFC<OwnProps> = ({ podcast }) => {
           </h3>
           <h4 className="text-xs text-gray-700">
             {`Since ${format(
-              new Date(`${podcast.earliestEpisodePubDate} +0000`),
+              parseISO(`${podcast.earliestEpisodePubDate} +0000`),
               'MMM yyyy',
             )}`}
             <span className="mx-2 font-extrabold">&middot;</span>

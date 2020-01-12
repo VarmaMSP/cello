@@ -1,5 +1,6 @@
 import GridResponsive from 'components/grid_responsive'
 import { PlaylistLink } from 'components/link'
+import { parseISO } from 'date-fns/esm'
 import format from 'date-fns/format'
 import React from 'react'
 import { Playlist } from 'types/app'
@@ -67,7 +68,7 @@ const PlaylistLibrary: React.FC<StateToProps> = ({ playlists }) => {
 function formatUpdateDate(updateDate: string) {
   let pubDate: string | undefined
   try {
-    pubDate = format(new Date(`${updateDate} +0000`), 'PP')
+    pubDate = format(parseISO(`${updateDate} +0000`), 'PP')
   } catch (err) {}
 
   return pubDate

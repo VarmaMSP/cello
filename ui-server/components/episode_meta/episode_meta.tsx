@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import format from 'date-fns/format'
+import parseISO from 'date-fns/parseISO'
 import React from 'react'
 import { Episode } from 'types/app'
 import { formatEpisodeDuration } from 'utils/format'
@@ -23,7 +24,7 @@ const EpisodeMeta: React.SFC<Props> = ({
 }) => {
   let pubDate: string | undefined
   try {
-    pubDate = format(new Date(`${episode.pubDate} +0000`), 'PP')
+    pubDate = format(parseISO(`${episode.pubDate} +0000`), 'PP')
   } catch (err) {}
 
   let duration: string | undefined

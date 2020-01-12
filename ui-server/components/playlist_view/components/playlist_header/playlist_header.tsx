@@ -1,4 +1,5 @@
 import { iconMap } from 'components/icon'
+import { parseISO } from 'date-fns'
 import format from 'date-fns/format'
 import React from 'react'
 import { Playlist } from 'types/app'
@@ -67,7 +68,7 @@ const PlaylistHeader: React.SFC<Props> = ({
 function formatUpdateDate(updateDate: string) {
   let pubDate: string | undefined
   try {
-    pubDate = format(new Date(`${updateDate} +0000`), 'PP')
+    pubDate = format(parseISO(`${updateDate} +0000`), 'PP')
   } catch (err) {}
 
   return pubDate

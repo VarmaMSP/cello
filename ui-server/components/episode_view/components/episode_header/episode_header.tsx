@@ -1,6 +1,7 @@
 import { iconMap } from 'components/icon'
 import { PodcastLink } from 'components/link'
 import format from 'date-fns/format'
+import parseISO from 'date-fns/pareISO'
 import React from 'react'
 import { Episode, Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
@@ -29,7 +30,7 @@ const EpisodeHeader: React.FC<Props> = ({
 }) => {
   let pubDate: string | undefined
   try {
-    pubDate = format(new Date(`${episode.pubDate} +0000`), 'PP')
+    pubDate = format(parseISO(`${episode.pubDate} +0000`), 'PP')
   } catch (err) {}
 
   let duration: string | undefined
