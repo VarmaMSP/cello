@@ -102,9 +102,10 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 		defer delivery.Ack(false)
 		defer func() { <-job.rateLimiter }()
 
+		now := model.Now()
+
 		// Updated feed
 		feedU := feed
-		feedU.LastRefreshAt = model.Now()
 
 		if rssFeed, headers, err := fetchRssFeed(feed.Url, map[string]string{}, job.httpClient); err != nil || rssFeed == nil {
 			feedU.LastRefreshComment = err.Error()
@@ -132,8 +133,11 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 		}
 
 	update_feed:
-		feedU.UpdatedAt = model.Now()
-		job.Store.Feed().Update(&feed, &feedU)
+		feedU.LastRefreshAt = now
+		feedU.UpdatedAt = now
+		if err := job.Store.Feed().Update(&feed, &feedU); err != nil {
+			job.log.Err(err)
+		}
 	}()
 }
 

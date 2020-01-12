@@ -98,9 +98,10 @@ func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 		defer delivery.Ack(false)
 		defer func() { <-job.rateLimiter }()
 
+		now := model.Now()
+
 		// Updated feed
 		feedU := feed
-		feedU.LastRefreshAt = model.Now()
 
 		if rssFeed, headers, err := fetchRssFeed(feed.Url, map[string]string{h.ETag: feed.ETag, h.LastModified: feed.LastModified}, job.httpClient); err != nil {
 			feedU.LastRefreshComment = err.Error()
@@ -137,8 +138,11 @@ func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 		}
 
 	update_feed:
-		feedU.UpdatedAt = model.Now()
-		job.Store.Feed().Update(&feed, &feedU)
+		feedU.LastRefreshAt = now
+		feedU.UpdatedAt = now
+		if err := job.Store.Feed().Update(&feed, &feedU); err != nil {
+			job.log.Err(err)
+		}
 	}()
 }
 
@@ -236,8 +240,8 @@ func (job *RefreshPodcastJob) save(refreshData *RefreshData) *model.AppError {
 	}
 
 	// Update Stats
+	podcastU.TotalEpisodes = podcastU.TotalEpisodes + len(episodesToAdd) - len(episodesToBlock)
 	if len(episodesToAdd) > 0 {
-		podcastU.TotalEpisodes = podcastU.TotalEpisodes + len(episodesToAdd) - len(episodesToBlock)
 		if podcastU.TotalSeasons < episodesToAdd[0].Season {
 			podcastU.TotalSeasons = episodesToAdd[0].Season
 		}
