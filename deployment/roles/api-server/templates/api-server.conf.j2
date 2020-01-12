@@ -20,6 +20,11 @@ redis:
   address: {{ redis_host }}:{{ redis_port }}
   max_idle_conn: {{ redis_max_idle_conn }}
 
+minio:
+  address: {{ minio_host }}:{{ minio_port }}
+  access_key: {{ passwords.minio_access_key }}
+  secret_key: {{ passwords.minio_secret_key }}
+
 queues:
   import_podcast:
     delivery_mode: 2

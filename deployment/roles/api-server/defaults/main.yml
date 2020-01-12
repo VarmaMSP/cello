@@ -25,6 +25,9 @@ redis_host: 127.0.0.1
 redis_port: 6379
 redis_max_idle_conn: 10
 
+minio_host: 127.0.0.1
+minio_port: 9000
+
 # Jobs
 import_podcast_enable: true
 import_podcast_concurrency: 15
