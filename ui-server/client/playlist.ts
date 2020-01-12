@@ -47,12 +47,13 @@ export async function serviceAddToPlaylist(
 export async function serviceCreatePlaylist(
   title: string,
   privacy: string,
+  description: string,
   episodeId: string,
 ): Promise<{ playlist: Playlist }> {
   const { data } = await doFetch({
     method: 'POST',
     urlPath: `/ajax/service?endpoint=create_playlist`,
-    body: { title, privacy, description: '', episode_ids: [episodeId] },
+    body: { title, privacy, description, episode_ids: [episodeId] },
   })
 
   return { playlist: unmarshal.playlist(data.playlist) }

@@ -9,7 +9,11 @@ export interface StateToProps {
 }
 
 export interface DispatchToProps {
-  createPlaylist: (title: string, privacy: PlaylistPrivacy) => void
+  createPlaylist: (
+    title: string,
+    privacy: PlaylistPrivacy,
+    description: string,
+  ) => void
 }
 
 export interface OwnProps {
@@ -23,17 +27,40 @@ const CreatePlaylistModal: React.FC<Props> = ({ createPlaylist }) => {
     <Overlay background="rgba(0, 0, 0, 0.65)">
       <ModalContainer className="modal-slim" header="Create Playlist">
         <Formik
-          initialValues={{ title: '', privacy: 'PUBLIC' }}
-          validate={() => ({})}
+          initialValues={{ title: '', privacy: 'PUBLIC', description: '' }}
+          validate={(values) => {
+            const errors: Partial<{ title: string; description: string }> = {}
+
+            if (values.title.length <= 2) {
+              errors.title = 'Too Short!'
+            }
+            if (values.title.length > 150) {
+              errors.title = 'Too Long!'
+            }
+
+            if (values.description.length > 150) {
+              errors.description = 'Too long'
+            }
+
+            return errors
+          }}
           onSubmit={(values) => {
-            createPlaylist(values.title, values.privacy as PlaylistPrivacy)
+            console.log(values)
+            createPlaylist(
+              values.title,
+              values.privacy as PlaylistPrivacy,
+              values.description,
+            )
           }}
         >
-          {({ values, isSubmitting, handleChange, handleSubmit }) => (
+          {({ values, errors, isSubmitting, handleChange, handleSubmit }) => (
             <form className="flex flex-col h-full" onSubmit={handleSubmit}>
               <div className="flex-1">
                 <label className="block">
                   <span className="text-gray-700">Title</span>
+                  <span className="ml-4 text-red-600 text-sm font-bold tracking-wide">
+                    {errors.title}
+                  </span>
                   <input
                     type="text"
                     name="title"
@@ -50,6 +77,23 @@ const CreatePlaylistModal: React.FC<Props> = ({ createPlaylist }) => {
                     <option value="PUBLIC">Public</option>
                     <option value="PRIVATE">Private</option>
                   </select>
+                </label>
+
+                <label className="block mt-4">
+                  <span className="text-gray-700 tracking-wide">
+                    {'Description (optional)'}
+                  </span>
+                  <span className="ml-4 text-red-600 text-sm font-bold tracking-wide">
+                    {errors.description}
+                  </span>
+                  <input
+                    type="text"
+                    name="description"
+                    onChange={handleChange}
+                    className="form-input w-full mt-2"
+                    placeholder="description"
+                    value={values.description}
+                  />
                 </label>
               </div>
 

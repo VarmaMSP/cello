@@ -5,11 +5,7 @@ import { getCreatePlaylistStatus } from 'selectors/request'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 import { PlaylistPrivacy } from 'types/app'
-import CreatePlaylistModal, {
-  DispatchToProps,
-  OwnProps,
-  StateToProps,
-} from './create_playlist_modal'
+import CreatePlaylistModal, { DispatchToProps, OwnProps, StateToProps } from './create_playlist_modal'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {
@@ -22,8 +18,13 @@ function mapDispatchToProps(
   { episodeId }: OwnProps,
 ): DispatchToProps {
   return {
-    createPlaylist: (title: string, privacy: PlaylistPrivacy) =>
-      bindActionCreators(createPlaylist, dispatch)(title, privacy, episodeId),
+    createPlaylist: (title: string, privacy: PlaylistPrivacy, description: string) =>
+      bindActionCreators(createPlaylist, dispatch)(
+        title,
+        privacy,
+        description,
+        episodeId,
+      ),
   }
 }
 

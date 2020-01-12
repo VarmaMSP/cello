@@ -49,10 +49,11 @@ export function loadAndShowAddToPlaylistModal(episodeId: string) {
 export function createPlaylist(
   title: string,
   privacy: PlaylistPrivacy,
+  description: string,
   episodeId: string,
 ) {
   return requestAction(
-    () => client.serviceCreatePlaylist(title, privacy, episodeId),
+    () => client.serviceCreatePlaylist(title, privacy, description, episodeId),
     (dispatch, _, { playlist }) => {
       dispatch({
         type: T.PLAYLIST_ADD,
