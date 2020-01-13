@@ -20,3 +20,9 @@
         redis_host: "{{ hostvars['hal']['private_ip'] }}"
         mysql_host: "{{ hostvars['keyser']['private_ip'] }}"
         minio_host: "{{ hostvars['keyser']['private_ip'] }}"
+
+        task_scheduler_enable: true
+        task_scheduler_worker_limit: 10
+
+        sync_playback_enable: true
+        sync_playback_worker_limit: 1
