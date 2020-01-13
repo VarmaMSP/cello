@@ -76,7 +76,7 @@ http {
             rewrite                            ^ $request_uri;
             rewrite                            ^/api/(.*) /api/$1 break;
             return                             400;
-            proxy_pass                         http://{{ hostvars['keyser']['private_ip'] }}:{{ rabbimq_management_port }}/$uri;
+            proxy_pass                         http://{{ hostvars['anton']['private_ip'] }}:{{ rabbimq_management_port }}/$uri;
             proxy_buffering                    off;
             proxy_set_header Host              $http_host;
             proxy_set_header X-Real-IP         $remote_addr;
@@ -85,7 +85,7 @@ http {
         }
 
         location / {
-            proxy_pass                         http://{{ hostvars['keyser']['private_ip'] }}:{{ rabbimq_management_port }}/;
+            proxy_pass                         http://{{ hostvars['anton']['private_ip'] }}:{{ rabbimq_management_port }}/;
             proxy_buffering                    off;
             proxy_set_header Host              $http_host;
             proxy_set_header X-Real-IP         $remote_addr;
@@ -115,7 +115,7 @@ http {
         ssl_prefer_server_ciphers on;
 
         location / {
-            proxy_pass http://localhost:{{ minio_port }}/;
+            proxy_pass http://{{ hostvars['anton']['private_ip'] }}:{{ minio_port }}/;
         }
     }
 
@@ -140,7 +140,7 @@ http {
         ssl_prefer_server_ciphers on;
 
         location /thumbnails/ {
-            proxy_pass http://localhost:{{ minio_port }}/thumbnails/;
+            proxy_pass http://{{ hostvars['anton']['private_ip'] }}:{{ minio_port }}/thumbnails/;
         }
     }
 
