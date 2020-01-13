@@ -29,16 +29,17 @@ minio_host: 127.0.0.1
 minio_port: 9000
 
 # Jobs
-import_podcast_enable: true
-import_podcast_concurrency: 15
+import_podcast_enable: false
+import_podcast_worker_limit: 0
 
-refresh_podcast_enable: true
-refresh_podcast_concurrency: 20
+refresh_podcast_enable: false
+refresh_podcast_worker_limit: 0
 
-create_thumbnail_enable: true
-create_thumbnail_concurrency: 3
+create_thumbnail_enable: false
+create_thumbnail_worker_limit: 0
 
-scheduler_enable: true
-scheduler_concurrency: 10
+task_scheduler_enable: false
+task_scheduler_worker_limit: 0
 
-sync_episode_playback_enable: true
+sync_playback_enable: false
+sync_playback_worker_limit: 0

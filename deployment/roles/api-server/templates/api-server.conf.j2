@@ -31,48 +31,49 @@ queues:
     consumer_name: import_podcast
     consumer_auto_ack: false
     consumer_exclusive: false
-    consumer_prefetch_count: 100
+    consumer_prefetch_count: 50
 
   refresh_podcast:
     delivery_mode: 2
     consumer_name: refresh_podcast
     consumer_auto_ack: false
     consumer_exclusive: false
-    consumer_prefetch_count: 100
+    consumer_prefetch_count: 50
 
   create_thumbnail:
     delivery_mode: 2
     consumer_name: create_thumbnail
     consumer_auto_ack: false
-    consumer_exclusive: true
+    consumer_exclusive: false
     consumer_prefetch_count: 10
   
   sync_playback:
     deleivery_mode: 1
-    consumer_name: sync_episode_playback
+    consumer_name: sync_playback
     consumer_auto_ack: true
     consumer_exclusive: true
-    consumer_prefetch_count: 1000
+    consumer_prefetch_count: 500
 
 jobs:
   import_podcast:
     enable: {{ import_podcast_enable }}
-    worker_limit: {{ import_podcast_concurrency }}
+    worker_limit: {{ import_podcast_worker_limit }}
 
   refresh_podcast:
     enable: {{ refresh_podcast_enable }}
-    worker_limit: {{ refresh_podcast_concurrency }}
+    worker_limit: {{ refresh_podcast_worker_limit }}
 
   create_thumbnail:
     enable: {{ create_thumbnail_enable }}
-    worker_limit: {{ create_thumbnail_concurrency }}
+    worker_limit: {{ create_thumbnail_worker_limit }}
 
   task_scheduler:
-    enable: {{ scheduler_enable }}
-    worker_limit: {{ scheduler_concurrency }}
+    enable: {{ task_scheduler_enable }}
+    worker_limit: {{ task_scheduler_worker_limit }}
   
   sync_playback:
-    enable: {{ sync_episode_playback_enable }}
+    enable: {{ sync_playback_enable }}
+    worker_limit: {{ sync_playback_worker_limit }}
 
 oauth:
   google:
