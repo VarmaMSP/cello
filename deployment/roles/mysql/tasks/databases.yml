@@ -7,3 +7,10 @@
   mysql_db:
     db: phenopod
     state: present
+
+- name: copy schema
+  copy:
+    src: "files/{{ item }}"
+    dest: "/usr/local/schema/{{ item }}"
+  loop:
+    - 0_1.sql
