@@ -52,7 +52,7 @@ type Queues struct {
 	ImportPodcast   Queue_ `mapstructure:"import_podcast"`
 	RefreshPodcast  Queue_ `mapstructure:"refresh_podcast"`
 	CreateThumbnail Queue_ `mapstructure:"create_thumbnail"`
-	SyncPlayback    Queue_ `mapstructure:"sync_episode_playback"`
+	SyncPlayback    Queue_ `mapstructure:"sync_playback"`
 }
 
 type Queue_ struct {
