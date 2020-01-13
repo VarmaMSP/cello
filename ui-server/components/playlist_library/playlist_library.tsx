@@ -1,7 +1,7 @@
 import GridResponsive from 'components/grid_responsive'
 import { PlaylistLink } from 'components/link'
-import { parseISO } from 'date-fns/esm'
 import format from 'date-fns/format'
+import parseISO from 'date-fns/parseISO'
 import React from 'react'
 import { Playlist } from 'types/app'
 import { getImageUrl } from 'utils/dom'
