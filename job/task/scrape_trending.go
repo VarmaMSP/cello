@@ -51,6 +51,7 @@ func (s *ScrapeTrending) Call() {
 				if err != nil {
 					continue
 				}
+				podcast.Sanitize()
 				podcasts = append(podcasts, podcast)
 			}
 		}

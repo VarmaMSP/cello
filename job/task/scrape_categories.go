@@ -50,10 +50,13 @@ func (s *ScrapeCategories) Call() {
 				if err != nil {
 					continue
 				}
+
 				podcast, err := s.Store.Podcast().Get(feed.Id)
 				if err != nil {
 					continue
 				}
+
+				podcast.Sanitize()
 				podcasts = append(podcasts, podcast)
 			}
 
