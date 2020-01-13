@@ -13,5 +13,5 @@ export function getClickPosition(e: TouchOrMouseEvent): { clientX: number } {
 export function getImageUrl(urlPath: string): string {
   return process.env.NODE_ENV === 'development'
     ? `http://localhost:8080/thumbnails/${urlPath}.jpg`
-    : `https://phenopod.com/thumbnails/${urlPath}.jpg`
+    : `https://cdn.phenopod.com/thumbnails/${urlPath}.jpg`
 }
