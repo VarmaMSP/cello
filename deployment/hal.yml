@@ -1,34 +1,22 @@
 - hosts: hal
-  vars:
-    skip_ui: false
-    skip_api: false
 
   tasks:
     - include_role:
         name: nginx
 
     - include_role:
+        name: redis
+
+    - include_role:
         name: cello
 
     - include_role:
         name: ui-server
-      when: skip_ui == false
 
     - include_role:
         name: api-server
       vars:
         mysql_host: "{{ hostvars['keyser']['private_ip'] }}"
-        rabbitmq_host: "{{ hostvars['keyser']['private_ip'] }}"
+        minio_host: "{{ hostvars['keyser']['private_ip'] }}"
+        rabbitmq_host: "{{ hostvars['anton']['private_ip'] }}"
         elasticsearch_host: "{{ hostvars['anton']['private_ip'] }}"
-        redis_host: "{{ hostvars['anton']['private_ip'] }}"
-
-        import_podcast_enable: false
-        refresh_podcast_enable: false
-        create_thumbnail_enable: true
-        scheduler_enable: true
-        sync_episode_playback_enable: false
-
-        create_thumbnail_concurrency: 3
-        scheduler_concurrency: 7
-
-      when: skip_api == false

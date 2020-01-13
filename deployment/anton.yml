@@ -1,11 +1,5 @@
 - hosts: anton
-  vars:
-    skip_api: false
-
   tasks:
-    - include_role:
-        name: redis
-
     - include_role:
         name: elasticsearch
       vars:
@@ -15,20 +9,14 @@
         name: kibana
 
     - include_role:
+        name: rabbitmq
+
+    - include_role:
         name: cello
 
     - include_role:
         name: api-server
       vars:
+        redis_host: "{{ hostvars['hal']['private_ip'] }}"
         mysql_host: "{{ hostvars['keyser']['private_ip'] }}"
-        rabbitmq_host: "{{ hostvars['keyser']['private_ip'] }}"
-
-        import_podcast_enable: true
-        refresh_podcast_enable: true
-        create_thumbnail_enable: false
-        scheduler_enable: false
-        sync_episode_playback_enable: true
-
-        import_podcast_concurrency: 20
-        refresh_podcast_concurrency: 130
-      when: skip_api == false
+        minio_host: "{{ hostvars['keyser']['private_ip'] }}"
