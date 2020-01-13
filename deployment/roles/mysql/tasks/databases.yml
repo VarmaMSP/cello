@@ -8,6 +8,11 @@
     db: phenopod
     state: present
 
+- name: ensure schema directory exists
+  file:
+    name: /usr/local/schema
+    state: directory
+
 - name: copy schema
   copy:
     src: "files/{{ item }}"

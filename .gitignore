@@ -6,4 +6,4 @@ logs/
 /ui-server/node_modules/
 /ui-server/components/icons/
 
-/deployment/hosts/
+/deployment/hosts/upcloud.yml
