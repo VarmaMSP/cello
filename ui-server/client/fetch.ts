@@ -60,7 +60,7 @@ export async function doFetch({
 function getBaseUrl(): string {
   if (process.browser) {
     return process.env.NODE_ENV === 'production'
-      ? 'https://phenopod.com/api'
+      ? 'https://api.phenopod.com'
       : 'http://localhost:8080/api'
   }
   return 'http://localhost:8081'
