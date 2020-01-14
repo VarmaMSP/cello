@@ -5,6 +5,7 @@ const (
 	TASK_NAME_SCRAPE_CATEGORIES        = "scrape_categories"
 	TASK_NAME_SCRAPE_ITUNES_DIRECTORY  = "scrape_itunes_directory"
 	TASK_NAME_SCHEDULE_PODCAST_REFRESH = "schedule_podcast_refresh"
+	TASK_NAME_REIMPORT_PODCASTS        = "reimport_podcasts"
 
 	TASK_TYPE_PERIODIC  = "PERIODIC"
 	TASK_TYPE_ONEOFF    = "ONEOFF"

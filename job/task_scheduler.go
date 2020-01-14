@@ -15,6 +15,7 @@ type TaskSchedulerJob struct {
 	scrapeCategories       *task.ScrapeCategories
 	scrapeItunesDirectory  *task.ScrapeItunesDirectory
 	schedulePodcastRefresh *task.SchedulePodcastRefresh
+	reimportPodcasts       *task.ReimportPodcasts
 }
 
 func NewTaskSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
@@ -38,6 +39,11 @@ func NewTaskSchedulerJob(app *app.App, config *model.Config) (model.Job, error) 
 	}
 
 	s.schedulePodcastRefresh, err = task.NewSchedulePodcastRefresh(app, config)
+	if err != nil {
+		return nil, err
+	}
+
+	s.reimportPodcasts, err = task.NewReimportPodcasts(app, config)
 	if err != nil {
 		return nil, err
 	}
@@ -129,5 +135,8 @@ func (job *TaskSchedulerJob) callTask(task *model.Task) {
 
 	case model.TASK_NAME_SCHEDULE_PODCAST_REFRESH:
 		job.schedulePodcastRefresh.Call()
+
+	case model.TASK_NAME_REIMPORT_PODCASTS:
+		job.reimportPodcasts.Call()
 	}
 }
