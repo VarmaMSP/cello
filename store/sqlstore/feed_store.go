@@ -106,6 +106,24 @@ func (s *SqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) (res []*m
 	return
 }
 
+func (s *SqlFeedStore) GetFailedToImportPaginated(lastId int64, limit int) (res []*model.Feed, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM feed WHERE last_refresh_comment = '' AND id > %d ORDER BY id LIMIT %d`,
+		joinStrings((&model.Feed{}).DbColumns(), ","), lastId, limit,
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.Feed{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError("store.sqlstore.sql_feed_store.get_failed_to_import_paginated", err.Error(), http.StatusInternalServerError, nil)
+	}
+	return
+}
+
 func (s *SqlFeedStore) Update(old, new *model.Feed) *model.AppError {
 	if _, err := s.Update_("feed", old, new, fmt.Sprintf("id = %d", new.Id)); err != nil {
 		return model.NewAppError(

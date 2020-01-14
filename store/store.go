@@ -29,6 +29,7 @@ type FeedStore interface {
 	GetBySourceId(source, sourceId string) (*model.Feed, *model.AppError)
 	GetBySourcePaginated(source string, offset, limit int) ([]*model.Feed, *model.AppError)
 	GetForRefreshPaginated(lastId int64, limit int) ([]*model.Feed, *model.AppError)
+	GetFailedToImportPaginated(lastId int64, limit int) ([]*model.Feed, *model.AppError)
 	Update(old, new *model.Feed) *model.AppError
 }
 
