@@ -41,6 +41,11 @@ func (s *ReimportPodcasts) Call() {
 			for _, feed := range feeds {
 				s.importPodcastP.D <- feed
 			}
+
+			if len(feeds) < limit {
+				break
+			}
+			lastId = feeds[len(feeds)-1].Id
 		}
 	}()
 }
