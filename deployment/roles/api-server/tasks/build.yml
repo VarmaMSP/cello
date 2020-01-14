@@ -1,12 +1,8 @@
-- name: ensure build and static directories exists
+- name: ensure build directory exists
   file:
-    path: "{{ item }}"
+    path: "{{ server_build_dir }}"
     state: directory
     mode: 0600
-  loop:
-    - "{{ server_build_dir }}"
-    - "{{ server_static_dir }}"
-    - "{{ server_img_dir }}"
 
 - name: compile server
   command: "/usr/local/go/bin/go build -o {{ server_build_dir }}/server ./cmd/cello/main.go"

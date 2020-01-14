@@ -1,4 +1,3 @@
-CREATE DATABASE phenopod;
 USE phenopod;
 
 CREATE TABLE `feed` (
@@ -100,7 +99,7 @@ CREATE TABLE `task` (
 
 INSERT INTO `task` (`id`, `name`, `type`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (1, 'scrape_trending', 'PERIODIC', 86400, 0, 0, 0, 0);
 INSERT INTO `task` (`id`, `name`, `type`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (2, 'scrape_categories', 'IMMEDIATE', 0, 0, 0, 0, 0);
-INSERT INTO `task` (`id`, `name`, `type`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (3, 'scrape_itunes_directory', 'PERIODIC', 21600, 0, 1, 0, 0);
+INSERT INTO `task` (`id`, `name`, `type`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (3, 'scrape_itunes_directory', 'PERIODIC', 21600, 0, 0, 0, 0);
 INSERT INTO `task` (`id`, `name`, `type`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (4, 'schedule_podcast_refresh', 'PERIODIC', 7200, 0, 0, 0, 0);
 
 INSERT INTO `category` (`id`, `name`) VALUES (1, 'Arts');
