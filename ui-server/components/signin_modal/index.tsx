@@ -4,6 +4,11 @@ import Overlay from 'components/modal/overlay'
 import React from 'react'
 import SocialSignIn from './social_sign_in'
 
+const redirectUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://api.phenopod.com'
+    : 'http://localhost:8080/api'
+
 const SignInModal: React.FC<{}> = () => {
   const LogoIcon = iconMap['logo-lg']
 
@@ -19,21 +24,21 @@ const SignInModal: React.FC<{}> = () => {
             icon="google-color"
             text="Sign in with Google"
             onClick={() => {
-              window.location.href = `/api/signin/google`
+              window.location.href = `${redirectUrl}/signin/google`
             }}
           />
           <SocialSignIn
             icon="facebook-color"
             text="Sign in with Facebook"
             onClick={() => {
-              window.location.href = `/api/signin/facebook`
+              window.location.href = `${redirectUrl}/signin/facebook`
             }}
           />
           <SocialSignIn
             icon="twitter-color"
             text="Sign in with Twitter"
             onClick={() => {
-              window.location.href = `/api/signin/twitter`
+              window.location.href = `${redirectUrl}/signin/twitter`
             }}
           />
         </div>
