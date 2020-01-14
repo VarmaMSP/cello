@@ -1,6 +1,11 @@
 domain_name: phenopod.com
 webmaster_email: pavan.varma@phenopod.com
 
+kibana_host: "{{ hostvars['anton']['private_ip'] }}"
 kibana_port: 5601
+
+rabbitmq_management_host: "{{ hostvars['anton']['private_ip'] }}"
 rabbitmq_management_port: 15672
+
+minio_host: "{{ hostvars['keyser']['private_ip'] }}"
 minio_port: 9000
