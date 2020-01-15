@@ -61,7 +61,6 @@ func (p *Podcast) Sanitize() {
 	p.Description = ""
 	p.Language = ""
 	p.Explicit = 0
-	p.Author = ""
 	p.TotalEpisodes = 0
 	p.TotalSeasons = 0
 	p.Type = ""
@@ -80,7 +79,7 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 		Explicit               int    `json:"explicit,omitempty"`
 		Author                 string `json:"author,omitempty"`
 		TotalEpisodes          int    `json:"total_episodes,omitempty"`
-		TotalSeasons           int    `json:"total_seasons,omiempty"`
+		TotalSeasons           int    `json:"total_seasons,omitempty"`
 		Type                   string `json:"type,omitempty"`
 		Complete               int    `json:"complete,omitempty"`
 		EarliestEpisodePubDate string `json:"earliest_episode_pub_date,omitempty"`
