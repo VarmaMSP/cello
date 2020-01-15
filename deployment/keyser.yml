@@ -1,7 +1,4 @@
 - hosts: keyser
-  vars:
-    skip_api: false
-
   tasks:
     - include_role:
         name: mysql

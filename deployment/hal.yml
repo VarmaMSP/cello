@@ -1,5 +1,4 @@
 - hosts: hal
-
   tasks:
     - include_role:
         name: nginx
@@ -20,3 +19,12 @@
         minio_host: "{{ hostvars['keyser']['private_ip'] }}"
         rabbitmq_host: "{{ hostvars['anton']['private_ip'] }}"
         elasticsearch_host: "{{ hostvars['anton']['private_ip'] }}"
+
+        refresh_podcast_enable: true
+        refresh_podcast_worker_limit: 25
+
+        import_podcast_enable: true
+        import_podcast_worker_limit: 2
+
+        create_thumbnail_enable: true
+        create_thumbnail_worker_limit: 2

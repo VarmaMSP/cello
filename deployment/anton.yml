@@ -21,6 +21,15 @@
         mysql_host: "{{ hostvars['keyser']['private_ip'] }}"
         minio_host: "{{ hostvars['keyser']['private_ip'] }}"
 
+        import_podcast_enable: true
+        import_podcast_worker_limit: 4
+
+        refresh_podcast_enable: true
+        refresh_podcast_worker_limit: 20
+
+        create_thumbnail_enable: true
+        create_thumbnail_worker_limit: 2
+
         task_scheduler_enable: true
         task_scheduler_worker_limit: 10
 
