@@ -48,7 +48,7 @@ func (s *SqlFeedStore) Get(feedId int64) (*model.Feed, *model.AppError) {
 func (s *SqlFeedStore) GetBySourceId(source, sourceId string) (*model.Feed, *model.AppError) {
 	feed := &model.Feed{}
 	sql := fmt.Sprintf(
-		`SELECT %s FROM feed WHERE source = %s AND source_id = %s`,
+		`SELECT %s FROM feed WHERE source = '%s' AND source_id = '%s'`,
 		joinStrings(feed.DbColumns(), ","), source, sourceId,
 	)
 
