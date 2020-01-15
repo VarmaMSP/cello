@@ -50,6 +50,8 @@
   copy:
     src: files/enabled_plugins
     dest: /etc/rabbitmq/enabled_plugins
+  notify:
+    - restart rabbitmq-server
 
 # https://www.rabbitmq.com/configure.html
 - name: copy rabbitmq configuration
