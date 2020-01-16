@@ -25,18 +25,18 @@ const PodcastChart: React.FC<StateToProps & OwnProps> = ({
           <PodcastLink key={p.id} podcastUrlParam={p.urlParam}>
             <a>
               <li className="block flex items-center py-2 md:px-2 my-3 md:hover:bg-gray-200 rounded-lg">
-                <div className="w-6 flex-none md:ml-1 md:mr-4 mr-2 text-sm text-gray-600">
+                <div className="md:w-6 w-6 flex-none md:ml-1 md:mr-4 mr-2 md:text-sm text-2xs text-gray-600">
                   {`${i + 1}.`}
                 </div>
                 <img
-                  className="w-20 h-20 mr-4 flex-none object-contain rounded border"
+                  className="md:w-20 w-16 md:h-20 w-16 md:mr-4 mr-2 flex-none object-contain rounded border"
                   src={getImageUrl(p.urlParam)}
                 />
-                <div>
+                <div className="md:h-20 h-16">
                   <div className="mb-2 font-medium text-gray-900 tracking-wide leading-tight line-clamp-1">
                     {p.title}
                   </div>
-                  <div className="text-xs text-gray-700 tracking-wider line-clamp-2">
+                  <div className="text-xs text-gray-700 tracking-wide line-clamp-2">
                     {p.summary}
                   </div>
                 </div>
