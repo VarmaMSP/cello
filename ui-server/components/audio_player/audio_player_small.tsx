@@ -42,10 +42,12 @@ export default class AudioPlayerSmall extends Component<Props> {
             transition: '0.1s',
           }}
         >
-          <h4 className="text-sm font-semibold leading-relaxed">
+          <h4 className="text-sm font-semibold text-gray-200 leading-relaxed">
             {episode.title}
           </h4>
-          <h4 className="text-xs leading-relaxed">{podcast.title}</h4>
+          <h4 className="text-xs text-gray-300 leading-relaxed">
+            {podcast.title}
+          </h4>
         </div>
         <div className="flex-none flex items-center">
           <div
@@ -56,6 +58,7 @@ export default class AudioPlayerSmall extends Component<Props> {
             }}
           >
             <ActionButton
+              theme="dark"
               audioState={audioState}
               handleActionButtonPress={handleActionButtonPress}
             />
@@ -67,7 +70,7 @@ export default class AudioPlayerSmall extends Component<Props> {
             }}
           >
             <ButtonWithIcon
-              className="w-10 mx-1"
+              className="w-10 mx-1 text-gray-300"
               icon="cheveron-up"
               onClick={this.props.toggleExpandOnMobile}
             />
@@ -90,36 +93,38 @@ export default class AudioPlayerSmall extends Component<Props> {
       >
         <section className="flex flex-row px-3 mb-2">
           <img
-            className="h-32 w-32 flex-none object-cover object-center rounded"
+            className="h-32 w-32 flex-none object-cover object-center rounded border  "
             src={getImageUrl(podcast.urlParam)}
           />
           <section className="flex-1 ml-3">
-            <h5 className="text-sm font-bold text-gray-700 leading-tight">
+            <h5 className="text-sm font-bold text-gray-200 leading-tight">
               {episode.title}
             </h5>
-            <h5 className="text-xs font-semibold text-gray-600 leading-loose">
+            <h5 className="text-xs font-semibold text-gray-300 leading-loose">
               {podcast.title}
             </h5>
           </section>
         </section>
         <section className="flex flex-row items-center justify-center my-2 text-gray-800">
           <ButtonWithIcon
-            className="w-8"
+            className="w-8 text-gray-300"
             icon="fast-rewind"
             onClick={() => handleFastForward(-10)}
           />
           <ActionButton
+            theme="dark"
             audioState={audioState}
             handleActionButtonPress={handleActionButtonPress}
           />
           <ButtonWithIcon
-            className="w-8"
+            className="w-8 text-gray-300"
             icon="fast-forward"
             onClick={() => handleFastForward(10)}
           />
         </section>
         <section className="px-4">
           <SeekBar
+            theme="dark"
             currentTime={currentTime}
             duration={duration}
             handleSeek={handleSeek}
@@ -132,10 +137,10 @@ export default class AudioPlayerSmall extends Component<Props> {
 
     return (
       <footer
-        className="fixed bottom-0 left-0 flex flex-col justify-between bg-white w-full  border-t border-gray-400"
+        className="fixed bottom-0 left-0 flex flex-col justify-between w-full border-t border-gray-300 bg-black"
         style={{
           willChange: 'height',
-          height: expandOnMobile ? '24rem' : episode ? '8rem' : '4rem',
+          height: expandOnMobile ? '24rem' : episode ? '7.3rem' : '3.3rem',
           transition: '0.4s cubic-bezier(.22,.86,.62,.95)',
         }}
       >
@@ -147,7 +152,7 @@ export default class AudioPlayerSmall extends Component<Props> {
           className="overflow-y-hidden z-40"
           style={{
             willChange: 'height',
-            height: expandOnMobile ? '0rem' : '4rem',
+            height: expandOnMobile ? '0rem' : '3.3rem',
             opacity: expandOnMobile ? 0 : 1,
             transition: '0.4s cubic-bezier(.22,.86,.12,1.01)',
           }}

@@ -1,8 +1,10 @@
+import classNames from 'classnames'
 import React, { Component } from 'react'
 import { getClickPosition, TouchOrMouseEvent } from 'utils/dom'
 import { formatPlayerDuration } from 'utils/format'
 
 interface Props {
+  theme?: string
   duration: number
   currentTime: number
   handleSeek: (t: number) => void
@@ -125,6 +127,7 @@ export default class SeekBar extends Component<Props, State> {
   render() {
     const [t, T] = this.getProgressDetails()
     const sliderPosition = this.getSliderPosition()
+    const { theme } = this.props
 
     return (
       <>
@@ -149,10 +152,26 @@ export default class SeekBar extends Component<Props, State> {
           />
         </div>
         <div className="flex justify-between items-center px-2">
-          <span className="text-sm text-gray-800 leading-relaxed tracking-wider select-none">
+          <span
+            className={classNames(
+              'text-sm leading-relaxed tracking-wider select-none',
+              {
+                'text-gray-300': theme === 'dark',
+                'text-gray-800': theme !== 'dark',
+              },
+            )}
+          >
             {t}
           </span>
-          <span className="text-sm text-gray-800 leading-relaxed tracking-wider select-none">
+          <span
+            className={classNames(
+              'text-sm leading-relaxed tracking-wider select-none',
+              {
+                'text-gray-300': theme === 'dark',
+                'text-gray-800': theme !== 'dark',
+              },
+            )}
+          >
             {T}
           </span>
         </div>

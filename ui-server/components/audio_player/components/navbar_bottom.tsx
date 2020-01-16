@@ -12,16 +12,20 @@ const MenuItem: React.FC<{
 }> = ({ icon, name, href, active }) => {
   const Icon = iconMap[icon]
   return (
-    <div className="w-1/3 flex-none text-center cursor-pointer">
+    <div className="w-1/4 flex-none text-center cursor-pointer">
       <Link href={href} scroll={false}>
         <a>
           <Icon
-            className={classNames('w-5 h-5 mx-auto fill-current', {
+            className={classNames('w-4 h-4 mx-auto fill-current', {
               'text-gray-700': !active,
-              'text-green-600': active,
+              'text-yellow-600': active,
             })}
           />
-          <h4 className="capitalize text-sm leading-loose tracking-wide">
+          <h4 className={classNames('capitalize text-sm leading-loose tracking-wide', {
+              'text-gray-700': !active,
+              'text-yellow-600 font-medium': active,
+            })}
+          >
             {name}
           </h4>
         </a>
@@ -45,13 +49,19 @@ const NavbarBottom: React.FC<{}> = () => {
         icon="heart"
         name="subs"
         href="/subscriptions"
-        active={currentUrlPath === '/feed'}
+        active={currentUrlPath === '/subscriptions'}
       />
       <MenuItem
         icon="history"
         name="history"
         href="/history"
         active={currentUrlPath === '/history'}
+      />
+      <MenuItem
+        icon="playlist"
+        name="playlists"
+        href="/playlists"
+        active={currentUrlPath === '/playlists'}
       />
     </div>
   )
