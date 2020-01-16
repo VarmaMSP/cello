@@ -16,7 +16,7 @@ const PodcastInfo: React.SFC<OwnProps> = ({ podcast }) => {
         src={getImageUrl(podcast.urlParam)}
       />
       <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
-        <div className="w-full">
+        <div className="w-full mb-3">
           <h2 className="md:text-xl text-lg text-gray-900 leading-tight line-clamp-2">
             {podcast.title}
           </h2>

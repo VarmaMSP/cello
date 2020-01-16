@@ -49,7 +49,7 @@ const EpisodeHeader: React.FC<Props> = ({
       />
 
       <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
-        <div className="w-full">
+        <div className="w-full mb-3">
           <h2 className="text-lg text-gray-900 leading-tight line-clamp-2">
             {episode.title}
           </h2>
