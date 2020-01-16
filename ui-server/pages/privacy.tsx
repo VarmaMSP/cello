@@ -16,9 +16,11 @@ export default class PrivacyPage extends React.Component<{}> {
               'This site uses cookies to save your preferences and playback progress'
             }
             <br />
+            <br />
             {
-              'We collect your basic information (name, username and email) when you sign in using your social account.'
+              'We collect your basic information (name, username and email) when you sign in with social account,'
             }
+            <br /> {'and We will not share those details with any third party.'}
           </p>
         </div>
       </>

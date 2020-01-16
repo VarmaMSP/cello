@@ -87,11 +87,11 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
       <div className="px-2 py-6 text-sm text-gray-800">
         <p className="leading-tight">
           <Link href="/about" prefetch={false}>
-            <a>{'about'}</a>
+            <a className="cursor-pointer">{'about'}</a>
           </Link>{' '}
           <span className="font-extrabold">&middot;</span>{' '}
           <Link href="/privacy" prefetch={false}>
-            <a>{'privacy'}</a>
+            <a className="cursor-pointer">{'privacy'}</a>
           </Link>
         </p>
         <p className="mb-1">

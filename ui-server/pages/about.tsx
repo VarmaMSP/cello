@@ -20,8 +20,25 @@ export default class AboutPage extends React.Component<{}> {
             >
               {'Pavan Varma'}
             </a>
-            {". I'am the developer of Phenopod and nice to meet you."}
+            {". I'am the creator of Phenopod and nice to meet you."}
           </p>
+          <br />
+          <p className="text-gray-700 text-base tracking-wide">
+            {
+              'Phenopod is a online podcast player and podcast directory, with 622,529 podcasts and 21,228,564 episodes.'
+            }
+          </p>
+          <p className="mt-1 text-gray-700 text-base tracking-wide">
+            {
+              'The podcast ecosystem has matured over last few years and there is a podcast for just about every topic imaginable.'
+            }
+          </p>
+          <p className="mt-1 text-gray-700 text-base tracking-wide">
+            {
+              'Using Phenopod you can search episodes, subscribe to podcasts and create playlists of your favourite episodes.'
+            }
+          </p>
+
           <br />
           <p className="text-gray-700">
             {
