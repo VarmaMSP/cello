@@ -263,7 +263,7 @@ func (job *RefreshPodcastJob) index(data *RefreshData) *model.AppError {
 
 	for i, episode := range episodesToAdd {
 		requests[i] = elastic.NewBulkIndexRequest().
-			Index(elasticsearch.PodcastIndexName).
+			Index(elasticsearch.EpisodeIndexName).
 			Id(model.StrFromInt64(episode.Id)).
 			Doc(&model.EpisodeIndex{
 				Id:          episode.Id,
