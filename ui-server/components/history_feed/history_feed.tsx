@@ -1,5 +1,6 @@
 import ButtonShowMore from 'components/button_show_more'
 import EpisodeListItem from 'components/episode_list_item'
+import parseISO from 'date-fns/parseISO'
 import React from 'react'
 import { Episode } from 'types/app'
 
@@ -31,6 +32,12 @@ const HistoryFeed: React.FC<StateToProps & DispatchToProps> = ({
       </div>
     )
   }
+
+  history.sort(
+    (a, b) =>
+      +parseISO(`${b.lastPlayedAt} +0000`) -
+      +parseISO(`${a.lastPlayedAt} +0000`),
+  )
 
   return (
     <div>
