@@ -16,6 +16,8 @@ type TaskSchedulerJob struct {
 	scrapeItunesDirectory  *task.ScrapeItunesDirectory
 	schedulePodcastRefresh *task.SchedulePodcastRefresh
 	reimportPodcasts       *task.ReimportPodcasts
+	reindexPodcasts        *task.ReindexPodcasts
+	reindexEpisodes        *task.ReindexEpisodes
 }
 
 func NewTaskSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
@@ -44,6 +46,16 @@ func NewTaskSchedulerJob(app *app.App, config *model.Config) (model.Job, error) 
 	}
 
 	s.reimportPodcasts, err = task.NewReimportPodcasts(app, config)
+	if err != nil {
+		return nil, err
+	}
+
+	s.reindexPodcasts, err = task.NewReindexPodcasts(app)
+	if err != nil {
+		return nil, err
+	}
+
+	s.reindexEpisodes, err = task.NewReindexEpisodes(app)
 	if err != nil {
 		return nil, err
 	}
@@ -138,5 +150,11 @@ func (job *TaskSchedulerJob) callTask(task *model.Task) {
 
 	case model.TASK_NAME_REIMPORT_PODCASTS:
 		job.reimportPodcasts.Call()
+
+	case model.TASK_NAME_REINDEX_EPISODES:
+		job.reindexPodcasts.Call()
+
+	case model.TASK_NAME_REINDEX_PODCASTS:
+		job.reindexEpisodes.Call()
 	}
 }
