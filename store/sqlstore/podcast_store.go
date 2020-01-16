@@ -44,6 +44,27 @@ func (s *SqlPodcastStore) Get(podcastId int64) (*model.Podcast, *model.AppError)
 	return podcast, nil
 }
 
+func (s *SqlPodcastStore) GetAllPaginated(lastId int64, limit int) (res []*model.Podcast, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM podcast WHERE id > %d ORDER BY id LIMIT %d`,
+		joinStrings((&model.Podcast{}).DbColumns(), ","), lastId, limit,
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.Podcast{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"sqlstore.sql_podcast_store.get_all_paginated", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"last_id": lastId},
+		)
+	}
+	return
+}
+
 func (s *SqlPodcastStore) GetByIds(podcastIds []int64) (res []*model.Podcast, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM podcast WHERE id IN (%s)`,

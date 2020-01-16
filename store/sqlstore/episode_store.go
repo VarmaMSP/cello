@@ -46,6 +46,26 @@ func (s *SqlEpisodeStore) Get(episodeId int64) (*model.Episode, *model.AppError)
 	return episode, nil
 }
 
+func (s *SqlEpisodeStore) GetAllPaginated(lastId int64, limit int) (res []*model.Episode, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM episode WHERE id > %d ORDER BY id LIMIT %d`,
+		joinStrings((&model.Episode{}).DbColumns(), ","), lastId, limit,
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.Episode{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_episode_store.get_all_paginated", err.Error(), http.StatusInternalServerError, nil,
+		)
+	}
+	return
+}
+
 func (s *SqlEpisodeStore) GetByIds(episodeIds []int64) (res []*model.Episode, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM episode WHERE id IN (%s)`,

@@ -36,6 +36,7 @@ type FeedStore interface {
 type PodcastStore interface {
 	Save(podcast *model.Podcast) *model.AppError
 	Get(podcastId int64) (*model.Podcast, *model.AppError)
+	GetAllPaginated(lastId int64, limit int) ([]*model.Podcast, *model.AppError)
 	GetByIds(podcastIds []int64) ([]*model.Podcast, *model.AppError)
 	GetSubscriptions(userId int64) ([]*model.Podcast, *model.AppError)
 	Update(old, new *model.Podcast) *model.AppError
@@ -49,6 +50,7 @@ type SubscriptionStore interface {
 type EpisodeStore interface {
 	Save(episode *model.Episode) *model.AppError
 	Get(episodeId int64) (*model.Episode, *model.AppError)
+	GetAllPaginated(lastId int64, limit int) ([]*model.Episode, *model.AppError)
 	GetByIds(episodeIds []int64) ([]*model.Episode, *model.AppError)
 	GetByPodcast(podcastId int64) ([]*model.Episode, *model.AppError)
 	GetByPodcastPaginated(podcastId int64, order string, offset, limit int) ([]*model.Episode, *model.AppError)
