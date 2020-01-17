@@ -30,7 +30,7 @@ func NewSchedulePodcastRefresh(app *app.App, config *model.Config) (*SchedulePod
 func (s *SchedulePodcastRefresh) Call() {
 	s.Log.Info().Msg("Schedule podcast refresh started")
 	go func() {
-		limit := 10000
+		limit := 5000
 		lastId := int64(0)
 
 		for {
