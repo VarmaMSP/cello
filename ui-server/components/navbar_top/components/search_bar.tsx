@@ -28,7 +28,7 @@ const SearchBar: React.SFC<Props> = (props) => {
           'appearance-none focus:outline-none',
         )}
         type="text"
-        placeholder="Search podcasts"
+        placeholder="Search for topic, person, podcast, episode..."
         value={searchText}
         onChange={handleSearchTextChange}
       />
