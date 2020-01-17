@@ -22,7 +22,7 @@ const RelatedCharts: React.FC<StateToProps & OwnProps> = ({
       <h2 className="text-lg text-gray-700 px-2">{'More related charts'}</h2>
       <hr className="mt-2 mb-4 border-gray-400" />
       {relatedCharts.map((c) => (
-        <ChartLink chartId={c.id}>
+        <ChartLink key={c.id} chartId={c.id}>
           <a>
             <li
               key={c.id}
