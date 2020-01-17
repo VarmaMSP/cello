@@ -1,5 +1,7 @@
 import * as client from 'client/subscription'
+import { getPodcastById } from 'selectors/entities/podcasts'
 import * as T from 'types/actions'
+import * as gtag from 'utils/gtag'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
@@ -8,7 +10,7 @@ export function getSubscriptionsPageData() {
     () => client.getSubscriptionsPageData(),
     (dispatch, _, { episodes }) => {
       dispatch({ type: T.EPISODE_ADD, episodes })
-      
+
       dispatch({
         type: T.SUBSCRIPTIONS_FEED_LOAD_PAGE,
         page: 0,
@@ -46,7 +48,9 @@ export function getSubscriptionsFeed(offset: number, limit: number) {
 export function subscribeToPodcast(podcastId: string) {
   return requestAction(
     () => client.subscribePodcast(podcastId),
-    (dispatch) => {
+    (dispatch, getState) => {
+      gtag.subscribePodcast((getPodcastById(getState(), podcastId) || {}).title)
+
       dispatch({
         type: T.SESSION_SUBSCRIBE_PODCASTS,
         podcastIds: [podcastId],

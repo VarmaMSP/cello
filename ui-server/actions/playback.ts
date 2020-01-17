@@ -1,9 +1,11 @@
 import * as client from 'client/playback'
 import { Dispatch } from 'redux'
+import { getEpisodeById } from 'selectors/entities/episodes'
 import { getIsUserSignedIn } from 'selectors/session'
 import { getPlayingEpisodeId } from 'selectors/ui/audio_player'
 import { AppState } from 'store'
 import * as T from 'types/actions'
+import * as gtag from 'utils/gtag'
 import { requestAction } from './utils'
 
 export function getEpisodePlaybacks(episodeIds: string[]) {
@@ -21,9 +23,17 @@ export function getEpisodePlaybacks(episodeIds: string[]) {
 
 export function startPlayback(episodeId: string, beginAt: number) {
   return async (dispatch: Dispatch<T.AppActions>, getState: () => AppState) => {
+    gtag.playEpisode(
+      (getEpisodeById(getState(), episodeId) || {}).title,
+      beginAt,
+    )
+
     try {
       const state = getState()
-      if (getIsUserSignedIn(state) && getPlayingEpisodeId(state) !== episodeId) {
+      if (
+        getIsUserSignedIn(state) &&
+        getPlayingEpisodeId(state) !== episodeId
+      ) {
         await client.startPlayback(episodeId)
       }
       if (getPlayingEpisodeId(state) !== episodeId) {

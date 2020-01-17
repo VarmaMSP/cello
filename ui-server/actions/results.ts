@@ -1,10 +1,9 @@
 import * as client from 'client/search'
 import Router from 'next/router'
 import { Dispatch } from 'redux'
-import { getQuery, getResultType, getSortBy } from 'selectors/ui/search_results_list'
-import { AppState } from 'store'
 import * as T from 'types/actions'
 import { SearchResultType, SearchSortBy } from 'types/search'
+import * as gtag from 'utils/gtag'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
@@ -13,15 +12,8 @@ export function loadResultsPage(
   resultType: SearchResultType,
   sortBy: SearchSortBy,
 ) {
-  return (dispatch: Dispatch<T.AppActions>, getState: () => AppState) => {
-    const state = getState()
-    if (
-      query === getQuery(state) &&
-      resultType === getResultType(state) &&
-      sortBy === getSortBy(state)
-    ) {
-      return
-    }
+  return (dispatch: Dispatch<T.AppActions>) => {
+    gtag.search(query)
 
     dispatch({
       type: T.HISTORY_PUSH_ENTRY,

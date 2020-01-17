@@ -1,6 +1,8 @@
 import * as client from 'client/playlist'
+import { getPlaylistById } from 'selectors/entities/playlists'
 import * as T from 'types/actions'
 import { PlaylistPrivacy } from 'types/app'
+import * as gtag from 'utils/gtag'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
@@ -55,6 +57,9 @@ export function createPlaylist(
   return requestAction(
     () => client.serviceCreatePlaylist(title, privacy, description, episodeId),
     (dispatch, _, { playlist }) => {
+      gtag.createPlaylist(title)
+      gtag.addEpisodeToPlaylist(title)
+
       dispatch({
         type: T.PLAYLIST_ADD,
         playlists: [playlist],
@@ -71,7 +76,9 @@ export function createPlaylist(
 export function addEpisodeToPlaylist(playlistId: string, episodeId: string) {
   return requestAction(
     () => client.serviceAddEpisodeToPlaylist(playlistId, episodeId),
-    () => {},
+    (_, getState) => {
+      gtag.addEpisodeToPlaylist((getPlaylistById(getState(), playlistId) || {}).title)
+    },
     {
       preAction: {
         type: T.PLAYLIST_ADD_EPISODES,

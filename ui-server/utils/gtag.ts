@@ -1,8 +1,8 @@
 interface GtagEvent {
   action: string
-  category: string
+  category: 'podcast' | 'episode' | 'playlist'
   label: string
-  value: number
+  value?: number
 }
 
 export const GA_TRACKING_ID = 'UA-149726196-1'
@@ -22,6 +22,39 @@ export function pageview(url: string) {
 export function search(query: string) {
   ;(window as any).gtag('event', 'search', {
     search_term: query,
+  })
+}
+
+export function subscribePodcast(podcastTitle: string) {
+  event({
+    action: 'subscribe',
+    category: 'podcast',
+    label: podcastTitle,
+  })
+}
+
+export function playEpisode(episodeTitle: string, startTime: number) {
+  event({
+    action: 'play',
+    category: 'episode',
+    label: episodeTitle,
+    value: startTime,
+  })
+}
+
+export function createPlaylist(playlistTitle: string) {
+  event({
+    action: 'create',
+    category: 'playlist',
+    label: playlistTitle,
+  })
+}
+
+export function addEpisodeToPlaylist(playlistTitle: string) {
+  event({
+    action: 'add_to_playlist',
+    category: 'playlist',
+    label: playlistTitle,
   })
 }
 
