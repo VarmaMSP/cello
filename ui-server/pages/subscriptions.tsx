@@ -13,7 +13,6 @@ import { getIsUserSignedIn } from 'selectors/session'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
 import { PageContext } from 'types/utilities'
-import * as gtag from 'utils/gtag'
 
 interface StateToProps {
   isUserSignedIn: boolean
@@ -47,7 +46,6 @@ class SubscriptionsPage extends React.Component<Props> {
   }
 
   componentDidMount() {
-    gtag.pageview('/subscriptions')
     window.window.scrollTo(0, this.props.scrollY)
   }
 

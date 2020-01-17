@@ -1,11 +1,6 @@
 import React from 'react'
-import * as gtag from 'utils/gtag'
 
 export default class PrivacyPage extends React.Component<{}> {
-  componentDidMount() {
-    gtag.pageview('/privacy')
-  }
-
   render() {
     return (
       <>

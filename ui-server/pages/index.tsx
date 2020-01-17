@@ -4,7 +4,6 @@ import { NextSeo } from 'next-seo'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { PageContext } from 'types/utilities'
-import * as gtag from 'utils/gtag'
 
 interface OwnProps {
   scrollY: number
@@ -16,7 +15,6 @@ export default class IndexPage extends React.Component<OwnProps> {
   }
 
   componentDidMount() {
-    gtag.pageview('/')
     window.window.scrollTo(0, this.props.scrollY)
   }
 
