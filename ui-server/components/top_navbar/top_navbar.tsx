@@ -1,7 +1,7 @@
-import ButtonSignIn from 'components/button_signin'
 import ButtonWithIcon from 'components/button_with_icon'
 import { iconMap } from 'components/icon'
 import SearchBar from 'components/search_bar/top_navbar'
+import SignInButton from 'components/sign_in_button'
 import React from 'react'
 import { ViewportSize } from 'types/app'
 import UserSettings from './components/user_settings'
@@ -47,7 +47,7 @@ const TopNavbar: React.FC<StateToProps & DispatchToProps> = ({
         </div>
         <LogoIcon className="mx-auto -mt-1" />
         <div className="w-20 h-8">
-          {userSignedIn ? <UserSettings /> : <ButtonSignIn />}
+          {userSignedIn ? <UserSettings /> : <SignInButton small />}
         </div>
       </header>
     )

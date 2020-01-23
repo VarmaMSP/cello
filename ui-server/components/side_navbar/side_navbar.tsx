@@ -1,6 +1,8 @@
+import About from 'components/about'
 import { iconMap } from 'components/icon'
 import { Link } from 'components/link'
 import SearchBar from 'components/search_bar/side_navbar'
+import SignInButton from 'components/sign_in_button'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { ViewportSize } from 'types/app'
@@ -11,14 +13,9 @@ export interface StateToProps {
   viewportSize: ViewportSize
 }
 
-export interface DispatchToProps {
-  showSigninModal: () => void
-}
-
-const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
+const NavbarSide: React.SFC<StateToProps> = ({
   userSignedIn,
   viewportSize,
-  showSigninModal,
 }) => {
   if (viewportSize === 'SM') {
     return <></>
@@ -34,13 +31,23 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
         <div className="mb-6">
           <SearchBar />
         </div>
-        <ul>
+        <ul className="mb-10">
           <Link href="/" scroll={false}>
+            <li className="h-10">
+              <MenuItem
+                icon="home"
+                name="home"
+                active={currentUrlPath === '/'}
+              />
+            </li>
+          </Link>
+
+          <Link href="/explore" scroll={false}>
             <li className="h-10">
               <MenuItem
                 icon="explore"
                 name="explore"
-                active={currentUrlPath === '/'}
+                active={currentUrlPath === '/explore'}
               />
             </li>
           </Link>
@@ -76,49 +83,14 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
           </Link>
         </ul>
 
-        {!userSignedIn && (
-          <>
-            <hr className="my-4" />
-            <div className="w-full my-3">
-              <p className="mb-2 text-center text-xs text-gray-700 tracking-wide leading-normal">
-                Discover podcasts, create playlists and much more.{' '}
-                <span
-                  className="text-red-800 font-medium underline cursor-pointer"
-                  onClick={() => showSigninModal()}
-                >
-                  sign in
-                </span>
-              </p>
-            </div>
-          </>
+        {currentUrlPath !== '/' && !userSignedIn && (
+          <div className="h-10 px-5">
+            <SignInButton />
+          </div>
         )}
       </div>
-      <div className="px-2 py-6 text-sm text-gray-800">
-        <p className="leading-tight">
-          <Link href="/about" prefetch={false}>
-            <a className="cursor-pointer">{'about'}</a>
-          </Link>{' '}
-          <span className="font-extrabold">&middot;</span>{' '}
-          <Link href="/privacy" prefetch={false}>
-            <a className="cursor-pointer">{'privacy'}</a>
-          </Link>
-        </p>
-        <p className="mb-1">
-          <a href="https://www.facebook.com/phenopod" target="_blank">
-            {'facebook'}
-          </a>{' '}
-          <span className="font-extrabold">&middot;</span>{' '}
-          <a href="https://twitter.com/phenopod" target="_blank">
-            {'twitter'}
-          </a>{' '}
-          <span className="font-extrabold">&middot;</span>{' '}
-          <a href="https://www.reddit.com/r/phenopod/" target="_blank">
-            {'reddit'}
-          </a>
-        </p>
-        <a href="mailto:hello@phenopod.com" className="font-light">
-          {'hello@phenopod.com'}
-        </a>
+      <div className="px-2 py-6">
+        <About />
       </div>
     </div>
   )

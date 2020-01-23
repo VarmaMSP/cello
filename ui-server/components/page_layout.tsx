@@ -29,7 +29,7 @@ const PageLayout: React.FC<StateToProps & OwnProps> = ({
 
   return Array.isArray(children) ? (
     <div
-      className="flex flex-row pr-6"
+      className="flex flex-row pt-8 pr-6"
       style={{ paddingLeft: '18rem', paddingBottom: '16rem' }}
     >
       <div className="w-2/3 mr-5">{children[0]}</div>
@@ -37,7 +37,7 @@ const PageLayout: React.FC<StateToProps & OwnProps> = ({
     </div>
   ) : (
     <div
-      className="pr-6"
+      className="pt-6 pr-6"
       style={{ paddingLeft: '17.5rem', paddingBottom: '16rem' }}
     >
       {children}

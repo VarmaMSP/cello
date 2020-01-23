@@ -1,7 +1,7 @@
 import { getSubscriptionsPageData } from 'actions/subscription'
-import ButtonSignin from 'components/button_signin'
 import { iconMap } from 'components/icon'
 import PageLayout from 'components/page_layout'
+import SignInButton from 'components/sign_in_button'
 import SubscriptionsFeed from 'components/subscriptions_feed'
 import SubscriptionsList from 'components/subscriptions_list'
 import { NextSeo } from 'next-seo'
@@ -55,17 +55,17 @@ class SubscriptionsPage extends React.Component<Props> {
     if (!isUserSignedIn || isLoading) {
       const SubscribeIcon = iconMap['heart']
       return (
-        <>
-          <div className="mx-auto mt-24">
+        <PageLayout>
+          <div className="mx-auto mt-32">
             <SubscribeIcon className="w-12 h-12 mx-auto fill-current text-gray-700" />
             <h1 className="text-center text-xl text-gray-700 my-6">
               {'Sign in to subscribe to your favourite podcasts'}
             </h1>
-            <div className="w-32 mx-auto">
-              <ButtonSignin />
+            <div className="h-10 w-48 mx-auto">
+              <SignInButton />
             </div>
           </div>
-        </>
+        </PageLayout>
       )
     }
 
