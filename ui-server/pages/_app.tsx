@@ -16,6 +16,7 @@ import * as T from 'types/actions'
 import { AppContext, PageContext } from 'types/utilities'
 import * as gtag from 'utils/gtag'
 import '../styles/index.css'
+
 NProgress.configure({
   showSpinner: false,
   trickle: true,
