@@ -10,6 +10,7 @@ const (
 	BUCKET_NAME_PHENOPOD_CHARTS   = "phenopod-charts"
 	BUCKET_NAME_PHENOPOD_DISCOVER = "phenopod-discover"
 	BUCKET_NAME_CHARTABLE_CHARTS  = "chartable-charts"
+	BUCKET_NAME_ASSETS            = "assets"
 )
 
 func NewS3Client(config *model.Config) (*minio.Client, error) {
@@ -36,9 +37,15 @@ func NewS3Client(config *model.Config) (*minio.Client, error) {
 	if err := createBucket(BUCKET_NAME_CHARTABLE_CHARTS, s3Client); err != nil {
 		return nil, err
 	}
+	if err := createBucket(BUCKET_NAME_ASSETS, s3Client); err != nil {
+		return nil, err
+	}
 
 	// Set Policy
 	if err := setBucketPolicy(BUCKET_NAME_THUMBNAILS, s3Client); err != nil {
+		return nil, err
+	}
+	if err := setBucketPolicy(BUCKET_NAME_ASSETS, s3Client); err != nil {
 		return nil, err
 	}
 

@@ -22,6 +22,7 @@ type AwsPolicyStatement struct {
 const (
 	POLICY_VERSION       = "2012-10-17"
 	POLICY_ID_THUMBNAILS = "2-12-2019"
+	POLICY_ID_ASSETS     = "2-12-2019"
 )
 
 func getNewBucketPolicy(bucketName string) AwsPolicy {
@@ -40,6 +41,22 @@ func getNewBucketPolicy(bucketName string) AwsPolicy {
 				},
 			},
 		}
+
+	case BUCKET_NAME_ASSETS:
+		return AwsPolicy{
+			Id:      POLICY_ID_ASSETS,
+			Version: POLICY_VERSION,
+			Statement: []AwsPolicyStatement{
+				AwsPolicyStatement{
+					Sid:       "PublicReadAccess",
+					Effect:    "Allow",
+					Principal: map[string]string{"AWS": "*"},
+					Action:    []string{"s3:GetObject"},
+					Resource:  []string{"arn:aws:s3:::assets/*"},
+				},
+			},
+		}
+
 	default:
 		return AwsPolicy{}
 	}
