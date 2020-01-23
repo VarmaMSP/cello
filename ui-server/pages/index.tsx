@@ -1,5 +1,6 @@
 import { getHomePageData } from 'actions/home'
 import HomeView from 'components/home_view/home_view'
+import PageLayout from 'components/page_layout'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 import { bindActionCreators } from 'redux'
@@ -32,7 +33,9 @@ export default class IndexPage extends React.Component<OwnProps> {
             description: 'Podcast Player for Web',
           }}
         />
-        <HomeView />
+        <PageLayout>
+          <HomeView />
+        </PageLayout>
       </>
     )
   }
