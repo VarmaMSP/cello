@@ -3,7 +3,7 @@ import { Dispatch } from 'redux'
 import { getIsUserSignedIn } from 'selectors/session'
 import { AppState } from 'store'
 import { AppActions, MODAL_MANAGER_SHOW_SIGN_IN_MODAL } from 'types/actions'
-import Navbar, { DispatchToProps, StateToProps } from './navbar_side'
+import Navbar, { DispatchToProps, StateToProps } from './side_navbar'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {

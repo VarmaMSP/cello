@@ -5,7 +5,7 @@ import { getIsSearchBarCollapsed } from 'selectors/ui/search_bar'
 import { getViewportSize } from 'selectors/window'
 import { AppState } from 'store'
 import * as T from 'types/actions'
-import NavbarTop, { DispatchToProps, StateToProps } from './navbar_top'
+import NavbarTop, { DispatchToProps, StateToProps } from './top_navbar'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {
