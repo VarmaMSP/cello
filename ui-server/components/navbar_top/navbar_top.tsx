@@ -1,96 +1,59 @@
 import ButtonSignIn from 'components/button_signin'
 import ButtonWithIcon from 'components/button_with_icon'
-import React, { Component } from 'react'
-import { SearchResultType, SearchSortBy } from 'types/search'
-import AppLogo from './components/app_logo'
-import SearchBar from './components/search_bar'
-import FullWidthSearchBar from './components/search_bar_full_width'
+import { iconMap } from 'components/icon'
+import SearchBar from 'components/search_bar/top_navbar'
+import React from 'react'
+import { ViewportSize } from 'types/app'
 import UserSettings from './components/user_settings'
 
 export interface StateToProps {
   userSignedIn: boolean
-  searchText: string
-  resultType: SearchResultType
-  sortBy: SearchSortBy
+  showSearchBar: boolean
+  viewPortSize: ViewportSize
 }
 
 export interface DispatchToProps {
-  searchTextChange: (text: string) => void
-  loadResultsPage: (query: string, resultType: SearchResultType, sortBy: SearchSortBy) => void
+  expandSearchBar: () => void
 }
 
-interface Props extends StateToProps, DispatchToProps {}
-
-interface State {
-  showFullWidthSearchBar: boolean
-}
-
-export default class TopNavbar extends Component<Props, State> {
-  state = {
-    showFullWidthSearchBar: false,
+const TopNavbar: React.FC<StateToProps & DispatchToProps> = ({
+  userSignedIn,
+  showSearchBar,
+  viewPortSize,
+  expandSearchBar,
+}) => {
+  if (viewPortSize != 'SM') {
+    return <></>
   }
 
-  handleSearchBarCollapse = () => {
-    const { showFullWidthSearchBar } = this.state
-    this.setState({ showFullWidthSearchBar: !showFullWidthSearchBar })
-  }
-
-  handleSearchTextChange = (e: React.FormEvent<HTMLInputElement>) => {
-    e.preventDefault()
-    this.props.searchTextChange(e.currentTarget.value)
-  }
-
-  handleSearchTextSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    const { showFullWidthSearchBar } = this.state
-    if (showFullWidthSearchBar) {
-      this.setState({ showFullWidthSearchBar: false })
-    }
-
-    this.props.loadResultsPage(this.props.searchText, this.props.resultType, this.props.sortBy)
-  }
-
-  render() {
-    const { searchText, userSignedIn } = this.props
-    const { showFullWidthSearchBar } = this.state
-
-    if (showFullWidthSearchBar) {
-      return (
-        <header className="fixed top-0 left-0 h-12 w-full bg-white">
-          <FullWidthSearchBar
-            searchText={searchText}
-            handleCollapse={this.handleSearchBarCollapse}
-            handleSearchTextChange={this.handleSearchTextChange}
-            handleSearchTextSubmit={this.handleSearchTextSubmit}
-          />
-        </header>
-      )
-    }
-
+  if (showSearchBar) {
     return (
-      <header className="fixed top-0 left-0 flex justify-between items-center w-full lg:h-14 h-12 lg:pl-56 lg:pr-5 md:px-10 px-4 bg-white">
-        <div className="lg:hidden w-20">
+      <header className="fixed top-0 left-0 h-12 w-full bg-white">
+        <SearchBar />
+      </header>
+    )
+  }
+
+  if (!showSearchBar) {
+    const LogoIcon = iconMap['phenopod']
+    return (
+      <header className="fixed top-0 left-0 flex justify-between items-center w-full h-12 px-4 bg-white">
+        <div className="w-20">
           <ButtonWithIcon
-            className="w-6 h-auto text-gray-700"
+            className="w-6 h-auto text-gray-600"
             icon="search"
-            onClick={this.handleSearchBarCollapse}
+            onClick={expandSearchBar}
           />
         </div>
-        <div className="lg:hidden">
-          <AppLogo />
-        </div>
-        <div className="lg:block hidden xl:ml-24 ml-6">
-          <SearchBar
-            searchText={searchText}
-            handleSearchTextChange={this.handleSearchTextChange}
-            handleSearchTextSubmit={this.handleSearchTextSubmit}
-          />
-        </div>
-        <div className="md:w-24 w-20 h-8">
+        <LogoIcon className="mx-auto -mt-1" />
+        <div className="w-20 h-8">
           {userSignedIn ? <UserSettings /> : <ButtonSignIn />}
         </div>
       </header>
     )
   }
+
+  return <></>
 }
+
+export default TopNavbar
