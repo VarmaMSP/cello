@@ -1,5 +1,6 @@
 import { iconMap } from 'components/icon'
 import { Link } from 'components/link'
+import SearchBar from 'components/search_bar/side_navbar'
 import { useRouter } from 'next/router'
 import React from 'react'
 import MenuItem from './components/menu_item'
@@ -20,12 +21,15 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
   const currentUrlPath = useRouter().asPath
 
   return (
-    <div className="fixed left-0 top-0 lg:flex hidden flex-col justify-between h-screen w-56 px-3 bg-white border-r">
+    <div className="fixed left-0 top-0 lg:flex hidden flex-col justify-between h-screen w-56 px-3 bg-white">
       <div>
-        <LogoIcon className="w-14 h-14 mx-auto mt-2 mb-5" />
+        <LogoIcon className="w-14 h-14 mx-auto mt-2 mb-3" />
+        <div className="mb-6">
+          <SearchBar />
+        </div>
         <ul>
           <Link href="/" scroll={false}>
-            <li className="h-8">
+            <li className="h-10">
               <MenuItem
                 icon="explore"
                 name="explore"
@@ -35,7 +39,7 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
           </Link>
 
           <Link href="/subscriptions" scroll={false}>
-            <li className="h-8">
+            <li className="h-10">
               <MenuItem
                 icon="heart"
                 name="subscriptions"
@@ -45,7 +49,7 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
           </Link>
 
           <Link href="/history" scroll={false}>
-            <li className="h-8">
+            <li className="h-10">
               <MenuItem
                 icon="history"
                 name="history"
@@ -54,10 +58,8 @@ const NavbarSide: React.SFC<StateToProps & DispatchToProps> = ({
             </li>
           </Link>
 
-          <hr className="my-2" />
-
           <Link href="/playlists" scroll={false}>
-            <li className="h-8">
+            <li className="h-10">
               <MenuItem
                 icon="playlist"
                 name="playlists"
