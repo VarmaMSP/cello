@@ -1,9 +1,8 @@
 import NProgress from 'accessible-nprogress'
 import { getCurrentUser } from 'actions/user'
 import AudioPlayer from 'components/audio_player'
-import ModalSelector from 'components/modal/modal_selector'
-import NavbarSide from 'components/navbar_side'
-import NavbarTop from 'components/navbar_top'
+import SideNavbar from 'components/side_navbar'
+import TopNavbar from 'components/top_navbar'
 import withRedux from 'next-redux-wrapper'
 import { DefaultSeo } from 'next-seo'
 import { AppProps } from 'next/app'
@@ -153,9 +152,9 @@ export default withRedux(makeStore)(
                 </div>
               </div>
             </div>
-            <NavbarTop />
+            <TopNavbar />
+            <SideNavbar />
             <AudioPlayer />
-            <NavbarSide />
             <ModalSelector />
           </Provider>
         </>
