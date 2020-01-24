@@ -15,3 +15,9 @@ export function getImageUrl(urlPath: string): string {
     ? `http://localhost:8080/thumbnails/${urlPath}.jpg`
     : `https://cdn.phenopod.com/thumbnails/${urlPath}.jpg`
 }
+
+export function getAssetUrl(urlPath: string): string {
+  return process.env.NODE_ENV === 'development'
+    ? `http://localhost:8080/assets/${urlPath}.jpg`
+    : `https://cdn.phenopod.com/assests/${urlPath}.jpg`
+}

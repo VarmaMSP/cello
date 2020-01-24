@@ -37,7 +37,7 @@ const PageLayout: React.FC<StateToProps & OwnProps> = ({
     </div>
   ) : (
     <div
-      className="pt-6 pr-6"
+      className="pt-8 pr-6"
       style={{ paddingLeft: '17.5rem', paddingBottom: '16rem' }}
     >
       {children}
