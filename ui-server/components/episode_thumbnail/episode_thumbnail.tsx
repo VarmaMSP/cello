@@ -87,17 +87,16 @@ const EpisodeThumbnail: React.FC<Props> = ({
       </div>
 
       <div
-        className={classnames(
-          'relative w-full h-1 mt-2 bg-gray-400 rounded-full',
-          {
-            hidden: episode.lastPlayedAt === '',
-          },
-        )}
+        className={classnames('relative w-full mt-1 bg-gray-400 rounded-full', {
+          hidden: episode.lastPlayedAt === '',
+        })}
+        style={{ height: '5px' }}
       >
         <div
-          className="absolute h-1 top-0 left-0 bg-green-700 rounded-full"
+          className="absolute top-0 left-0 bg-red-700 rounded-full"
           style={{
             transition: 'ease-in 0.4s',
+            height: '5px',
             width: `${episode.progress}%`,
           }}
         ></div>
