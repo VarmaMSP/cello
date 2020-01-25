@@ -1,5 +1,5 @@
 import ButtonShowMore from 'components/button_show_more'
-import EpisodeListItem from 'components/episode_list_item'
+import EpisodePreview from 'components/episode_preview'
 import parseISO from 'date-fns/parseISO'
 import React from 'react'
 import { Episode } from 'types/app'
@@ -44,7 +44,7 @@ const HistoryFeed: React.FC<StateToProps & DispatchToProps> = ({
       <h1 className="text-xl text-gray-900">{`Your Listen History`}</h1>
       <hr className="mt-2 mb-6 border-gray-400" />
       {history.map((episode) => (
-        <EpisodeListItem key={episode.id} episodeId={episode.id} />
+        <EpisodePreview key={episode.id} episodeId={episode.id} />
       ))}
 
       {!receivedAll && (

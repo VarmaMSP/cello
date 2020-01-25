@@ -1,5 +1,5 @@
 import ButtonShowMore from 'components/button_show_more'
-import EpisodeListItem from 'components/episode_list_item'
+import EpisodePreview from 'components/episode_preview'
 import PodcastPreview from 'components/podcast_preview'
 import React, { useEffect } from 'react'
 import { SearchResultType, SearchSortBy } from 'types/search'
@@ -103,7 +103,7 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
     return (
       <div>
         {episodeIds.map((id) => (
-          <EpisodeListItem episodeId={id} key={id} />
+          <EpisodePreview episodeId={id} key={id} />
         ))}
 
         {!receivedAll && (
