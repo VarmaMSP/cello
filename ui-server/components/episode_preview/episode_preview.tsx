@@ -28,7 +28,11 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
   return (
     <div className="episode-preview flex md:px-1 py-4 md:hover:bg-gray-100 rounded-lg">
       <div className="flex-none md:mr-4 mr-3">
-        <EpisodeThumbnail episodeId={episode.id} small={small} showIcon={showIcon} />
+        <EpisodeThumbnail
+          episodeId={episode.id}
+          small={small}
+          showIcon={showIcon}
+        />
       </div>
 
       <div>
@@ -54,7 +58,7 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
           </PodcastLink>
         )}
 
-        <div className="md:text-sm text-xs md:break-normal break-all tracking-wide line-clamp-3 cursor-default">
+        <div className="md:text-sm text-xs md:break-normal break-all tracking-wide md:line-clamp-2 line-clamp-3 cursor-default">
           <span className="text-gray-800 font-medium">{`${formatDistanceToNow(
             parseISO(episode.pubDate),
           )} ago`}</span>
