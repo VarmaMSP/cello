@@ -18,27 +18,27 @@ const PageLayout: React.FC<StateToProps & OwnProps> = ({
 }) => {
   if (viewPortSize === 'SM') {
     return Array.isArray(children) ? (
-      <div className="flex flex-col px-3 pt-20 pb-40">
+      <div className="flex flex-col px-3 pt-14 pb-40">
         {children[0]}
         {children[1]}
       </div>
     ) : (
-      <div className="px-3 pt-20 pb-40">{children}</div>
+      <div className="px-3 pt-14 pb-40">{children}</div>
     )
   }
 
   return Array.isArray(children) ? (
     <div
-      className="flex flex-row pt-8 pr-6"
-      style={{ paddingLeft: '18rem', paddingBottom: '16rem' }}
+      className="flex flex-row justify-between pr-6"
+      style={{ paddingLeft: '18.5em', paddingBottom: '16rem' }}
     >
-      <div className="w-2/3 mr-5">{children[0]}</div>
-      <div className="w-1/3">{children[1]}</div>
+      <div style={{ width: '68%' }}>{children[0]}</div>
+      <div style={{ width: '28%' }}>{children[1]}</div>
     </div>
   ) : (
     <div
       className="pt-8 pr-6"
-      style={{ paddingLeft: '17.5rem', paddingBottom: '16rem' }}
+      style={{ paddingLeft: '18.5rem', paddingBottom: '16rem' }}
     >
       {children}
     </div>
