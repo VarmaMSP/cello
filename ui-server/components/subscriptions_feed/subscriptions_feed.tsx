@@ -32,7 +32,7 @@ const SubscriptionsFeed: React.SFC<StateToProps & DispatchToProps> = ({
   }
 
   return (
-    <>
+    <div>
       <h1 className="py-3 text-xl tracking-wide text-gray-800 font-medium">
         {'Feed'}
       </h1>
@@ -50,7 +50,7 @@ const SubscriptionsFeed: React.SFC<StateToProps & DispatchToProps> = ({
           />
         </div>
       )}
-    </>
+    </div>
   )
 }
 

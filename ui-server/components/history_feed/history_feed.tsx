@@ -41,12 +41,15 @@ const HistoryFeed: React.FC<StateToProps & DispatchToProps> = ({
 
   return (
     <div>
-      <h1 className="text-xl text-gray-900">{`Your Listen History`}</h1>
-      <hr className="mt-2 mb-6 border-gray-400" />
+      <h1 className="py-3 text-xl tracking-wide text-gray-800 font-medium">
+        {'History'}
+      </h1>
+      <hr className="mb-4" />
       {history.map((episode) => (
-        <EpisodePreview key={episode.id} episodeId={episode.id} />
+        <div key={episode.id} className="mb-6">
+          <EpisodePreview episodeId={episode.id} />
+        </div>
       ))}
-
       {!receivedAll && (
         <div className="w-full h-10 mx-auto my-6">
           <ButtonShowMore
@@ -57,6 +60,6 @@ const HistoryFeed: React.FC<StateToProps & DispatchToProps> = ({
       )}
     </div>
   )
-}
+} 
 
 export default HistoryFeed
