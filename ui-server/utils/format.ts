@@ -70,6 +70,11 @@ export function formatPlayerDuration(
   ]
 }
 
+export function formatDuration(d: number): string {
+  const regex = d < 60 * 60 ? /\d\d:(\d\d:\d\d)/ : /(\d\d:\d\d:\d\d)/
+  return new Date(0, 0, 0, 0, 0, d)!.toTimeString().match(regex)![1]
+}
+
 function roundTo(n: number, digits: number) {
   var multiplicator = Math.pow(10, digits)
   n = parseFloat((n * multiplicator).toFixed(11))
@@ -85,5 +90,5 @@ export function formatCategoryTitle(str: string): string {
 }
 
 export function getIdFromUrlParam(s: string): string {
-  return s.split("-").splice(-1)[0]
+  return s.split('-').splice(-1)[0]
 }
