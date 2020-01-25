@@ -1,6 +1,6 @@
 import { getPodcastPageData } from 'actions/podcast'
 import PageLayout from 'components/page_layout'
-import PodcastView from 'components/podcast_view/podcast_view'
+import PodcastView from 'components/podcast_view'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { PageContext } from 'types/utilities'
