@@ -1,3 +1,4 @@
+import classnames from 'classnames'
 import EpisodeThumbnail from 'components/episode_thumbnail'
 import { EpisodeLink, PodcastLink } from 'components/link'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
@@ -13,23 +14,30 @@ export interface StateToProps {
 
 export interface OwnProps {
   episodeId: string
+  small?: boolean
+  showIcon?: boolean
 }
 
 const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
   episode,
   podcast,
   episodeSearchResult,
+  small = false,
+  showIcon = false,
 }) => {
   return (
-    <div className="episode-preview flex mb-6 md:px-2 py-4 md:hover:bg-gray-100 rounded-lg">
-      <div className="flex-none mr-2">
-        <EpisodeThumbnail episodeId={episode.id} />
+    <div className="episode-preview flex md:px-1 py-4 md:hover:bg-gray-100 rounded-lg">
+      <div className="flex-none md:mr-4 mr-3">
+        <EpisodeThumbnail episodeId={episode.id} small={small} showIcon={showIcon} />
       </div>
 
-      <div className="md:pl-4 pl-1">
+      <div>
         <EpisodeLink episodeUrlParam={episode.urlParam}>
           <a
-            className="md:text-base text-sm font-medium tracking-wide line-clamp-2"
+            className={classnames(
+              'md:text-base text-sm font-medium tracking-wide line-clamp-2',
+              { 'mb-2': small },
+            )}
             dangerouslySetInnerHTML={{
               __html:
                 (episodeSearchResult && episodeSearchResult.title) ||
@@ -38,19 +46,21 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
           />
         </EpisodeLink>
 
-        <PodcastLink podcastUrlParam={podcast.urlParam}>
-          <a className="md:text-sm text-xs text-grey-800 mt-1 mb-2 tracking-wide line-clamp-1">
-            {podcast.title}
-          </a>
-        </PodcastLink>
+        {!small && (
+          <PodcastLink podcastUrlParam={podcast.urlParam}>
+            <a className="md:text-sm text-xs text-grey-800 mt-1 mb-2 tracking-wide line-clamp-1">
+              {podcast.title}
+            </a>
+          </PodcastLink>
+        )}
 
-        <div className="md:text-sm text-2xs md:break-normal break-all tracking-wide line-clamp-3 cursor-default">
-          <span className="text-gray-700 font-medium">{`${formatDistanceToNow(
+        <div className="md:text-sm text-xs md:break-normal break-all tracking-wide line-clamp-3 cursor-default">
+          <span className="text-gray-800 font-medium">{`${formatDistanceToNow(
             parseISO(episode.pubDate),
           )} ago`}</span>
           <span className="mx-2 text-black font-extrabold">&middot;</span>
           <span
-            className="text-gray-700"
+            className="text-teal-900"
             dangerouslySetInnerHTML={{
               __html:
                 (episodeSearchResult && episodeSearchResult.description) ||
