@@ -4,11 +4,12 @@ import parseISO from 'date-fns/parseISO'
 import React from 'react'
 import { Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
+
 export interface OwnProps {
   podcast: Podcast
 }
 
-const PodcastInfo: React.SFC<OwnProps> = ({ podcast }) => {
+const PodcastHeader: React.SFC<OwnProps> = ({ podcast }) => {
   return (
     <div className="flex">
       <img
@@ -38,4 +39,4 @@ const PodcastInfo: React.SFC<OwnProps> = ({ podcast }) => {
   )
 }
 
-export default PodcastInfo
+export default PodcastHeader

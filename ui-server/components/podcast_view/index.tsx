@@ -6,8 +6,8 @@ import { getPodcastById } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
 import { Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
-import HomeTab from './home_tab'
-import PodcastInfo from './podcast_info/podcast_info'
+import PodcastHeader from './components/podcast_header/podcast_header'
+import HomeTab from './tabs/home'
 
 interface StateToProps {
   podcast: Podcast
@@ -25,7 +25,7 @@ const PodcastView: React.FC<StateToProps & OwnProps> = ({
   const podcastUrlParam = podcast.urlParam
 
   return (
-    <div>
+    <div className="pt-6">
       <NextSeo
         title={`${podcast.title} | Phenopod`}
         description={podcast.description}
@@ -42,8 +42,7 @@ const PodcastView: React.FC<StateToProps & OwnProps> = ({
         }}
       />
 
-      <PodcastInfo podcast={podcast} />
-
+      <PodcastHeader podcast={podcast} />
       <div className="mt-6 mb-4">
         <NavTabs
           tabs={[
@@ -58,8 +57,7 @@ const PodcastView: React.FC<StateToProps & OwnProps> = ({
           defaultTab="podcast"
         />
       </div>
-
-      {activeTab === undefined && <HomeTab podcastId={podcast.id} />}
+      {activeTab === undefined && <HomeTab podcast={podcast} />}
     </div>
   )
 }

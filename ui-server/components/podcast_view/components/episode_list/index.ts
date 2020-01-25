@@ -1,5 +1,4 @@
 import { getEpisodePlaybacks } from 'actions/playback'
-import { loadAndShowAddToPlaylistModal } from 'actions/playlist'
 import { getPodcastEpisodes as getPodcastEpisodes_ } from 'actions/podcast'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
@@ -41,10 +40,6 @@ function dispatchToProps(
   { podcastId }: OwnProps,
 ): DispatchToProps {
   return {
-    showAddToPlaylistModal: bindActionCreators(
-      loadAndShowAddToPlaylistModal,
-      dispatch,
-    ),
     loadEpisodes: (offset: number) =>
       bindActionCreators(getPodcastEpisodes_, dispatch)(
         podcastId,

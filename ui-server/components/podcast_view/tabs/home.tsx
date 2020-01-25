@@ -1,18 +1,12 @@
 import React from 'react'
 import { Podcast } from 'types/app'
-import EpisodeList from '../episode_list'
+import EpisodeList from '../components/episode_list'
 
-export interface StateToProps {
+export interface OwnProps {
   podcast: Podcast
 }
 
-export interface OwnProps {
-  podcastId: string
-}
-
-interface Props extends StateToProps, OwnProps {}
-
-const PodcastAbout: React.FC<Props> = ({ podcast }) => {
+const PodcastAbout: React.FC<OwnProps> = ({ podcast }) => {
   return (
     <div>
       <h2 className="font-medium tracking-wider mb-2">{'Description'}</h2>
@@ -26,7 +20,7 @@ const PodcastAbout: React.FC<Props> = ({ podcast }) => {
 
       <hr className="my-6" />
 
-      <h2 className="font-medium tracking-widest mb-5">{'Episodes'}</h2>
+      <h2 className="font-medium tracking-wider mb-5">{'Episodes'}</h2>
       <EpisodeList podcastId={podcast.id} />
     </div>
   )
