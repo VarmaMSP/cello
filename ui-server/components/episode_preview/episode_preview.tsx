@@ -39,8 +39,8 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
         <EpisodeLink episodeUrlParam={episode.urlParam}>
           <a
             className={classnames(
-              'md:text-base text-sm font-medium tracking-wide line-clamp-2',
-              { 'mb-2': small },
+              'md:text-base text-sm font-medium tracking-wide font-normal line-clamp-2',
+              { 'mb-1': small },
             )}
             dangerouslySetInnerHTML={{
               __html:
@@ -52,19 +52,19 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
 
         {!small && (
           <PodcastLink podcastUrlParam={podcast.urlParam}>
-            <a className="md:text-sm text-xs text-grey-800 mt-1 mb-2 tracking-wide line-clamp-1">
+            <a className="md:text-sm text-xs text-grey-800 mb-2 tracking-wide line-clamp-1">
               {podcast.title}
             </a>
           </PodcastLink>
         )}
 
-        <div className="md:text-sm text-xs md:break-normal break-all tracking-wide md:line-clamp-2 line-clamp-3 cursor-default">
-          <span className="text-gray-800 font-medium">{`${formatDistanceToNow(
+        <div className="text-xs md:break-normal break-all tracking-wide leading-sung md:line-clamp-2 line-clamp-3 cursor-default">
+          <span className="text-teal-800">{`${formatDistanceToNow(
             parseISO(episode.pubDate),
           )} ago`}</span>
           <span className="mx-2 text-black font-extrabold">&middot;</span>
           <span
-            className="text-teal-900"
+            className="text-gray-800"
             dangerouslySetInnerHTML={{
               __html:
                 (episodeSearchResult && episodeSearchResult.description) ||

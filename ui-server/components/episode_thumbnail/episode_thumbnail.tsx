@@ -70,10 +70,17 @@ const EpisodeThumbnail: React.FC<Props> = ({
           )}
         >
           <div
-            className="flex items-center md:w-14 md:h-14 w-10 h-10 mx-auto rounded-full"
+            className={classnames(
+              'flex items-center w-10 h-10 mx-auto rounded-full',
+              { 'md:w-14 md:h-14': !small },
+            )}
             style={{ background: 'rgba(255, 255, 255, 0.75)' }}
           >
-            <PlayIcon className="md:w-10 md:h-10 w-7 h-7 md:ml-3 ml-2 fill-current text-gray-800" />
+            <PlayIcon
+              className={classnames('w-7 h-7 ml-2 fill-current text-gray-800', {
+                'md:w-10 md:h-10 md:ml-3': !small,
+              })}
+            />
           </div>
         </div>
 
@@ -87,16 +94,14 @@ const EpisodeThumbnail: React.FC<Props> = ({
       </div>
 
       <div
-        className={classnames('relative w-full mt-1 bg-gray-400 rounded-full', {
+        className={classnames('relative w-full h-1 mt-2 bg-gray-400 rounded-full', {
           hidden: episode.lastPlayedAt === '',
         })}
-        style={{ height: '5px' }}
       >
         <div
-          className="absolute top-0 left-0 bg-red-700 rounded-full"
+          className="absolute top-0 left-0 h-1 bg-red-700 rounded-full"
           style={{
             transition: 'ease-in 0.4s',
-            height: '5px',
             width: `${episode.progress}%`,
           }}
         ></div>

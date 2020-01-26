@@ -18,10 +18,10 @@ const PodcastHeader: React.SFC<OwnProps> = ({ podcast }) => {
       />
       <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
         <div className="w-full mb-3">
-          <h2 className="md:text-xl text-lg text-gray-900 leading-tight line-clamp-2">
+          <h2 className="md:text-xl text-lg text-gray-900 font-medium leading-snug line-clamp-2">
             {podcast.title}
           </h2>
-          <h3 className="md:text-base text-sm text-gray-800 leading-loose truncate">
+          <h3 className="mb-2 text-sm text-gray-800 truncate">
             {podcast.author}
           </h3>
           <h4 className="text-xs text-gray-700">
