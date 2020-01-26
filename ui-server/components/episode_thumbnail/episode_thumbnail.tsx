@@ -15,8 +15,9 @@ export interface DispatchToProps {
 
 export interface OwnProps {
   episodeId: string
-  small: boolean
-  showIcon: boolean
+  small?: boolean
+  large?: boolean
+  showIcon?: boolean
 }
 
 type Props = StateToProps & DispatchToProps & OwnProps
@@ -25,8 +26,9 @@ const EpisodeThumbnail: React.FC<Props> = ({
   podcast,
   episode,
   playEpisode,
-  small,
-  showIcon,
+  small = false,
+  large = false,
+  showIcon = false,
 }) => {
   const PlayIcon = iconMap['play']
 
@@ -38,6 +40,7 @@ const EpisodeThumbnail: React.FC<Props> = ({
           {
             'md:w-25 md:h-25': !!small,
             'md:w-28 md:h-28': !!!small,
+            'md:h-36 md:w-36': large,
           },
         )}
         onClick={() => {
@@ -58,10 +61,11 @@ const EpisodeThumbnail: React.FC<Props> = ({
         {/* Icon */}
         <div
           className={classnames(
-            'absolute left-0 top-0 w-22 h-22',
+            'absolute left-0 top-0 w-22 h-22 flex items-center',
             {
               'md:w-25 md:h-25': !!small,
               'md:w-28 md:h-28': !!!small,
+              'md:h-36 md:w-36': large,
             },
             {
               overlay: showIcon,
