@@ -17,14 +17,14 @@ const PodcastPreview: React.FC<StateToProps & OwnProps> = ({
 }) => {
   return (
     <div className="flex mb-14">
-      <div className="flex-none mr-1">
+      <div className="flex-none md:mr-4 mr-3">
         <img
-          className="md:w-28 w-16 md:h-28 w-16 object-contain rounded-lg border cursor-default"
+          className="md:w-28 w-22 md:h-28 w-22 object-contain rounded-lg border cursor-default"
           src={getImageUrl(podcast.urlParam)}
         />
       </div>
 
-      <div className="md:pl-4 pl-1">
+      <div>
         <PodcastLink podcastUrlParam={podcast.urlParam}>
           <a
             className="md:text-base text-sm font-medium tracking-wide line-clamp-2"
@@ -36,27 +36,22 @@ const PodcastPreview: React.FC<StateToProps & OwnProps> = ({
           />
         </PodcastLink>
 
-        <PodcastLink podcastUrlParam={podcast.urlParam}>
-          <a
-            className="text-sm text-grey-800 hover:text-black tracking-wide line-clamp-1"
-            style={{ margin: '3px 0px' }}
-            dangerouslySetInnerHTML={{
-              __html:
-                (podcastSearchResult && podcastSearchResult.author) ||
-                podcast.author,
-            }}
-          />
-        </PodcastLink>
+        <div
+          className="md:text-sm text-xs text-grey-800 mb-2 tracking-wide line-clamp-1"
+          dangerouslySetInnerHTML={{
+            __html:
+              (podcastSearchResult && podcastSearchResult.author) ||
+              podcast.author,
+          }}
+        />
 
-        <PodcastLink podcastUrlParam={podcast.urlParam}>
-          <a
-            className="mt-1 text-xs text-gray-700 leading-snug tracking-wider line-clamp-2"
-            style={{ hyphens: 'auto' }}
-            dangerouslySetInnerHTML={{
-              __html: podcastSearchResult.description || podcast.summary,
-            }}
-          />
-        </PodcastLink>
+        <div
+          className="text-xs text-gray-800 md:break-normal break-all leading-snug tracking-wide md:line-clamp-2 line-clamp-3 cursor-default"
+          style={{ hyphens: 'auto' }}
+          dangerouslySetInnerHTML={{
+            __html: podcastSearchResult.description || podcast.summary,
+          }}
+        />
       </div>
     </div>
   )
