@@ -1,4 +1,4 @@
-import classNames from 'classnames'
+import classnames from 'classnames'
 import React, { Component } from 'react'
 import { getClickPosition, TouchOrMouseEvent } from 'utils/dom'
 import { formatPlayerDuration } from 'utils/format'
@@ -8,6 +8,7 @@ interface Props {
   duration: number
   currentTime: number
   handleSeek: (t: number) => void
+  compact?: boolean
 }
 
 interface State {
@@ -127,55 +128,63 @@ export default class SeekBar extends Component<Props, State> {
   render() {
     const [t, T] = this.getProgressDetails()
     const sliderPosition = this.getSliderPosition()
-    const { theme } = this.props
+    const { theme, compact = false } = this.props
 
     return (
-      <>
+      <div className={classnames('w-full', { 'flex items-center': compact })}>
         <div
-          className="relative flex items-center h-4 cursor-pointer select-none"
+          className="flex-1 h-5 py-2 cursor-pointer"
           onMouseDown={this.handleSeekBegin}
           onTouchStart={this.handleSeekBegin}
           onTouchMove={this.handleSeek}
           onTouchEnd={this.handleSeekComplete}
+          ref={this.seekBarRef}
         >
-          <div
-            className="absolute left-0 w-full h-1 bg-gray-300 rounded select-none"
-            ref={this.seekBarRef}
-          />
-          <div
-            className="absolute left-0 w-10 h-1 bg-green-500 rounded select-none"
-            style={{ transition: 'ease', width: `${sliderPosition}px` }}
-          />
-          <div
-            className="absolute w-4 h-4 -ml-2 rounded-full bg-white border shadow-md select-none"
-            style={{ transition: 'ease', left: `${sliderPosition}px` }}
-          />
+          <div className="relative h-1 bg-gray-300 rounded-full select-none">
+            <div
+              className="absolute left-0 w-10 h-1 bg-green-500 rounded select-none"
+              style={{ transition: 'ease', width: `${sliderPosition}px` }}
+            />
+            <div
+              className="absolute w-3 h-3 -ml-2 -mt-1 rounded-full bg-white border shadow-md select-none"
+              style={{ transition: 'ease', left: `${sliderPosition}px` }}
+            />
+          </div>
         </div>
-        <div className="flex justify-between items-center px-2">
-          <span
-            className={classNames(
-              'text-sm leading-relaxed tracking-wider select-none',
-              {
-                'text-gray-300': theme === 'dark',
-                'text-gray-800': theme !== 'dark',
-              },
-            )}
-          >
-            {t}
-          </span>
-          <span
-            className={classNames(
-              'text-sm leading-relaxed tracking-wider select-none',
-              {
-                'text-gray-300': theme === 'dark',
-                'text-gray-800': theme !== 'dark',
-              },
-            )}
-          >
-            {T}
-          </span>
-        </div>
-      </>
+
+        {compact && (
+          <div className="flex-none ml-3 text-2xs text-gray-900 tracking-wide select-none">
+            {`${t} / ${T}`}
+          </div>
+        )}
+
+        {!compact && (
+          <div className="flex justify-between items-center px-2">
+            <span
+              className={classnames(
+                'text-sm leading-relaxed tracking-wider select-none',
+                {
+                  'text-gray-300': theme === 'dark',
+                  'text-gray-800': theme !== 'dark',
+                },
+              )}
+            >
+              {t}
+            </span>
+            <span
+              className={classnames(
+                'text-sm leading-relaxed tracking-wider select-none',
+                {
+                  'text-gray-300': theme === 'dark',
+                  'text-gray-800': theme !== 'dark',
+                },
+              )}
+            >
+              {T}
+            </span>
+          </div>
+        )}
+      </div>
     )
   }
 }
