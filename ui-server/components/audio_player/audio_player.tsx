@@ -42,7 +42,6 @@ export default class AudioPlayer extends Component<Props> {
         prevProps.episodeId,
         (prevProps.currentTime / prevProps.duration) * 100,
       )
-      console.log(prevProps.currentTime, prevProps.duration)
     }
   }
 
