@@ -1,4 +1,5 @@
 import NavTabs from 'components/nav_tabs'
+import { NextSeo } from 'next-seo'
 import React from 'react'
 import { connect } from 'react-redux'
 import { getEpisodeById } from 'selectors/entities/episodes'
@@ -23,7 +24,21 @@ const EpisodeView: React.FC<StateToProps & OwnProps> = ({
   const episodeUrlParam = episode.urlParam
 
   return (
-    <div>
+    <div className="pt-6">
+      <NextSeo
+        title={`${episode.title} | Phenopod`}
+        description={episode.summary}
+        canonical={`https://phenopod.com/episodes/${episode.urlParam}`}
+        openGraph={{
+          url: `https://phenopod.com/episodes/${episode.urlParam}`,
+          type: 'article',
+          title: episode.title,
+          description: episode.summary,
+        }}
+        twitter={{
+          cardType: `summary_large_image`,
+        }}
+      />
       <EpisodeHeader episode={episode} />
       <div className="mt-6 mb-4">
         <NavTabs

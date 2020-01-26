@@ -27,7 +27,7 @@ const HomeTab: React.FC<OwnProps> = ({ episode }) => {
       <h2 className="font-medium tracking-wider mb-2">{'Description'}</h2>
       <div
         ref={ref}
-        className="external-html lg:pr-16 text-sm leading-relaxed tracking-wide text-gray-800"
+        className="external-html lg:pr-16 text-sm leading-relaxed tracking-wide text-gray-900"
         dangerouslySetInnerHTML={{ __html: episode.description }}
       />
     </div>
