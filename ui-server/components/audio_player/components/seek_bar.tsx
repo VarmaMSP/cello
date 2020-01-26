@@ -1,7 +1,7 @@
 import classnames from 'classnames'
 import React, { Component } from 'react'
 import { getClickPosition, TouchOrMouseEvent } from 'utils/dom'
-import { formatPlayerDuration } from 'utils/format'
+import { formatDuration } from 'utils/format'
 
 interface Props {
   theme?: string
@@ -69,13 +69,15 @@ export default class SeekBar extends Component<Props, State> {
   getProgressDetails = (): [string, string] => {
     const { currentTime, duration } = this.props
     const { firstRender, seeking, sliderPosition } = this.state
-    if (firstRender || !seeking) {
-      return formatPlayerDuration(currentTime, duration)
-    }
-    return formatPlayerDuration(
-      (sliderPosition / this.getSeekBarPosition().width) * duration,
-      duration,
-    )
+
+    return [
+      formatDuration(
+        firstRender || !seeking
+          ? currentTime
+          : (sliderPosition / this.getSeekBarPosition().width) * duration,
+      ),
+      formatDuration(duration),
+    ]
   }
 
   // Calculate slider clientX when user performs seek action
@@ -153,7 +155,7 @@ export default class SeekBar extends Component<Props, State> {
         </div>
 
         {compact && (
-          <div className="flex-none ml-3 text-2xs text-gray-900 tracking-wide select-none">
+          <div className="flex-none w-30 ml-2 text-center text-xs text-gray-900 tracking-wide select-none">
             {`${t} / ${T}`}
           </div>
         )}
