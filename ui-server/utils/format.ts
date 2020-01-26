@@ -59,19 +59,16 @@ export function formatEpisodePubDate(
   })
 }
 
-export function formatPlayerDuration(
-  current: number,
-  total: number,
-): [string, string] {
-  const regex = total < 60 * 60 ? /\d\d:(\d\d:\d\d)/ : /(\d\d:\d\d:\d\d)/
-  return [
-    new Date(0, 0, 0, 0, 0, current).toTimeString().match(regex)![1],
-    new Date(0, 0, 0, 0, 0, total)!.toTimeString().match(regex)![1],
-  ]
-}
-
 export function formatDuration(d: number): string {
-  const regex = d < 60 * 60 ? /\d\d:(\d\d:\d\d)/ : /(\d\d:\d\d:\d\d)/
+  let regex: RegExp
+  if (d < 60 * 60) {
+    regex = /\d\d:(\d\d:\d\d)/
+  } else if (d < 10 * 60 * 60) {
+    regex = /\d(\d:\d\d:\d\d)/
+  } else {
+    regex = /(\d\d:\d\d:\d\d)/
+  }
+
   return new Date(0, 0, 0, 0, 0, d)!.toTimeString().match(regex)![1]
 }
 
