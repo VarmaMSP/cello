@@ -31,7 +31,7 @@ const PlaylistView: React.FC<StateToProps & OwnProps> = ({
   const playlistUrlParam = playlist.urlParam
 
   return (
-    <div>
+    <div className="mt-6">
       <PlaylistHeader playlist={playlist} />
       <div className="mt-6 mb-4">
         <NavTabs

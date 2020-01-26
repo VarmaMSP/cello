@@ -85,7 +85,7 @@ export default class ResultsPage extends Component<OwnProps> {
           }}
         />
         <PageLayout>
-          <div>
+          <div className="pt-6">
             <SearchResultsFilter />
             <SearchResultsList />
           </div>

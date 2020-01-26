@@ -26,8 +26,10 @@ const PlaylistLibrary: React.FC<StateToProps> = ({ playlists }) => {
 
   return (
     <div>
-      <h1 className="text-xl text-gray-900">{'Your Playlists'}</h1>
-      <hr className="mt-2 mb-6 border-gray-400" />
+      <h1 className="pt-3 pb-1 text-xl tracking-wide text-gray-800 font-medium">
+        {'Your Playlists'}
+      </h1>
+      <hr className="mb-6" />
       <GridResponsive cols={{ LG: 3, MD: 3, SM: 2 }}>
         {playlists.map((p) => (
           <div key={p.id} className="flex-none mb-12 px-3">
