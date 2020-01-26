@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { AudioState, Episode, Podcast, ViewportSize } from 'types/app'
 import AudioPlayerLarge from './audio_player_large'
-import AudioPlayerMedium from './audio_player_medium'
 import AudioPlayerSmall from './audio_player_small'
 
 export interface StateToProps {
@@ -171,22 +170,7 @@ export default class AudioPlayer extends Component<Props> {
       )
     }
 
-    if (viewportSize === 'MD') {
-      return (
-        <AudioPlayerMedium
-          podcast={podcast}
-          episode={episode}
-          audioState={audioState}
-          duration={duration}
-          currentTime={currentTime}
-          handleSeek={this.handleSeek}
-          handleFastForward={this.handleFastForward}
-          handleActionButtonPress={this.handleActionButtonPress}
-        />
-      )
-    }
-
-    if (viewportSize === 'LG') {
+    if (viewportSize === 'MD' || viewportSize === 'LG') {
       return (
         <AudioPlayerLarge
           podcast={podcast}
