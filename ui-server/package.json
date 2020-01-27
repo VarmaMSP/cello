@@ -10,6 +10,7 @@
     "make-icons": "npx svgr --ext tsx --out-dir ./components/icons ./static/icons"
   },
   "dependencies": {
+    "@popperjs/core": "^2.0.1",
     "accessible-nprogress": "^2.0.1",
     "date-fns": "^2.8.1",
     "formik": "^2.1.1",
