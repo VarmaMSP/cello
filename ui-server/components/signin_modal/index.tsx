@@ -19,21 +19,21 @@ const SignInModal: React.FC<{}> = () => {
             icon="google-color"
             text="Sign in with Google"
             onClick={() => {
-              window.location.href = `api/signin/google`
+              window.location.href = `/api/signin/google`
             }}
           />
           <SocialSignIn
             icon="facebook-color"
             text="Sign in with Facebook"
             onClick={() => {
-              window.location.href = `api/signin/facebook`
+              window.location.href = `/api/signin/facebook`
             }}
           />
           <SocialSignIn
             icon="twitter-color"
             text="Sign in with Twitter"
             onClick={() => {
-              window.location.href = `api/signin/twitter`
+              window.location.href = `/api/signin/twitter`
             }}
           />
         </div>
