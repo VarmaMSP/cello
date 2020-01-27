@@ -13,7 +13,7 @@ const ButtonShowMore: React.SFC<Props> = (props) => {
       className="w-full h-full text-sm text-gray-900 tracking-tight bg-gray-200 rounded-lg focus:outline-none"
       onClick={loadMore}
     >
-      {isLoading ? <div className="spinner mx-auto" /> : 'SHOW MORE'}
+      {isLoading ? <div className="spinner-sm mx-auto" /> : 'SHOW MORE'}
     </button>
   )
 }

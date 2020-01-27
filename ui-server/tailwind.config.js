@@ -430,23 +430,23 @@ module.exports = {
       '50': '50',
     },
     spinner: (theme) => ({
-      default: {
+      sm: {
         color: theme('colors.gray.800', 'gray'),
         size: '1em',
         border: '2px',
         speed: '500ms',
       },
-      md: {
+      default: {
         color: theme('colors.gray.800', 'gray'),
-        size: '2em',
-        border: '4px',
+        size: '1.85em',
+        border: '3px',
         speed: '500ms',
       },
-      lg: {
+      md: {
         color: theme('colors.gray.800', 'gray'),
-        size: '3em',
-        border: '5px',
-        speed: '600ms',
+        size: '2.5em',
+        border: '3px',
+        speed: '500ms',
       },
     }),
   },

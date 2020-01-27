@@ -17,7 +17,7 @@ const ActionButton: React.SFC<Props> = ({
   if (audioState === 'PLAYING') {
     return (
       <ButtonWithIcon
-        className={classNames('w-16 h-16 px-3 py-3', {
+        className={classNames('md:w-12 md:h-12 w-16 h-16 px-1 py-1', {
           'text-gray-300': theme === 'dark',
         })}
         icon="pause"
@@ -29,7 +29,7 @@ const ActionButton: React.SFC<Props> = ({
   if (audioState === 'PAUSED' || audioState === 'ENDED') {
     return (
       <ButtonWithIcon
-        className={classNames('w-16 h-16 px-3 py-3', {
+        className={classNames('md:w-12 md:h-12 w-16 h-16 px-1 py-1', {
           'text-gray-300': theme === 'dark',
         })}
         icon="play"
@@ -40,8 +40,8 @@ const ActionButton: React.SFC<Props> = ({
 
   // return loader as default
   return (
-    <div className="w-16 h-16 flex item-center cursor-wait">
-      <div className="spinner-md mx-auto" />
+    <div className="md:w-12 md:h-12 w-16 h-16 flex item-center cursor-wait">
+      <div className="spinner mx-auto" />
     </div>
   )
 }
