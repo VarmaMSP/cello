@@ -14,17 +14,17 @@ const SubscriptionsList: React.FC<StateToProps> = ({ subscriptions }) => {
   }
 
   return (
-    <div className="pl-8 pr-2 rounded-xl bg-gray-200">
-      <h2 className="text-lg text-gray-700">{"You're subscribed to"}</h2>
-      <hr className="mt-3 mb-4" />
-      <Grid
-        cols={{ LG: 4, MD: 4, SM: 4 }}
-        totalRowSpacing={{ LG: 10, MD: 10, SM: 10 }}
-        className="md:mb-4 mb-2"
-      >
+    <div className="px-3 pt-3 pb-2 rounded-xl bg-gray-200">
+      <h2 className="mb-3 text text-gray-800 tracking-wide">
+        {"You're subscribed to"}
+      </h2>
+      <Grid cols={{ LG: 4, MD: 4, SM: 4 }}>
         {subscriptions.map((podcast) => (
           <PodcastLink podcastUrlParam={podcast.urlParam} key={podcast.id}>
-            <a>
+            <a
+              className="block mb-4"
+              style={{ paddingLeft: '2px', paddingRight: '2px' }}
+            >
               <img
                 className="w-full h-auto flex-none object-contain rounded-lg border cursor-pointer"
                 src={getImageUrl(podcast.urlParam)}

@@ -79,7 +79,9 @@ class SubscriptionsPage extends React.Component<Props> {
         />
         <PageLayout>
           <SubscriptionsFeed />
-          <SubscriptionsList />
+          <div className="pt-4">
+            <SubscriptionsList />
+          </div>
         </PageLayout>
       </>
     )
