@@ -10,6 +10,11 @@ export function getClickPosition(e: TouchOrMouseEvent): { clientX: number } {
     : { clientX: (e as React.MouseEvent<HTMLElement>).clientX }
 }
 
+export function stopEventPropagation(e: React.SyntheticEvent<HTMLElement>) {
+  e.stopPropagation()
+  e.nativeEvent.stopImmediatePropagation()
+}
+
 export function getImageUrl(urlPath: string): string {
   return process.env.NODE_ENV === 'development'
     ? `http://localhost:8080/thumbnails/${urlPath}.jpg`
