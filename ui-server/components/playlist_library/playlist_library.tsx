@@ -1,4 +1,4 @@
-import GridResponsive from 'components/grid_responsive'
+import Grid from 'components/grid'
 import { PlaylistLink } from 'components/link'
 import format from 'date-fns/format'
 import parseISO from 'date-fns/parseISO'
@@ -30,7 +30,7 @@ const PlaylistLibrary: React.FC<StateToProps> = ({ playlists }) => {
         {'Your Playlists'}
       </h1>
       <hr className="mb-6" />
-      <GridResponsive cols={{ LG: 3, MD: 3, SM: 2 }}>
+      <Grid cols={{ LG: 3, MD: 3, SM: 2 }}>
         {playlists.map((p) => (
           <div key={p.id} className="flex-none mb-12 px-3">
             <PlaylistLink playlistUrlParam={p.urlParam}>

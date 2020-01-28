@@ -1,4 +1,4 @@
-import GridResponsive from 'components/grid_responsive'
+import Grid from 'components/grid'
 import { PodcastLink } from 'components/link'
 import React from 'react'
 import { Podcast } from 'types/app'
@@ -13,7 +13,7 @@ const Recommended: React.FC<StateToProps> = ({ podcasts }) => {
     <div className="mb-6">
       <h2 className="text-xl text-gray-700">{'Trending'}</h2>
       <hr className="mt-1 mb-4" />
-      <GridResponsive cols={{ SM: 4, MD: 5, LG: 8 }}>
+      <Grid cols={{ SM: 4, MD: 5, LG: 8 }}>
         {podcasts.map((p) => (
           <div key={p.id} className="flex-none px-1 mb-4">
             <PodcastLink podcastUrlParam={p.urlParam}>
@@ -36,7 +36,7 @@ const Recommended: React.FC<StateToProps> = ({ podcasts }) => {
             </PodcastLink>
           </div>
         ))}
-      </GridResponsive>
+      </Grid>
     </div>
   )
 }

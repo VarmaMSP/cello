@@ -14,7 +14,7 @@ interface OwnProps {
   children: JSX.Element[]
 }
 
-const GridResponsive: React.FC<StateToProps & OwnProps> = ({
+const Grid: React.FC<StateToProps & OwnProps> = ({
   rows,
   cols,
   children,
@@ -62,5 +62,5 @@ function mapStateToProps(state: AppState): StateToProps {
 }
 
 export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
-  GridResponsive,
+  Grid,
 )
