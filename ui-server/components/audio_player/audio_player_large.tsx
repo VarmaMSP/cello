@@ -1,5 +1,6 @@
 import AudioPlayerSettings from 'components/audio_player_settings'
 import ButtonWithIcon from 'components/button_with_icon'
+import { iconMap } from 'components/icon'
 import usePopper from 'hooks/usePopper'
 import React, { useState } from 'react'
 import { Portal } from 'react-portal'
@@ -56,6 +57,8 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
     return <></>
   }
 
+  const DotsIcon = iconMap['dots-horizontal']
+
   return (
     <div
       ref={reference.ref}
@@ -65,7 +68,7 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
       }}
     >
       <div
-        className="flex items-center justify-around w-full h-22 border border-gray-200 bg-white rounded-lg"
+        className="flex items-center justify-between w-full h-22 border border-gray-200 bg-white rounded-lg"
         style={{
           marginBottom: '8px',
           marginRight: '8px',
@@ -77,7 +80,7 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
           src={getImageUrl(podcast.urlParam)}
         />
 
-        <div className="flex-1 flex flex-col justify-around h-full px-3 py-1">
+        <div className="flex-1 flex flex-col justify-around h-full pl-4 pr-1 py-1">
           <div className="flex justify-between">
             {/* Title */}
             <div className="flex-auto pr-4">
@@ -116,16 +119,20 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
           />
         </div>
 
-        <div
-          className="flex-none w-8 p-2 bg-red-900"
-          onClick={() => setShowPopper(!showPopper)}
-          onPointerDown={stopEventPropagation}
-          onMouseDown={stopEventPropagation}
-          onTouchStart={stopEventPropagation}
-        />
+        <div className="flex-none h-full py-3">
+          <button
+            className="w-full px-2 py-3 focus:outline-none"
+            onClick={() => setShowPopper(!showPopper)}
+            onPointerDown={stopEventPropagation}
+            onMouseDown={stopEventPropagation}
+            onTouchStart={stopEventPropagation}
+          >
+            <DotsIcon className="w-4 h-4 mx-auto fill-current text-gray-800" />
+          </button>
+        </div>
 
         {showPopper && (
-          <Portal node={document && document.getElementById('portal')}>
+          <Portal>
             <div ref={popper.ref} style={popper.styles}>
               <AudioPlayerSettings />
             </div>

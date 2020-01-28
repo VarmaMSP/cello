@@ -144,11 +144,11 @@ export default class SeekBar extends Component<Props, State> {
         >
           <div className="relative h-1 bg-gray-300 rounded-full select-none">
             <div
-              className="absolute left-0 w-10 h-1 bg-green-500 rounded select-none"
+              className="absolute left-0 w-10 h-1 bg-red-600 rounded select-none"
               style={{ transition: 'ease', width: `${sliderPosition}px` }}
             />
             <div
-              className="absolute w-3 h-3 -ml-2 -mt-1 rounded-full bg-white border shadow-md select-none"
+              className="absolute w-3 h-3 -ml-2 -mt-1 rounded-full bg-red-600 border border-red-100 shadow-md select-none"
               style={{ transition: 'ease', left: `${sliderPosition}px` }}
             />
           </div>
