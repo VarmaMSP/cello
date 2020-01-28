@@ -54,8 +54,6 @@ function usePopper(
         document.removeEventListener('mousedown', fn)
         document.removeEventListener('touchstart', fn)
       }
-      document.body.style['position'] = 'static'
-      document.body.style['overflowY'] = 'auto'
     }
 
     cleanUp()
@@ -66,8 +64,6 @@ function usePopper(
         document.addEventListener('mousedown', fn)
         document.addEventListener('touchstart', fn)
       }
-      document.body.style['position'] = 'static'
-      document.body.style['overflowY'] = 'scroll'
 
       return cleanUp
     }
