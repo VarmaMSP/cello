@@ -4,7 +4,7 @@ import usePopper from 'hooks/usePopper'
 import React, { useState } from 'react'
 import { Portal } from 'react-portal'
 import { AudioState, Episode, Podcast } from 'types/app'
-import { getImageUrl } from 'utils/dom'
+import { getImageUrl, stopEventPropagation } from 'utils/dom'
 import ActionButton from './components/action_button'
 import SeekBar from './components/seek_bar'
 
