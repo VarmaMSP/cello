@@ -16,6 +16,7 @@ function usePopper(
 
   useEffect(() => {
     const cleanUp = () => {
+      setStyles({})
       if (!!popperInstance.current) {
         popperInstance.current.destroy()
         popperInstance.current = undefined
@@ -41,16 +42,7 @@ function usePopper(
 
   useEffect(() => {
     const fn: EventListener = (e) => {
-      e.preventDefault()
-      if (!!popper) {
-        if (popper.contains(e.target as any)) {
-          return
-        }
-
-        if (!!popperInstance.current) {
-          popperInstance.current.destroy()
-          popperInstance.current = undefined
-        }
+      if (!!popper && !popper.contains(e.target as any)) {
         onPopperClickOutside && onPopperClickOutside()
       }
     }
@@ -62,7 +54,8 @@ function usePopper(
         document.removeEventListener('mousedown', fn)
         document.removeEventListener('touchstart', fn)
       }
-      document.body.style['overflow'] = 'auto'
+      document.body.style['position'] = 'static'
+      document.body.style['overflowY'] = 'auto'
     }
 
     cleanUp()
@@ -73,7 +66,8 @@ function usePopper(
         document.addEventListener('mousedown', fn)
         document.addEventListener('touchstart', fn)
       }
-      document.body.style['overflow'] = 'hidden'
+      document.body.style['position'] = 'static'
+      document.body.style['overflowY'] = 'scroll'
 
       return cleanUp
     }
