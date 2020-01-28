@@ -1,10 +1,11 @@
+import AudioPlayerSettings from 'components/audio_player_settings'
 import ButtonWithIcon from 'components/button_with_icon'
-import React from 'react'
+import usePopper from 'hooks/usePopper'
+import React, { useState } from 'react'
+import { Portal } from 'react-portal'
 import { AudioState, Episode, Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
-import { formatPlaybackRate, formatVolume } from 'utils/format'
 import ActionButton from './components/action_button'
-import RangeControl from './components/range_control'
 import SeekBar from './components/seek_bar'
 
 interface Props {
@@ -29,14 +30,27 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
     audioState,
     duration,
     currentTime,
-    volume,
-    playbackRate,
     handleSeek,
     handleFastForward,
-    handleVolumeChange,
-    handlePlaybackRateChange,
     handleActionButtonPress,
   } = props
+
+  const [showPopper, setShowPopper] = useState<boolean>(false)
+  const [reference, popper] = usePopper(
+    {
+      placement: 'top-end',
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [-6, 5],
+          },
+        },
+      ],
+      strategy: 'fixed',
+    },
+    () => setShowPopper(false),
+  )
 
   if (!episode) {
     return <></>
@@ -44,21 +58,17 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
 
   return (
     <div
-      className="flex align-bottom md:w-1/2"
+      ref={reference.ref}
+      className="fixed bottom-0 right-0 flex align-bottom md:w-1/2"
       style={{
-        position: 'fixed',
-        bottom: '0',
-        right: '0',
-        width: '50%',
         background: 'rgba(255, 255, 255, 0.55)',
       }}
     >
       <div
-        className="flex items-center justify-around w-full h-22 border border-gray-200 rounded-lg"
+        className="flex items-center justify-around w-full h-22 border border-gray-200 bg-white rounded-lg"
         style={{
           marginBottom: '8px',
           marginRight: '8px',
-          background: 'rgba(255, 255, 255)',
           boxShadow: '0 3px 6px rgba(0,0,0,0.23), 0 3px 6px rgba(0,0,0,0.16)',
         }}
       >
@@ -67,7 +77,7 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
           src={getImageUrl(podcast.urlParam)}
         />
 
-        <div className="flex-1 flex flex-col justify-around h-full px-4 py-1">
+        <div className="flex-1 flex flex-col justify-around h-full px-3 py-1">
           <div className="flex justify-between">
             {/* Title */}
             <div className="flex-auto pr-4">
@@ -82,7 +92,7 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
             {/* Controls */}
             <div className="flex-none flex items-center justify-around w-30">
               <ButtonWithIcon
-                className="w-8 h-8 px-2 py-2 hover:bg-gray-200 rounded-full"
+                className="w-5 h-5"
                 icon="fast-rewind"
                 onClick={() => handleFastForward(-10)}
               />
@@ -91,7 +101,7 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
                 handleActionButtonPress={handleActionButtonPress}
               />
               <ButtonWithIcon
-                className="w-8 h-8 px-2 py-2 hover:bg-gray-200 rounded-full"
+                className="w-5 h-5"
                 icon="fast-forward"
                 onClick={() => handleFastForward(10)}
               />
@@ -106,27 +116,21 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
           />
         </div>
 
-        <div className="hidden">
-          <RangeControl
-            icon="volume"
-            value={volume}
-            min={0}
-            max={1}
-            step={0.1}
-            onChange={handleVolumeChange}
-            formatValue={formatVolume}
-          />
-          <div className="my-4" />
-          <RangeControl
-            icon="walk"
-            value={playbackRate}
-            min={0.25}
-            max={2.0}
-            step={0.1}
-            onChange={handlePlaybackRateChange}
-            formatValue={formatPlaybackRate}
-          />
-        </div>
+        <div
+          className="flex-none w-8 p-2 bg-red-900"
+          onClick={() => setShowPopper(!showPopper)}
+          onPointerDown={stopEventPropagation}
+          onMouseDown={stopEventPropagation}
+          onTouchStart={stopEventPropagation}
+        />
+
+        {showPopper && (
+          <Portal node={document && document.getElementById('portal')}>
+            <div ref={popper.ref} style={popper.styles}>
+              <AudioPlayerSettings />
+            </div>
+          </Portal>
+        )}
       </div>
     </div>
   )
