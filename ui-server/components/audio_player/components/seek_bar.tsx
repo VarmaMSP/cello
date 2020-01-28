@@ -142,10 +142,10 @@ export default class SeekBar extends Component<Props, State> {
           onTouchEnd={this.handleSeekComplete}
           ref={this.seekBarRef}
         >
-          <div className="relative h-1 bg-gray-300 rounded-full select-none">
+          <div className="relative bg-gray-300 rounded-full select-none" style={{ height: '3px'}}>
             <div
-              className="absolute left-0 w-10 h-1 bg-red-600 rounded select-none"
-              style={{ transition: 'ease', width: `${sliderPosition}px` }}
+              className="absolute left-0 w-10 bg-red-600 rounded select-none"
+              style={{ transition: 'ease', height: '3px', width: `${sliderPosition}px` }}
             />
             <div
               className="absolute w-3 h-3 -ml-2 -mt-1 rounded-full bg-red-600 border border-red-100 shadow-md select-none"
