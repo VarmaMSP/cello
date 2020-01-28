@@ -6,6 +6,7 @@ export type Icon =
   | 'arrow-right'
   | 'cheveron-up'
   | 'close'
+  | 'dots-horizontal'
   | 'explore'
   | 'facebook-color'
   | 'fast-forward'
@@ -60,6 +61,12 @@ export const iconMap: { [key in Icon]: React.SFC<{ className: string }> } = {
   close: (props) => (
     <svg viewBox="0 0 20 20" {...props}>
       <path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z" />
+    </svg>
+  ),
+
+  'dots-horizontal': (props) => (
+    <svg viewBox="0 0 20 20" {...props}>
+      <path d="M10 12a2 2 0 110-4 2 2 0 010 4zm0-6a2 2 0 110-4 2 2 0 010 4zm0 12a2 2 0 110-4 2 2 0 010 4z" />
     </svg>
   ),
 
