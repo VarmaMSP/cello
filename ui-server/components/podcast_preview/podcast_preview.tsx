@@ -37,7 +37,7 @@ const PodcastPreview: React.FC<StateToProps & OwnProps> = ({
         </PodcastLink>
 
         <div
-          className="md:text-sm text-xs text-grey-800 mb-2 tracking-wide line-clamp-1"
+          className="md:text-sm text-xs text-grey-800 mb-2 tracking-wide md:leading-normal leading-relaxed line-clamp-1"
           dangerouslySetInnerHTML={{
             __html:
               (podcastSearchResult && podcastSearchResult.author) ||

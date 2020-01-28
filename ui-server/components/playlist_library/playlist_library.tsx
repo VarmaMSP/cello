@@ -62,7 +62,7 @@ const PlaylistLibrary: React.FC<StateToProps> = ({ playlists }) => {
             </span>
           </div>
         ))}
-      </GridResponsive>
+      </Grid>
     </div>
   )
 }

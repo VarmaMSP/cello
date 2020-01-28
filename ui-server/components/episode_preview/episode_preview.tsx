@@ -52,13 +52,13 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
 
         {!small && (
           <PodcastLink podcastUrlParam={podcast.urlParam}>
-            <a className="md:text-sm text-xs text-grey-800 mb-2 tracking-wide line-clamp-1">
+            <a className="md:text-sm text-xs text-grey-800 mb-2 tracking-wide md:leading-normal leading-relaxed line-clamp-1">
               {podcast.title}
             </a>
           </PodcastLink>
         )}
 
-        <div className="text-xs md:break-normal break-all tracking-wide leading-sung md:line-clamp-2 line-clamp-3 cursor-default">
+        <div className="text-xs md:break-normal break-all tracking-wide leading-sung md:line-clamp-2 line-clamp-3 cursor-default" style={{ hyphens: 'auto' }}>
           <span className="text-teal-800">{`${formatDistanceToNow(
             parseISO(episode.pubDate),
           )} ago`}</span>
