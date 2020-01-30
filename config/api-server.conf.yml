@@ -22,8 +22,8 @@ redis:
 
 minio:
   address: localhost:9000
-  access_key_id: H8N6Q04KFKQDA5B9UW5U
-  secret_access_key: HgKy1+eDdykb2tfTkulHk9+Fy+Fj9fClF0AN3jOz
+  access_key: H8N6Q04KFKQDA5B9UW5U
+  secret_key: HgKy1+eDdykb2tfTkulHk9+Fy+Fj9fClF0AN3jOz
 
 queues:
   import_podcast:
@@ -56,7 +56,7 @@ queues:
 
 jobs:
   import_podcast:
-    enable: true
+    enable: false
     worker_limit: 30
 
   refresh_podcast:
@@ -68,7 +68,7 @@ jobs:
     worker_limit: 4
 
   task_scheduler:
-    enable: true
+    enable: false
     worker_limit: 10
 
   sync_playback:
