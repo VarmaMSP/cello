@@ -124,9 +124,10 @@ func (app *App) CreateUserWithGoogle(ctx context.Context) (*model.User, *model.A
 	}
 
 	user := &model.User{
-		Name:   googleUser.Name,
-		Email:  googleUser.Email,
-		Gender: googleUser.Gender,
+		Name:         googleUser.Name,
+		Email:        googleUser.Email,
+		Gender:       googleUser.Gender,
+		SignInMethod: "GOOGLE",
 	}
 	if err := app.Store.User().Save(user); err != nil {
 		return nil, err
@@ -164,8 +165,9 @@ func (app *App) CreateUserWithFacebook(ctx context.Context) (*model.User, *model
 	}
 
 	user := &model.User{
-		Name:  facebookUser.Name,
-		Email: facebookUser.Email,
+		Name:         facebookUser.Name,
+		Email:        facebookUser.Email,
+		SignInMethod: "FACEBOOK",
 	}
 	if err := app.Store.User().Save(user); err != nil {
 		return nil, err
@@ -197,8 +199,9 @@ func (app *App) CreateUserWithTwitter(ctx context.Context) (*model.User, *model.
 	}
 
 	user := &model.User{
-		Name:  twitterUser.Name,
-		Email: twitterUser.Email,
+		Name:         twitterUser.Name,
+		Email:        twitterUser.Email,
+		SignInMethod: "TWITTER",
 	}
 	if err := app.Store.User().Save(user); err != nil {
 		return nil, err

@@ -3,13 +3,14 @@ package model
 import "encoding/json"
 
 type User struct {
-	Id        int64
-	Name      string
-	Email     string
-	Gender    string
-	IsAdmin   int
-	CreatedAt int64
-	UpdatedAt int64
+	Id           int64
+	Name         string
+	Email        string
+	Gender       string
+	SignInMethod string
+	IsAdmin      int
+	CreatedAt    int64
+	UpdatedAt    int64
 }
 
 type Session struct {
@@ -72,14 +73,14 @@ func (u *User) MarshalJSON() ([]byte, error) {
 
 func (u *User) DbColumns() []string {
 	return []string{
-		"id", "name", "email", "gender",
+		"id", "name", "email", "gender", "sign_in_method",
 		"is_admin", "created_at", "updated_at",
 	}
 }
 
 func (u *User) FieldAddrs() []interface{} {
 	return []interface{}{
-		&u.Id, &u.Name, &u.Email, &u.Gender,
+		&u.Id, &u.Name, &u.Email, &u.Gender, &u.SignInMethod,
 		&u.IsAdmin, &u.CreatedAt, &u.UpdatedAt,
 	}
 }
