@@ -82,26 +82,31 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 	go func() {
 		defer func() { <-job.rateLimiter }()
 
+		imageTitle := fmt.Sprintf("%s.jpg", input.ImageTitle)
+
 		img, err := fetchImage(input.ImageSrc, job.httpClient)
 		if err != nil {
-			job.Log.Error().Str("url", input.ImageSrc).Msg(err.Error())
-			if delivery.Redelivered {
-				delivery.Nack(false, false)
-			} else {
+			if err.CanRetry() && !delivery.Redelivered {
 				delivery.Nack(false, true)
 			}
+			if err.CanRetry() && delivery.Redelivered {
+				delivery.Nack(false, false)
+			}
+			job.assignPlaceholder(imageTitle)
+			job.Log.Error().Str("url", input.ImageSrc).Msg(err.Error())
 			return
 		}
 
 		if input.Type == "PODCAST" {
-			err := job.resizePodcastImage(input.ImageTitle, img)
+			err := job.resizePodcastImage(imageTitle, img)
 			if err != nil {
-				job.Log.Error().Str("url", input.ImageSrc).Msg(err.Error())
-				if delivery.Redelivered {
-					delivery.Nack(false, false)
-				} else {
+				if !delivery.Redelivered {
 					delivery.Nack(false, true)
+				} else {
+					delivery.Nack(false, false)
 				}
+				job.assignPlaceholder(imageTitle)
+				job.Log.Error().Str("url", input.ImageSrc).Msg(err.Error())
 				return
 			}
 		}
@@ -117,12 +122,31 @@ func (job *CreateThumbnailJob) resizePodcastImage(imgTitle string, img image.Ima
 
 	if _, err := job.S3.PutObject(
 		s3.BUCKET_NAME_THUMBNAILS,
-		fmt.Sprintf("%s.jpg", imgTitle),
+		imgTitle,
 		bytes.NewReader(thumbnail.Bytes()),
 		int64(thumbnail.Len()),
 		minio.PutObjectOptions{ContentType: "image/jpeg"},
 	); err != nil {
 		return err
 	}
+	return nil
+}
+
+func (job *CreateThumbnailJob) assignPlaceholder(imgTitle string) error {
+	placeholder, err := job.GetStaticFile(s3.BUCKET_NAME_THUMBNAILS, "placeholder.jpg")
+	if err != nil {
+		return err
+	}
+
+	if _, err := job.S3.PutObject(
+		s3.BUCKET_NAME_THUMBNAILS,
+		imgTitle,
+		bytes.NewReader(placeholder),
+		int64(len(placeholder)),
+		minio.PutObjectOptions{ContentType: "image/jpeg"},
+	); err != nil {
+		return err
+	}
+
 	return nil
 }
