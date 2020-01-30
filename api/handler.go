@@ -52,11 +52,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	if c.Err != nil {
 		c.App.Log.Error().
-			Str("from", c.Err.Id).
-			Str("error", c.Err.DetailedError).
-			Msg("")
+			Str("from", c.Err.GetId()).
+			Str("error", c.Err.GetComment())
 
-		w.WriteHeader(c.Err.StatusCode)
+		w.WriteHeader(c.Err.GetStatusCode())
 		w.Write([]byte(c.Err.Error()))
 		return
 	}

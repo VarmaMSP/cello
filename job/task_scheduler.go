@@ -71,8 +71,7 @@ func (job *TaskSchedulerJob) Run() {
 		if err != nil {
 			job.Log.Error().
 				Str("at", "Scheduler Job").
-				Str("from", err.Id).
-				Msg(err.DetailedError)
+				Msg(err.Error())
 			continue
 		}
 
