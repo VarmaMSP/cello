@@ -18,7 +18,7 @@ const SubscriptionsList: React.FC<StateToProps> = ({ subscriptions }) => {
       <h2 className="mb-3 text text-gray-800 tracking-wide">
         {"You're subscribed to"}
       </h2>
-      <Grid cols={{ LG: 4, MD: 4, SM: 5 }}>
+      <Grid cols={{ LG: 5, MD: 4, SM: 5 }}>
         {subscriptions.map((podcast) => (
           <PodcastLink podcastUrlParam={podcast.urlParam} key={podcast.id}>
             <a
