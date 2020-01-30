@@ -108,7 +108,7 @@ func (s *SqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) (res []*m
 
 func (s *SqlFeedStore) GetFailedToImportPaginated(lastId int64, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := fmt.Sprintf(
-		`SELECT %s FROM feed WHERE last_refresh_comment = '' AND id > %d ORDER BY id LIMIT %d`,
+		`SELECT %s FROM feed WHERE last_refresh_comment <> '' AND id > %d ORDER BY id LIMIT %d`,
 		joinStrings((&model.Feed{}).DbColumns(), ","), lastId, limit,
 	)
 

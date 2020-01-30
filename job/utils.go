@@ -89,11 +89,12 @@ func fetchRssFeed(feedUrl string, headers map[string]string, httpClient *http.Cl
 			DetailedError(fmt.Sprintf("invalid status code: %d", resp.StatusCode))
 	}
 
-	if c := resp.Header.Get(h.ContentType); model.IsContentTypeFeed(c) {
-		return nil, nil, appE.
-			Comment(model.COMMENT_INVALID_CONTENT_TYPE).
-			DetailedError(fmt.Sprintf("invalid content type: %s", c))
-	}
+	// Relax retrictions on content type
+	// if c := resp.Header.Get(h.ContentType); !model.IsContentTypeFeed(c) {
+	// 	return nil, nil, appE.
+	// 		Comment(model.COMMENT_INVALID_CONTENT_TYPE).
+	// 		DetailedError(fmt.Sprintf("invalid content type: %s", c))
+	// }
 
 	// parse feed
 	parser := &rss.Parser{}
