@@ -1,13 +1,11 @@
 import { Link } from 'components/link'
 import React from 'react'
-import Categories from './categories'
 import Recommended from './recommended'
 
 const HomeView: React.FC<{}> = () => {
   return (
     <div>
       <Recommended />
-      <Categories />
       <div className="md:hidden text-center">
         <hr className="my-5" />
         <p className="leading-tight">
