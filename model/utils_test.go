@@ -16,3 +16,10 @@ func TestParseTime(t *testing.T) {
 	assert.Equal(3630, ParseTime("01:00:30"))
 	assert.Equal(3630, ParseTime("1:0:30"))
 }
+
+func TestIsContentTypeFeed(t *testing.T) {
+	assert := assert.New(t)
+
+	assert.Equal(true, IsContentTypeFeed("text/xml;charset=UTF-8"))
+	assert.Equal(true, IsContentTypeFeed("application/rss+xml; charset=UTF-8"))
+}

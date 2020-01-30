@@ -25,6 +25,10 @@ const (
 
 	MIN_HASH_ID_LENGTH = 6
 
+	COMMENT_INVALID_STATUS_CODE    = "INVALID_STATUS_CODE"
+	COMMENT_INVALID_CONTENT_TYPE   = "INVALID_CONTENT_TYPE"
+	COMMENT_UNABLE_TO_MAKE_REQUEST = "UNABLE_TO_MAKE_REQUEST"
+
 	secondsInHour  = 60 * 60
 	secondsInDay   = 60 * 60 * 24
 	secondsInWeek  = 60 * 60 * 24 * 7
@@ -33,7 +37,7 @@ const (
 )
 
 var (
-	regexpNbsp = regexp.MustCompile(`&nbsp;`)
+	regexpHtmlCharacterEntity = regexp.MustCompile(`&[a-zA-Z];`)
 )
 
 type DbModel interface {
@@ -43,23 +47,84 @@ type DbModel interface {
 }
 
 type AppError struct {
-	Id            string                 `json:"id"`          // Function at which the error occured
-	DetailedError string                 `json:"error"`       // Internal Error string
-	StatusCode    int                    `json:"status_code"` // Http status code
-	Params        map[string]interface{} `json:"parmas"`
+	id            string
+	comment       string
+	detailedError string
+	statusCode    int
+	params        map[string]interface{}
+	retry         bool
 }
 
 func (e *AppError) Error() string {
-	return e.Id + ": " + e.DetailedError
+	return e.id + ": " + e.detailedError
 }
 
-func NewAppError(where string, details string, statusCode int, params map[string]interface{}) *AppError {
-	return &AppError{where, details, statusCode, params}
+func (e *AppError) Id(id string) *AppError {
+	e.id = id
+	return e
 }
 
-func NewAppErrorC(where string, statusCode int, params map[string]interface{}) func(details string) *AppError {
-	return func(details string) *AppError {
-		return &AppError{where, details, statusCode, params}
+func (e *AppError) GetId() string {
+	return e.id
+}
+
+func (e *AppError) Comment(comment string) *AppError {
+	e.comment = comment
+	return e
+}
+
+func (e *AppError) GetComment() string {
+	if e.comment != "" {
+		return e.comment
+	}
+	return e.detailedError
+}
+
+func (e *AppError) DetailedError(detailedError string) *AppError {
+	e.detailedError = detailedError
+	return e
+}
+
+func (e *AppError) StatusCode(statusCode int) *AppError {
+	e.statusCode = statusCode
+	return e
+}
+
+func (e *AppError) GetStatusCode() int {
+	return e.statusCode
+}
+
+func (e *AppError) Params(params map[string]interface{}) *AppError {
+	e.params = params
+	return e
+}
+
+func (e *AppError) Retry() *AppError {
+	e.retry = true
+	return e
+}
+
+func (e *AppError) CanRetry() bool {
+	return e.retry
+}
+
+func NewAppError(where string, detailedError string, statusCode int, params map[string]interface{}) *AppError {
+	return &AppError{
+		id:            where,
+		detailedError: detailedError,
+		statusCode:    statusCode,
+		params:        params,
+	}
+}
+
+func NewAppErrorC(where string, statusCode int, params map[string]interface{}) func(detailedError string) *AppError {
+	return func(detailedError string) *AppError {
+		return &AppError{
+			id:            where,
+			detailedError: detailedError,
+			statusCode:    statusCode,
+			params:        params,
+		}
 	}
 }
 
@@ -342,8 +407,25 @@ func RemoveDuplicatesInt64(arr []int64) []int64 {
 
 // StripHTMLTags removes all HTML elements from given string
 func StripHTMLTags(str string) string {
-	return regexpNbsp.ReplaceAllString(
+	return regexpHtmlCharacterEntity.ReplaceAllString(
 		strip.StripTags(str),
 		" ",
 	)
+}
+
+func IsContentTypeFeed(contentType string) bool {
+	for _, v := range strings.Split(contentType, ";") {
+		t := strings.TrimSpace(v)
+
+		if t == "text/xml" {
+			return true
+		}
+		if t == "application/xml" {
+			return true
+		}
+		if t == "application/rss+xml" {
+			return true
+		}
+	}
+	return false
 }
