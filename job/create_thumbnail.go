@@ -88,9 +88,10 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 		if err != nil {
 			if err.CanRetry() && !delivery.Redelivered {
 				delivery.Nack(false, true)
-			}
-			if err.CanRetry() && delivery.Redelivered {
+			} else if err.CanRetry() && delivery.Redelivered {
 				delivery.Nack(false, false)
+			} else {
+				delivery.Ack(false)
 			}
 			job.assignPlaceholder(imageTitle)
 			job.Log.Error().Str("url", input.ImageSrc).Msg(err.Error())
