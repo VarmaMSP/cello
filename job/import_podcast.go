@@ -107,20 +107,20 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 		// Updated feed
 		feedU := feed
 
-		if rssFeed, headers, err := fetchRssFeed(feed.Url, map[string]string{}, job.httpClient); err != nil || rssFeed == nil {
-			feedU.LastRefreshComment = err.Error()
+		if rssFeed, headers, err := fetchRssFeed(feed.Url, map[string]string{}, job.httpClient); err != nil {
+			feedU.LastRefreshComment = err.GetComment()
 			goto update_feed
 
 		} else if entitiesToSave, err := job.extract(feed.Id, rssFeed); err != nil {
-			feedU.LastRefreshComment = err.Error()
+			feedU.LastRefreshComment = err.GetComment()
 			goto update_feed
 
 		} else if entitiesToIndex, err := job.save(entitiesToSave); err != nil {
-			feedU.LastRefreshComment = err.Error()
+			feedU.LastRefreshComment = err.GetComment()
 			goto update_feed
 
 		} else if err := job.index(entitiesToIndex); err != nil {
-			feedU.LastRefreshComment = err.Error()
+			feedU.LastRefreshComment = err.GetComment()
 			goto update_feed
 
 		} else {
