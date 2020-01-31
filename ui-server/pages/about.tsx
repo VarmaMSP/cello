@@ -1,9 +1,10 @@
+import PageLayout from 'components/page_layout'
 import React from 'react'
 
 export default class AboutPage extends React.Component<{}> {
   render() {
     return (
-      <>
+      <PageLayout>
         <h1 className="text-xl text-gray-900 pb-4">{'About'}</h1>
         <div className="text-gray-700 tracking-wide font-normal">
           <p className="text-gray-700 text-base tracking-wide">
@@ -27,13 +28,13 @@ export default class AboutPage extends React.Component<{}> {
             {
               'The podcast ecosystem has matured over last few years and there is a podcast for just about every topic imaginable.'
             }
-          </p>s
+          </p>
+          s
           <p className="mt-1 text-gray-700 text-base tracking-wide">
             {
               'Using Phenopod you can search episodes, subscribe to podcasts and create playlists of your favourite episodes.'
             }
           </p>
-
           <br />
           <p className="text-gray-700">
             {
@@ -82,7 +83,7 @@ export default class AboutPage extends React.Component<{}> {
             </li>
           </ul>
         </div>
-      </>
+      </PageLayout>
     )
   }
 }

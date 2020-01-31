@@ -1,9 +1,10 @@
+import PageLayout from 'components/page_layout'
 import React from 'react'
 
 export default class PrivacyPage extends React.Component<{}> {
   render() {
     return (
-      <>
+      <PageLayout>
         <h1 className="text-xl text-gray-900 pb-4">{'Privacy'}</h1>
         <div className="text-gray-700 tracking-wide font-normal">
           <p className="pb-2">
@@ -18,7 +19,7 @@ export default class PrivacyPage extends React.Component<{}> {
             <br /> {'and We will not share those details with any third party.'}
           </p>
         </div>
-      </>
+      </PageLayout>
     )
   }
 }
