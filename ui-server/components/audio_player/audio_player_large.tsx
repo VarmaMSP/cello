@@ -85,14 +85,14 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
           <div className="flex justify-between">
             {/* Title */}
             <EpisodeLink episodeUrlParam={episode.urlParam}>
-              <div className="flex-auto pr-4">
+              <a className="flex-auto pr-4">
                 <div className="text-sm text-gray-900 font-medium tracking-wide line-clamp-1">
                   {episode.title}
                 </div>
                 <div className="text-xs text-gray-800 tracking-wide line-clamp-1">
                   {podcast.title}
                 </div>
-              </div>
+              </a>
             </EpisodeLink>
 
             {/* Controls */}

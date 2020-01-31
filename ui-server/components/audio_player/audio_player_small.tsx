@@ -98,14 +98,14 @@ export default class AudioPlayerSmall extends Component<Props> {
             src={getImageUrl(podcast.urlParam)}
           />
           <EpisodeLink episodeUrlParam={episode.urlParam}>
-            <section className="flex-1 ml-3">
+            <a className="block flex-1 ml-3">
               <h5 className="text-sm font-bold text-gray-200 line-clamp-2">
                 {episode.title}
               </h5>
               <h5 className="text-xs font-semibold text-gray-300 line-clamp-2">
                 {podcast.title}
               </h5>
-            </section>
+            </a>
           </EpisodeLink>
         </section>
         <section className="flex flex-row items-center justify-center my-2 text-gray-800">
