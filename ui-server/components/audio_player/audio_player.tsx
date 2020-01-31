@@ -34,7 +34,8 @@ export default class AudioPlayer extends Component<Props> {
   audio: HTMLAudioElement = {} as any
 
   componentDidUpdate(prevProps: Props) {
-    const { episodeId } = this.props
+    const { episodeId, volume, playbackRate } = this.props
+
     if (episodeId !== '' && episodeId !== prevProps.episodeId) {
       this.audio.src = this.props.episode.mediaUrl
       this.audio.currentTime = this.props.currentTime
@@ -42,6 +43,14 @@ export default class AudioPlayer extends Component<Props> {
         prevProps.episodeId,
         (prevProps.currentTime / prevProps.duration) * 100,
       )
+    }
+
+    if (Math.abs(volume - prevProps.volume) < 1e-5 ) {
+      this.audio.volume = volume
+    }
+
+    if (Math.abs(playbackRate - prevProps.playbackRate) < 1e-5) {
+      this.audio.playbackRate = playbackRate
     }
   }
 
