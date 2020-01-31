@@ -57,7 +57,7 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
       return isLoadingMore ? (
         <></>
       ) : (
-        <div className="ml-5 text-gray-800 tracking-wider">
+        <div className="mt-6 text-center text-gray-800 tracking-wider">
           {'No results found'}
         </div>
       )
@@ -66,7 +66,9 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
     return (
       <div>
         {podcastIds.map((id) => (
-          <PodcastPreview key={id} podcastId={id} />
+          <div key={id} className="mb-6">
+            <PodcastPreview podcastId={id} />
+          </div>
         ))}
 
         {!receivedAll && (
@@ -94,7 +96,7 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
       return isLoadingMore ? (
         <></>
       ) : (
-        <div className="ml-5 text-gray-800 tracking-wider">
+        <div className="mt-6 text-center text-gray-800 tracking-wider">
           {'No results found'}
         </div>
       )
@@ -103,7 +105,9 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
     return (
       <div>
         {episodeIds.map((id) => (
-          <EpisodePreview episodeId={id} key={id} />
+          <div key={id} className="mb-6">
+            <EpisodePreview episodeId={id} />
+          </div>
         ))}
 
         {!receivedAll && (

@@ -5,7 +5,12 @@ import SearchResultsList from 'components/search_results_list'
 import { NextSeo } from 'next-seo'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
-import { SEARCH_BAR_UPDATE_TEXT, SEARCH_RESULTS_QUERY, SEARCH_RESULTS_RESULT_TYPE, SEARCH_RESULTS_SORT_BY } from 'types/actions'
+import {
+  SEARCH_BAR_UPDATE_TEXT,
+  SEARCH_RESULTS_QUERY,
+  SEARCH_RESULTS_RESULT_TYPE,
+  SEARCH_RESULTS_SORT_BY,
+} from 'types/actions'
 import { SearchResultType, SearchSortBy } from 'types/search'
 import { PageContext } from 'types/utilities'
 import * as gtag from 'utils/gtag'
@@ -85,7 +90,7 @@ export default class ResultsPage extends Component<OwnProps> {
           }}
         />
         <PageLayout>
-          <div className="pt-6">
+          <div className="pt-4">
             <SearchResultsFilter />
             <SearchResultsList />
           </div>

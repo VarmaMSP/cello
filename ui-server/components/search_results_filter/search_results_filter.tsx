@@ -32,7 +32,7 @@ const SearchResultsFilter: React.FC<StateToProps & DispatchToProps> = (
   }
 
   return (
-    <div className="flex items-center mb-8 justify-between">
+    <div className="flex items-center mb-3 justify-between">
       <div className="flex flex-initial w-3/5 border-b">
         {(['episode', 'podcast'] as SearchResultType[]).map((t) => (
           <div key={t} className="w-20 mr-2 text-center">
