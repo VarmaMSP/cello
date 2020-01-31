@@ -1,4 +1,5 @@
 import ButtonWithIcon from 'components/button_with_icon'
+import { EpisodeLink } from 'components/link'
 import React, { Component } from 'react'
 import { AudioState, Episode, Podcast } from 'types/app'
 import { getImageUrl } from 'utils/dom'
@@ -96,14 +97,16 @@ export default class AudioPlayerSmall extends Component<Props> {
             className="h-32 w-32 flex-none object-cover object-center rounded border  "
             src={getImageUrl(podcast.urlParam)}
           />
-          <section className="flex-1 ml-3">
-            <h5 className="text-sm font-bold text-gray-200 leading-tight">
-              {episode.title}
-            </h5>
-            <h5 className="text-xs font-semibold text-gray-300 leading-loose">
-              {podcast.title}
-            </h5>
-          </section>
+          <EpisodeLink episodeUrlParam={episode.urlParam}>
+            <section className="flex-1 ml-3">
+              <h5 className="text-sm font-bold text-gray-200 line-clamp-2">
+                {episode.title}
+              </h5>
+              <h5 className="text-xs font-semibold text-gray-300 line-clamp-2">
+                {podcast.title}
+              </h5>
+            </section>
+          </EpisodeLink>
         </section>
         <section className="flex flex-row items-center justify-center my-2 text-gray-800">
           <ButtonWithIcon

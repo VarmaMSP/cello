@@ -1,6 +1,7 @@
 import AudioPlayerSettings from 'components/audio_player_settings'
 import ButtonWithIcon from 'components/button_with_icon'
 import { iconMap } from 'components/icon'
+import { EpisodeLink } from 'components/link'
 import usePopper from 'hooks/usePopper'
 import React, { useState } from 'react'
 import { Portal } from 'react-portal'
@@ -83,14 +84,16 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
         <div className="flex-1 flex flex-col justify-around h-full pl-4 pr-1 py-1">
           <div className="flex justify-between">
             {/* Title */}
-            <div className="flex-auto pr-4">
-              <div className="text-sm text-gray-900 font-medium tracking-wide line-clamp-1">
-                {episode.title}
+            <EpisodeLink episodeUrlParam={episode.urlParam}>
+              <div className="flex-auto pr-4">
+                <div className="text-sm text-gray-900 font-medium tracking-wide line-clamp-1">
+                  {episode.title}
+                </div>
+                <div className="text-xs text-gray-800 tracking-wide line-clamp-1">
+                  {podcast.title}
+                </div>
               </div>
-              <div className="text-xs text-gray-800 tracking-wide line-clamp-1">
-                {podcast.title}
-              </div>
-            </div>
+            </EpisodeLink>
 
             {/* Controls */}
             <div className="flex-none flex items-center justify-around w-30">
