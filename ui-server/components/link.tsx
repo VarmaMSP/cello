@@ -28,7 +28,7 @@ export const Link: React.FC<LinkProps> = (props) => {
   })
 
   return cloneElement(props.children, {
-    href: props.as,
+    href: typeof props.href === 'string' ? props.href : props.as,
     onClick: (e: React.SyntheticEvent<HTMLAnchorElement>) => {
       e.preventDefault()
 

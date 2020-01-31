@@ -1,6 +1,5 @@
 import About from 'components/about'
 import { iconMap } from 'components/icon'
-import { Link } from 'components/link'
 import SearchBar from 'components/search_bar/side_navbar'
 import SignInButton from 'components/sign_in_button'
 import { useRouter } from 'next/router'
@@ -32,55 +31,21 @@ const NavbarSide: React.SFC<StateToProps> = ({
           <SearchBar />
         </div>
         <ul className="mb-10">
-          <Link href="/" scroll={false}>
-            <li className="h-10">
-              <MenuItem
-                icon="home"
-                name="home"
-                active={currentUrlPath === '/'}
-              />
-            </li>
-          </Link>
-
-          <Link href="/explore" scroll={false}>
-            <li className="h-10">
-              <MenuItem
-                icon="explore"
-                name="explore"
-                active={currentUrlPath === '/explore'}
-              />
-            </li>
-          </Link>
-
-          <Link href="/subscriptions" scroll={false}>
-            <li className="h-10">
-              <MenuItem
-                icon="heart"
-                name="subscriptions"
-                active={currentUrlPath === '/subscriptions'}
-              />
-            </li>
-          </Link>
-
-          <Link href="/history" scroll={false}>
-            <li className="h-10">
-              <MenuItem
-                icon="history"
-                name="history"
-                active={currentUrlPath === '/history'}
-              />
-            </li>
-          </Link>
-
-          <Link href="/playlists" scroll={false}>
-            <li className="h-10">
-              <MenuItem
-                icon="playlist"
-                name="playlists"
-                active={currentUrlPath === '/playlists'}
-              />
-            </li>
-          </Link>
+          <li className="h-10">
+            <MenuItem icon="home" name="home" href="/" />
+          </li>
+          <li className="h-10">
+            <MenuItem icon="explore" name="explore" href="/explore" />
+          </li>
+          <li className="h-10">
+            <MenuItem icon="heart" name="subscriptions" href="/subscriptions" />
+          </li>
+          <li className="h-10">
+            <MenuItem icon="history" name="history" href="/history" />
+          </li>
+          <li className="h-10">
+            <MenuItem icon="playlist" name="playlists" href="/playlists" />
+          </li>
         </ul>
 
         {currentUrlPath !== '/' && !userSignedIn && (
