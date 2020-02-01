@@ -145,7 +145,9 @@ func (p *Podcast) LoadDetails(rssFeed *rss.Feed) *AppError {
 	p.Summary = p.Description
 
 	// Image path
-	if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Image != "" {
+	if rssFeed.Image != nil && rssFeed.Image.URL != "" {
+		p.ImagePath = rssFeed.Image.URL
+	} else if rssFeed.ITunesExt != nil && rssFeed.ITunesExt.Image != "" {
 		p.ImagePath = rssFeed.ITunesExt.Image
 	} else {
 		return appErrorC("Image not found")
