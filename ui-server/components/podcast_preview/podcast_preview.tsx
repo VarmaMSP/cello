@@ -16,7 +16,7 @@ const PodcastPreview: React.FC<StateToProps & OwnProps> = ({
   podcastSearchResult,
 }) => {
   return (
-    <div className="flex mb-14">
+    <div className="flex md:px-1 py-4 md:hover:bg-gray-100 rounded-lg">
       <div className="flex-none md:mr-4 mr-3">
         <img
           className="md:w-28 w-22 md:h-28 w-22 object-contain rounded-lg border cursor-default"
