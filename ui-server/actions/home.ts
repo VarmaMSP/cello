@@ -14,13 +14,18 @@ export function getHomePageData() {
       dispatch({
         type: T.CURATION_ADD,
         curations: [
-          ...categories,
           {
             id: 'recommended',
             title: 'recommended',
-            type: 'NORMAL',
+            members: [],
           },
         ],
+        curationType: 'default',
+      })
+      dispatch({
+        type: T.CURATION_ADD,
+        curations: categories,
+        curationType: 'category',
       })
       dispatch({
         type: T.CURATION_ADD_PODCASTS,

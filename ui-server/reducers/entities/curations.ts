@@ -1,7 +1,6 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { Curation, CurationType } from 'types/app'
-import { addKeysToArr } from 'utils/immutable'
+import { Curation } from 'types/app'
 
 const byId: Reducer<{ [curationId: string]: Curation }, T.AppActions> = (
   state = {},
@@ -17,28 +16,29 @@ const byId: Reducer<{ [curationId: string]: Curation }, T.AppActions> = (
         ),
       }
 
+    case T.CURATION_ADD_PODCASTS:
+      return {
+        ...state,
+        [action.curationId]: {
+          ...(state[action.curationId] || {}),
+          members: action.podcastIds,
+        },
+      }
+
     default:
       return state
   }
 }
 
-const byType: Reducer<{ [key in CurationType]: string[] }, T.AppActions> = (
-  state = { CATEGORY: [], NORMAL: [] },
+const byType: Reducer<{ [key: string]: string[] }, T.AppActions> = (
+  state = {},
   action,
 ) => {
   switch (action.type) {
     case T.CURATION_ADD:
       return {
-        CATEGORY: addKeysToArr(
-          action.curations
-            .filter((c) => c.type === 'CATEGORY')
-            .map((x) => x.id),
-          state['CATEGORY'],
-        ),
-        NORMAL: addKeysToArr(
-          action.curations.filter((c) => c.type === 'NORMAL').map((x) => x.id),
-          state['NORMAL'],
-        ),
+        ...state,
+        [action.curationType]: action.curations.map((x) => x.id),
       }
 
     default:

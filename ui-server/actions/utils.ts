@@ -35,7 +35,7 @@ export function requestAction<T extends Promise<any>>(
     getState: () => AppState,
   ) => {
     !!preAction && dispatch(preAction)
-    
+
     if (!!skip) {
       switch (skip.cond) {
         case 'REQUEST_ALREADY_MADE':
@@ -65,6 +65,7 @@ export function requestAction<T extends Promise<any>>(
       processData(dispatch, getState, res)
       !!requestId && dispatch({ type: AT.REQUEST_SUCCESS, requestId })
     } catch (err) {
+      console.log(err)
       if ((err as FetchException).statusCode === 401) {
         dispatch({ type: AT.SESSION_DELETE })
       }

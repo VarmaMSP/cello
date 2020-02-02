@@ -18,25 +18,33 @@ const PodcastChart: React.FC<StateToProps & OwnProps> = ({
 }) => {
   return (
     <div>
-      <h2 className="text-xl text-gray-700">{chart.title}</h2>
-      <hr className="mt-1 mb-4 border-gray-400" />
+      <h1 className="pt-3 pb-1 text-xl tracking-wide text-gray-800 font-medium">
+        {chart.title}
+      </h1>
+      <hr className="mb-3" />
       <ol>
         {podcasts.map((p, i) => (
           <PodcastLink key={p.id} podcastUrlParam={p.urlParam}>
-            <a>
-              <li className="block flex items-center py-2 md:px-2 my-3 md:hover:bg-gray-200 rounded-lg">
-                <div className="md:w-6 w-6 flex-none md:ml-1 md:mr-4 mr-2 md:text-sm text-2xs text-gray-600">
+            <a className="block py-4 md:px-2 my-4 md:hover:bg-gray-100 rounded-lg">
+              <li className="flex">
+                <div className="md:block hidden flex-none w-6 ml-1 mr-4 pt-1 text-gray-700">
                   {`${i + 1}.`}
                 </div>
                 <img
-                  className="md:w-20 w-16 md:h-20 w-16 md:mr-4 mr-2 flex-none object-contain rounded border"
+                  className="md:w-22 md:h-22 w-18 h-18 md:mr-4 mr-3 flex-none object-contain rounded-lg border"
                   src={getImageUrl(p.urlParam)}
                 />
-                <div className="md:h-20 h-16">
-                  <div className="mb-2 font-medium text-gray-900 tracking-wide leading-tight line-clamp-1">
+                <div>
+                  <div className="md:mb-0 mb-1 md:text-base text-sm font-medium tracking-wide line-clamp-1">
                     {p.title}
                   </div>
-                  <div className="text-xs text-gray-700 tracking-wide line-clamp-2">
+                  <div className="hidden md:text-sm text-xs text-grey-800 mb-2 tracking-wide md:leading-normal leading-relaxed md:line-clamp-1">
+                    {p.author}
+                  </div>
+                  <div
+                    className="md:break-normal break-all md:text-xs text-2xs md:text-gray-700 text-gray-800 tracking-wide leading-snug md:line-clamp-2 line-clamp-3"
+                    style={{ hyphens: 'auto' }}
+                  >
                     {p.summary}
                   </div>
                 </div>

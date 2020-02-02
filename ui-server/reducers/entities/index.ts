@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux'
 import curations from './curations'
-import curationMember from './curation_member'
 import episodes from './episodes'
 import playlists from './playlists'
 import podcasts from './podcasts'
@@ -12,7 +11,6 @@ export default combineReducers({
   podcasts,
   episodes,
   curations,
-  curationMember,
   playlists,
   searchResults,
 })

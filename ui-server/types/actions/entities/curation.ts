@@ -6,6 +6,7 @@ export const CURATION_ADD_PODCASTS = 'curation/add_podcasts'
 interface AddAction {
   type: typeof CURATION_ADD
   curations: Curation[]
+  curationType: string
 }
 
 interface AddPodcastsAction {

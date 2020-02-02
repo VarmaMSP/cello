@@ -18,18 +18,20 @@ export async function getHomePageData(): Promise<{
     let cat = <Curation>{
       id: formatCategoryTitle(tmp.title),
       title: tmp.title,
-      subTitle: tmp.sub_title,
-      type: 'CATEGORY',
-    }
-    for (let j = 0; j < tmp.sub.length; ++j) {
-      categories.push(<Curation>{
-        id: `${cat.id}-${formatCategoryTitle(tmp.sub[j])}`,
-        parentId: cat.id,
-        title: tmp.sub[j],
-        type: 'CATEGORY',
-      })
+      members: [],
     }
     categories.push(cat)
+
+    if (!!tmp.sub) {
+      for (let j = 0; j < tmp.sub.length; ++j) {
+        categories.push(<Curation>{
+          id: `${cat.id}-${formatCategoryTitle(tmp.sub[j])}`,
+          parentId: cat.id,
+          title: tmp.sub[j],
+          members: [],
+        })
+      }
+    }
   }
 
   return {

@@ -81,20 +81,11 @@ export interface PlaylistMember {
   position: number
 }
 
-export type CurationType = 'CATEGORY' | 'NORMAL'
-
 export interface Curation {
   id: string
   parentId?: string
   title: string
-  subTitle?: string
-  type: CurationType
-}
-
-export interface CurationMember {
-  id: string
-  curationId: string
-  podcastId: string
+  members: string[]
 }
 
 export interface PodcastSearchResult {

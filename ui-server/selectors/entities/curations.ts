@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { AppState } from 'store'
-import { Curation, CurationMember } from 'types/app'
+import { Curation, Podcast } from 'types/app'
 import { $Id, MapById } from 'types/utilities'
 
 export function getCurationById(state: AppState, curationId: string) {
@@ -14,7 +14,7 @@ export const getAllCategories = createSelector<
   Curation[]
 >(
   (state) => state.entities.curations.byId,
-  (state) => state.entities.curations.byType['CATEGORY'],
+  (state) => state.entities.curations.byType['category'],
   (all, ids) => ids.map((id) => all[id]),
 )
 
@@ -45,12 +45,12 @@ export function makeGetPodcastsInCuration() {
   return createSelector<
     AppState,
     $Id<Curation>,
-    MapById<CurationMember>,
-    $Id<CurationMember>[],
-    string[]
+    MapById<Podcast>,
+    $Id<Podcast>[],
+    Podcast[]
   >(
-    (state) => state.entities.curationMember.byId,
-    (state, id) => state.entities.curationMember.byCurationId[id] || [],
-    (all, ids) => ids.map((id) => all[id].podcastId),
+    (state) => state.entities.podcasts.byId,
+    (state, id) => (state.entities.curations.byId[id] || {}).members || [],
+    (all, ids) => ids.map((id) => all[id]),
   )
 }
