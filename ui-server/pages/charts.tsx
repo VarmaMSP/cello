@@ -12,12 +12,11 @@ interface OwnProps {
 
 export default class ChartPage extends Component<OwnProps> {
   static async getInitialProps({ query, store }: PageContext): Promise<void> {
+    await bindActionCreators(getHomePageData, store.dispatch)()
     await bindActionCreators(
       getChartPageData,
       store.dispatch,
     )(query['chartId'] as string)
-
-    await bindActionCreators(getHomePageData, store.dispatch)()
   }
 
   componentDidMount() {
