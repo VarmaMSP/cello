@@ -13,8 +13,8 @@ func (app *App) SearchPodcasts(searchQuery string, offset, limit int) ([]*model.
 	results, err := app.ElasticSearch.Search().
 		Index(elasticsearch.PodcastIndexName).
 		Query(elastic.NewMultiMatchQuery(searchQuery).
-			FieldWithBoost("title", 2).
-			FieldWithBoost("author", 1).
+			FieldWithBoost("title", 1.5).
+			FieldWithBoost("author", 1.1).
 			Field("description").
 			TieBreaker(0.5),
 		).
@@ -54,9 +54,9 @@ func (app *App) SearchEpisodes(searchQuery, sortBy string, offset, limit int) ([
 	q := app.ElasticSearch.Search().
 		Index(elasticsearch.EpisodeIndexName).
 		Query(elastic.NewMultiMatchQuery(searchQuery).
-			FieldWithBoost("title", 2).
+			FieldWithBoost("title", 1.5).
 			Field("description").
-			TieBreaker(0.4),
+			TieBreaker(0.75),
 		).
 		Highlight(elastic.NewHighlight().
 			FragmentSize(200).
