@@ -1,20 +1,24 @@
-import * as client from 'client/user'
+import { doFetch_ } from 'client/fetch'
 import * as T from 'types/actions'
 import * as gtag from 'utils/gtag'
 import { requestAction } from './utils'
 
 export function getCurrentUser() {
   return requestAction(
-    () => client.init(),
-    (dispatch, _, { user, subscriptions }) => {
-      if (!!user) {
-        gtag.userId(user.id)
-        dispatch({ type: T.USER_ADD, users: [user] })
-        dispatch({ type: T.PODCAST_ADD, podcasts: subscriptions })
-        dispatch({ type: T.SESSION_INIT, userId: user.id })
+    () =>
+      doFetch_({
+        method: 'POST',
+        urlPath: `/ajax/service?endpoint=load_session`,
+      }),
+    (dispatch, _, { users, podcasts }) => {
+      if (users.length === 1) {
+        gtag.userId(users[0].id)
+        dispatch({ type: T.USER_ADD, users })
+        dispatch({ type: T.PODCAST_ADD, podcasts })
+        dispatch({ type: T.SESSION_INIT, userId: users[0].id })
         dispatch({
           type: T.SESSION_SUBSCRIBE_PODCASTS,
-          podcastIds: subscriptions.map((x) => x.id),
+          podcastIds: podcasts.map((x) => x.id),
         })
       }
     },
@@ -23,7 +27,11 @@ export function getCurrentUser() {
 
 export function signOutUser() {
   return requestAction(
-    () => client.signOut(),
+    () =>
+      doFetch_({
+        method: 'POST',
+        urlPath: `/ajax/service?endpoint=end_session`,
+      }),
     (dispatch) => {
       dispatch({ type: T.SESSION_DELETE })
     },

@@ -39,14 +39,6 @@ type Podcast struct {
 	UpdatedAt              int64
 }
 
-type PodcastEpisodeStats struct {
-	Id                     int64
-	TotalEpisodes          int
-	TotalSeasons           int
-	LastestEpisodePubDate  string
-	EarliestEpisodePubDate string
-}
-
 // Elasticsearch podcast index
 type PodcastIndex struct {
 	Id          int64  `json:"id"`

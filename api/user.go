@@ -1,8 +1,9 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/varmamsp/cello/model"
 )
 
 func ServiceLoadSession(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -26,13 +27,10 @@ func ServiceLoadSession(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	res, _ := json.Marshal(map[string]interface{}{
-		"user":          user,
-		"subscriptions": subscriptions,
-	})
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(res)
+	c.Response.Data = &model.ApiResponseData{
+		Users:    []*model.User{user},
+		Podcasts: subscriptions,
+	}
 }
 
 func ServiceEndSession(c *Context, w http.ResponseWriter, req *http.Request) {
