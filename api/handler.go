@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-http-utils/headers"
 	"github.com/varmamsp/cello/app"
+	"github.com/varmamsp/cello/model"
 )
 
 type Handler struct {
@@ -35,6 +36,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c.App = h.App
 	c.Params = ParamsFromRequest(req)
 	c.Session = h.App.GetSession(req.Context())
+	c.Response = &model.ApiResponse{}
 
 	c.App.Log.Info().
 		Str("method", req.Method).
@@ -58,5 +60,12 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(c.Err.GetStatusCode())
 		w.Write([]byte(c.Err.Error()))
 		return
+	}
+
+	if c.Response.Data != nil {
+		c.Response.Status = "success"
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(c.Response.ToJson())
 	}
 }

@@ -1,7 +1,6 @@
 [
     {
         "title": "Arts",
-        "sub_title": "(Books, Design, Food, Fashion...)",
         "sub": [
             "Books",
             "Design",
@@ -13,7 +12,6 @@
     },
     {
         "title": "Business",
-        "sub_title": "(Careeres, Entrepreneurship, Investing, Management...)",
         "sub": [
             "Careers",
             "Entrepreneurship",
@@ -25,7 +23,6 @@
     },
     {
         "title": "Comedy",
-        "sub_title": "(Interviews, Improv, Stand-Up...)",
         "sub": [
             "Interviews",
             "Improv",
@@ -34,7 +31,6 @@
     },
     {
         "title": "Education",
-        "sub_title": "(Courses, Self Help, Language Learning...)",
         "sub": [
             "Courses",
             "How-To",
@@ -43,17 +39,7 @@
         ]
     },
     {
-        "title": "Fiction",
-        "sub_title": "(Drama, Sci-Fi...)",
-        "sub": [
-            "Comedy Fiction",
-            "Drama",
-            "Sci-Fi"
-        ]
-    },
-    {
         "title": "Health & Fitness",
-        "sub_title": "(Fitness, Medicine, Nutrition...)",
         "sub": [
             "Fitness",
             "Medicine",
@@ -65,7 +51,6 @@
     },
     {
         "title": "Kids & Family",
-        "sub_title": "(Education, Parenting, Stories...)",
         "sub": [
             "Education",
             "Parenting",
@@ -75,7 +60,6 @@
     },
     {
         "title": "Leisure",
-        "sub_title": "(Manga, Auto, Video Games, Crafts...)",
         "sub": [
             "Manga",
             "Automotive",
@@ -89,7 +73,6 @@
     },
     {
         "title": "Music",
-        "sub_title": "(Commentary, History, Interviews...)",
         "sub": [
             "Music Commentary",
             "Music History",
@@ -98,7 +81,6 @@
     },
     {
         "title": "News",
-        "sub_title": "(Business News, Daily News, Tech News...)",
         "sub": [
             "Business News",
             "Daily News",
@@ -111,7 +93,6 @@
     },
     {
         "title": "Religion & Spirituality",
-        "sub_title": "(Buddhism, Christianity, Hinduism...)",
         "sub": [
             "Buddhism",
             "Christianity",
@@ -124,7 +105,6 @@
     },
     {
         "title": "Science",
-        "sub_title": "(Mathematics, Physics, Nature...)",
         "sub": [
             "Astronomy",
             "Chemistry",
@@ -139,7 +119,6 @@
     },
     {
         "title": "Society & Culture",
-        "sub_title": "(Documentary, Philosophy, Travel...)",
         "sub": [
             "Commentary",
             "History",
@@ -153,7 +132,6 @@
     },
     {
         "title": "Sports",
-        "sub_title": "(Cricket, Soccer, Tennis, Baseball..)",
         "sub": [
             "Baseball",
             "Basketball",
@@ -174,7 +152,6 @@
     },
     {
         "title": "TV & Films",
-        "sub_title": "(Film Reviews, TV Reviews, Interviews...)",
         "sub": [
             "After Shows",
             "Film History",
@@ -182,5 +159,8 @@
             "Film Reviews",
             "TV Reviews"
         ]
+    },
+    {
+        "title": "True Crime"
     }
 ]

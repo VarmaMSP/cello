@@ -48,12 +48,9 @@ func GetPodcastPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"podcast":  podcast,
-		"episodes": episodes,
-	}))
+	c.Response.Data = &model.ApiResponseData{}
+	c.Response.Data.Podcasts = []*model.Podcast{podcast}
+	c.Response.Data.Episodes = episodes
 }
 
 func BrowsePodcastEpisodes(c *Context, w http.ResponseWriter, req *http.Request) {

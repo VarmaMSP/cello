@@ -9,11 +9,12 @@ import (
 )
 
 type Context struct {
-	App     *app.App
-	Params  *Params
-	Body    map[string]interface{}
-	Session *model.Session
-	Err     *model.AppError
+	App      *app.App
+	Params   *Params
+	Body     map[string]interface{}
+	Response *model.ApiResponse
+	Session  *model.Session
+	Err      *model.AppError
 }
 
 func (c *Context) SetSessionExpired() {
