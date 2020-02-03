@@ -5,6 +5,7 @@ import "encoding/json"
 type ApiResponse struct {
 	Status  string           `json:"status"`
 	Data    *ApiResponseData `json:"data,omitempty"`
+	Raw     json.RawMessage  `json:"raw,omitempty"`
 	Message string           `json:"message,omitempty"`
 }
 
@@ -16,8 +17,6 @@ type ApiResponseData struct {
 	Playlists            []*Playlist            `json:"playlists,omitempty"`
 	PodcastSearchResults []*PodcastSearchResult `json:"podcast_search_results,omitempty"`
 	EpisodeSearchResults []*EpisodeSearchResult `json:"episode_search_results,omitempty"`
-	Categories           json.RawMessage        `json:"categories,omitempty"`
-	Recommended          json.RawMessage        `json:"recommended,omitempty"`
 }
 
 func (r *ApiResponse) ToJson() []byte {
@@ -29,6 +28,5 @@ func (r *ApiResponse) ToJson() []byte {
 		})
 		return e
 	}
-
 	return b
 }
