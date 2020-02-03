@@ -1,11 +1,12 @@
-import * as client from 'client/search'
 import Router from 'next/router'
 import { Dispatch } from 'redux'
 import * as T from 'types/actions'
 import { SearchResultType, SearchSortBy } from 'types/search'
 import * as gtag from 'utils/gtag'
 import * as RequestId from 'utils/request_id'
+import { qs } from 'utils/utils'
 import { requestAction } from './utils'
+import { doFetch_ } from 'client/fetch'
 
 export function loadResultsPage(
   query: string,
@@ -39,7 +40,15 @@ export function getResultsPageData(
   sortBy: 'relevance' | 'publish_date',
 ) {
   return requestAction(
-    () => client.getResultsPageData(query, resultType, sortBy),
+    () =>
+      doFetch_({
+        method: 'GET',
+        urlPath: `/results?${qs({
+          query: query,
+          type: resultType,
+          sort_by: sortBy,
+        })}`,
+      }),
     (
       dispatch,
       _,
@@ -113,7 +122,18 @@ export function getResults(
   limit: number,
 ) {
   return requestAction(
-    () => client.getResults(query, resultType, sortBy, offset, limit),
+    () =>
+      doFetch_({
+        method: 'GET',
+        urlPath: `/ajax/browse?${qs({
+          endpoint: 'search_results',
+          query: query,
+          type: resultType,
+          sort_by: sortBy,
+          offset: offset,
+          limit: limit,
+        })}`,
+      }),
     (
       dispatch,
       _,

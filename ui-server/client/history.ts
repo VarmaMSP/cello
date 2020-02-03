@@ -10,7 +10,7 @@ export async function getHistoryPageData(): Promise<{
   const { data } = await doFetch({
     method: 'GET',
     urlPath: '/history',
-  })
+  }) 
 
   return {
     podcasts: (data.podcasts || []).map(unmarshal.podcast),

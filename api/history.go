@@ -34,12 +34,10 @@ func GetHistoryPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"episodes": episodes,
-		"podcasts": podcasts,
-	}))
+	c.Response.Data = &model.ApiResponseData{
+		Podcasts: podcasts,
+		Episodes: episodes,
+	}
 }
 
 func BrowseHistoryFeed(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -70,10 +68,8 @@ func BrowseHistoryFeed(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"episodes": episodes,
-		"podcasts": podcasts,
-	}))
+	c.Response.Data = &model.ApiResponseData{
+		Podcasts: podcasts,
+		Episodes: episodes,
+	}
 }

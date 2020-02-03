@@ -1,8 +1,8 @@
 import { doFetch_ } from 'client/fetch'
-import * as client from 'client/podcast'
 import * as T from 'types/actions'
 import { PodcastEpisodeListOrder } from 'types/ui'
 import * as RequestId from 'utils/request_id'
+import { qs } from 'utils/utils'
 import { requestAction } from './utils'
 
 export function getPodcastPageData(podcastUrlParam: string) {
@@ -34,7 +34,17 @@ export function getPodcastEpisodes(
   order: PodcastEpisodeListOrder,
 ) {
   return requestAction(
-    () => client.getPodcastEpisodes(podcastId, limit, offset, order),
+    () =>
+      doFetch_({
+        method: 'GET',
+        urlPath: `/ajax/browse?${qs({
+          endpoint: 'podcast_episodes',
+          podcast_id: podcastId,
+          order: order,
+          offset: offset,
+          limit: limit,
+        })}`,
+      }),
     (dispatch, _, { episodes }) => {
       dispatch({
         type: T.EPISODE_ADD,

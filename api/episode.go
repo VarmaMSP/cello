@@ -23,12 +23,9 @@ func GetEpisode(c *Context, w http.ResponseWriter, req *http.Request) {
 		c.Err = err
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"episode": episode,
-		"podcast": podcast,
-	}))
+
+	c.Response.Data = &model.ApiResponseData{
+		Podcasts: []*model.Podcast{podcast},
+		Episodes: []*model.Episode{episode},
+	}
 }
-
-

@@ -3,7 +3,6 @@ package api
 import (
 	"net/http"
 
-	"github.com/go-http-utils/headers"
 	"github.com/varmamsp/cello/model"
 )
 
@@ -30,13 +29,10 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		w.Header().Set(headers.CacheControl, "private, max-age=3600")
-		w.Header().Set(headers.ContentType, "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(model.EncodeToJson(map[string]interface{}{
-			"podcasts":               podcasts,
-			"podcast_search_results": podcastSearchResults,
-		}))
+		c.Response.Data = &model.ApiResponseData{
+			Podcasts:             podcasts,
+			PodcastSearchResults: podcastSearchResults,
+		}
 
 	} else if c.Params.Type == "episode" {
 		episodeSearchResults, err := c.App.SearchEpisodes(c.Params.Query, c.Params.SortBy, 0, 25)
@@ -65,14 +61,11 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		w.Header().Set(headers.CacheControl, "private, max-age=3600")
-		w.Header().Set(headers.ContentType, "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(model.EncodeToJson(map[string]interface{}{
-			"podcasts":               podcasts,
-			"episodes":               episodes,
-			"episode_search_results": episodeSearchResults,
-		}))
+		c.Response.Data = &model.ApiResponseData{
+			Podcasts:             podcasts,
+			Episodes:             episodes,
+			EpisodeSearchResults: episodeSearchResults,
+		}
 
 	} else {
 		c.SetInvalidQueryParam("type")
@@ -102,13 +95,10 @@ func BrowseResults(c *Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		w.Header().Set(headers.CacheControl, "private, max-age=3600")
-		w.Header().Set(headers.ContentType, "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(model.EncodeToJson(map[string]interface{}{
-			"podcasts":               podcasts,
-			"podcast_search_results": podcastSearchResults,
-		}))
+		c.Response.Data = &model.ApiResponseData{
+			Podcasts:             podcasts,
+			PodcastSearchResults: podcastSearchResults,
+		}
 
 	} else if c.Params.Type == "episode" {
 		episodeSearchResults, err := c.App.SearchEpisodes(c.Params.Query, c.Params.SortBy, c.Params.Offset, c.Params.Limit)
@@ -146,14 +136,11 @@ func BrowseResults(c *Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		w.Header().Set(headers.CacheControl, "private, max-age=3600")
-		w.Header().Set(headers.ContentType, "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(model.EncodeToJson(map[string]interface{}{
-			"podcasts":               podcasts,
-			"episodes":               episodes,
-			"episode_search_results": episodeSearchResults,
-		}))
+		c.Response.Data = &model.ApiResponseData{
+			Podcasts:             podcasts,
+			Episodes:             episodes,
+			EpisodeSearchResults: episodeSearchResults,
+		}
 
 	} else {
 		c.SetInvalidQueryParam("type")

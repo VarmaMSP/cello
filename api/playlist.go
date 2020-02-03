@@ -18,11 +18,9 @@ func GetPlaylistsPageData(c *Context, w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"playlists": playlists,
-	}))
+	c.Response.Data = &model.ApiResponseData{
+		Playlists: playlists,
+	}
 }
 
 func GetPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -78,13 +76,11 @@ func GetPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 		model.EpisodesJoinPlaybacks(episodes, playbacks)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"playlist": playlist,
-		"episodes": episodes,
-		"podcasts": podcasts,
-	}))
+	c.Response.Data = &model.ApiResponseData{
+		Playlists: []*model.Playlist{playlist},
+		Episodes:  episodes,
+		Podcasts:  podcasts,
+	}
 }
 
 func ServiceAddToPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -105,11 +101,9 @@ func ServiceAddToPlaylist(c *Context, w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"playlists": playlists,
-	}))
+	c.Response.Data = &model.ApiResponseData{
+		Playlists: playlists,
+	}
 }
 
 func ServiceCreatePlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -147,11 +141,9 @@ func ServiceCreatePlaylist(c *Context, w http.ResponseWriter, req *http.Request)
 		playlist.Members = append(playlist.Members, &model.PlaylistMember{EpisodeId: episodeId, Position: i + 1})
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"playlist": playlist,
-	}))
+	c.Response.Data = &model.ApiResponseData{
+		Playlists: []*model.Playlist{playlist},
+	}
 }
 
 func ServiceEditPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {

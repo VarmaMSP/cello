@@ -24,6 +24,7 @@ func ServiceGetPlaybacks(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(model.EncodeToJson(map[string]interface{}{

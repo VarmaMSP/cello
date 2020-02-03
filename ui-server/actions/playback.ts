@@ -1,3 +1,4 @@
+import { doFetch_ } from 'client/fetch'
 import * as client from 'client/playback'
 import { Dispatch } from 'redux'
 import { getEpisodeById } from 'selectors/entities/episodes'
@@ -10,7 +11,12 @@ import { requestAction } from './utils'
 
 export function getEpisodePlaybacks(episodeIds: string[]) {
   return requestAction(
-    () => client.getPlaybacks(episodeIds),
+    () =>
+      doFetch_({
+        method: 'POST',
+        urlPath: `/ajax/service?endpoint=get_playbacks`,
+        body: { episode_ids: episodeIds },
+      }),
     (dispatch, _, { playbacks }) => {
       dispatch({
         type: T.EPISODE_JOIN_PLAYBACK,

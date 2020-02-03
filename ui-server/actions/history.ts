@@ -1,11 +1,16 @@
-import * as client from 'client/history'
+import { doFetch_ } from 'client/fetch'
 import * as T from 'types/actions'
 import * as RequestId from 'utils/request_id'
+import { qs } from 'utils/utils'
 import { requestAction } from './utils'
 
 export function getHistoryPageData() {
   return requestAction(
-    () => client.getHistoryPageData(),
+    () =>
+      doFetch_({
+        method: 'GET',
+        urlPath: '/history',
+      }),
     (dispatch, _, { podcasts, episodes }) => {
       dispatch({ type: T.PODCAST_ADD, podcasts })
       dispatch({ type: T.EPISODE_ADD, episodes })
@@ -25,7 +30,15 @@ export function getHistoryPageData() {
 
 export function getHistoryFeed(offset: number, limit: number) {
   return requestAction(
-    () => client.getHistoryFeed(offset, limit),
+    () =>
+      doFetch_({
+        method: 'GET',
+        urlPath: `/ajax/browse?${qs({
+          endpoint: 'history_feed',
+          offset,
+          limit,
+        })}`,
+      }),
     (dispatch, _, { podcasts, episodes }) => {
       dispatch({ type: T.PODCAST_ADD, podcasts })
       dispatch({ type: T.EPISODE_ADD, episodes })

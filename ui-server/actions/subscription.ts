@@ -1,13 +1,18 @@
-import * as client from 'client/subscription'
+import { doFetch_ } from 'client/fetch'
 import { getPodcastById } from 'selectors/entities/podcasts'
 import * as T from 'types/actions'
 import * as gtag from 'utils/gtag'
 import * as RequestId from 'utils/request_id'
+import { qs } from 'utils/utils'
 import { requestAction } from './utils'
 
 export function getSubscriptionsPageData() {
   return requestAction(
-    () => client.getSubscriptionsPageData(),
+    () =>
+      doFetch_({
+        method: 'GET',
+        urlPath: `/subscriptions`,
+      }),
     (dispatch, _, { episodes }) => {
       dispatch({ type: T.EPISODE_ADD, episodes })
 
@@ -27,7 +32,15 @@ export function getSubscriptionsPageData() {
 
 export function getSubscriptionsFeed(offset: number, limit: number) {
   return requestAction(
-    () => client.getSubscriptionsFeed(offset, limit),
+    () =>
+      doFetch_({
+        method: 'GET',
+        urlPath: `/ajax/browse?${qs({
+          endpoint: 'subscriptions_feed',
+          offset: offset,
+          limit: limit,
+        })}`,
+      }),
     (dispatch, _, { episodes }) => {
       dispatch({ type: T.EPISODE_ADD, episodes })
 
@@ -47,7 +60,16 @@ export function getSubscriptionsFeed(offset: number, limit: number) {
 
 export function subscribeToPodcast(podcastId: string) {
   return requestAction(
-    () => client.subscribePodcast(podcastId),
+    () =>
+      doFetch_({
+        method: 'POST',
+        urlPath: `/ajax/service?${qs({
+          endpoint: 'subscribe_podcast',
+        })}`,
+        body: {
+          podcast_id: podcastId,
+        },
+      }),
     (dispatch, getState) => {
       gtag.subscribePodcast((getPodcastById(getState(), podcastId) || {}).title)
 
@@ -61,7 +83,16 @@ export function subscribeToPodcast(podcastId: string) {
 
 export function unsubscribeToPodcast(podcastId: string) {
   return requestAction(
-    () => client.unsubscribePodcast(podcastId),
+    () =>
+      doFetch_({
+        method: 'POST',
+        urlPath: `/ajax/service?${qs({
+          endpoint: 'unsubscribe_podcast',
+        })}`,
+        body: {
+          podcast_id: podcastId,
+        },
+      }),
     (dispatch) => {
       dispatch({
         type: T.SESSION_UNSUBSCRIBE_PODCASTS,

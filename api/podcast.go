@@ -74,9 +74,6 @@ func BrowsePodcastEpisodes(c *Context, w http.ResponseWriter, req *http.Request)
 		model.EpisodesJoinPlaybacks(episodes, playbacks)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"episodes": episodes,
-	}))
+	c.Response.Data = &model.ApiResponseData{}
+	c.Response.Data.Episodes = episodes
 }

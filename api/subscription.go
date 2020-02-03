@@ -34,11 +34,9 @@ func GetSubscriptionsPageData(c *Context, w http.ResponseWriter, req *http.Reque
 	}
 	model.EpisodesJoinPlaybacks(episodes, playbacks)
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"episodes": episodes,
-	}))
+	c.Response.Data = &model.ApiResponseData{
+		Episodes: episodes,
+	}
 }
 
 func BrowseSubscriptionsFeed(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -69,11 +67,9 @@ func BrowseSubscriptionsFeed(c *Context, w http.ResponseWriter, req *http.Reques
 	}
 	model.EpisodesJoinPlaybacks(episodes, playbacks)
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"episodes": episodes,
-	}))
+	c.Response.Data = &model.ApiResponseData{
+		Episodes: episodes,
+	}
 }
 
 func ServiceSubscribePodcast(c *Context, w http.ResponseWriter, req *http.Request) {
