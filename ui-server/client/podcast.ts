@@ -1,22 +1,15 @@
 import { Episode, Podcast } from 'types/app'
-import { ApiResponse } from 'types/models/api_response'
 import * as unmarshal from 'utils/entities'
 import { qs } from 'utils/utils'
-import { doFetch } from './fetch'
+import { doFetch, doFetch_ } from './fetch'
 
 export async function getPodcastPageData(
   podcastUrlParam: string,
 ): Promise<{ podcasts: Podcast[]; episodes: Episode[] }> {
-  const { data } = await doFetch({
+  return doFetch_({
     method: 'GET',
     urlPath: `/podcasts/${podcastUrlParam}`,
   })
-
-  const c = new ApiResponse(data)
-  return {
-    "podcasts": c.podcasts,
-    "episodes": c.episodes,
-  }
 }
 
 export async function getPodcastEpisodes(
