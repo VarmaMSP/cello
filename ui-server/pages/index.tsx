@@ -18,10 +18,12 @@ const IndexPage: React.FC<StateToProps> = ({ isUserSignedIn }) => {
   return (
     <PageLayout>
       <div className="flex md:flex-row-reverse flex-col md:-mb-32">
-        <img
-          src={getAssetUrl('home')}
-          className="md:flex-1 md:w-5/12 md:-mt-8 -mt-12 -mr-6 "
-        />
+        <div className="md:flex-1 md:w-5/12 -mr-6">
+          <img
+            src={getAssetUrl('home')}
+          />
+        </div>
+        
         <div className="flex-none md:w-1/2 md:mt-0 -mt-10 md:pt-16 ">
           <LogoIcon className="mb-2" />
           <h3 className="mb-8 tracking-wide text-gray-900 text-lg">

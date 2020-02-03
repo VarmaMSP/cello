@@ -13,11 +13,11 @@ const Categories: React.FC<StateToProps> = ({ categories }) => {
         {'Browse By Categories'}
       </h1>
       <hr className="mb-3" />
-      <div className="md:w-2/3 w-full">
+      <div className="w-full">
         <ul className="flex flex-wrap">
           {categories.map((c) => (
             <ChartLink key={c.id} chartId={c.id}>
-              <a className="block h-10 lg:w-1/2 w-full pl-6 py-1 rounded-full hover:bg-gray-200">
+              <a className="block h-10 lg:w-1/3 w-full pl-6 py-1 rounded-full hover:bg-gray-200">
                 <li className="text-lg text-gray-900">{c.title}</li>
               </a>
             </ChartLink>
