@@ -1,19 +1,21 @@
 import { Episode, Podcast } from 'types/app'
+import { ApiResponse } from 'types/models/api_response'
 import * as unmarshal from 'utils/entities'
 import { qs } from 'utils/utils'
 import { doFetch } from './fetch'
 
 export async function getPodcastPageData(
   podcastUrlParam: string,
-): Promise<{ podcast: Podcast; episodes: Episode[] }> {
+): Promise<{ podcasts: Podcast[]; episodes: Episode[] }> {
   const { data } = await doFetch({
     method: 'GET',
     urlPath: `/podcasts/${podcastUrlParam}`,
   })
 
+  const c = new ApiResponse(data)
   return {
-    podcast: unmarshal.podcast(data.podcast),
-    episodes: (data.episodes || []).map(unmarshal.episode),
+    "podcasts": c.podcasts,
+    "episodes": c.episodes,
   }
 }
 
