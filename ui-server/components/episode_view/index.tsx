@@ -4,7 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { getEpisodeById } from 'selectors/entities/episodes'
 import { AppState } from 'store'
-import { Episode } from 'types/app'
+import { Episode } from 'types/models'
 import EpisodeHeader from './components/episode_header'
 import HomeTab from './tabs/home'
 

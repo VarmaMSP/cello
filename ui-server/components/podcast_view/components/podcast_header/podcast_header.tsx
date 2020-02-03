@@ -2,7 +2,7 @@ import ButtonSubscribe from 'components/button_subscribe'
 import format from 'date-fns/format'
 import parseISO from 'date-fns/parseISO'
 import React from 'react'
-import { Podcast } from 'types/app'
+import { Podcast } from 'types/models'
 import { getImageUrl } from 'utils/dom'
 
 export interface OwnProps {

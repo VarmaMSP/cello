@@ -8,7 +8,7 @@ import { getUserById } from 'selectors/entities/users'
 import { getSignedInUserId } from 'selectors/session'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import { User } from 'types/app'
+import { User } from 'types/models'
 
 interface StateToProps {
   user: User

@@ -2,7 +2,7 @@ import { iconMap } from 'components/icon'
 import { parseISO } from 'date-fns'
 import format from 'date-fns/format'
 import React from 'react'
-import { Playlist } from 'types/app'
+import { Playlist } from 'types/models'
 import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {

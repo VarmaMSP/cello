@@ -1,5 +1,4 @@
-import { Curation, Podcast } from 'types/app'
-import * as unmarshal from 'utils/entities'
+import { Curation, Podcast } from 'types/models'
 import { formatCategoryTitle } from 'utils/format'
 import { doFetch } from './fetch'
 
@@ -36,7 +35,7 @@ export async function getHomePageData(): Promise<{
 
   return {
     categories,
-    podcasts: (raw.recommended || []).map(unmarshal.podcast),
+    podcasts: (raw.recommended || []).map((o: any) => new Podcast(o)),
   }
 }
 
@@ -50,5 +49,5 @@ export async function getChartPageData(
     urlPath: `/charts/${chartId}`,
   })
 
-  return { podcasts: (raw.podcasts || []).map(unmarshal.podcast) }
+  return { podcasts: (raw.podcasts || []).map((o: any) => new Podcast(o)) }
 }

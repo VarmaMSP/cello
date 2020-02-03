@@ -1,7 +1,7 @@
 import Grid from 'components/grid'
 import { PodcastLink } from 'components/link'
 import React from 'react'
-import { Podcast } from 'types/app'
+import { Podcast } from 'types/models'
 import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {

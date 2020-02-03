@@ -2,7 +2,7 @@ import ButtonShowMore from 'components/button_show_more'
 import EpisodePreview from 'components/episode_preview'
 import parseISO from 'date-fns/parseISO'
 import React from 'react'
-import { Episode } from 'types/app'
+import { Episode } from 'types/models'
 
 export interface StateToProps {
   history: Episode[]

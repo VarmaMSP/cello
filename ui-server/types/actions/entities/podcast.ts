@@ -1,4 +1,4 @@
-import { Podcast } from 'types/app'
+import { Podcast } from 'types/models'
 
 export const PODCAST_ADD = 'podcast/add'
 

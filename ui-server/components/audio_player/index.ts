@@ -3,15 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { getEpisodeById } from 'selectors/entities/episodes'
 import { getPodcastById } from 'selectors/entities/podcasts'
-import {
-  getCurrentTime,
-  getDuration,
-  getExpandOnMobile,
-  getPlaybackRate,
-  getPlayingEpisodeId,
-  getState,
-  getVolume,
-} from 'selectors/ui/audio_player'
+import { getCurrentTime, getDuration, getExpandOnMobile, getPlaybackRate, getPlayingEpisodeId, getState, getVolume } from 'selectors/ui/audio_player'
 import { getViewportSize } from 'selectors/window'
 import { AppState } from 'store'
 import * as T from 'types/actions'

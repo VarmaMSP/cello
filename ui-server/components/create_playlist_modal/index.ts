@@ -4,7 +4,7 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { getCreatePlaylistStatus } from 'selectors/request'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import { PlaylistPrivacy } from 'types/app'
+import { PlaylistPrivacy } from 'types/models'
 import CreatePlaylistModal, { DispatchToProps, OwnProps, StateToProps } from './create_playlist_modal'
 
 function mapStateToProps(state: AppState): StateToProps {

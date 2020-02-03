@@ -6,7 +6,7 @@ import {
   EpisodeSearchResult,
   Podcast,
   PodcastSearchResult,
-} from 'types/app'
+} from 'types/models'
 import { $Id } from 'types/utilities'
 
 export function makeGetPodcastSearchResultById() {

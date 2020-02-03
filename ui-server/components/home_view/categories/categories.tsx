@@ -1,6 +1,6 @@
 import { ChartLink } from 'components/link'
 import React from 'react'
-import { Curation } from 'types/app'
+import { Curation } from 'types/models'
 
 export interface StateToProps {
   categories: Curation[]

@@ -78,7 +78,7 @@ const expandOnMobile: Reducer<boolean, T.AppActions> = (
   switch (action.type) {
     case T.AUDIO_PLAYER_TOGGLE_EXPAND:
       return !state
-    
+
     default:
       return state
   }

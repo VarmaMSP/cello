@@ -1,7 +1,7 @@
 import { iconMap } from 'components/icon'
 import { EpisodeLink, PodcastLink } from 'components/link'
 import React from 'react'
-import { Episode, Podcast } from 'types/app'
+import { Episode, Podcast } from 'types/models'
 import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {

@@ -4,7 +4,7 @@ import { PodcastLink } from 'components/link'
 import format from 'date-fns/format'
 import parseISO from 'date-fns/parseISO'
 import React from 'react'
-import { Episode, Podcast } from 'types/app'
+import { Episode, Podcast } from 'types/models'
 
 export interface StateToProps {
   podcast: Podcast

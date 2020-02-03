@@ -1,5 +1,5 @@
 import React from 'react'
-import { Playlist } from 'types/app'
+import { Playlist } from 'types/models'
 import PlaylistEpisodeListItem from '../playlist_episode_list_item'
 
 export interface OwnProps {

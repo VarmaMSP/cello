@@ -30,22 +30,4 @@ export class Podcast {
     this.earliestEpisodePubDate = j.earliest_episode_pub_date || ''
     this.copyright = j.copyright || ''
   }
-
-  merge(p: Podcast): Podcast {
-    return <Podcast>{
-      id: p.id,
-      urlParam: p.urlParam,
-      title: p.title,
-      summary: p.summary !== '' ? p.summary : this.summary,
-      description: p.description !== '' ? p.description : this.description,
-      language: p.language,
-      explicit: p.explicit,
-      author: p.author,
-      totalEpisodes: p.totalEpisodes,
-      type: p.type,
-      complete: p.complete,
-      earliestEpisodePubDate: p.earliestEpisodePubDate,
-      copyright: p.copyright,
-    }
-  }
 }

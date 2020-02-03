@@ -1,6 +1,6 @@
 import { PodcastLink } from 'components/link'
 import React from 'react'
-import { Curation, Podcast } from 'types/app'
+import { Curation, Podcast } from 'types/models'
 import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {

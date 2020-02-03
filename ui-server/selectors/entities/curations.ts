@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { AppState } from 'store'
-import { Curation, Podcast } from 'types/app'
+import { Curation, Podcast } from 'types/models'
 import { $Id, MapById } from 'types/utilities'
 
 export function getCurationById(state: AppState, curationId: string) {

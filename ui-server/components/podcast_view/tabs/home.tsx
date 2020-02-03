@@ -1,5 +1,5 @@
 import React from 'react'
-import { Podcast } from 'types/app'
+import { Podcast } from 'types/models'
 import EpisodeList from '../components/episode_list'
 
 export interface OwnProps {

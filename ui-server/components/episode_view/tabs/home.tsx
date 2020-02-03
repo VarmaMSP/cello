@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Episode } from 'types/app'
+import { Episode } from 'types/models'
 
 interface OwnProps {
   episode: Episode

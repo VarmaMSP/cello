@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { getPlaylistById } from 'selectors/entities/playlists'
 import { AppState } from 'store'
-import { Playlist } from 'types/app'
+import { Playlist } from 'types/models'
 import PlaylistHeader from './components/playlist_header'
 import HomeTab from './home_tab/home_tab'
 

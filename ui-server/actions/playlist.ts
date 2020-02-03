@@ -1,7 +1,7 @@
 import { doFetch } from 'utils/fetch'
 import { getPlaylistById } from 'selectors/entities/playlists'
 import * as T from 'types/actions'
-import { PlaylistPrivacy } from 'types/app'
+import { PlaylistPrivacy } from 'types/models'
 import * as gtag from 'utils/gtag'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'

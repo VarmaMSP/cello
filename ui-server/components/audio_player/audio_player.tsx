@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { AudioState, Episode, Podcast, ViewportSize } from 'types/app'
+import { AudioState, ViewportSize } from 'types/app'
+import { Episode, Podcast } from 'types/models'
 import AudioPlayerLarge from './audio_player_large'
 import AudioPlayerSmall from './audio_player_small'
 

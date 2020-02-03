@@ -1,6 +1,6 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { EpisodeSearchResult, PodcastSearchResult } from 'types/app'
+import { EpisodeSearchResult, PodcastSearchResult } from 'types/models'
 
 const byPodcastId: Reducer<
   { [searchQuery: string]: { [podcastId: string]: PodcastSearchResult } },

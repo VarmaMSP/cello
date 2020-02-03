@@ -5,7 +5,7 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { getEpisodeById } from 'selectors/entities/episodes'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import { Episode } from 'types/app'
+import { Episode } from 'types/models'
 import ButtonWithIcon from './button_with_icon'
 
 interface StateToProps {

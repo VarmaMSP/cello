@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { AppState } from 'store'
-import { Playlist, User } from 'types/app'
+import { Playlist, User } from 'types/models'
 import { $Id, MapById } from 'types/utilities'
 
 export function getPlaylistById(state: AppState, playlistId: string) {

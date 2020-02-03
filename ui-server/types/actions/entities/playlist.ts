@@ -1,4 +1,4 @@
-import { Playlist } from 'types/app'
+import { Playlist } from 'types/models'
 
 export const PLAYLIST_ADD = 'playlist/add'
 export const PLAYLIST_REMOVE = 'playlist/remove'
