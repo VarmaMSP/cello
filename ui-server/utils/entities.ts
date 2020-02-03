@@ -31,9 +31,6 @@ export function podcast(j: any): Podcast {
     complete: j.complete || false,
     earliestEpisodePubDate: j.earliest_episode_pub_date,
     copyright: j.copyright || '',
-    titleHighlighted: j.title_highlighted || '',
-    authorHighlighted: j.author_highlighted || '',
-    summaryHighlighted: j.summary_highlighted || '',
   }
 }
 

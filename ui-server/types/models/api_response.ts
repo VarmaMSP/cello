@@ -1,5 +1,10 @@
-import * as Parse from 'utils/entities'
-import { Episode, EpisodeSearchResult, Playback, Playlist, Podcast, PodcastSearchResult, User } from '../app'
+import { Episode } from './episode'
+import { EpisodeSearchResult } from './episode_search_result'
+import { Playback } from './playback'
+import { Playlist } from './playlist'
+import { Podcast } from './podcast'
+import { PodcastSearchResult } from './podcast_search_result'
+import { User } from './user'
 
 export class ApiResponse {
   users: User[]
@@ -13,16 +18,16 @@ export class ApiResponse {
   constructor(j: any) {
     const data = (j['data'] || {}) as any
 
-    this.users = (data['users'] || []).map(Parse.user)
-    this.podcasts = (data['podcasts'] || []).map(Parse.podcast)
-    this.episodes = (data['episodes'] || []).map(Parse.episode)
-    this.playbacks = (data['playbacks'] || []).map(Parse.playback)
-    this.playlists = (data['playlists'] || []).map(Parse.playlist)
+    this.users = (data['users'] || []).map((o: any) => new User(o))
+    this.podcasts = (data['podcasts'] || []).map((o: any) => new Podcast(o))
+    this.episodes = (data['episodes'] || []).map((o: any) => new Episode(o))
+    this.playbacks = (data['playbacks'] || []).map((o: any) => new Playback(o))
+    this.playlists = (data['playlists'] || []).map((o: any) => new Playlist(o))
     this.podcastSearchResults = (data['podcast_search_results'] || []).map(
-      Parse.podcastSearchResult,
+      (o: any) => new PodcastSearchResult(o),
     )
     this.episodeSearchResults = (data['episode_search_results'] || []).map(
-      Parse.episodeSearchResult,
+      (o: any) => new EpisodeSearchResult(o),
     )
   }
 }
