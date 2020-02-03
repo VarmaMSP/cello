@@ -8,9 +8,6 @@ import (
 
 func ServiceLoadSession(c *Context, w http.ResponseWriter, req *http.Request) {
 	if c.Session == nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("{}"))
 		return
 	}
 
@@ -39,5 +36,4 @@ func ServiceEndSession(c *Context, w http.ResponseWriter, req *http.Request) {
 		c.Err = err
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }

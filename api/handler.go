@@ -57,12 +57,14 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			Str("from", c.Err.GetId()).
 			Str("error", c.Err.GetComment())
 
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(c.Err.GetStatusCode())
-		w.Write([]byte(c.Err.Error()))
-		return
-	}
+		w.Write((&model.ApiResponse{
+			Status:  "error",
+			Message: c.Err.Error(),
+		}).ToJson())
 
-	if c.Response.Data != nil {
+	} else {
 		c.Response.Status = "success"
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)

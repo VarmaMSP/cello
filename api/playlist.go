@@ -193,8 +193,6 @@ func AddEpisodeToPlaylist(c *Context, w http.ResponseWriter, req *http.Request) 
 		c.Err = err
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func RemoveEpisodeFromPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -225,8 +223,6 @@ func RemoveEpisodeFromPlaylist(c *Context, w http.ResponseWriter, req *http.Requ
 		c.Err = err
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func ServiceDeletePlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -251,6 +247,4 @@ func ServiceDeletePlaylist(c *Context, w http.ResponseWriter, req *http.Request)
 		c.Err = err
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }

@@ -22,17 +22,13 @@ func GetHomePageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(
-		model.EncodeToJson(&struct {
-			Recommended json.RawMessage `json:"recommended"`
-			Categories  json.RawMessage `json:"categories"`
-		}{
-			Recommended: (json.RawMessage)(recommended),
-			Categories:  (json.RawMessage)(categories),
-		}),
-	)
+	c.Response.Raw = model.EncodeToJson(&struct {
+		Recommended json.RawMessage `json:"recommended"`
+		Categories  json.RawMessage `json:"categories"`
+	}{
+		Recommended: (json.RawMessage)(recommended),
+		Categories:  (json.RawMessage)(categories),
+	})
 }
 
 func GetChart(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -47,13 +43,9 @@ func GetChart(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(
-		model.EncodeToJson(&struct {
-			Podcasts json.RawMessage `json:"podcasts"`
-		}{
-			Podcasts: (json.RawMessage)(podcasts),
-		}),
-	)
+	c.Response.Raw = model.EncodeToJson(&struct {
+		Podcasts json.RawMessage `json:"podcasts"`
+	}{
+		Podcasts: (json.RawMessage)(podcasts),
+	})
 }

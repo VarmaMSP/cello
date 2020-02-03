@@ -88,7 +88,6 @@ func ServiceSubscribePodcast(c *Context, w http.ResponseWriter, req *http.Reques
 		c.Err = err
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 func ServiceUnsubscribePodcast(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -107,5 +106,4 @@ func ServiceUnsubscribePodcast(c *Context, w http.ResponseWriter, req *http.Requ
 		c.Err = err
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }

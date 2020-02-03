@@ -48,9 +48,10 @@ func GetPodcastPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	c.Response.Data = &model.ApiResponseData{}
-	c.Response.Data.Podcasts = []*model.Podcast{podcast}
-	c.Response.Data.Episodes = episodes
+	c.Response.Data = &model.ApiResponseData{
+		Podcasts: []*model.Podcast{podcast},
+		Episodes: episodes,
+	}
 }
 
 func BrowsePodcastEpisodes(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -74,6 +75,7 @@ func BrowsePodcastEpisodes(c *Context, w http.ResponseWriter, req *http.Request)
 		model.EpisodesJoinPlaybacks(episodes, playbacks)
 	}
 
-	c.Response.Data = &model.ApiResponseData{}
-	c.Response.Data.Episodes = episodes
+	c.Response.Data = &model.ApiResponseData{
+		Episodes: episodes,
+	}
 }

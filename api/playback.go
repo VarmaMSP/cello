@@ -24,12 +24,9 @@ func ServiceGetPlaybacks(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(model.EncodeToJson(map[string]interface{}{
-		"playbacks": playbacks,
-	}))
+	c.Response.Data = &model.ApiResponseData{
+		Playbacks: playbacks,
+	}
 }
 
 func ServicePlaybackSync(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -63,8 +60,6 @@ func PlaybackBegin(c *Context, w http.ResponseWriter, req *http.Request) {
 		c.Err = err
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func PlaybackProgress(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -85,5 +80,4 @@ func PlaybackProgress(c *Context, w http.ResponseWriter, req *http.Request) {
 		c.Err = err
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
