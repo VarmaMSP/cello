@@ -1,12 +1,12 @@
-import { doFetch_ } from 'client/fetch'
 import * as T from 'types/actions'
+import { doFetch } from 'utils/fetch'
 import * as gtag from 'utils/gtag'
 import { requestAction } from './utils'
 
 export function getCurrentUser() {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'POST',
         urlPath: `/ajax/service?endpoint=load_session`,
       }),
@@ -28,7 +28,7 @@ export function getCurrentUser() {
 export function signOutUser() {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'POST',
         urlPath: `/ajax/service?endpoint=end_session`,
       }),

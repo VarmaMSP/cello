@@ -1,4 +1,4 @@
-import { doFetch_ } from 'client/fetch'
+import { doFetch } from 'utils/fetch'
 import { getPodcastById } from 'selectors/entities/podcasts'
 import * as T from 'types/actions'
 import * as gtag from 'utils/gtag'
@@ -9,7 +9,7 @@ import { requestAction } from './utils'
 export function getSubscriptionsPageData() {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'GET',
         urlPath: `/subscriptions`,
       }),
@@ -33,7 +33,7 @@ export function getSubscriptionsPageData() {
 export function getSubscriptionsFeed(offset: number, limit: number) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'GET',
         urlPath: `/ajax/browse?${qs({
           endpoint: 'subscriptions_feed',
@@ -61,7 +61,7 @@ export function getSubscriptionsFeed(offset: number, limit: number) {
 export function subscribeToPodcast(podcastId: string) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'POST',
         urlPath: `/ajax/service?${qs({
           endpoint: 'subscribe_podcast',
@@ -84,7 +84,7 @@ export function subscribeToPodcast(podcastId: string) {
 export function unsubscribeToPodcast(podcastId: string) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'POST',
         urlPath: `/ajax/service?${qs({
           endpoint: 'unsubscribe_podcast',

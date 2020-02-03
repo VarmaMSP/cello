@@ -1,11 +1,11 @@
-import { doFetch_ } from 'client/fetch'
+import { doFetch } from 'utils/fetch'
 import * as T from 'types/actions'
 import { requestAction } from './utils'
 
 export function getEpisodePageData(episodeUrlParam: string) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'GET',
         urlPath: `/episodes/${episodeUrlParam}`,
       }),

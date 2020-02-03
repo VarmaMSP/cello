@@ -1,4 +1,4 @@
-import { doFetch_ } from 'client/fetch'
+import { doFetch } from 'utils/fetch'
 import { Dispatch } from 'redux'
 import { getEpisodeById } from 'selectors/entities/episodes'
 import { getIsUserSignedIn } from 'selectors/session'
@@ -11,7 +11,7 @@ import { requestAction } from './utils'
 export function getEpisodePlaybacks(episodeIds: string[]) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'POST',
         urlPath: `/ajax/service?endpoint=get_playbacks`,
         body: { episode_ids: episodeIds },
@@ -39,7 +39,7 @@ export function startPlayback(episodeId: string, beginAt: number) {
         getIsUserSignedIn(state) &&
         getPlayingEpisodeId(state) !== episodeId
       ) {
-        await doFetch_({
+        await doFetch({
           method: 'POST',
           urlPath: `/ajax/service?endpoint=playback_sync&action=playback_begin`,
           body: { episode_id: episodeId },
@@ -55,7 +55,7 @@ export function startPlayback(episodeId: string, beginAt: number) {
 export function syncPlayback(episodeId: string, position: number) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'POST',
         urlPath: `/ajax/service?endpoint=playback_sync&action=playback_progress`,
         body: { episode_id: episodeId, position: Number(position.toFixed(6)) },

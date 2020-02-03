@@ -7,14 +7,14 @@ export async function getHomePageData(): Promise<{
   categories: Curation[]
   podcasts: Podcast[]
 }> {
-  const { data } = await doFetch({
+  const { raw } = await doFetch({
     method: 'GET',
     urlPath: '/',
   })
 
   let categories = <Curation[]>[]
-  for (let i = 0; i < data.categories.length; ++i) {
-    let tmp = data.categories[i]
+  for (let i = 0; i < raw.categories.length; ++i) {
+    let tmp = raw.categories[i]
     let cat = <Curation>{
       id: formatCategoryTitle(tmp.title),
       title: tmp.title,
@@ -36,6 +36,19 @@ export async function getHomePageData(): Promise<{
 
   return {
     categories,
-    podcasts: (data.recommended || []).map(unmarshal.podcast),
+    podcasts: (raw.recommended || []).map(unmarshal.podcast),
   }
+}
+
+export async function getChartPageData(
+  chartId: string,
+): Promise<{
+  podcasts: Podcast[]
+}> {
+  const { raw } = await doFetch({
+    method: 'GET',
+    urlPath: `/charts/${chartId}`,
+  })
+
+  return { podcasts: (raw.podcasts || []).map(unmarshal.podcast) }
 }

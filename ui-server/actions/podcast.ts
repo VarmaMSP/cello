@@ -1,4 +1,4 @@
-import { doFetch_ } from 'client/fetch'
+import { doFetch } from 'utils/fetch'
 import * as T from 'types/actions'
 import { PodcastEpisodeListOrder } from 'types/ui'
 import * as RequestId from 'utils/request_id'
@@ -8,7 +8,7 @@ import { requestAction } from './utils'
 export function getPodcastPageData(podcastUrlParam: string) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'GET',
         urlPath: `/podcasts/${podcastUrlParam}`,
       }),
@@ -35,7 +35,7 @@ export function getPodcastEpisodes(
 ) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'GET',
         urlPath: `/ajax/browse?${qs({
           endpoint: 'podcast_episodes',

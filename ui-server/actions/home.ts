@@ -1,4 +1,4 @@
-import * as client from 'client/home'
+import * as client from 'utils/raw'
 import * as T from 'types/actions'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'

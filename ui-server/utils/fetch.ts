@@ -23,48 +23,6 @@ export async function doFetch({
   method,
   urlPath,
   body,
-}: FetchRequest): Promise<FetchResponse> {
-  // Make Request
-  let url = `${getBaseUrl()}${urlPath}`
-  let response: Response
-  try {
-    response = await fetch(url, {
-      method,
-      body: body ? JSON.stringify(body) : undefined,
-      credentials: 'include',
-    })
-  } catch (err) {
-    throw makeFetchException(url, response!.status, {}, err.toString())
-  }
-
-  // Check for non 2xx { not OK }
-  if (response!.status.toString()[0] !== '2') {
-    throw makeFetchException(url, response!.status, {})
-  }
-
-  // Parse body
-  let data: object = {}
-  try {
-    if (response!.headers.get('Content-Type') === 'application/json') {
-      data = await response.json()
-    }
-  } catch (err) {
-    const errMsg = 'JSON: error parsing body'
-    throw makeFetchException(url, response!.status, {}, errMsg)
-  }
-
-  return <FetchResponse>{
-    responseHeaders: {
-      Location: response!.headers.get('Location') || '',
-    },
-    data,
-  }
-}
-
-export async function doFetch_({
-  method,
-  urlPath,
-  body,
 }: FetchRequest): Promise<ApiResponse> {
   // Make Request
   let url = `${getBaseUrl()}${urlPath}`

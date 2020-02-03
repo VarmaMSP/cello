@@ -1,9 +1,9 @@
-import { FetchException } from 'client/fetch'
 import { Dispatch } from 'redux'
 import { requestStatus } from 'selectors/request'
 import { getIsUserSignedIn } from 'selectors/session'
 import { AppState } from 'store'
 import * as AT from 'types/actions'
+import { FetchException } from 'utils/fetch'
 
 type MakeRequest<T> = (g: () => AppState) => T
 

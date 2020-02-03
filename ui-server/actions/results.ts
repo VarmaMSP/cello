@@ -6,7 +6,7 @@ import * as gtag from 'utils/gtag'
 import * as RequestId from 'utils/request_id'
 import { qs } from 'utils/utils'
 import { requestAction } from './utils'
-import { doFetch_ } from 'client/fetch'
+import { doFetch } from 'utils/fetch'
 
 export function loadResultsPage(
   query: string,
@@ -41,7 +41,7 @@ export function getResultsPageData(
 ) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'GET',
         urlPath: `/results?${qs({
           query: query,
@@ -123,7 +123,7 @@ export function getResults(
 ) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'GET',
         urlPath: `/ajax/browse?${qs({
           endpoint: 'search_results',

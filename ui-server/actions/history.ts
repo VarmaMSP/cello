@@ -1,4 +1,4 @@
-import { doFetch_ } from 'client/fetch'
+import { doFetch } from 'utils/fetch'
 import * as T from 'types/actions'
 import * as RequestId from 'utils/request_id'
 import { qs } from 'utils/utils'
@@ -7,7 +7,7 @@ import { requestAction } from './utils'
 export function getHistoryPageData() {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'GET',
         urlPath: '/history',
       }),
@@ -31,7 +31,7 @@ export function getHistoryPageData() {
 export function getHistoryFeed(offset: number, limit: number) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'GET',
         urlPath: `/ajax/browse?${qs({
           endpoint: 'history_feed',

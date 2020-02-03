@@ -14,6 +14,7 @@ export class ApiResponse {
   playlists: Playlist[]
   podcastSearchResults: PodcastSearchResult[]
   episodeSearchResults: EpisodeSearchResult[]
+  raw: any
 
   constructor(j: any) {
     const data = (j['data'] || {}) as any
@@ -29,5 +30,6 @@ export class ApiResponse {
     this.episodeSearchResults = (data['episode_search_results'] || []).map(
       (o: any) => new EpisodeSearchResult(o),
     )
+    this.raw = j['raw'] || {}
   }
 }

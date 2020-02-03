@@ -1,4 +1,4 @@
-import { doFetch_ } from 'client/fetch'
+import { doFetch } from 'utils/fetch'
 import { getPlaylistById } from 'selectors/entities/playlists'
 import * as T from 'types/actions'
 import { PlaylistPrivacy } from 'types/app'
@@ -9,7 +9,7 @@ import { requestAction } from './utils'
 export function getPlaylistLibrary() {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'GET',
         urlPath: `/playlists`,
       }),
@@ -22,7 +22,7 @@ export function getPlaylistLibrary() {
 export function getPlaylist(playlistId: string) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'GET',
         urlPath: `/playlists/${playlistId}`,
       }),
@@ -37,7 +37,7 @@ export function getPlaylist(playlistId: string) {
 export function loadAndShowAddToPlaylistModal(episodeId: string) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'POST',
         urlPath: '/ajax/service?endpoint=add_to_playlist',
         body: {
@@ -65,7 +65,7 @@ export function createPlaylist(
 ) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'POST',
         urlPath: `/ajax/service?endpoint=create_playlist`,
         body: { title, privacy, description, episode_ids: [episodeId] },
@@ -87,7 +87,7 @@ export function createPlaylist(
 export function addEpisodeToPlaylist(playlistId: string, episodeId: string) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'POST',
         urlPath: '/ajax/service?endpoint=edit_playlist&action=add_episode',
         body: {
@@ -116,7 +116,7 @@ export function removeEpisodeFromPlaylist(
 ) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'POST',
         urlPath: `/ajax/service?endpoint=edit_playlist&action=remove_episode`,
         body: {
@@ -138,7 +138,7 @@ export function removeEpisodeFromPlaylist(
 export function deletePlaylist(playlistId: string) {
   return requestAction(
     () =>
-      doFetch_({
+      doFetch({
         method: 'POST',
         urlPath: `/ajax/service?endpoint=delete_playlist`,
         body: { playlist_id: playlistId },
