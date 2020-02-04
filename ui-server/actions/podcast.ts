@@ -1,6 +1,6 @@
-import { doFetch } from 'utils/fetch'
 import * as T from 'types/actions'
 import { PodcastEpisodeListOrder } from 'types/ui'
+import { doFetch } from 'utils/fetch'
 import * as RequestId from 'utils/request_id'
 import { qs } from 'utils/utils'
 import { requestAction } from './utils'
@@ -12,9 +12,10 @@ export function getPodcastPageData(podcastUrlParam: string) {
         method: 'GET',
         urlPath: `/podcasts/${podcastUrlParam}`,
       }),
-    (dispatch, _, { podcasts, episodes }) => {
+    (dispatch, _, { podcasts, episodes, categories }) => {
       dispatch({ type: T.PODCAST_ADD, podcasts })
       dispatch({ type: T.EPISODE_ADD, episodes })
+      dispatch({ type: T.CATEGORY_ADD, categories })
 
       dispatch({
         type: T.PODCAST_EPISODES_LIST_LOAD_PAGE,
