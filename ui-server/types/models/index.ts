@@ -1,3 +1,4 @@
+export * from './category'
 export * from './curation'
 export * from './episode'
 export * from './episode_search_result'

@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import categories from './categories'
 import curations from './curations'
 import episodes from './episodes'
 import playlists from './playlists'
@@ -13,4 +14,5 @@ export default combineReducers({
   curations,
   playlists,
   searchResults,
+  categories,
 })

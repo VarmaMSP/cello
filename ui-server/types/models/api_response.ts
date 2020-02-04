@@ -1,3 +1,4 @@
+import { Category } from './category'
 import { Episode } from './episode'
 import { EpisodeSearchResult } from './episode_search_result'
 import { Playback } from './playback'
@@ -14,6 +15,7 @@ export class ApiResponse {
   playlists: Playlist[]
   podcastSearchResults: PodcastSearchResult[]
   episodeSearchResults: EpisodeSearchResult[]
+  categories: Category[]
   raw: any
 
   constructor(j: any) {
@@ -29,6 +31,9 @@ export class ApiResponse {
     )
     this.episodeSearchResults = (data['episode_search_results'] || []).map(
       (o: any) => new EpisodeSearchResult(o),
+    )
+    this.categories = (data['categories'] || []).map(
+      (o: any) => new Category(o)
     )
     this.raw = j['raw'] || {}
   }

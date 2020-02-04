@@ -1,3 +1,4 @@
+import { CategoryActionTypes } from './entities/category'
 import { CurationActionTypes } from './entities/curation'
 import { EpisodeActionTypes } from './entities/episode'
 import { PlaylistActionTypes } from './entities/playlist'
@@ -34,7 +35,9 @@ export type AppActions =
   | HistoryActionTypes
   | WindowActionTypes
   | RequestActionTypes
+  | CategoryActionTypes
 
+export * from './entities/category'
 export * from './entities/curation'
 export * from './entities/episode'
 export * from './entities/feed'
