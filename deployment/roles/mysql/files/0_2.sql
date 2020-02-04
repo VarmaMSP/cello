@@ -1,3 +1,5 @@
+INSERT INTO `task` (`id`, `name`, `type`, `interval_`, `next_run_at`, `active`, `created_at`, `updated_at`) VALUES (8, 'fix_categories', 'IMMEDIATE', 0, 0, 0, 0, 0);
+
 DELETE FROM `podcast_category`;
 SET foreign_key_checks = 0;
 DELETE FROM `category`;

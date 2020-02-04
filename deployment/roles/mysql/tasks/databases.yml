@@ -19,3 +19,4 @@
     dest: "/usr/local/schema/{{ item }}"
   loop:
     - 0_1.sql
+    - 0_2.sql
