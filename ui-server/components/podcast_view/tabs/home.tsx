@@ -1,5 +1,6 @@
 import React from 'react'
 import { Podcast } from 'types/models'
+import CategoryList from '../components/category_list'
 import EpisodeList from '../components/episode_list'
 
 export interface OwnProps {
@@ -15,7 +16,14 @@ const PodcastAbout: React.FC<OwnProps> = ({ podcast }) => {
         style={{ hyphens: 'auto' }}
       >
         <div>{podcast.description}</div>
-        <div className="mt-5 text-gray-700 line-clamp-1">{`${podcast.copyright}`}</div>
+        <div className="my-4">
+          <CategoryList
+            categoryIds={podcast.categories.map((x) => x.categoryId)}
+          />
+        </div>
+        {!!podcast.copyright && (
+          <div className="text-gray-700 line-clamp-1">{`${podcast.copyright}`}</div>
+        )}
       </div>
 
       <hr className="my-6" />
