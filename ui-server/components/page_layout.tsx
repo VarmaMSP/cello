@@ -30,7 +30,7 @@ const PageLayout: React.FC<StateToProps & OwnProps> = ({
   return Array.isArray(children) ? (
     <div
       className="flex flex-row justify-between pr-6"
-      style={{ paddingLeft: '18.5em', paddingBottom: '16rem' }}
+      style={{ paddingLeft: '18.5em', paddingBottom: '8rem' }}
     >
       <div style={{ width: '68%' }}>{children[0]}</div>
       <div style={{ width: '28%' }}>{children[1]}</div>
