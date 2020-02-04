@@ -38,17 +38,19 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({ categories }) => {
           childIds.map((childId) => (
             <div
               id={`${parentId}${childId}`}
-              className="bg-gray-300 mr-4 my-2 px-3 text-xs text-gray-800 tracking-wide leading-loose rounded-full"
+              className="bg-gray-300 mr-4 my-2 px-3 text-2xs text-gray-900 tracking-wide leading-loose rounded-full"
             >
               <span className="font-medium">{`${parent.name}`}</span>
-              <span className="mx-1">&rsaquo;</span>
+              <span style={{ marginLeft: '0.35rem', marginRight: '0.35rem' }}>
+                &rsaquo;
+              </span>
               <span>{`${byId[childId].name}`}</span>
             </div>
           ))
         ) : (
           <div
             id={`${parentId}`}
-            className="bg-gray-300 mr-4 my-2 px-3 text-xs font-medium text-gray-800 tracking-wide leading-loose rounded-full"
+            className="bg-gray-300 mr-4 my-2 px-3 text-2xs font-medium text-gray-900 tracking-wide leading-loose rounded-full"
           >{`${parent.name}`}</div>
         )
       })}
