@@ -1,6 +1,7 @@
 package sqlstore
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/varmamsp/cello/model"
@@ -25,4 +26,44 @@ func (s *SqlCategoryStore) SavePodcastCategory(category *model.PodcastCategory) 
 		)
 	}
 	return nil
+}
+
+func (s *SqlCategoryStore) GetByIds(categoryIds []int64) (res []*model.Category, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM category WHERE id IN (%s)`,
+		joinStrings((&model.Category{}).DbColumns(), ","), joinInt64s(categoryIds, ","),
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.Category{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_category_store.get_by_ids", err.Error(), http.StatusInternalServerError, nil,
+		)
+	}
+	return
+}
+
+func (s *SqlCategoryStore) GetPodcastCategories(podcastId int64) (res []*model.PodcastCategory, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM podcast_category WHERE podcast_id = %d`,
+		joinStrings((&model.PodcastCategory{}).DbColumns(), ","), podcastId,
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.PodcastCategory{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_category_store.get_podcast_categories", err.Error(), http.StatusInternalServerError, nil,
+		)
+	}
+	return
 }

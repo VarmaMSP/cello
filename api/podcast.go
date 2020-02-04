@@ -36,7 +36,7 @@ func GetPodcastPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	podcast, err := c.App.GetPodcast(c.Params.PodcastId)
+	podcast, err := c.App.GetPodcast(c.Params.PodcastId, true)
 	if err != nil {
 		c.Err = err
 		return
@@ -48,9 +48,20 @@ func GetPodcastPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	categoryIds := make([]int64, len(podcast.Categories))
+	for i, category := range podcast.Categories {
+		categoryIds[i] = category.CategoryId
+	}
+	categories, err := c.App.GetCategoriesByIds(categoryIds)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
 	c.Response.Data = &model.ApiResponseData{
-		Podcasts: []*model.Podcast{podcast},
-		Episodes: episodes,
+		Podcasts:   []*model.Podcast{podcast},
+		Episodes:   episodes,
+		Categories: categories,
 	}
 }
 

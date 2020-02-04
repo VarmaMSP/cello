@@ -17,6 +17,7 @@ type ApiResponseData struct {
 	Playlists            []*Playlist            `json:"playlists,omitempty"`
 	PodcastSearchResults []*PodcastSearchResult `json:"podcast_search_results,omitempty"`
 	EpisodeSearchResults []*EpisodeSearchResult `json:"episode_search_results,omitempty"`
+	Categories           []*Category            `json:"categories,omitempty"`
 }
 
 func (r *ApiResponse) ToJson() []byte {

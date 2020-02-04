@@ -37,6 +37,8 @@ type Podcast struct {
 	EarliestEpisodePubDate string
 	CreatedAt              int64
 	UpdatedAt              int64
+	// derived fields
+	Categories []*PodcastCategory
 }
 
 // Elasticsearch podcast index
@@ -62,20 +64,21 @@ func (p *Podcast) Sanitize() {
 
 func (p *Podcast) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
-		Id                     string `json:"id"`
-		UrlParam               string `json:"url_param"`
-		Title                  string `json:"title"`
-		Summary                string `json:"summary,omitempty"`
-		Description            string `json:"description,omitempty"`
-		Language               string `json:"language,omitempty"`
-		Explicit               int    `json:"explicit,omitempty"`
-		Author                 string `json:"author,omitempty"`
-		TotalEpisodes          int    `json:"total_episodes,omitempty"`
-		TotalSeasons           int    `json:"total_seasons,omitempty"`
-		Type                   string `json:"type,omitempty"`
-		Complete               int    `json:"complete,omitempty"`
-		EarliestEpisodePubDate string `json:"earliest_episode_pub_date,omitempty"`
-		Copyright              string `json:"copyright,omitempty"`
+		Id                     string             `json:"id"`
+		UrlParam               string             `json:"url_param"`
+		Title                  string             `json:"title"`
+		Summary                string             `json:"summary,omitempty"`
+		Description            string             `json:"description,omitempty"`
+		Language               string             `json:"language,omitempty"`
+		Explicit               int                `json:"explicit,omitempty"`
+		Author                 string             `json:"author,omitempty"`
+		TotalEpisodes          int                `json:"total_episodes,omitempty"`
+		TotalSeasons           int                `json:"total_seasons,omitempty"`
+		Type                   string             `json:"type,omitempty"`
+		Complete               int                `json:"complete,omitempty"`
+		EarliestEpisodePubDate string             `json:"earliest_episode_pub_date,omitempty"`
+		Copyright              string             `json:"copyright,omitempty"`
+		Categories             []*PodcastCategory `json:"categories,omitempty"`
 	}{
 		Id:                     HashIdFromInt64(p.Id),
 		UrlParam:               UrlParamFromId(p.Title, p.Id),
@@ -91,6 +94,7 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 		Complete:               p.Complete,
 		EarliestEpisodePubDate: p.EarliestEpisodePubDate,
 		Copyright:              p.Copyright,
+		Categories:             p.Categories,
 	})
 }
 

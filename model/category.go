@@ -1,5 +1,7 @@
 package model
 
+import "encoding/json"
+
 type Category struct {
 	Id       int64
 	Name     string
@@ -11,6 +13,42 @@ type PodcastCategory struct {
 	CategoryId int64
 }
 
+func (c *Category) MarshalJSON() ([]byte, error) {
+	s := &struct {
+		Id       string `json:"id"`
+		Name     string `json:"name"`
+		ParentId string `json:"parent_id,omitempty"`
+	}{
+		Id:   StrFromInt64(c.Id),
+		Name: c.Name,
+	}
+	if c.ParentId != 0 {
+		s.ParentId = StrFromInt64(c.ParentId)
+	}
+
+	return json.Marshal(s)
+}
+
+func (c *PodcastCategory) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		CategoryId string `json:"category_id"`
+	}{
+		CategoryId: StrFromInt64(c.CategoryId),
+	})
+}
+
+func (c *Category) DbColumns() []string {
+	return []string{
+		"id", "name", "parent_id",
+	}
+}
+
+func (c *Category) FieldAddrs() []interface{} {
+	return []interface{}{
+		&c.Id, &c.Name, &c.ParentId,
+	}
+}
+
 func (pc *PodcastCategory) DbColumns() []string {
 	return []string{"podcast_id", "category_id"}
 }
@@ -18,6 +56,8 @@ func (pc *PodcastCategory) DbColumns() []string {
 func (pc *PodcastCategory) FieldAddrs() []interface{} {
 	return []interface{}{&pc.PodcastId, &pc.CategoryId}
 }
+
+func (c *Category) PreSave() {}
 
 func (pc *PodcastCategory) PreSave() {}
 

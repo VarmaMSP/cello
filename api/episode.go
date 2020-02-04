@@ -18,7 +18,7 @@ func GetEpisode(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	podcast, err := c.App.GetPodcast(episode.PodcastId)
+	podcast, err := c.App.GetPodcast(episode.PodcastId, false)
 	if err != nil {
 		c.Err = err
 		return
