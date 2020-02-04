@@ -18,6 +18,7 @@ type TaskSchedulerJob struct {
 	reimportPodcasts       *task.ReimportPodcasts
 	reindexPodcasts        *task.ReindexPodcasts
 	reindexEpisodes        *task.ReindexEpisodes
+	fixCategories          *task.FixCategories
 }
 
 func NewTaskSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
@@ -56,6 +57,11 @@ func NewTaskSchedulerJob(app *app.App, config *model.Config) (model.Job, error) 
 	}
 
 	s.reindexEpisodes, err = task.NewReindexEpisodes(app)
+	if err != nil {
+		return nil, err
+	}
+
+	s.fixCategories, err = task.NewFixCategories(app)
 	if err != nil {
 		return nil, err
 	}
@@ -155,5 +161,8 @@ func (job *TaskSchedulerJob) callTask(task *model.Task) {
 
 	case model.TASK_NAME_REINDEX_PODCASTS:
 		job.reindexEpisodes.Call()
+
+	case model.TASK_NAME_FIX_CATEGORIES:
+		job.fixCategories.Call()
 	}
 }
