@@ -129,7 +129,7 @@ INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (21, 2, 'Business News
 INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (22, 2, 'Careers');
 INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (23, 2, 'Investing');
 INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (24, 2, 'Management & Marketing');
-INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (25, 2, 'Shopping');
+INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (25, 2, 'Shopping'); //
 INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (26, 4, 'Educational Technology');
 INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (27, 4, 'Higher Education');
 INSERT INTO `category` (`id`, `parent_id`, `name`) VALUES (28, 4, 'K-12');
