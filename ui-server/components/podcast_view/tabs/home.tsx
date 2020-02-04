@@ -16,14 +16,11 @@ const PodcastAbout: React.FC<OwnProps> = ({ podcast }) => {
         style={{ hyphens: 'auto' }}
       >
         <div>{podcast.description}</div>
-        <div className="my-4">
+        <div className="mt-4">
           <CategoryList
             categoryIds={podcast.categories.map((x) => x.categoryId)}
           />
         </div>
-        {!!podcast.copyright && (
-          <div className="text-gray-700 line-clamp-1">{`${podcast.copyright}`}</div>
-        )}
       </div>
 
       <hr className="my-6" />
