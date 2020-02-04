@@ -26,6 +26,7 @@ type UserStore interface {
 type FeedStore interface {
 	Save(feed *model.Feed) *model.AppError
 	Get(feedId int64) (*model.Feed, *model.AppError)
+	GetAllPaginated(lastId int64, limit int) ([]*model.Feed, *model.AppError)
 	GetBySourceId(source, sourceId string) (*model.Feed, *model.AppError)
 	GetBySourcePaginated(source string, offset, limit int) ([]*model.Feed, *model.AppError)
 	GetForRefreshPaginated(lastId int64, limit int) ([]*model.Feed, *model.AppError)

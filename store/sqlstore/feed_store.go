@@ -45,6 +45,27 @@ func (s *SqlFeedStore) Get(feedId int64) (*model.Feed, *model.AppError) {
 	return feed, nil
 }
 
+func (s *SqlFeedStore) GetAllPaginated(lastId int64, limit int) (res []*model.Feed, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM feed WHERE id > %d ORDER BY id LIMIT %d`,
+		joinStrings((&model.Feed{}).DbColumns(), ","), lastId, limit,
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.Feed{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"sqlstore.sql_feed_store.get_all_paginated", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"last_id": lastId},
+		)
+	}
+	return
+}
+
 func (s *SqlFeedStore) GetBySourceId(source, sourceId string) (*model.Feed, *model.AppError) {
 	feed := &model.Feed{}
 	sql := fmt.Sprintf(
