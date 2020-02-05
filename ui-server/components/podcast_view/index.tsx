@@ -1,47 +1,17 @@
 import NavTabs from 'components/nav_tabs'
-import { NextSeo } from 'next-seo'
 import React from 'react'
-import { connect } from 'react-redux'
-import { getPodcastById } from 'selectors/entities/podcasts'
-import { AppState } from 'store'
 import { Podcast } from 'types/models'
-import { getImageUrl } from 'utils/dom'
 import PodcastHeader from './components/podcast_header/podcast_header'
 import HomeTab from './tabs/home'
 
-interface StateToProps {
-  podcast: Podcast
-}
-
 interface OwnProps {
-  podcastId: string
+  podcast: Podcast
   activeTab?: string
 }
 
-const PodcastView: React.FC<StateToProps & OwnProps> = ({
-  podcast,
-  activeTab,
-}) => {
-  const podcastUrlParam = podcast.urlParam
-
+const PodcastView: React.FC<OwnProps> = ({ podcast, activeTab }) => {
   return (
     <div className="pt-6">
-      <NextSeo
-        title={`${podcast.title} | Phenopod`}
-        description={podcast.description}
-        canonical={`https://phenopod.com/podcasts/${podcast.id}`}
-        openGraph={{
-          url: `https://phenopod.com/podcasts/${podcast.id}`,
-          type: 'article',
-          title: podcast.title,
-          description: podcast.description,
-          images: [{ url: getImageUrl(podcast.urlParam) }],
-        }}
-        twitter={{
-          cardType: `summary_large_image`,
-        }}
-      />
-
       <PodcastHeader podcast={podcast} />
       <div className="mt-6 mb-4">
         <NavTabs
@@ -49,8 +19,8 @@ const PodcastView: React.FC<StateToProps & OwnProps> = ({
             {
               name: 'podcast',
               pathname: '/podcasts',
-              query: { podcastUrlParam, skipLoad: true },
-              as: `/podcasts/${podcastUrlParam}`,
+              query: { podcastUrlParam: podcast.urlParam, skipLoad: true },
+              as: `/podcasts/${podcast.urlParam}`,
             },
           ]}
           active={activeTab}
@@ -62,15 +32,4 @@ const PodcastView: React.FC<StateToProps & OwnProps> = ({
   )
 }
 
-function mapStateToProps(
-  state: AppState,
-  { podcastId }: OwnProps,
-): StateToProps {
-  return {
-    podcast: getPodcastById(state, podcastId),
-  }
-}
-
-export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
-  PodcastView,
-)
+export default PodcastView

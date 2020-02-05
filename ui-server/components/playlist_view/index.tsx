@@ -1,25 +1,15 @@
 import NavTabs from 'components/nav_tabs'
 import React from 'react'
-import { connect } from 'react-redux'
-import { getPlaylistById } from 'selectors/entities/playlists'
-import { AppState } from 'store'
 import { Playlist } from 'types/models'
 import PlaylistHeader from './components/playlist_header'
 import HomeTab from './home_tab/home_tab'
 
-export interface StateToProps {
-  playlist: Playlist
-}
-
 export interface OwnProps {
-  playlistId: string
+  playlist?: Playlist
   activeTab: string | undefined
 }
 
-const PlaylistView: React.FC<StateToProps & OwnProps> = ({
-  playlist,
-  activeTab,
-}) => {
+const PlaylistView: React.FC<OwnProps> = ({ playlist, activeTab }) => {
   if (playlist === undefined) {
     return (
       <div className="mt-8 text-2xl text-gray-900 tracking-wide">
@@ -27,8 +17,6 @@ const PlaylistView: React.FC<StateToProps & OwnProps> = ({
       </div>
     )
   }
-
-  const playlistUrlParam = playlist.urlParam
 
   return (
     <div className="mt-6">
@@ -39,8 +27,8 @@ const PlaylistView: React.FC<StateToProps & OwnProps> = ({
             {
               name: 'playlist',
               pathname: '/playlists',
-              query: { playlistUrlParam, skipLoad: true },
-              as: `/playlists/${playlistUrlParam}`,
+              query: { playlistUrlParam: playlist.urlParam, skipLoad: true },
+              as: `/playlists/${playlist.urlParam}`,
             },
           ]}
           active={activeTab}
@@ -54,13 +42,4 @@ const PlaylistView: React.FC<StateToProps & OwnProps> = ({
   )
 }
 
-function mapStateToProps(
-  state: AppState,
-  { playlistId }: OwnProps,
-): StateToProps {
-  return { playlist: getPlaylistById(state, playlistId) }
-}
-
-export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
-  PlaylistView,
-)
+export default PlaylistView

@@ -1,28 +1,16 @@
 import NavTabs from 'components/nav_tabs'
 import { NextSeo } from 'next-seo'
 import React from 'react'
-import { connect } from 'react-redux'
-import { getEpisodeById } from 'selectors/entities/episodes'
-import { AppState } from 'store'
 import { Episode } from 'types/models'
 import EpisodeHeader from './components/episode_header'
 import HomeTab from './tabs/home'
 
-export interface StateToProps {
-  episode: Episode
-}
-
 export interface OwnProps {
-  episodeId: string
+  episode: Episode
   activeTab: string | undefined
 }
 
-const EpisodeView: React.FC<StateToProps & OwnProps> = ({
-  episode,
-  activeTab,
-}) => {
-  const episodeUrlParam = episode.urlParam
-
+const EpisodeView: React.FC<OwnProps> = ({ episode, activeTab }) => {
   return (
     <div className="pt-6">
       <NextSeo
@@ -46,8 +34,8 @@ const EpisodeView: React.FC<StateToProps & OwnProps> = ({
             {
               name: 'episode',
               pathname: '/episodes',
-              query: { episodeUrlParam, skipLoad: true },
-              as: `/episodes/${episodeUrlParam}`,
+              query: { episodeUrlParam: episode.urlParam, skipLoad: true },
+              as: `/episodes/${episode.urlParam}`,
             },
           ]}
           active={activeTab}
@@ -61,13 +49,4 @@ const EpisodeView: React.FC<StateToProps & OwnProps> = ({
   )
 }
 
-function mapStateToProps(
-  state: AppState,
-  { episodeId }: OwnProps,
-): StateToProps {
-  return { episode: getEpisodeById(state, episodeId) }
-}
-
-export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
-  EpisodeView,
-)
+export default EpisodeView
