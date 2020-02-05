@@ -3,18 +3,22 @@ import { iconMap } from 'components/icon'
 import PageLayout from 'components/page_layout'
 import PlaylistsLibrary from 'components/playlist_library'
 import PlaylistView from 'components/playlist_view'
+import { PlaylistPageSeo, PlaylistsLibraryPageSeo } from 'components/seo'
 import SignInButton from 'components/sign_in_button'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
+import { getPlaylistById } from 'selectors/entities/playlists'
 import { getIsUserSignedIn } from 'selectors/session'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
+import { Playlist } from 'types/models'
 import { PageContext } from 'types/utilities'
 import { getIdFromUrlParam } from 'utils/utils'
 
 interface StateToProps {
   isUserSignedIn: boolean
+  playlist?: Playlist
 }
 
 interface DispatchToProps {
@@ -58,16 +62,18 @@ class PlaylistPage extends React.Component<Props> {
   }
 
   render() {
-    const { isUserSignedIn, playlistUrlParam, activeTab } = this.props
+    const { isUserSignedIn, playlist, playlistUrlParam, activeTab } = this.props
 
     // Playlist Page
     if (!!playlistUrlParam) {
-      const playlistId = getIdFromUrlParam(playlistUrlParam)
       return (
-        <PageLayout>
-          <PlaylistView playlistId={playlistId} activeTab={activeTab} />
-          <div />
-        </PageLayout>
+        <>
+          {!!playlist && <PlaylistPageSeo playlist={playlist} />}
+          <PageLayout>
+            <PlaylistView playlist={playlist} activeTab={activeTab} />
+            <div />
+          </PageLayout>
+        </>
       )
     }
 
@@ -90,17 +96,26 @@ class PlaylistPage extends React.Component<Props> {
 
     // Playlist Library Page
     return (
-      <PageLayout>
-        <PlaylistsLibrary />
-        <div />
-      </PageLayout>
+      <>
+        <PlaylistsLibraryPageSeo />
+        <PageLayout>
+          <PlaylistsLibrary />
+          <div />
+        </PageLayout>
+      </>
     )
   }
 }
 
-function mapStateToProps(state: AppState): StateToProps {
+function mapStateToProps(
+  state: AppState,
+  { playlistUrlParam }: OwnProps,
+): StateToProps {
   return {
     isUserSignedIn: getIsUserSignedIn(state),
+    playlist: !!playlistUrlParam
+      ? getPlaylistById(state, getIdFromUrlParam(playlistUrlParam))
+      : undefined,
   }
 }
 

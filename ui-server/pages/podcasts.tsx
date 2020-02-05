@@ -1,10 +1,19 @@
 import { getPodcastPageData } from 'actions/podcast'
 import PageLayout from 'components/page_layout'
 import PodcastView from 'components/podcast_view'
+import { PodcastPageSeo } from 'components/seo'
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { getPodcastById } from 'selectors/entities/podcasts'
+import { AppState } from 'store'
+import { Podcast } from 'types/models'
 import { PageContext } from 'types/utilities'
 import { getIdFromUrlParam } from 'utils/utils'
+
+interface StateToProps {
+  podcast: Podcast
+}
 
 interface OwnProps {
   podcastUrlParam: string
@@ -12,7 +21,7 @@ interface OwnProps {
   scrollY: number
 }
 
-export default class PodcastsPage extends Component<OwnProps> {
+class PodcastPage extends Component<StateToProps & OwnProps> {
   static async getInitialProps({ query, store }: PageContext): Promise<void> {
     await bindActionCreators(
       getPodcastPageData,
@@ -25,15 +34,29 @@ export default class PodcastsPage extends Component<OwnProps> {
   }
 
   render() {
-    const { podcastUrlParam, activeTab } = this.props
-    const podcastId = getIdFromUrlParam(podcastUrlParam)
+    const { podcast, activeTab } = this.props
 
     return (
-      <PageLayout>
-        <PodcastView podcastId={podcastId} activeTab={activeTab} />
-        <div></div>
-      </PageLayout>
+      <>
+        <PodcastPageSeo podcast={podcast} />
+        <PageLayout>
+          <PodcastView podcast={podcast} activeTab={activeTab} />
+          <div></div>
+        </PageLayout>
+      </>
     )
   }
 }
 
+function mapStateToProps(
+  state: AppState,
+  { podcastUrlParam }: OwnProps,
+): StateToProps {
+  return {
+    podcast: getPodcastById(state, getIdFromUrlParam(podcastUrlParam)),
+  }
+}
+
+export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
+  PodcastPage,
+)

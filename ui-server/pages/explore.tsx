@@ -1,7 +1,7 @@
 import { getHomePageData } from 'actions/home'
 import HomeView from 'components/home_view/home_view'
 import PageLayout from 'components/page_layout'
-import { NextSeo } from 'next-seo'
+import { ExplorePageSeo } from 'components/seo'
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { PageContext } from 'types/utilities'
@@ -22,17 +22,7 @@ export default class IndexPage extends React.Component<OwnProps> {
   render() {
     return (
       <>
-        <NextSeo
-          title="Phenopod"
-          description="Podcast Player for Web"
-          canonical="https://phenopod.com"
-          openGraph={{
-            url: 'https://phenopod.com',
-            type: 'website',
-            title: 'Phenopod',
-            description: 'Podcast Player for Web',
-          }}
-        />
+        <ExplorePageSeo />
         <PageLayout>
           <HomeView />
         </PageLayout>

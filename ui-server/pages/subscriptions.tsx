@@ -1,10 +1,10 @@
 import { getSubscriptionsPageData } from 'actions/subscription'
 import { iconMap } from 'components/icon'
 import PageLayout from 'components/page_layout'
+import { SubscriptionsPageSeo } from 'components/seo'
 import SignInButton from 'components/sign_in_button'
 import SubscriptionsFeed from 'components/subscriptions_feed'
 import SubscriptionsList from 'components/subscriptions_list'
-import { NextSeo } from 'next-seo'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
@@ -71,12 +71,7 @@ class SubscriptionsPage extends React.Component<Props> {
 
     return (
       <>
-        <NextSeo
-          noindex
-          title="Subscriptions - Phenopod"
-          description="Subscriptions"
-          canonical="https://phenopod.com/subscripitions"
-        />
+        <SubscriptionsPageSeo />
         <PageLayout>
           <SubscriptionsFeed />
           <div className="pt-4">

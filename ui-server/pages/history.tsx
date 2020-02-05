@@ -2,8 +2,8 @@ import { getHistoryPageData } from 'actions/history'
 import HistoryFeed from 'components/history_feed'
 import { iconMap } from 'components/icon'
 import PageLayout from 'components/page_layout'
+import { HistoryPageSeo } from 'components/seo'
 import SignInButton from 'components/sign_in_button'
-import { NextSeo } from 'next-seo'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
@@ -70,12 +70,7 @@ class FeedPage extends React.Component<Props> {
 
     return (
       <>
-        <NextSeo
-          noindex
-          title="History - Phenopod"
-          description="History"
-          canonical="https://phenopod.com/feed"
-        />
+        <HistoryPageSeo />
         <PageLayout>
           <HistoryFeed />
           <div />

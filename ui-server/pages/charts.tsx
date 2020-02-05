@@ -1,6 +1,7 @@
 import { getChartPageData } from 'actions/chart'
 import { getHomePageData } from 'actions/home'
 import ChartView from 'components/chart_view/chart_view'
+import { ChartPageSeo } from 'components/seo'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { PageContext } from 'types/utilities'
@@ -25,9 +26,10 @@ export default class ChartPage extends Component<OwnProps> {
 
   render() {
     return (
-      <div>
+      <>
+        <ChartPageSeo />
         <ChartView chartId={this.props.chartId} />
-      </div>
+      </>
     )
   }
 }

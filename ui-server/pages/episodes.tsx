@@ -1,10 +1,19 @@
 import { getEpisodePageData } from 'actions/episode'
 import EpisodeView from 'components/episode_view'
 import PageLayout from 'components/page_layout'
+import { EpisodePageSeo } from 'components/seo'
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { getEpisodeById } from 'selectors/entities/episodes'
+import { AppState } from 'store'
+import { Episode } from 'types/models'
 import { PageContext } from 'types/utilities'
 import { getIdFromUrlParam } from 'utils/format'
+
+export interface StateToProps {
+  episode: Episode
+}
 
 interface OwnProps {
   episodeUrlParam: string
@@ -12,7 +21,7 @@ interface OwnProps {
   scrollY: number
 }
 
-export default class EpisodePage extends Component<OwnProps> {
+class EpisodePage extends Component<StateToProps & OwnProps> {
   static async getInitialProps({ query, store }: PageContext): Promise<void> {
     if (!!query['skipLoad']) {
       return
@@ -29,14 +38,27 @@ export default class EpisodePage extends Component<OwnProps> {
   }
 
   render() {
-    const { episodeUrlParam, activeTab } = this.props
-    const episodeId = getIdFromUrlParam(episodeUrlParam)
+    const { episode, activeTab } = this.props
 
     return (
-      <PageLayout>
-        <EpisodeView episodeId={episodeId} activeTab={activeTab}  />
-        <div />
-      </PageLayout>
+      <>
+        <EpisodePageSeo episode={episode} />
+        <PageLayout>
+          <EpisodeView episode={episode} activeTab={activeTab} />
+          <div />
+        </PageLayout>
+      </>
     )
   }
 }
+
+function mapStateToProps(
+  state: AppState,
+  { episodeUrlParam }: OwnProps,
+): StateToProps {
+  return { episode: getEpisodeById(state, getIdFromUrlParam(episodeUrlParam)) }
+}
+
+export default connect<StateToProps, {}, OwnProps, AppState>(mapStateToProps)(
+  EpisodePage,
+)

@@ -14,7 +14,6 @@ import { bindActionCreators } from 'redux'
 import { makeStore } from 'store'
 import * as T from 'types/actions'
 import { AppContext, PageContext } from 'types/utilities'
-import * as gtag from 'utils/gtag'
 import '../styles/index.css'
 
 NProgress.configure({
@@ -69,12 +68,6 @@ export default withRedux(makeStore)(
        * Try to get signed in user session details
        */
       bindActionCreators(getCurrentUser, dispatch)()
-
-      /*
-       * Send route changes to google analytics
-       */
-      gtag.pageview(window.location.pathname + window.location.search)
-      Router.events.on('routeChangeComplete', gtag.pageview)
 
       Router.events.on('routeChangeStart', () => NProgress.start())
 
