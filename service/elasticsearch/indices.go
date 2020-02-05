@@ -14,10 +14,10 @@ const (
 					"index": false
 				},
 				"title": {
-					"type": "text"
+					"type": "search_as_you_type"
 				},
 				"author": {
-					"type": "text"
+					"type": "search_as_you_type"
 				},
 				"description": {
 					"type": "text"

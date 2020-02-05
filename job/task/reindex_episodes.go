@@ -2,6 +2,7 @@ package task
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/olivere/elastic/v7"
 	"github.com/varmamsp/cello/app"
@@ -20,6 +21,8 @@ func NewReindexEpisodes(app *app.App) (*ReindexEpisodes, error) {
 }
 
 func (s *ReindexEpisodes) Call() {
+	fmt.Println("Reindex Episode Task started")
+
 	go func() {
 		limit := 10000
 		lastId := int64(0)

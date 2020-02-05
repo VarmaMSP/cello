@@ -157,10 +157,10 @@ func (job *TaskSchedulerJob) callTask(task *model.Task) {
 		job.reimportPodcasts.Call()
 
 	case model.TASK_NAME_REINDEX_EPISODES:
-		job.reindexPodcasts.Call()
+		job.reindexEpisodes.Call()
 
 	case model.TASK_NAME_REINDEX_PODCASTS:
-		job.reindexEpisodes.Call()
+		job.reindexPodcasts.Call()
 
 	case model.TASK_NAME_FIX_CATEGORIES:
 		job.fixCategories.Call()
