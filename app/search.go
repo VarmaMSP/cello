@@ -9,6 +9,49 @@ import (
 	"github.com/varmamsp/cello/service/elasticsearch"
 )
 
+func (app *App) TypeaheadPodcasts(searchQuery string) ([]*model.PodcastSearchResult, *model.AppError) {
+	results, err := app.ElasticSearch.Search().
+		Index(elasticsearch.PodcastIndexName).
+		Query(elastic.NewMultiMatchQuery(searchQuery).
+			Type("bool_prefix").
+			Field("title").
+			Field("title._2gram").
+			Field("title._3gram").
+			Field("author").
+			Field("author._2gram").
+			Field("author._3gram"),
+		).
+		Highlight(elastic.NewHighlight().
+			FragmentSize(200).
+			PreTags("<span class=\"result-highlight\">").
+			PostTags("</span>").
+			Fields(
+				elastic.NewHighlighterField("title"),
+				elastic.NewHighlighterField("author"),
+			),
+		).
+		Size(6).
+		Do(context.TODO())
+
+	if err != nil {
+		return nil, model.NewAppError("app.typeahead_podcasts", "no results", http.StatusInternalServerError, nil)
+	}
+
+	if results.Hits == nil || results.Hits.Hits == nil || len(results.Hits.Hits) == 0 {
+		return []*model.PodcastSearchResult{}, nil
+	}
+
+	podcastSearchResults := []*model.PodcastSearchResult{}
+	for _, hit := range results.Hits.Hits {
+		tmp := &model.PodcastSearchResult{}
+		if err := tmp.LoadDetails(hit); err == nil {
+			tmp.Description = ""
+			podcastSearchResults = append(podcastSearchResults, tmp)
+		}
+	}
+	return podcastSearchResults, nil
+}
+
 func (app *App) SearchPodcasts(searchQuery string, offset, limit int) ([]*model.PodcastSearchResult, *model.AppError) {
 	results, err := app.ElasticSearch.Search().
 		Index(elasticsearch.PodcastIndexName).

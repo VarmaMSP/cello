@@ -20,6 +20,7 @@ const (
 	SERVICE_PLAYBACK_SYNC       = "playback_sync"
 	SERVICE_SUBSCRIBE_PODCAST   = "subscribe_podcast"
 	SERVICE_UNSUBSCRIBE_PODCAST = "unsubscribe_podcast"
+	SERVICE_SEARCH_SUGGESTIONS  = "search_suggestions"
 )
 
 func (api *Api) RegisterHandlers() {
@@ -143,6 +144,9 @@ func AjaxService(c *Context, w http.ResponseWriter, req *http.Request) {
 		if c.Err == nil {
 			ServiceUnsubscribePodcast(c, w, req)
 		}
+
+	case SERVICE_SEARCH_SUGGESTIONS:
+		SearchSuggestions(c, w, req)
 
 	default:
 		c.SetInvalidQueryParam("endpoint")

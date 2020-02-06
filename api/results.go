@@ -146,3 +146,20 @@ func BrowseResults(c *Context, w http.ResponseWriter, req *http.Request) {
 		c.SetInvalidQueryParam("type")
 	}
 }
+
+func SearchSuggestions(c *Context, w http.ResponseWriter, req *http.Request) {
+	c.RequireQuery()
+	if c.Err != nil {
+		return
+	}
+
+	podcastSearchResults, err := c.App.TypeaheadPodcasts(c.Params.Query)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	c.Response.Data = &model.ApiResponseData{
+		PodcastSearchResults: podcastSearchResults,
+	}
+}
