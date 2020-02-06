@@ -1,5 +1,5 @@
 import Router from 'next/router'
-import { bindActionCreators, Dispatch } from 'redux'
+import { Dispatch } from 'redux'
 import * as T from 'types/actions'
 import { SearchResultType, SearchSortBy } from 'types/search'
 import { doFetch } from 'utils/fetch'
@@ -12,13 +12,13 @@ export function typeaheadDebounced(dispatch: Dispatch<T.AppActions>) {
   let timer: NodeJS.Timeout | undefined
   return function(query: string) {
     dispatch({ type: T.SEARCH_BAR_UPDATE_TEXT, text: query })
-    
+
     if (!!timer) {
       clearTimeout(timer)
     }
-    timer = setTimeout(() => {
-      bindActionCreators(loadSuggestions, dispatch)(query)
-    }, 200)
+    // timer = setTimeout(() => {
+    //   bindActionCreators(loadSuggestions, dispatch)(query)
+    // }, 200)
   }
 }
 
