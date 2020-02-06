@@ -5,12 +5,7 @@ import SearchResultsList from 'components/search_results_list'
 import { ResultsPageSeo } from 'components/seo'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
-import {
-  SEARCH_BAR_UPDATE_TEXT,
-  SEARCH_RESULTS_QUERY,
-  SEARCH_RESULTS_RESULT_TYPE,
-  SEARCH_RESULTS_SORT_BY,
-} from 'types/actions'
+import * as T from 'types/actions'
 import { SearchResultType, SearchSortBy } from 'types/search'
 import { PageContext } from 'types/utilities'
 import * as gtag from 'utils/gtag'
@@ -30,23 +25,22 @@ export default class ResultsPage extends Component<OwnProps> {
     const resultType = query['resultType'] as SearchResultType
 
     store.dispatch({
-      type: SEARCH_BAR_UPDATE_TEXT,
-      text: q,
-    })
-
-    store.dispatch({
-      type: SEARCH_RESULTS_QUERY,
+      type: T.SEARCH_RESULTS_QUERY,
       query: q,
     })
 
     store.dispatch({
-      type: SEARCH_RESULTS_RESULT_TYPE,
+      type: T.SEARCH_RESULTS_RESULT_TYPE,
       resultType,
     })
 
     store.dispatch({
-      type: SEARCH_RESULTS_SORT_BY,
+      type: T.SEARCH_RESULTS_SORT_BY,
       sortBy,
+    })
+
+    store.dispatch({
+      type: T.SEARCH_SUGGESTIONS_RESET,
     })
   }
 

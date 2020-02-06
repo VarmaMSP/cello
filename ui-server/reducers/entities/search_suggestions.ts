@@ -10,6 +10,9 @@ const podcasts: Reducer<PodcastSearchResult[], T.AppActions> = (
     case T.SEARCH_SUGGESTIONS_ADD_PODCAST:
       return action.podcasts
 
+    case T.SEARCH_SUGGESTIONS_RESET:
+      return []
+
     default:
       return state
   }

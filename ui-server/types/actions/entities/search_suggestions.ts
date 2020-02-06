@@ -1,10 +1,16 @@
 import { PodcastSearchResult } from 'types/models'
 
-export const SEARCH_SUGGESTIONS_ADD_PODCAST = `search_suggestions/add_podcast`
+export const SEARCH_SUGGESTIONS_ADD_PODCAST = 'search_suggestions/add_podcast'
+export const SEARCH_SUGGESTIONS_RESET = 'search_suggestions/reset'
 
 interface AddPodcastAction {
   type: typeof SEARCH_SUGGESTIONS_ADD_PODCAST
   podcasts: PodcastSearchResult[]
 }
 
-export type SearchSuggestionsActionTypes = AddPodcastAction
+interface ResetPodcastAction {
+  type: typeof SEARCH_SUGGESTIONS_RESET
+}
+
+
+export type SearchSuggestionsActionTypes = AddPodcastAction | ResetPodcastAction
