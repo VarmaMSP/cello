@@ -1,4 +1,3 @@
-import Grid from 'components/grid'
 import { PodcastLink } from 'components/link'
 import React from 'react'
 import { Podcast } from 'types/models'
@@ -18,11 +17,11 @@ const SubscriptionsList: React.FC<StateToProps> = ({ subscriptions }) => {
       <h2 className="mb-3 text text-gray-800 tracking-wide">
         {"You're subscribed to"}
       </h2>
-      <Grid cols={{ LG: 5, MD: 4, SM: 5 }}>
+      <div className="flex flex-wrap">
         {subscriptions.map((podcast) => (
           <PodcastLink podcastUrlParam={podcast.urlParam} key={podcast.id}>
             <a
-              className="block mb-4"
+              className="block mb-4 lg:w-1/5 md:w-1/4 w-1/5"
               style={{ paddingLeft: '2px', paddingRight: '2px' }}
             >
               <img
@@ -32,7 +31,7 @@ const SubscriptionsList: React.FC<StateToProps> = ({ subscriptions }) => {
             </a>
           </PodcastLink>
         ))}
-      </Grid>
+      </div>
     </div>
   )
 }
