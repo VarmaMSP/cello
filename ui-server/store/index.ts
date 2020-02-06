@@ -1,11 +1,15 @@
-import { applyMiddleware, compose, createStore } from 'redux'
-import thunk, { ThunkMiddleware } from 'redux-thunk'
-import rootReducer from 'reducers'
-import { AppActions } from 'types/actions'
+import searchEpic from 'epics/searchEpic';
+import rootReducer from 'reducers';
+import { applyMiddleware, compose, createStore } from 'redux';
+import { createEpicMiddleware } from 'redux-observable';
+import thunk, { ThunkMiddleware } from 'redux-thunk';
+import { AppActions } from 'types/actions';
 
 // NOTE: Do not export this as type
 // doing so will make the editor show the entire AppState in suggestions
 export interface AppState extends ReturnType<typeof rootReducer> {}
+
+const epicMiddleware = createEpicMiddleware<AppActions, AppActions, AppState>();
 
 export const makeStore = (initalState?: AppState) => {
   const composeEnhancers =
@@ -14,11 +18,15 @@ export const makeStore = (initalState?: AppState) => {
       ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
       : compose
 
-  return createStore(
+  const store =  createStore(
     rootReducer,
     initalState,
     composeEnhancers(
-      applyMiddleware(thunk as ThunkMiddleware<AppState, AppActions>),
+      applyMiddleware(thunk as ThunkMiddleware<AppState, AppActions>, epicMiddleware),
     ),
   )
+
+  epicMiddleware.run(searchEpic)
+
+  return store
 }

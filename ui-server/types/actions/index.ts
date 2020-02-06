@@ -18,6 +18,10 @@ import { SearchResultsListActionTypes } from './ui/search_results_list'
 import { SubscriptionsFeedActionTypes } from './ui/subscriptions_feed'
 import { WindowActionTypes } from './window'
 
+interface ContinueAction {
+  type: 'CONTINUE'
+}
+
 export type AppActions =
   | UserActionTypes
   | PodcastActionTypes
@@ -38,6 +42,7 @@ export type AppActions =
   | RequestActionTypes
   | CategoryActionTypes
   | SearchSuggestionsActionTypes
+  | ContinueAction
 
 export * from './entities/category'
 export * from './entities/curation'

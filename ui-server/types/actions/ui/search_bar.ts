@@ -5,7 +5,7 @@ export const SEARCH_BAR_SET_SHOW_SUGGESTIONS = 'search_bar/show_suggestions'
 export const SEARCH_BAR_UPDATE_TEXT_SUGGESTIONS =
   'search_bar/update_text_suggestions'
 
-interface UpdateTextAction {
+export interface UpdateTextAction {
   type: typeof SEARCH_BAR_UPDATE_TEXT
   text: string
 }
