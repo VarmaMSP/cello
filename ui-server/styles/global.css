@@ -11,6 +11,10 @@ body {
     color: #805ad5;
 }
 
+.search-suggestion .result-highlight {
+    color: #1a202c;
+    font-weight: 500;
+}
 
 @media (min-width: 768px) {
     ::-webkit-scrollbar {

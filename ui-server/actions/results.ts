@@ -2,11 +2,34 @@ import Router from 'next/router'
 import { Dispatch } from 'redux'
 import * as T from 'types/actions'
 import { SearchResultType, SearchSortBy } from 'types/search'
+import { doFetch } from 'utils/fetch'
 import * as gtag from 'utils/gtag'
 import * as RequestId from 'utils/request_id'
 import { qs } from 'utils/utils'
 import { requestAction } from './utils'
-import { doFetch } from 'utils/fetch'
+
+export function typeahead(query: string) {
+  return async (dispatch: Dispatch<T.AppActions>) => {
+    dispatch({ type: T.SEARCH_BAR_UPDATE_TEXT, text: query })
+
+    try {
+      const { podcastSearchResults } = await doFetch({
+        method: 'POST',
+        urlPath: `/ajax/service?${qs({
+          endpoint: 'search_suggestions',
+          query,
+        })}`,
+      })
+
+      dispatch({
+        type: T.SEARCH_SUGGESTIONS_ADD_PODCAST,
+        podcasts: podcastSearchResults,
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+}
 
 export function loadResultsPage(
   query: string,

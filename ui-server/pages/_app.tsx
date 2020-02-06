@@ -71,7 +71,10 @@ export default withRedux(makeStore)(
 
       Router.events.on('routeChangeStart', () => NProgress.start())
 
-      Router.events.on('routeChangeComplete', () => NProgress.done())
+      Router.events.on('routeChangeComplete', () => {
+        dispatch({ type: T.SEARCH_BAR_SET_SHOW_SUGGESTIONS, value: false })
+        NProgress.done()
+      })
 
       Router.events.on('routeChangeError', () => NProgress.done())
 
