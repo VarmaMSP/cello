@@ -22,7 +22,7 @@ const SearchSuggestions: React.FC<StateToProps> = ({ podcasts }) => {
           <a className="search-suggestion block flex px-3 py-3 hover:bg-gray-200 rounded">
             <img
               src={getImageUrl(x.urlParam)}
-              className="w-12 h-12 mr-3 border border-gray-700 rounded"
+              className="w-12 h-12 mr-3 border rounded"
             />
             <div>
               <div
@@ -30,7 +30,7 @@ const SearchSuggestions: React.FC<StateToProps> = ({ podcasts }) => {
                 dangerouslySetInnerHTML={{ __html: x.title }}
               />
               <div
-                className="text-sm text-gray-700"
+                className="text-sm text-gray-700 line-clamp-1"
                 dangerouslySetInnerHTML={{ __html: x.author }}
               />
             </div>
