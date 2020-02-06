@@ -5,6 +5,7 @@ import episodes from './episodes'
 import playlists from './playlists'
 import podcasts from './podcasts'
 import searchResults from './search_results'
+import searchSuggestions from './search_suggestions'
 import users from './users'
 
 export default combineReducers({
@@ -15,4 +16,5 @@ export default combineReducers({
   playlists,
   searchResults,
   categories,
+  searchSuggestions,
 })

@@ -11,11 +11,24 @@ const text: Reducer<string, T.AppActions> = (state = '', action) => {
   }
 }
 
-const collapse: Reducer< boolean, T.AppActions> = (state = true, action) => {
+const showSuggestions: Reducer<boolean, T.AppActions> = (
+  state = false,
+  action,
+) => {
+  switch (action.type) {
+    case T.SEARCH_BAR_SET_SHOW_SUGGESTIONS:
+      return action.value
+
+    default:
+      return state
+  }
+}
+
+const collapse: Reducer<boolean, T.AppActions> = (state = true, action) => {
   switch (action.type) {
     case T.SEARCH_BAR_EXPAND:
       return false
-    
+
     case T.SEARCH_BAR_COLLAPSE:
       return true
 
@@ -26,5 +39,6 @@ const collapse: Reducer< boolean, T.AppActions> = (state = true, action) => {
 
 export default combineReducers({
   text,
+  showSuggestions,
   collapse,
 })
