@@ -1,4 +1,4 @@
-import { loadResultsPage, typeahead } from 'actions/results'
+import { loadResultsPage, typeaheadDebounced } from 'actions/results'
 import React, { createElement } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
@@ -78,7 +78,7 @@ const mapStateToProps = (state: AppState): StateToProps => ({
 const mapDispatchToProps = (
   dispatch: Dispatch<T.AppActions>,
 ): DispatchToProps => ({
-  changeSearchText: bindActionCreators(typeahead, dispatch),
+  changeSearchText: typeaheadDebounced(dispatch),
   loadResultsPage: bindActionCreators(loadResultsPage, dispatch),
   collapseSearchBar: () => dispatch({ type: T.SEARCH_BAR_COLLAPSE }),
   setShowSuggestions: (e: boolean) =>

@@ -1,5 +1,5 @@
 import Router from 'next/router'
-import { Dispatch } from 'redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import * as T from 'types/actions'
 import { SearchResultType, SearchSortBy } from 'types/search'
 import { doFetch } from 'utils/fetch'
@@ -8,27 +8,37 @@ import * as RequestId from 'utils/request_id'
 import { qs } from 'utils/utils'
 import { requestAction } from './utils'
 
-export function typeahead(query: string) {
-  return async (dispatch: Dispatch<T.AppActions>) => {
+export function typeaheadDebounced(dispatch: Dispatch<T.AppActions>) {
+  let timer: NodeJS.Timeout | undefined
+  return function(query: string) {
     dispatch({ type: T.SEARCH_BAR_UPDATE_TEXT, text: query })
+    
+    if (!!timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      bindActionCreators(loadSuggestions, dispatch)(query)
+    }, 200)
+  }
+}
 
-    try {
-      const { podcastSearchResults } = await doFetch({
+export function loadSuggestions(query: string) {
+  return requestAction(
+    () =>
+      doFetch({
         method: 'POST',
         urlPath: `/ajax/service?${qs({
           endpoint: 'search_suggestions',
           query,
         })}`,
-      })
-
+      }),
+    (dispatch, _, { podcastSearchResults }) => {
       dispatch({
         type: T.SEARCH_SUGGESTIONS_ADD_PODCAST,
         podcasts: podcastSearchResults,
       })
-    } catch (e) {
-      console.log(e)
-    }
-  }
+    },
+  )
 }
 
 export function loadResultsPage(
