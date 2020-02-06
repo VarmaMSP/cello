@@ -19,41 +19,33 @@ export interface DispatchToProps {
 const TopNavbar: React.FC<StateToProps & DispatchToProps> = ({
   userSignedIn,
   showSearchBar,
-  viewPortSize,
   expandSearchBar,
 }) => {
-  if (viewPortSize != 'SM') {
-    return <></>
-  }
-
   if (showSearchBar) {
     return (
-      <header className="fixed top-0 left-0 h-12 w-full bg-white">
+      <header className="fixed md:hidden top-0 left-0 h-12 w-full bg-white">
         <SearchBar />
       </header>
     )
   }
 
-  if (!showSearchBar) {
-    const LogoIcon = iconMap['phenopod']
-    return (
-      <header className="fixed top-0 left-0 flex justify-between items-center w-full h-12 px-4 bg-white">
-        <div className="w-20">
-          <ButtonWithIcon
-            className="w-6 h-auto text-gray-600"
-            icon="search"
-            onClick={expandSearchBar}
-          />
-        </div>
-        <LogoIcon className="mx-auto -mt-1" />
-        <div className="w-20 h-8">
-          {userSignedIn ? <UserSettings /> : <SignInButton small />}
-        </div>
-      </header>
-    )
-  }
+  const LogoIcon = iconMap['phenopod']
 
-  return <></>
+  return (
+    <header className="fixed md:hidden top-0 left-0 flex justify-between items-center w-full h-12 px-4 bg-white">
+      <div className="w-20">
+        <ButtonWithIcon
+          className="w-6 h-auto text-gray-600"
+          icon="search"
+          onClick={expandSearchBar}
+        />
+      </div>
+      <LogoIcon className="mx-auto -mt-1" />
+      <div className="w-20 h-8">
+        {userSignedIn ? <UserSettings /> : <SignInButton small />}
+      </div>
+    </header>
+  )
 }
 
 export default TopNavbar
