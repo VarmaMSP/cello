@@ -18,7 +18,7 @@ const SearchSuggestions: React.FC<StateToProps> = ({ podcasts }) => {
       className="z-10 px-2 py-2 bg-white border rounded-lg shadow"
     >
       {podcasts.map((x) => (
-        <PodcastLink podcastUrlParam={x.urlParam}>
+        <PodcastLink key={x.urlParam} podcastUrlParam={x.urlParam}>
           <a className="search-suggestion block flex px-3 py-3 hover:bg-gray-200 rounded">
             <img
               src={getImageUrl(x.urlParam)}
