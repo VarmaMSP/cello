@@ -3,6 +3,7 @@
 @import "./global.css";
 @import "./nprogress.css";
 @import "./episode-preview.css";
+@import "./page_layout.css";
 /*! purgecss end ignore */
 
 @import "tailwindcss/components";
