@@ -70,7 +70,7 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
       }}
     >
       <div
-        className="flex items-center justify-between w-full h-22 border border-gray-200 bg-white rounded-lg"
+        className="flex items-center justify-between w-full h-22 border border-gray-400 bg-white rounded-lg"
         style={{
           marginBottom: '8px',
           marginRight: '8px',
