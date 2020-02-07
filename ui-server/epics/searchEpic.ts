@@ -11,7 +11,7 @@ const searchEpic: Epic<T.AppActions, T.AppActions, AppState> = (action$) =>
   action$.pipe(
     ofType(T.SEARCH_BAR_UPDATE_TEXT),
     filter<UpdateTextAction>(({ text }) => text.trim().length > 0),
-    debounceTime<UpdateTextAction>(200),
+    debounceTime<UpdateTextAction>(400),
     concatMap<UpdateTextAction, Observable<T.AppActions>>((action) =>
       from(
         doFetch({
