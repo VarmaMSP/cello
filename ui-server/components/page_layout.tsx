@@ -4,17 +4,21 @@ interface OwnProps {
   children: JSX.Element | [JSX.Element, JSX.Element]
 }
 
-const PageLayout: React.FC<OwnProps> = ({
-  children,
-}) => {
-  return Array.isArray(children) ? (
-    <div className="page-layout-split">
-      <div className="first">{children[0]}</div>
-      <div className="second">{children[1]}</div>
-    </div>
-  ) : (
-    <div className="page-layout">{children}</div>
-  )
-}
+export default class PageLayout extends React.Component<OwnProps> {
+  componentDidCatch() {
+    !!window && window.location.reload(true)
+  }
 
-export default PageLayout
+  render() {
+    const { children } = this.props
+
+    return Array.isArray(children) ? (
+      <div className="page-layout-split">
+        <div className="first">{children[0]}</div>
+        <div className="second">{children[1]}</div>
+      </div>
+    ) : (
+      <div className="page-layout">{children}</div>
+    )
+  }
+}
