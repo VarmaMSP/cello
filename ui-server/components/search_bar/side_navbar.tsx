@@ -4,6 +4,7 @@ import SearchSuggestions from 'components/search_suggestions'
 import usePopper from 'hooks/usePopper'
 import React from 'react'
 import { Portal } from 'react-portal'
+import { stopEventPropagation } from 'utils/dom'
 import withProps, { SearchBarProps } from './with_props'
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -51,6 +52,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
           onChange={handleTextChange}
           ref={reference.ref}
           onFocus={() => setShowSuggestions(true)}
+          onPointerDown={stopEventPropagation}
+          onMouseDown={stopEventPropagation}
+          onTouchStart={stopEventPropagation}
         />
       </form>
 
