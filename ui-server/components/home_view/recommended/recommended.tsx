@@ -15,7 +15,7 @@ const Recommended: React.FC<StateToProps> = ({ podcasts }) => {
         {'Recommended'}
       </h1>
       <hr className="mb-3" />
-      <Grid cols={{ SM: 4, MD: 5, LG: 8 }}>
+      <Grid cols={{ SM: 4, MD: 6, LG: 10 }}>
         {podcasts.map((p) => (
           <div key={p.id} className="flex-none px-1 mb-4">
             <PodcastLink podcastUrlParam={p.urlParam}>
@@ -27,12 +27,12 @@ const Recommended: React.FC<StateToProps> = ({ podcasts }) => {
               </a>
             </PodcastLink>
             <PodcastLink podcastUrlParam={p.urlParam}>
-              <a className="md:text-xs text-2xs text-gray-800 tracking-wide leading-snug md:mb-1 line-clamp-1">
+              <a className="text-2xs text-gray-900 tracking-wide leading-snug md:mb-1 line-clamp-1">
                 {p.title}
               </a>
             </PodcastLink>
             <PodcastLink podcastUrlParam={p.urlParam}>
-              <a className="md:text-xs text-2xs text-gray-600 leading-snug line-clamp-1">
+              <a className="text-2xs text-gray-700 leading-snug line-clamp-1">
                 {p.author}
               </a>
             </PodcastLink>
