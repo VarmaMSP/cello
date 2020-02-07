@@ -15,7 +15,7 @@ const SearchSuggestions: React.FC<StateToProps> = ({ podcasts }) => {
   return (
     <div
       style={{ width: '32rem' }}
-      className="z-10 px-2 py-2 bg-white border rounded-lg shadow"
+      className="z-10 px-2 py-2 bg-white border border-blue-300 rounded-lg"
     >
       {podcasts.map((x) => (
         <PodcastLink key={x.urlParam} podcastUrlParam={x.urlParam}>
