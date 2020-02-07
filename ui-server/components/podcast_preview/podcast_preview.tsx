@@ -27,7 +27,7 @@ const PodcastPreview: React.FC<StateToProps & OwnProps> = ({
       <div>
         <PodcastLink podcastUrlParam={podcast.urlParam}>
           <a
-            className="md:text-base text-sm font-medium tracking-wide line-clamp-2"
+            className="md:text-base text-sm font-semibold tracking-wide line-clamp-2"
             dangerouslySetInnerHTML={{
               __html:
                 (podcastSearchResult && podcastSearchResult.title) ||
@@ -37,7 +37,7 @@ const PodcastPreview: React.FC<StateToProps & OwnProps> = ({
         </PodcastLink>
 
         <div
-          className="md:text-sm text-xs text-grey-800 mb-2 tracking-wide md:leading-normal leading-relaxed line-clamp-1"
+          className="md:text-sm text-xs text-gray-900 font-medium mb-2 tracking-wide md:leading-normal leading-relaxed line-clamp-1"
           dangerouslySetInnerHTML={{
             __html:
               (podcastSearchResult && podcastSearchResult.author) ||
@@ -46,7 +46,7 @@ const PodcastPreview: React.FC<StateToProps & OwnProps> = ({
         />
 
         <div
-          className="text-xs text-gray-800 md:break-normal break-all leading-snug tracking-wide md:line-clamp-2 line-clamp-3 cursor-default"
+          className="text-xs md:break-normal break-all leading-normal tracking-wide md:line-clamp-2 line-clamp-3 cursor-default"
           style={{ hyphens: 'auto' }}
           dangerouslySetInnerHTML={{
             __html: podcastSearchResult.description || podcast.summary,

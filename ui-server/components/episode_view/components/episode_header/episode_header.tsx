@@ -41,12 +41,12 @@ const EpisodeHeader: React.FC<Props> = ({
             {episode.title}
           </h2>
           <PodcastLink podcastUrlParam={podcast.urlParam}>
-            <a className="block mb-2 text-sm text-gray-800 truncate">
+            <a className="block mb-2 md:text-base text-sm leading-relaxed line-clamp-1">
               {podcast.title}
             </a>
           </PodcastLink>
 
-          <div className="text-xs text-gray-700">
+          <div className="text-2xs">
             {`Published on ${pubDate}`}
           </div>
         </div>

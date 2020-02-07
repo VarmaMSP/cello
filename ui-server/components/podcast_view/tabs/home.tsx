@@ -12,7 +12,7 @@ const PodcastAbout: React.FC<OwnProps> = ({ podcast }) => {
     <div>
       <h2 className="font-medium tracking-wider mb-2">{'Description'}</h2>
       <div
-        className="text-gray-900 text-sm tracking-wide leading-relaxed"
+        className="text-black text-sm tracking-wide leading-relaxed"
         style={{ hyphens: 'auto' }}
       >
         <div>{podcast.description}</div>

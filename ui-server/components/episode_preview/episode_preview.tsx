@@ -39,7 +39,7 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
         <EpisodeLink episodeUrlParam={episode.urlParam}>
           <a
             className={classnames(
-              'md:text-base text-sm font-medium tracking-wide font-normal line-clamp-2',
+              'md:text-base text-sm font-semibold tracking-wide line-clamp-2',
               { 'mb-1': small },
             )}
             dangerouslySetInnerHTML={{
@@ -52,19 +52,21 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
 
         {!small && (
           <PodcastLink podcastUrlParam={podcast.urlParam}>
-            <a className="md:text-sm text-xs text-grey-800 mb-2 tracking-wide md:leading-normal leading-relaxed line-clamp-1">
+            <a className="md:text-sm text-xs text-gray-900 font-medium mb-2 tracking-wide md:leading-normal leading-relaxed line-clamp-1">
               {podcast.title}
             </a>
           </PodcastLink>
         )}
 
-        <div className="text-xs md:break-normal break-all tracking-wide leading-sung md:line-clamp-2 line-clamp-3 cursor-default" style={{ hyphens: 'auto' }}>
-          <span className="text-teal-800">{`${formatDistanceToNow(
+        <div
+          className="text-xs md:break-normal break-all tracking-wide leading-normal md:line-clamp-2 line-clamp-3 cursor-default"
+          style={{ hyphens: 'auto' }}
+        >
+          <span className="text-gray-900">{`${formatDistanceToNow(
             parseISO(episode.pubDate),
           )} ago`}</span>
           <span className="mx-2 text-black font-extrabold">&middot;</span>
           <span
-            className="text-gray-800"
             dangerouslySetInnerHTML={{
               __html:
                 (episodeSearchResult && episodeSearchResult.description) ||

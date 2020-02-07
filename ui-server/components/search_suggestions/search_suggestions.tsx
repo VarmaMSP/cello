@@ -15,7 +15,7 @@ const SearchSuggestions: React.FC<StateToProps> = ({ podcasts }) => {
   return (
     <div
       style={{ width: '32rem' }}
-      className="z-10 px-2 py-2 bg-white border border-blue-300 rounded-lg"
+      className="z-10 px-2 py-2 bg-white border border-blue-400 rounded-lg"
     >
       {podcasts.map((x) => (
         <PodcastLink key={x.urlParam} podcastUrlParam={x.urlParam}>
@@ -26,11 +26,11 @@ const SearchSuggestions: React.FC<StateToProps> = ({ podcasts }) => {
             />
             <div>
               <div
-                className="text-base text-gray-800 line-clamp-1"
+                className="text-base text-gray-900 line-clamp-1"
                 dangerouslySetInnerHTML={{ __html: x.title }}
               />
               <div
-                className="text-sm text-gray-700 line-clamp-1"
+                className="text-sm text-gray-900 line-clamp-1"
                 dangerouslySetInnerHTML={{ __html: x.author }}
               />
             </div>

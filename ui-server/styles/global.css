@@ -1,10 +1,12 @@
-body {
-    overscroll-behavior-x: none;
-}
-
 * { 
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -moz-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+    overscroll-behavior-x: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .result-highlight {

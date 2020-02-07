@@ -21,7 +21,7 @@ const SubscriptionsList: React.FC<StateToProps> = ({ subscriptions }) => {
         {subscriptions.map((podcast) => (
           <PodcastLink podcastUrlParam={podcast.urlParam} key={podcast.id}>
             <a
-              className="block mb-4 lg:w-1/5 md:w-1/4 w-1/5"
+              className="block mb-4 xl:w-1/5 md:w-1/4 w-1/5"
               style={{ paddingLeft: '2px', paddingRight: '2px' }}
             >
               <img
