@@ -1,12 +1,6 @@
 import { Epic, ofType } from 'redux-observable'
 import { from, Observable, of } from 'rxjs'
-import {
-  catchError,
-  debounceTime,
-  filter,
-  map,
-  switchMap,
-} from 'rxjs/operators'
+import { catchError, debounceTime, filter, map, concatMap } from 'rxjs/operators'
 import { AppState } from 'store'
 import * as T from 'types/actions'
 import { UpdateTextAction } from 'types/actions/ui/search_bar'
@@ -18,7 +12,7 @@ const searchEpic: Epic<T.AppActions, T.AppActions, AppState> = (action$) =>
     ofType(T.SEARCH_BAR_UPDATE_TEXT),
     filter<UpdateTextAction>(({ text }) => text.trim().length > 0),
     debounceTime<UpdateTextAction>(200),
-    switchMap<UpdateTextAction, Observable<T.AppActions>>((action) =>
+    concatMap<UpdateTextAction, Observable<T.AppActions>>((action) =>
       from(
         doFetch({
           method: 'POST',
@@ -37,6 +31,7 @@ const searchEpic: Epic<T.AppActions, T.AppActions, AppState> = (action$) =>
         ),
       ),
     ),
+    debounceTime<T.AppActions>(200),
   )
 
 export default searchEpic
