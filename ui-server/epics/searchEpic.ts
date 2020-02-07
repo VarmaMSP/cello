@@ -1,6 +1,6 @@
 import { Epic, ofType } from 'redux-observable'
 import { from, Observable, of } from 'rxjs'
-import { catchError, debounceTime, filter, map, concatMap } from 'rxjs/operators'
+import { catchError, concatMap, debounceTime, filter, map, throttleTime } from 'rxjs/operators'
 import { AppState } from 'store'
 import * as T from 'types/actions'
 import { UpdateTextAction } from 'types/actions/ui/search_bar'
@@ -31,7 +31,7 @@ const searchEpic: Epic<T.AppActions, T.AppActions, AppState> = (action$) =>
         ),
       ),
     ),
-    debounceTime<T.AppActions>(200),
+    throttleTime<T.AppActions>(200),
   )
 
 export default searchEpic

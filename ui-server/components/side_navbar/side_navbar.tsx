@@ -12,14 +12,12 @@ export interface StateToProps {
   viewportSize: ViewportSize
 }
 
-const NavbarSide: React.SFC<StateToProps> = ({
-  userSignedIn,
-}) => {
+const NavbarSide: React.SFC<StateToProps> = ({ userSignedIn }) => {
   const LogoIcon = iconMap['phenopod']
   const currentUrlPath = useRouter().asPath
 
   return (
-    <div className="fixed md:block hidden left-0 top-0 flex flex-col justify-between h-screen w-64 pl-4 pr-2 bg-white">
+    <div className="fixed left-0 top-0 md:flex hidden flex-col justify-between h-screen w-64 pl-4 pr-2 bg-white">
       <div>
         <LogoIcon className="w-14 h-14 mx-auto mt-2 mb-3" />
         <div className="mb-6">
