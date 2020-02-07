@@ -38,10 +38,6 @@ export default class ResultsPage extends Component<OwnProps> {
       type: T.SEARCH_RESULTS_SORT_BY,
       sortBy,
     })
-
-    store.dispatch({
-      type: T.SEARCH_SUGGESTIONS_RESET,
-    })
   }
 
   static async getInitialProps(ctx: PageContext): Promise<void> {
