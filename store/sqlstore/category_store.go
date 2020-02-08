@@ -64,6 +64,10 @@ func (s *SqlCategoryStore) GetAll() (res []*model.Category, appE *model.AppError
 }
 
 func (s *SqlCategoryStore) GetByIds(categoryIds []int64) (res []*model.Category, appE *model.AppError) {
+	if len(categoryIds) == 0 {
+		return []*model.Category{}, nil
+	}
+
 	sql := fmt.Sprintf(
 		`SELECT %s FROM category WHERE id IN (%s)`,
 		joinStrings((&model.Category{}).DbColumns(), ","), joinInt64s(categoryIds, ","),

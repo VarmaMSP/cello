@@ -1,3 +1,4 @@
+import { ChartLink } from 'components/link'
 import React from 'react'
 import { Category } from 'types/models'
 
@@ -37,19 +38,23 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({ categories }) => {
         return childIds.length > 0 ? (
           childIds.map((childId) => (
             <div
-              id={`${parentId}${childId}`}
+              key={`${parentId}${childId}`}
               className="bg-gray-200 mr-4 my-2 px-3 text-2xs text-gray-900 tracking-wide leading-loose border border-gray-300 rounded-full"
             >
-              <span className="font-medium">{`${parent.name}`}</span>
+              <ChartLink chartUrlParam={parent.urlParam}>
+                <a className="font-medium hover:text-blue-500 hover:underline">{`${parent.name}`}</a>
+              </ChartLink>
               <span style={{ marginLeft: '0.35rem', marginRight: '0.35rem' }}>
                 &rsaquo;
               </span>
-              <span>{`${byId[childId].name}`}</span>
+              <ChartLink chartUrlParam={byId[childId].urlParam}>
+                <a>{`${byId[childId].name}`}</a>
+              </ChartLink>
             </div>
           ))
         ) : (
           <div
-            id={`${parentId}`}
+            key={`${parentId}`}
             className="bg-gray-200 mr-4 my-2 px-3 text-2xs font-medium text-gray-900 tracking-wide leading-loose rounded-full"
           >{`${parent.name}`}</div>
         )

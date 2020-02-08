@@ -16,7 +16,7 @@ const merge = (p1: Podcast, p2: Podcast): Podcast => ({
   complete: p2.complete,
   earliestEpisodePubDate: p2.earliestEpisodePubDate,
   copyright: !!p2.copyright ? p2.copyright : p1.copyright,
-  categories: p2.categories.length > 0 ? p2.categories : p1.categories,
+  categories: p2.categories.length > 0 ? p2.categories : p1.categories || [],
 })
 
 const byId: Reducer<{ [podcastId: string]: Podcast }, T.AppActions> = (
