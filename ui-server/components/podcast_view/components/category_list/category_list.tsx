@@ -42,13 +42,13 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({ categories }) => {
               className="bg-gray-200 mr-4 my-2 px-3 text-2xs text-gray-900 tracking-wide leading-loose border border-gray-300 rounded-full"
             >
               <ChartLink chartUrlParam={parent.urlParam}>
-                <a className="font-medium hover:text-blue-500 hover:underline">{`${parent.name}`}</a>
+                <a className="font-medium hover:text-blue-600 hover:underline">{`${parent.name}`}</a>
               </ChartLink>
               <span style={{ marginLeft: '0.35rem', marginRight: '0.35rem' }}>
                 &rsaquo;
               </span>
               <ChartLink chartUrlParam={byId[childId].urlParam}>
-                <a>{`${byId[childId].name}`}</a>
+                <a className="hover:text-blue-600 hover:underline">{`${byId[childId].name}`}</a>
               </ChartLink>
             </div>
           ))
@@ -56,7 +56,11 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({ categories }) => {
           <div
             key={`${parentId}`}
             className="bg-gray-200 mr-4 my-2 px-3 text-2xs font-medium text-gray-900 tracking-wide leading-loose rounded-full"
-          >{`${parent.name}`}</div>
+          >
+            <ChartLink chartUrlParam={parent.urlParam}>
+              <a className="font-medium hover:text-blue-600 hover:underline">{`${parent.name}`}</a>
+            </ChartLink>
+          </div>
         )
       })}
     </div>
