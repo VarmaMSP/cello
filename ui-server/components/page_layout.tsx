@@ -4,9 +4,17 @@ interface OwnProps {
   children: JSX.Element | [JSX.Element, JSX.Element]
 }
 
-export default class PageLayout extends React.Component<OwnProps> {
-  componentDidCatch() {
-    !!window && window.location.reload(true)
+interface State {
+  error: boolean
+}
+
+export default class PageLayout extends React.Component<OwnProps, State> {
+  state = {
+    error: false,
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true }
   }
 
   render() {
