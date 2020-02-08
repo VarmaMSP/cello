@@ -1,4 +1,4 @@
-import { ChartLink } from 'components/link'
+import CategoryList from 'components/category_list'
 import React from 'react'
 import { Curation } from 'types/models'
 
@@ -6,23 +6,15 @@ export interface StateToProps {
   categories: Curation[]
 }
 
-const Categories: React.FC<StateToProps> = ({ categories }) => {
+const Categories: React.FC<StateToProps> = () => {
   return (
     <>
       <h1 className="pb-1 text-xl tracking-wide text-gray-800 font-medium">
         {'Browse By Categories'}
       </h1>
       <hr className="mb-3" />
-      <div className="w-full">
-        <ul className="flex flex-wrap">
-          {categories.map((c) => (
-            <ChartLink key={c.id} chartId={c.id}>
-              <a className="block h-10 lg:w-1/3 w-full pl-6 py-1 rounded-full hover:bg-gray-200">
-                <li className="text-lg text-gray-900">{c.title}</li>
-              </a>
-            </ChartLink>
-          ))}
-        </ul>
+      <div className="flex flex-col flex-wrap" style={{ height: '50rem' }}>
+        <CategoryList className="w-1/4" />
       </div>
     </>
   )

@@ -1,12 +1,12 @@
-import * as client from 'utils/raw'
 import * as T from 'types/actions'
+import * as client from 'utils/raw'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
 export function getHomePageData() {
   return requestAction(
     () => client.getHomePageData(),
-    (dispatch, _, { podcasts, categories }) => {
+    (dispatch, _, { podcasts, categories, x }) => {
       dispatch({
         type: T.PODCAST_ADD,
         podcasts,
@@ -31,6 +31,11 @@ export function getHomePageData() {
         type: T.CURATION_ADD_PODCASTS,
         curationId: 'recommended',
         podcastIds: podcasts.map((x) => x.id),
+      })
+
+      dispatch({
+        type: T.CATEGORY_ADD,
+        categories: x,
       })
     },
     {

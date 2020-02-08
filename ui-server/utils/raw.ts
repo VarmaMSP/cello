@@ -1,17 +1,18 @@
-import { Curation, Podcast } from 'types/models'
+import { Category, Curation, Podcast } from 'types/models'
 import { formatCategoryTitle } from 'utils/format'
 import { doFetch } from './fetch'
 
 export async function getHomePageData(): Promise<{
   categories: Curation[]
   podcasts: Podcast[]
+  x: Category[]
 }> {
-  const { raw } = await doFetch({
+  const { raw, categories } = await doFetch({
     method: 'GET',
     urlPath: '/',
   })
 
-  let categories = <Curation[]>[]
+  let x = <Curation[]>[]
   for (let i = 0; i < raw.categories.length; ++i) {
     let tmp = raw.categories[i]
     let cat = <Curation>{
@@ -19,11 +20,11 @@ export async function getHomePageData(): Promise<{
       title: tmp.title,
       members: [],
     }
-    categories.push(cat)
+    x.push(cat)
 
     if (!!tmp.sub) {
       for (let j = 0; j < tmp.sub.length; ++j) {
-        categories.push(<Curation>{
+        x.push(<Curation>{
           id: `${cat.id}-${formatCategoryTitle(tmp.sub[j])}`,
           parentId: cat.id,
           title: tmp.sub[j],
@@ -34,7 +35,8 @@ export async function getHomePageData(): Promise<{
   }
 
   return {
-    categories,
+    categories: x,
+    x: categories,
     podcasts: (raw.recommended || []).map((o: any) => new Podcast(o)),
   }
 }

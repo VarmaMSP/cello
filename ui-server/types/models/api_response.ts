@@ -33,7 +33,7 @@ export class ApiResponse {
       (o: any) => new EpisodeSearchResult(o),
     )
     this.categories = (data['categories'] || []).map(
-      (o: any) => new Category(o)
+      (o: any) => new Category(o),
     )
     this.raw = j['raw'] || {}
   }
