@@ -12,8 +12,8 @@ const HomeView: React.FC<{}> = () => {
         {'Browse By Categories'}
       </h1>
       <hr className="mb-3" />
-      <div className="flex flex-col flex-wrap" style={{ height: '50rem' }}>
-        <CategoryList className="w-1/4" />
+      <div className="category-list">
+        <CategoryList className="md:w-1/4 w-full" />
       </div>
 
       <div className="md:hidden text-center">

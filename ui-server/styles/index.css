@@ -4,6 +4,7 @@
 @import "./nprogress.css";
 @import "./episode-preview.css";
 @import "./page_layout.css";
+@import "./category-list.css";
 /*! purgecss end ignore */
 
 @import "tailwindcss/components";

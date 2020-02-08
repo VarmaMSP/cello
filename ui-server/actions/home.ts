@@ -1,41 +1,35 @@
 import * as T from 'types/actions'
-import * as client from 'utils/raw'
+import { Curation, Podcast } from 'types/models'
+import { doFetch } from 'utils/fetch'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
 export function getHomePageData() {
   return requestAction(
-    () => client.getHomePageData(),
-    (dispatch, _, { podcasts, categories, x }) => {
-      dispatch({
-        type: T.PODCAST_ADD,
-        podcasts,
-      })
-      dispatch({
-        type: T.CURATION_ADD,
-        curations: [
-          {
-            id: 'recommended',
-            title: 'recommended',
-            members: [],
-          },
-        ],
-        curationType: 'default',
-      })
-      dispatch({
-        type: T.CURATION_ADD,
-        curations: categories,
-        curationType: 'category',
-      })
+    () =>
+      doFetch({
+        method: 'GET',
+        urlPath: '/',
+      }),
+    (dispatch, _, { raw, categories }) => {
+      const podcasts: Podcast[] = (raw.recommended || []).map(
+        (o: any) => new Podcast(o),
+      )
+      const curations: Curation[] = [
+        {
+          id: 'recommended',
+          title: 'recommended',
+          podcastIds: [],
+        },
+      ]
+
+      dispatch({ type: T.PODCAST_ADD, podcasts })
+      dispatch({ type: T.CATEGORY_ADD, categories })
+      dispatch({ type: T.CURATION_ADD, curations })
       dispatch({
         type: T.CURATION_ADD_PODCASTS,
-        curationId: 'recommended',
+        curationId: curations[0].id,
         podcastIds: podcasts.map((x) => x.id),
-      })
-
-      dispatch({
-        type: T.CATEGORY_ADD,
-        categories: x,
       })
     },
     {

@@ -1,6 +1,10 @@
 import { AppState } from 'store'
 import { Category } from 'types/models'
 
+export function getCategoryById(state: AppState, categoryId: string) {
+  return state.entities.categories.byId[categoryId]
+}
+
 export function getCategoriesByIds(
   state: AppState,
   categoryIds: string[],

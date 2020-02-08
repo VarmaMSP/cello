@@ -57,9 +57,9 @@ export function registerRoutes(app: NextServer, router: Router) {
 
   // Charts Page
   router.get(
-    '/charts/:chartId',
+    '/charts/:chartUrlParam',
     servePage('/charts', 'public,max-age=1200,must-revalidate', (ctx) => ({
-      chartId: ctx.params['chartId'],
+      chartUrlParam: ctx.params['chartUrlParam'],
     })),
   )
 

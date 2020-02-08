@@ -1,24 +1,31 @@
 import * as T from 'types/actions'
-import * as Client from 'utils/raw'
+import { Podcast } from 'types/models'
+import { doFetch } from 'utils/fetch'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'
 
-export function getChartPageData(chartId: string) {
+export function getChartPageData(chartUrlParam: string) {
   return requestAction(
-    () => Client.getChartPageData(chartId),
-    (dispatch, _, { podcasts }) => {
+    () =>
+      doFetch({
+        method: 'GET',
+        urlPath: `/charts/${chartUrlParam}`,
+      }),
+    (dispatch, _, { raw, categories }) => {
+      const podcasts: Podcast[] = (raw.podcasts || []).map(
+        (o: any) => new Podcast(o),
+      )
+
+      dispatch({ type: T.PODCAST_ADD, podcasts })
+      dispatch({ type: T.CATEGORY_ADD, categories })
       dispatch({
-        type: T.PODCAST_ADD,
-        podcasts,
-      })
-      dispatch({
-        type: T.CURATION_ADD_PODCASTS,
-        curationId: chartId,
+        type: T.CATEGORY_ADD_PODCASTS,
+        categoryId: categories[0].id,
         podcastIds: podcasts.map((x) => x.id),
       })
     },
     {
-      requestId: RequestId.getPodcastsInChart(chartId),
+      requestId: RequestId.getPodcastsInChart(chartUrlParam),
       skip: { cond: 'REQUEST_ALREADY_MADE' },
     },
   )

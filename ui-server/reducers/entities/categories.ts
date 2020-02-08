@@ -13,6 +13,15 @@ const byId: Reducer<{ [categoryId: string]: Category }, T.AppActions> = (
         state,
       )
 
+    case T.CATEGORY_ADD_PODCASTS:
+      return {
+        ...state,
+        [action.categoryId]: {
+          ...(state[action.categoryId] || {}),
+          podcastIds: action.podcastIds,
+        },
+      }
+
     default:
       return state
   }

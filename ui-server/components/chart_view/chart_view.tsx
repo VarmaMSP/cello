@@ -1,25 +1,24 @@
 import { PodcastLink } from 'components/link'
 import React from 'react'
-import { Curation, Podcast } from 'types/models'
+import { Category, Podcast } from 'types/models'
 import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {
-  chart: Curation
   podcasts: Podcast[]
 }
 
 export interface OwnProps {
-  chartId: string
+  category: Category
 }
 
 const ChartView: React.FC<StateToProps & OwnProps> = ({
-  chart,
+  category,
   podcasts,
 }) => {
   return (
     <div>
       <h1 className="pt-3 pb-1 text-xl tracking-wide text-gray-800 font-medium">
-        {chart.title}
+        {category.name}
       </h1>
       <hr className="mb-3" />
       <ol>

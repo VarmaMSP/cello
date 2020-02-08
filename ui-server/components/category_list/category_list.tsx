@@ -2,7 +2,6 @@ import classnames from 'classnames'
 import { ChartLink } from 'components/link'
 import React from 'react'
 import { Category } from 'types/models'
-import { formatCategoryTitle } from 'utils/format'
 
 export interface StateToProps {
   categories: Category[]
@@ -42,11 +41,13 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({
 
         if (childIds.length === 0) {
           return (
-            <ChartLink
-              chartId={formatCategoryTitle(parent.name)}
-              key={parentId}
-            >
-              <a className={classnames('my-2 font-medium', className)}>
+            <ChartLink chartUrlParam={parent.urlParam} key={parentId}>
+              <a
+                className={classnames(
+                  'block my-2 text-black tracking-wide',
+                  className,
+                )}
+              >
                 {parent.name}
               </a>
             </ChartLink>
@@ -55,17 +56,19 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({
 
         return (
           <div key={parentId} className={classnames('my-2', className)}>
-            <ChartLink
-              chartId={formatCategoryTitle(parent.name)}
-              key={parentId}
-            >
-              <a className="block font-medium mb-1">{parent.name}</a>
+            <ChartLink chartUrlParam={parent.urlParam} key={parentId}>
+              <a className="block text-black tracking-wide mb-1">
+                {parent.name}
+              </a>
             </ChartLink>
 
             <ul className="list-disc list-inside">
               {childIds.map((childId) => (
-                <li key={childId} className="pl-4 text-xs leading-relaxed">
-                  <ChartLink chartId={formatCategoryTitle(byId[childId].name)}>
+                <li
+                  key={childId}
+                  className="pl-4 text-sm leading-relaxed tracking-wide"
+                >
+                  <ChartLink chartUrlParam={byId[childId].urlParam}>
                     <a>{byId[childId].name}</a>
                   </ChartLink>
                 </li>

@@ -27,13 +27,8 @@ const Recommended: React.FC<StateToProps> = ({ podcasts }) => {
               </a>
             </PodcastLink>
             <PodcastLink podcastUrlParam={p.urlParam}>
-              <a className="text-2xs text-gray-900 tracking-wide leading-snug md:mb-1 line-clamp-1">
+              <a className="text-2xs text-gray-900 tracking-wide leading-snug line-clamp-2">
                 {p.title}
-              </a>
-            </PodcastLink>
-            <PodcastLink podcastUrlParam={p.urlParam}>
-              <a className="text-2xs text-gray-700 leading-snug line-clamp-1">
-                {p.author}
               </a>
             </PodcastLink>
           </div>

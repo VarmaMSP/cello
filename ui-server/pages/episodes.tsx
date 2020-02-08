@@ -11,7 +11,7 @@ import { Episode } from 'types/models'
 import { PageContext } from 'types/utilities'
 import { getIdFromUrlParam } from 'utils/format'
 
-export interface StateToProps {
+export interface StateToProps { 
   episode: Episode
 }
 

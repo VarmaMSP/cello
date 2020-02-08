@@ -1,6 +1,6 @@
 import { NextSeo, NextSeoProps } from 'next-seo'
 import React, { useEffect } from 'react'
-import { Episode, Playlist, Podcast } from 'types/models'
+import { Category, Episode, Playlist, Podcast } from 'types/models'
 import { getImageUrl } from 'utils/dom'
 import { pageview } from 'utils/gtag'
 
@@ -20,8 +20,12 @@ export const AboutPageSeo: React.FC<{}> = () => (
   />
 )
 
-export const ChartPageSeo: React.FC<{}> = () => (
-  <Seo title="Chart | Phenopod" description="Chart" />
+export const ChartPageSeo: React.FC<{ category: Category }> = ({ category }) => (
+  <Seo
+    title={`${category.name} | Phenopod`}
+    description={`Podcasts trending in ${category.name}`}
+    canonical={`https://phenopod.com/charts/${category.urlParam}`}
+  />
 )
 
 export const EpisodePageSeo: React.FC<{ episode: Episode }> = ({ episode }) => (

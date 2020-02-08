@@ -1,6 +1,11 @@
-export interface Curation {
+export class Curation {
   id: string
-  parentId?: string
   title: string
-  members: string[]
+  podcastIds: string[]
+
+  constructor(j: any) {
+    this.id = j['id'] || ''
+    this.title = j['title'] || ''
+    this.podcastIds = j['podcast_ids'] || []
+  }
 }

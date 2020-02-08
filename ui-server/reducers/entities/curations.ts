@@ -8,37 +8,18 @@ const byId: Reducer<{ [curationId: string]: Curation }, T.AppActions> = (
 ) => {
   switch (action.type) {
     case T.CURATION_ADD:
-      return {
-        ...state,
-        ...action.curations.reduce<{ [curationId: string]: Curation }>(
-          (acc, c) => ({ ...acc, [c.id]: { ...(state[c.id] || {}), ...c } }),
-          {},
-        ),
-      }
+      return action.curations.reduce<{ [curationId: string]: Curation }>(
+        (acc, c) => ({ ...acc, [c.id]: { ...(state[c.id] || {}), ...c } }),
+        state,
+      )
 
     case T.CURATION_ADD_PODCASTS:
       return {
         ...state,
         [action.curationId]: {
           ...(state[action.curationId] || {}),
-          members: action.podcastIds,
+          podcastIds: action.podcastIds,
         },
-      }
-
-    default:
-      return state
-  }
-}
-
-const byType: Reducer<{ [key: string]: string[] }, T.AppActions> = (
-  state = {},
-  action,
-) => {
-  switch (action.type) {
-    case T.CURATION_ADD:
-      return {
-        ...state,
-        [action.curationType]: action.curations.map((x) => x.id),
       }
 
     default:
@@ -48,5 +29,4 @@ const byType: Reducer<{ [key: string]: string[] }, T.AppActions> = (
 
 export default combineReducers({
   byId,
-  byType,
 })
