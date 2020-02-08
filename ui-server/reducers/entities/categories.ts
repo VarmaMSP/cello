@@ -6,7 +6,7 @@ const merge = (c1: Category, c2: Category): Category => ({
   id: c2.id,
   urlParam: c2.urlParam,
   name: c2.name,
-  parentId: c2.name || c1.name,
+  parentId: c2.parentId || c1.parentId,
   podcastIds: c2.podcastIds.length > 0 ? c2.podcastIds : c1.podcastIds || [],
 })
 
