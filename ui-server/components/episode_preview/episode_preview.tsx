@@ -9,13 +9,14 @@ import { Episode, EpisodeSearchResult, Podcast } from 'types/models'
 export interface StateToProps {
   episode: Episode
   podcast: Podcast
-  episodeSearchResult: EpisodeSearchResult | undefined
+  episodeSearchResult: EpisodeSearchResult
 }
 
 export interface OwnProps {
   episodeId: string
   small?: boolean
   showIcon?: boolean
+  showHighlights?: boolean
 }
 
 const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
@@ -24,6 +25,7 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
   episodeSearchResult,
   small = false,
   showIcon = false,
+  showHighlights = false,
 }) => {
   return (
     <div className="episode-preview flex md:px-1 py-4 md:hover:bg-gray-100 rounded-lg">
@@ -43,9 +45,9 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
               { 'mb-1': small },
             )}
             dangerouslySetInnerHTML={{
-              __html:
-                (episodeSearchResult && episodeSearchResult.title) ||
-                episode.title,
+              __html: showHighlights
+                ? episodeSearchResult.title
+                : episode.title,
             }}
           />
         </EpisodeLink>
@@ -68,9 +70,9 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
           <span className="mx-2 text-black font-extrabold">&middot;</span>
           <span
             dangerouslySetInnerHTML={{
-              __html:
-                (episodeSearchResult && episodeSearchResult.description) ||
-                episode.summary,
+              __html: showHighlights
+                ? episodeSearchResult.description
+                : episode.summary,
             }}
           />
         </div>

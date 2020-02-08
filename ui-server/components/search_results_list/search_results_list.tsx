@@ -67,7 +67,7 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
       <div>
         {podcastIds.map((id) => (
           <div key={id} className="mb-6">
-            <PodcastPreview podcastId={id} />
+            <PodcastPreview podcastId={id} showHighlights />
           </div>
         ))}
 
@@ -106,7 +106,7 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
       <div>
         {episodeIds.map((id) => (
           <div key={id} className="mb-6">
-            <EpisodePreview episodeId={id} />
+            <EpisodePreview episodeId={id} showHighlights />
           </div>
         ))}
 
