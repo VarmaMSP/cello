@@ -42,7 +42,7 @@ const NavbarSide: React.SFC<StateToProps> = ({ userSignedIn }) => {
         </ul>
 
         {currentUrlPath !== '/' && !userSignedIn && (
-          <div className="h-10 px-5">
+          <div className="h-10 px-8">
             <SignInButton />
           </div>
         )}
