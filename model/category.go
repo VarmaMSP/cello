@@ -35,7 +35,7 @@ func (c *PodcastCategory) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		CategoryId string `json:"category_id"`
 	}{
-		CategoryId: StrFromInt64(c.CategoryId),
+		CategoryId: HashIdFromInt64(c.CategoryId),
 	})
 }
 
