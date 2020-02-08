@@ -4,7 +4,7 @@ import {
   makeGetPodcastsInCuration,
 } from 'selectors/entities/curations'
 import { AppState } from 'store'
-import PodcastList, { OwnProps, StateToProps } from './podcast_chart'
+import ChartView, { OwnProps, StateToProps } from './chart_view'
 
 function makeMapStateToProps() {
   const getPodcastsInCuration = makeGetPodcastsInCuration()
@@ -19,4 +19,4 @@ function makeMapStateToProps() {
 
 export default connect<StateToProps, {}, OwnProps, AppState>(
   makeMapStateToProps(),
-)(PodcastList)
+)(ChartView)

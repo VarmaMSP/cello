@@ -65,7 +65,7 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({
             <ul className="list-disc list-inside">
               {childIds.map((childId) => (
                 <li key={childId} className="pl-4 text-xs leading-relaxed">
-                  <ChartLink chartId={formatCategoryTitle(byId[childId].name)} >
+                  <ChartLink chartId={formatCategoryTitle(byId[childId].name)}>
                     <a>{byId[childId].name}</a>
                   </ChartLink>
                 </li>
@@ -79,4 +79,3 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({
 }
 
 export default CategoryList
-

@@ -1,11 +1,12 @@
 import { getChartPageData } from 'actions/chart'
 import { getHomePageData } from 'actions/home'
-import ChartView from 'components/chart_view/chart_view'
+import CategoryList from 'components/category_list'
+import ChartView from 'components/chart_view'
+import PageLayout from 'components/page_layout'
 import { ChartPageSeo } from 'components/seo'
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { PageContext } from 'types/utilities'
-
 interface OwnProps {
   chartId: string
   scrollY: number
@@ -28,7 +29,14 @@ export default class ChartPage extends Component<OwnProps> {
     return (
       <>
         <ChartPageSeo />
-        <ChartView chartId={this.props.chartId} />
+        <PageLayout>
+          <ChartView chartId={this.props.chartId} />
+          <div className="pt-8">
+            <div className="py-2 px-12 bg-gray-200 rounded-lg">
+              <CategoryList className="w-full" />
+            </div>
+          </div>
+        </PageLayout>
       </>
     )
   }
