@@ -28,6 +28,26 @@ func (s *SqlCategoryStore) SavePodcastCategory(category *model.PodcastCategory) 
 	return nil
 }
 
+func (s *SqlCategoryStore) GetAll() (res []*model.Category, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM category`,
+		joinStrings((&model.Category{}).DbColumns(), ","),
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.Category{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_category_store.get_all", err.Error(), http.StatusInternalServerError, nil,
+		)
+	}
+	return
+}
+
 func (s *SqlCategoryStore) GetByIds(categoryIds []int64) (res []*model.Category, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM category WHERE id IN (%s)`,

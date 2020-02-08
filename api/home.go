@@ -22,6 +22,16 @@ func GetHomePageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	x, err := c.App.GetAllCategories()
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	c.Response.Data = &model.ApiResponseData{
+		Categories: x,
+	}
+
 	c.Response.Raw = model.EncodeToJson(&struct {
 		Recommended json.RawMessage `json:"recommended"`
 		Categories  json.RawMessage `json:"categories"`
