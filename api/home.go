@@ -16,28 +16,20 @@ func GetHomePageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	categories, err := c.App.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_DISCOVER, "categories.json")
-	if err != nil {
-		c.Err = err
-		return
-	}
-
-	x, err := c.App.GetAllCategories()
+	categories, err := c.App.GetAllCategories()
 	if err != nil {
 		c.Err = err
 		return
 	}
 
 	c.Response.Data = &model.ApiResponseData{
-		Categories: x,
+		Categories: categories,
 	}
 
 	c.Response.Raw = model.EncodeToJson(&struct {
 		Recommended json.RawMessage `json:"recommended"`
-		Categories  json.RawMessage `json:"categories"`
 	}{
 		Recommended: (json.RawMessage)(recommended),
-		Categories:  (json.RawMessage)(categories),
 	})
 }
 
@@ -47,10 +39,25 @@ func GetChart(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	podcasts, err := c.App.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_CHARTS, fmt.Sprintf("%s.json", c.Params.ChartId))
+	chartName, chartId, err_ := model.ParseCategoryUrlParam(c.Params.ChartId)
+	if err_ != nil {
+		return
+	}
+
+	category, err := c.App.GetCategory(chartId)
 	if err != nil {
 		c.Err = err
 		return
+	}
+
+	podcasts, err := c.App.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_CHARTS, fmt.Sprintf("%s.json", chartName))
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	c.Response.Data = &model.ApiResponseData{
+		Categories: []*model.Category{category},
 	}
 
 	c.Response.Raw = model.EncodeToJson(&struct {

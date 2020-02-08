@@ -53,7 +53,7 @@ func ParamsFromRequest(r *http.Request) *Params {
 		params.PlaylistId = val
 	}
 
-	if val := urlProps.ByName("chartId"); val != "" {
+	if val := urlProps.ByName("chartUrlParam"); val != "" {
 		params.ChartId = val
 	} else if val = queryProps.Get("chart_id"); val != "" {
 		params.ChartId = val

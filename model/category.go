@@ -16,14 +16,16 @@ type PodcastCategory struct {
 func (c *Category) MarshalJSON() ([]byte, error) {
 	s := &struct {
 		Id       string `json:"id"`
+		UrlParam string `json:"url_param"`
 		Name     string `json:"name"`
 		ParentId string `json:"parent_id,omitempty"`
 	}{
-		Id:   StrFromInt64(c.Id),
-		Name: c.Name,
+		Id:       HashIdFromInt64(c.Id),
+		UrlParam: UrlParamFromId(c.Name, c.Id),
+		Name:     c.Name,
 	}
 	if c.ParentId != 0 {
-		s.ParentId = StrFromInt64(c.ParentId)
+		s.ParentId = HashIdFromInt64(c.ParentId)
 	}
 
 	return json.Marshal(s)

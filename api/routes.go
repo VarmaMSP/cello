@@ -39,7 +39,7 @@ func (api *Api) RegisterHandlers() {
 	r.Handler("GET", "/subscriptions", api.HAuth(GetSubscriptionsPageData))
 	r.Handler("GET", "/playlists", api.HAuth(GetPlaylistsPageData))
 
-	r.Handler("GET", "/charts/:chartId", api.H(GetChart))
+	r.Handler("GET", "/charts/:chartUrlParam", api.H(GetChart))
 	r.Handler("GET", "/podcasts/:podcastUrlParam", api.H(GetPodcastPageData))
 	r.Handler("GET", "/episodes/:episodeUrlParam", api.H(GetEpisode))
 	r.Handler("GET", "/playlists/:playlistUrlParam", api.H(GetPlaylist))

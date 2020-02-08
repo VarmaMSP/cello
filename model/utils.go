@@ -392,6 +392,25 @@ func IdFromUrlParam(urlParam string) (int64, error) {
 	return Int64FromHashId(x[len(x)-1])
 }
 
+// Parse Category Url param
+func ParseCategoryUrlParam(urlParam string) (string, int64, error) {
+	if urlParam == "" {
+		return "", 0, errors.New("UrlParam is empty")
+	}
+
+	x := strings.Split(urlParam, "-")
+	if len(x) < 2 || len(x[len(x)-1]) < MIN_HASH_ID_LENGTH {
+		return "", 0, errors.New("UrlParam is invalid")
+	}
+
+	id, err := Int64FromHashId(x[len(x)-1])
+	if err != nil {
+		return "", 0, err
+	}
+
+	return strings.Join(x[0:len(x)-1], "-"), id, nil
+}
+
 // RemoveDuplicatesInt64 removes duplicates from []int64
 func RemoveDuplicatesInt64(arr []int64) []int64 {
 	m := make(map[int64]struct{}, len(arr))

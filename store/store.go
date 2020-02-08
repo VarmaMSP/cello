@@ -84,6 +84,7 @@ type PlaylistStore interface {
 }
 
 type CategoryStore interface {
+	Get(categoryId int64) (*model.Category, *model.AppError)
 	GetAll() ([]*model.Category, *model.AppError)
 	GetByIds(categoryIds []int64) ([]*model.Category, *model.AppError)
 	SavePodcastCategory(category *model.PodcastCategory) *model.AppError
