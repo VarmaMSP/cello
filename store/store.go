@@ -98,5 +98,8 @@ type TaskStore interface {
 }
 
 type KeywordStore interface {
-	Save(keyword *model.Keyword) *model.AppError
+	Upsert(keyword *model.Keyword) (*model.Keyword, *model.AppError)
+	SavePodcastKeyword(podcastKeyword *model.PodcastKeyword) (*model.PodcastKeyword, *model.AppError)
+	SaveEpisodeKeyword(episodeKeyword *model.EpisodeKeyword) (*model.EpisodeKeyword, *model.AppError)
+	GetByText(text string) (*model.Keyword, *model.AppError)
 }
