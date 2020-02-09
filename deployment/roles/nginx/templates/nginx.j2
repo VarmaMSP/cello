@@ -186,8 +186,6 @@ http {
         proxy_buffering off;
 
         location /thumbnails/ {
-            add_header Cache-Control "public,max-age=604800";
-
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
@@ -196,13 +194,13 @@ http {
             proxy_connect_timeout  300;
             proxy_http_version 1.1;
             proxy_set_header Connection "";
+
+            add_header Cache-Control "public, max-age=604800";
 
             proxy_pass http://{{ minio_host }}:{{ minio_port }}/thumbnails/;
         }
 
         location /assests/ {
-            add_header Cache-Control "public,max-age=604800";
-
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
@@ -211,6 +209,8 @@ http {
             proxy_connect_timeout  300;
             proxy_http_version 1.1;
             proxy_set_header Connection "";
+
+            add_header Cache-Control "public, max-age=604800";
 
             proxy_pass http://{{ minio_host }}:{{ minio_port }}/assets/;
         }
