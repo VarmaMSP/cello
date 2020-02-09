@@ -36,7 +36,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c.App = h.App
 	c.Params = ParamsFromRequest(req)
 	c.Session = h.App.GetSession(req.Context())
-	c.Response = &model.ApiResponse{}
+	c.Response = &model.ApiResponse{
+		Headers: map[string]string{},
+	}
 
 	c.App.Log.Info().
 		Str("method", req.Method).
