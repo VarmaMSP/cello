@@ -3,10 +3,12 @@ package model
 import "encoding/json"
 
 type ApiResponse struct {
-	Status  string           `json:"status"`
-	Data    *ApiResponseData `json:"data,omitempty"`
-	Raw     json.RawMessage  `json:"raw,omitempty"`
-	Message string           `json:"message,omitempty"`
+	Status     string            `json:"status"`
+	StatusCode int               `json:"-"`
+	Headers    map[string]string `json:"-"`
+	Data       *ApiResponseData  `json:"data,omitempty"`
+	Raw        json.RawMessage   `json:"raw,omitempty"`
+	Message    string            `json:"message,omitempty"`
 }
 
 type ApiResponseData struct {

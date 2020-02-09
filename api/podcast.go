@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/go-http-utils/headers"
+	h "github.com/go-http-utils/headers"
 	"github.com/varmamsp/cello/model"
 )
 
@@ -18,20 +18,21 @@ func GetPodcastPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		c.Err = err
 		return
 	}
-	w.Header().Set(headers.CacheControl, "private, max-age=300, must-revalidate")
+
+	c.Response.Headers[h.CacheControl] = "private, max-age=300, must-revalidate"
 	if feed.ETag != "" {
-		ifNoneMatch := req.Header.Get(headers.IfNoneMatch)
-		w.Header().Set(headers.ETag, feed.ETag)
+		ifNoneMatch := req.Header.Get(h.IfNoneMatch)
+		c.Response.Headers[h.ETag] = feed.ETag
 		if ifNoneMatch != "" && ifNoneMatch == feed.ETag {
-			w.WriteHeader(http.StatusNotModified)
+			c.Response.StatusCode = http.StatusNotModified
 			return
 		}
 	}
 	if feed.LastModified != "" {
-		ifModifiedSince := req.Header.Get(headers.IfModifiedSince)
-		w.Header().Set(headers.LastModified, feed.LastModified)
+		ifModifiedSince := req.Header.Get(h.IfModifiedSince)
+		c.Response.Headers[h.LastModified] = feed.LastModified
 		if ifModifiedSince != "" && ifModifiedSince == feed.LastModified {
-			w.WriteHeader(http.StatusNotModified)
+			c.Response.StatusCode = http.StatusNotModified
 			return
 		}
 	}
@@ -58,6 +59,7 @@ func GetPodcastPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Podcasts:   []*model.Podcast{podcast},
 		Episodes:   episodes,
@@ -86,6 +88,7 @@ func BrowsePodcastEpisodes(c *Context, w http.ResponseWriter, req *http.Request)
 		model.EpisodesJoinPlaybacks(episodes, playbacks)
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Episodes: episodes,
 	}

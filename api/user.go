@@ -24,6 +24,7 @@ func ServiceLoadSession(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Users:    []*model.User{user},
 		Podcasts: subscriptions,
@@ -36,4 +37,6 @@ func ServiceEndSession(c *Context, w http.ResponseWriter, req *http.Request) {
 		c.Err = err
 		return
 	}
+
+	c.Response.StatusCode = http.StatusOK
 }

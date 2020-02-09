@@ -22,10 +22,10 @@ func GetHomePageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Categories: categories,
 	}
-
 	c.Response.Raw = model.EncodeToJson(&struct {
 		Recommended json.RawMessage `json:"recommended"`
 	}{
@@ -56,10 +56,10 @@ func GetChart(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Categories: []*model.Category{category},
 	}
-
 	c.Response.Raw = model.EncodeToJson(&struct {
 		Podcasts json.RawMessage `json:"podcasts"`
 	}{

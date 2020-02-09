@@ -29,6 +29,7 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		c.Response.StatusCode = http.StatusOK
 		c.Response.Data = &model.ApiResponseData{
 			Podcasts:             podcasts,
 			PodcastSearchResults: podcastSearchResults,
@@ -61,6 +62,7 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		c.Response.StatusCode = http.StatusOK
 		c.Response.Data = &model.ApiResponseData{
 			Podcasts:             podcasts,
 			Episodes:             episodes,
@@ -95,6 +97,7 @@ func BrowseResults(c *Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		c.Response.StatusCode = http.StatusOK
 		c.Response.Data = &model.ApiResponseData{
 			Podcasts:             podcasts,
 			PodcastSearchResults: podcastSearchResults,
@@ -136,6 +139,7 @@ func BrowseResults(c *Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		c.Response.StatusCode = http.StatusOK
 		c.Response.Data = &model.ApiResponseData{
 			Podcasts:             podcasts,
 			Episodes:             episodes,
@@ -159,6 +163,7 @@ func SearchSuggestions(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		PodcastSearchResults: podcastSearchResults,
 	}

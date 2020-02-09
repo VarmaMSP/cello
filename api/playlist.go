@@ -18,6 +18,7 @@ func GetPlaylistsPageData(c *Context, w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Playlists: playlists,
 	}
@@ -37,12 +38,12 @@ func GetPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 
 	if playlist.Privacy == "PRIVATE" {
 		if c.Session == nil {
-			w.WriteHeader(http.StatusBadRequest)
+			c.Response.StatusCode = http.StatusBadRequest
 			return
 		}
 
 		if c.Session.UserId != playlist.UserId {
-			w.WriteHeader(http.StatusBadRequest)
+			c.Response.StatusCode = http.StatusBadRequest
 			return
 		}
 	}
@@ -76,6 +77,7 @@ func GetPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
 		model.EpisodesJoinPlaybacks(episodes, playbacks)
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Playlists: []*model.Playlist{playlist},
 		Episodes:  episodes,
@@ -101,6 +103,7 @@ func ServiceAddToPlaylist(c *Context, w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Playlists: playlists,
 	}
@@ -141,6 +144,7 @@ func ServiceCreatePlaylist(c *Context, w http.ResponseWriter, req *http.Request)
 		playlist.Members = append(playlist.Members, &model.PlaylistMember{EpisodeId: episodeId, Position: i + 1})
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Playlists: []*model.Playlist{playlist},
 	}
@@ -193,6 +197,8 @@ func AddEpisodeToPlaylist(c *Context, w http.ResponseWriter, req *http.Request) 
 		c.Err = err
 		return
 	}
+
+	c.Response.StatusCode = http.StatusOK
 }
 
 func RemoveEpisodeFromPlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -223,6 +229,8 @@ func RemoveEpisodeFromPlaylist(c *Context, w http.ResponseWriter, req *http.Requ
 		c.Err = err
 		return
 	}
+
+	c.Response.StatusCode = http.StatusOK
 }
 
 func ServiceDeletePlaylist(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -247,4 +255,6 @@ func ServiceDeletePlaylist(c *Context, w http.ResponseWriter, req *http.Request)
 		c.Err = err
 		return
 	}
+
+	c.Response.StatusCode = http.StatusOK
 }

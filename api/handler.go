@@ -64,7 +64,13 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			Message: c.Err.Error(),
 		}).ToJson())
 
-	} else {
+	} else if c.Response.StatusCode == http.StatusNotModified {
+		for k, v := range c.Response.Headers {
+			w.Header().Set(k, v)
+		}
+		w.WriteHeader(http.StatusNotModified)
+
+	} else if c.Response.StatusCode == http.StatusOK {
 		c.Response.Status = "success"
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)

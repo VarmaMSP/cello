@@ -24,6 +24,7 @@ func GetEpisode(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Podcasts: []*model.Podcast{podcast},
 		Episodes: []*model.Episode{episode},

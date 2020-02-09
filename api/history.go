@@ -34,6 +34,7 @@ func GetHistoryPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Podcasts: podcasts,
 		Episodes: episodes,
@@ -68,6 +69,7 @@ func BrowseHistoryFeed(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Podcasts: podcasts,
 		Episodes: episodes,

@@ -34,6 +34,7 @@ func GetSubscriptionsPageData(c *Context, w http.ResponseWriter, req *http.Reque
 	}
 	model.EpisodesJoinPlaybacks(episodes, playbacks)
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Episodes: episodes,
 	}
@@ -67,6 +68,7 @@ func BrowseSubscriptionsFeed(c *Context, w http.ResponseWriter, req *http.Reques
 	}
 	model.EpisodesJoinPlaybacks(episodes, playbacks)
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Episodes: episodes,
 	}
@@ -88,6 +90,8 @@ func ServiceSubscribePodcast(c *Context, w http.ResponseWriter, req *http.Reques
 		c.Err = err
 		return
 	}
+
+	c.Response.StatusCode = http.StatusOK
 }
 
 func ServiceUnsubscribePodcast(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -106,4 +110,6 @@ func ServiceUnsubscribePodcast(c *Context, w http.ResponseWriter, req *http.Requ
 		c.Err = err
 		return
 	}
+
+	c.Response.StatusCode = http.StatusOK
 }

@@ -24,6 +24,7 @@ func ServiceGetPlaybacks(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
 		Playbacks: playbacks,
 	}
@@ -60,6 +61,8 @@ func PlaybackBegin(c *Context, w http.ResponseWriter, req *http.Request) {
 		c.Err = err
 		return
 	}
+
+	c.Response.StatusCode = http.StatusOK
 }
 
 func PlaybackProgress(c *Context, w http.ResponseWriter, req *http.Request) {
@@ -80,4 +83,6 @@ func PlaybackProgress(c *Context, w http.ResponseWriter, req *http.Request) {
 		c.Err = err
 		return
 	}
+
+	c.Response.StatusCode = http.StatusOK
 }
