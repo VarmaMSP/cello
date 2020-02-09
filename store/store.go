@@ -14,6 +14,7 @@ type Store interface {
 	Playlist() PlaylistStore
 	Category() CategoryStore
 	Task() TaskStore
+	Keyword() KeywordStore
 }
 
 type UserStore interface {
@@ -94,4 +95,8 @@ type CategoryStore interface {
 type TaskStore interface {
 	GetAll() ([]*model.Task, *model.AppError)
 	Update(old, new *model.Task) *model.AppError
+}
+
+type KeywordStore interface {
+	Save(keyword *model.Keyword) *model.AppError
 }

@@ -19,6 +19,7 @@ type SqlSupplier struct {
 	playlist     store.PlaylistStore
 	category     store.CategoryStore
 	task         store.TaskStore
+	keyword      store.KeywordStore
 }
 
 func NewSqlStore(config *model.Config) (SqlStore, error) {
@@ -42,6 +43,7 @@ func NewSqlStore(config *model.Config) (SqlStore, error) {
 	supplier.playlist = NewSqlPlaylistStore(supplier)
 	supplier.category = NewSqlCategoryStore(supplier)
 	supplier.task = NewSqlTaskStore(supplier)
+	supplier.keyword = NewSqlKeywordStore(supplier)
 
 	return supplier, nil
 }
@@ -137,4 +139,8 @@ func (s *SqlSupplier) Category() store.CategoryStore {
 
 func (s *SqlSupplier) Task() store.TaskStore {
 	return s.task
+}
+
+func (s *SqlSupplier) Keyword() store.KeywordStore {
+	return s.keyword
 }

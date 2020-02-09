@@ -26,4 +26,5 @@ type SqlStore interface {
 	Playlist() store.PlaylistStore
 	Category() store.CategoryStore
 	Task() store.TaskStore
+	Keyword() store.KeywordStore
 }
