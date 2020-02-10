@@ -19,7 +19,7 @@ const NavTabs: React.FC<OwnProps> = ({ tabs, active, defaultTab }) => {
   return (
     <div className="flex border-b">
       {tabs.map((t) => (
-        <div key={t.name} className="w-20 mr-2 text-center">
+        <div key={t.name} className="w-20 mr-2">
           <Link
             href={{ pathname: t.pathname, query: t.query }}
             as={t.as}
@@ -27,7 +27,7 @@ const NavTabs: React.FC<OwnProps> = ({ tabs, active, defaultTab }) => {
           >
             <a
               className={classNames(
-                'block px-3 py-1 text-sm capitalize leading-loose tracking-wider',
+                'block w-full py-1 text-sm text-center capitalize leading-loose tracking-wider',
                 {
                   'cursor-default': t.name === active,
                   'cursor-pointer': t.name !== active,

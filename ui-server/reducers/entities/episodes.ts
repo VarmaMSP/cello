@@ -9,13 +9,10 @@ const byId: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (
 ) => {
   switch (action.type) {
     case T.EPISODE_ADD:
-      return {
-        ...state,
-        ...action.episodes.reduce<{ [episodeId: string]: Episode }>(
-          (acc, e) => ({ ...acc, [e.id]: { ...(state[e.id] || {}), ...e } }),
-          {},
-        ),
-      }
+      return action.episodes.reduce<{ [episodeId: string]: Episode }>(
+        (acc, e) => ({ ...acc, [e.id]: Episode.merge(acc[e.id] || {}, e) }),
+        state,
+      )
 
     case T.EPISODE_JOIN_PLAYBACK:
       return {
