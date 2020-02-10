@@ -8,6 +8,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/varmamsp/gofeed/rss"
+	"gopkg.in/jdkato/prose.v2"
 
 	h "github.com/go-http-utils/headers"
 	"github.com/olivere/elastic/v7"
@@ -82,6 +83,7 @@ type EntitiesToSave struct {
 	podcast           *model.Podcast
 	episodes          []*model.Episode
 	podcastCategories []*model.PodcastCategory
+	keywords          []*model.Keyword
 }
 
 type EntitiesToIndex struct {
@@ -182,6 +184,12 @@ func (job *ImportPodcastJob) extract(feedId int64, rssFeed *rss.Feed) (*Entities
 			"jobs.podcast_import_job.save_podcast", err.Error(), http.StatusBadRequest,
 			map[string]interface{}{"title": rssFeed.Title},
 		)
+	}
+
+	doc, err := prose.NewDocument(podcast.Description)
+	if err != nil {
+			fmt.Println(err)
+					continue
 	}
 
 	return &EntitiesToSave{podcast, episodes, podcastCategories}, nil
