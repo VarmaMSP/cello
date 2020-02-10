@@ -3,6 +3,10 @@
     -moz-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+html {
+    overflow-y: scroll;
+}
+
 body {
     overscroll-behavior-x: none;
     -webkit-font-smoothing: antialiased;
