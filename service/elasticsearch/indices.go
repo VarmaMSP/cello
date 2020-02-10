@@ -4,7 +4,7 @@ const (
 	KeywordIndexName = "keyword"
 	KeywordMapping   = `{
 		"settings": {
-			"number_of_shards": 2,
+			"number_of_shards": 1,
 			"number_of_replicas": 2,
 			"index": {
 				"analysis": {
