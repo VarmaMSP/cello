@@ -60,7 +60,7 @@ func (s *SqlKeywordStore) SaveEpisodeKeyword(episodeKeyword *model.EpisodeKeywor
 func (s *SqlKeywordStore) GetByText(text string) (*model.Keyword, *model.AppError) {
 	keyword := &model.Keyword{}
 	sql_ := fmt.Sprintf(
-		"SELECT %s FROM keyword WHERE text = %s",
+		"SELECT %s FROM keyword WHERE text = '%s'",
 		joinStrings(keyword.DbColumns(), ","), text,
 	)
 

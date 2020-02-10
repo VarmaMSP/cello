@@ -10,6 +10,11 @@ type Keyword struct {
 	Text string
 }
 
+type KeywordIndex struct {
+	Text    string `json:"text"`
+	AddedBy string `json:"added_by"`
+}
+
 type PodcastKeyword struct {
 	KeywordId int64
 	PodcastId int64
