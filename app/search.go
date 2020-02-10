@@ -97,9 +97,9 @@ func (app *App) SearchEpisodes(searchQuery, sortBy string, offset, limit int) ([
 	q := app.ElasticSearch.Search().
 		Index(elasticsearch.EpisodeIndexName).
 		Query(elastic.NewMultiMatchQuery(searchQuery).
-			FieldWithBoost("title", 2).
+			FieldWithBoost("title", 1.1).
 			Field("description").
-			TieBreaker(0.4),
+			TieBreaker(0.5),
 		).
 		Highlight(elastic.NewHighlight().
 			FragmentSize(200).
