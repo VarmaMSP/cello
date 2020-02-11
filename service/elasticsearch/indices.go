@@ -12,7 +12,6 @@ const (
 						"shingle_analyzer": {
 							"tokenizer": "standard",
 							"filter": [
-								"standard",
 								"lowercase",
 								"apostrophe",
 								"filter_shingle"
@@ -21,7 +20,6 @@ const (
 						 "prefix_analyzer": {
 							"tokenizer": "standard",
 							"filter": [
-								"standard",
 								"lowercase",
 								"filter_truncate",
 								"filter_edgegram"

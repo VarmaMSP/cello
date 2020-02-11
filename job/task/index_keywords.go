@@ -31,6 +31,7 @@ func (s *IndexKeywords) Call() {
 		for {
 			keywords, err := s.Store.Keyword().GetAllPaginated(lastId, limit)
 			if err != nil {
+				fmt.Println(err)
 				break
 			}
 
@@ -53,6 +54,7 @@ func (s *IndexKeywords) Call() {
 
 				_, err := s.App.ElasticSearch.Bulk().Add(indexRequests[i:end]...).Do(context.TODO())
 				if err != nil {
+					fmt.Println(err)
 					break
 				}
 			}

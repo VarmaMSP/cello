@@ -79,7 +79,7 @@ func (s *SqlKeywordStore) GetByText(text string) (*model.Keyword, *model.AppErro
 
 func (s *SqlKeywordStore) GetAllPaginated(lastId int64, limit int) (res []*model.Keyword, appE *model.AppError) {
 	sql := fmt.Sprintf(
-		`SELECT %s FROM keyword id > %d ORDER BY id LIMIT %d`,
+		`SELECT %s FROM keyword WHERE id > %d ORDER BY id LIMIT %d`,
 		joinStrings((&model.Keyword{}).DbColumns(), ","), lastId, limit,
 	)
 
