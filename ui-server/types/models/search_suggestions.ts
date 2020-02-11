@@ -3,6 +3,7 @@ const TYPE_PODCAST = 'P'
 
 const ICON_SEARCH = 'S'
 const ICON_HISTORY = 'H'
+const ICON_CURRENT = 'C'
 
 export class SearchSuggestion {
   t: string
@@ -16,6 +17,10 @@ export class SearchSuggestion {
 
   static isTextHistory(s: SearchSuggestion): boolean {
     return s.t === TYPE_TEXT && s.i === ICON_HISTORY
+  }
+
+  static isTextCurrent(s: SearchSuggestion): boolean {
+    return s.t === TYPE_TEXT && s.i === ICON_CURRENT
   }
 
   static isPodcast(s: SearchSuggestion): boolean {
