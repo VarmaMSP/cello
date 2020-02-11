@@ -12,7 +12,7 @@ export interface SearchBarProps {
   searchText: string
   showSuggestions: boolean
   handleTextChange: (e: React.FormEvent<HTMLInputElement>) => void
-  handleTextSubmit: (e: React.FormEvent<HTMLFormElement>) => void
+  handleTextSubmit: (e?: React.FormEvent<HTMLFormElement>) => void
   collapseSearchBar: () => void
   setShowSuggestions: (e: boolean) => void
 }
@@ -48,12 +48,11 @@ const withProps = (
   setShowSuggestions,
 }) => {
   const handleTextChange = (e: React.FormEvent<HTMLInputElement>) => {
-    e.preventDefault()
     changeSearchText(e.currentTarget.value)
   }
 
-  const handleTextSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleTextSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+    !!e && e.preventDefault()
     collapseSearchBar()
     loadResultsPage(searchText, resultType, sortBy)
   }

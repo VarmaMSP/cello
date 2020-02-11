@@ -34,12 +34,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
     <>
       <form
         className="relative flex items-center px-2 py-1"
-        onSubmit={handleTextSubmit}
+        onSubmit={(e: React.SyntheticEvent<HTMLFormElement>) =>
+          e.preventDefault()
+        }
       >
         <ButtonWithIcon
           className="absolute inset-y-0 right-0 w-4 h-auto mr-4 text-gray-700"
           icon="search"
-          type="submit"
+          onClick={() => handleTextSubmit()}
         />
         <input
           className={classnames(
@@ -55,6 +57,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
           onPointerDown={stopEventPropagation}
           onMouseDown={stopEventPropagation}
           onTouchStart={stopEventPropagation}
+          onKeyDown={(e: React.KeyboardEvent) => {
+            if (e.keyCode === 38 || e.keyCode === 40) {
+              e.preventDefault()
+            }
+          }}
         />
       </form>
 
