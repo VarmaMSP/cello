@@ -1,6 +1,6 @@
 import classnames from 'classnames'
 import ButtonWithIcon from 'components/button_with_icon'
-import SearchSuggestions from 'components/search_suggestions'
+import SearchSuggestions from 'components/search_suggestions_list'
 import usePopper from 'hooks/usePopper'
 import React from 'react'
 import { Portal } from 'react-portal'

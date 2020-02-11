@@ -1,13 +1,14 @@
 import { connect } from 'react-redux'
+import { getSuggestions } from 'selectors/ui/search_bar'
 import { AppState } from 'store'
-import SearchSuggestions, { StateToProps } from './search_suggestions'
+import SearchSuggestionsList, { StateToProps } from './search_suggestions_list'
 
 function mapStateToProps(state: AppState): StateToProps {
   return {
-    podcasts: state.entities.searchSuggestions.podcasts,
+    suggestions: getSuggestions(state),
   }
 }
 
 export default connect<StateToProps, {}, {}, AppState>(mapStateToProps)(
-  SearchSuggestions,
+  SearchSuggestionsList,
 )
