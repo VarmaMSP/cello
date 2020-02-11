@@ -43,3 +43,12 @@ export function mergeArray<T>(a1: T[] | undefined, a2: T[] | undefined): T[] {
   }
   return []
 }
+
+export function uniqueId() {
+  return (
+    '_' +
+    Math.random()
+      .toString(36)
+      .substr(2, 9)
+  )
+}

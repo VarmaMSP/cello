@@ -21,7 +21,7 @@ const searchEpic: Epic<T.AppActions, T.AppActions, AppState> = (action$) =>
     concatMap<UpdateTextAction, Observable<T.AppActions>>((action) =>
       from(
         doFetch({
-          method: 'POST',
+          method: 'GET',
           urlPath: `/suggest?query=${action.text}`,
         }),
       ).pipe(

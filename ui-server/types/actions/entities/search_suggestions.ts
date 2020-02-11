@@ -12,5 +12,4 @@ interface ResetPodcastAction {
   type: typeof SEARCH_SUGGESTIONS_RESET
 }
 
-
 export type SearchSuggestionsActionTypes = AddPodcastAction | ResetPodcastAction
