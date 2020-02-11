@@ -5,6 +5,7 @@ import { Playback } from './playback'
 import { Playlist } from './playlist'
 import { Podcast } from './podcast'
 import { PodcastSearchResult } from './podcast_search_result'
+import { SearchSuggestion } from './search_suggestions'
 import { User } from './user'
 
 export class ApiResponse {
@@ -13,6 +14,7 @@ export class ApiResponse {
   episodes: Episode[]
   playbacks: Playback[]
   playlists: Playlist[]
+  searchSuggestions: SearchSuggestion[]
   podcastSearchResults: PodcastSearchResult[]
   episodeSearchResults: EpisodeSearchResult[]
   categories: Category[]
@@ -26,6 +28,9 @@ export class ApiResponse {
     this.episodes = (data['episodes'] || []).map((o: any) => new Episode(o))
     this.playbacks = (data['playbacks'] || []).map((o: any) => new Playback(o))
     this.playlists = (data['playlists'] || []).map((o: any) => new Playlist(o))
+    this.searchSuggestions = (data['search_suggestions'] || []).map(
+      (o: any) => new SearchSuggestion(o),
+    )
     this.podcastSearchResults = (data['podcast_search_results'] || []).map(
       (o: any) => new PodcastSearchResult(o),
     )

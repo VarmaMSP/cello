@@ -12,7 +12,6 @@ import { AppState } from 'store'
 import * as T from 'types/actions'
 import { UpdateTextAction } from 'types/actions/ui/search_bar'
 import { doFetch } from 'utils/fetch'
-import { qs } from 'utils/utils'
 
 const searchEpic: Epic<T.AppActions, T.AppActions, AppState> = (action$) =>
   action$.pipe(
@@ -23,15 +22,12 @@ const searchEpic: Epic<T.AppActions, T.AppActions, AppState> = (action$) =>
       from(
         doFetch({
           method: 'POST',
-          urlPath: `/ajax/service?${qs({
-            endpoint: 'search_suggestions',
-            query: action.text,
-          })}`,
+          urlPath: `/suggest?query=${action.text}`,
         }),
       ).pipe(
-        map(({ podcastSearchResults }) => ({
-          type: T.SEARCH_SUGGESTIONS_ADD_PODCAST,
-          podcasts: podcastSearchResults,
+        map(({ searchSuggestions }) => ({
+          type: T.SEARCH_BAR_UPDATE_SEARCH_SUGGESTIONS,
+          suggestions: searchSuggestions,
         })),
         catchError<any, Observable<T.AppActions>>(() =>
           of({ type: 'CONTINUE' }),
