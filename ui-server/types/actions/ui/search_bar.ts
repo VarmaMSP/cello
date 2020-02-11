@@ -1,7 +1,11 @@
+import { SearchSuggestion } from 'types/models/search_suggestions'
+
 export const SEARCH_BAR_UPDATE_TEXT = 'search_bar/update_text'
 export const SEARCH_BAR_EXPAND = 'search_bar/expand'
 export const SEARCH_BAR_COLLAPSE = 'search_bar/collapse'
 export const SEARCH_BAR_SET_SHOW_SUGGESTIONS = 'search_bar/show_suggestions'
+export const SEARCH_BAR_UPDATE_SEARCH_SUGGESTIONS =
+  'search_bar/update_search_suggestions'
 export const SEARCH_BAR_UPDATE_TEXT_SUGGESTIONS =
   'search_bar/update_text_suggestions'
 
@@ -23,6 +27,11 @@ interface SetShowSuggestionsAction {
   value: boolean
 }
 
+interface UpdateSearchSuggestions {
+  type: typeof SEARCH_BAR_UPDATE_SEARCH_SUGGESTIONS
+  suggestions: SearchSuggestion[]
+}
+
 interface UpdateTextSuggestionsAction {
   type: typeof SEARCH_BAR_UPDATE_TEXT_SUGGESTIONS
   suggestions: string[]
@@ -33,4 +42,5 @@ export type SearchBarActionTypes =
   | ExpandAction
   | CollapseAction
   | SetShowSuggestionsAction
+  | UpdateSearchSuggestions
   | UpdateTextSuggestionsAction
