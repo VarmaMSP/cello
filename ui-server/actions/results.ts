@@ -34,6 +34,26 @@ export function loadResultsPage(
   }
 }
 
+export function loadPodcastPage(podcastUrlParam: string) {
+  return (dispatch: Dispatch<T.AppActions>) => {
+    dispatch({
+      type: T.HISTORY_PUSH_ENTRY,
+      entry: {
+        urlPath: Router.asPath,
+        scrollY: window.scrollY,
+      },
+    })
+
+    Router.push(
+      {
+        pathname: '/podcasts',
+        query: { podcastUrlParam: podcastUrlParam },
+      },
+      `/podcasts/${podcastUrlParam}`,
+    )
+  }
+}
+
 export function getResultsPageData(
   query: string,
   resultType: 'podcast' | 'episode',

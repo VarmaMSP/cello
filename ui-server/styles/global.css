@@ -17,9 +17,10 @@ body {
     color: #805ad5;
 }
 
-.search-suggestion .result-highlight {
+.search-suggestion em {
     color: #1a202c;
-    font-weight: 500;
+    font-style: normal;
+    font-weight: 600;
 }
 
 @media (min-width: 768px) {
