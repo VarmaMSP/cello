@@ -8,39 +8,6 @@ import * as RequestId from 'utils/request_id'
 import { qs } from 'utils/utils'
 import { requestAction } from './utils'
 
-export function typeaheadDebounced(dispatch: Dispatch<T.AppActions>) {
-  let timer: NodeJS.Timeout | undefined
-  return function(query: string) {
-    dispatch({ type: T.SEARCH_BAR_UPDATE_TEXT, text: query })
-
-    if (!!timer) {
-      clearTimeout(timer)
-    }
-    // timer = setTimeout(() => {
-    //   bindActionCreators(loadSuggestions, dispatch)(query)
-    // }, 200)
-  }
-}
-
-export function loadSuggestions(query: string) {
-  return requestAction(
-    () =>
-      doFetch({
-        method: 'POST',
-        urlPath: `/ajax/service?${qs({
-          endpoint: 'search_suggestions',
-          query,
-        })}`,
-      }),
-    (dispatch, _, { podcastSearchResults }) => {
-      dispatch({
-        type: T.SEARCH_SUGGESTIONS_ADD_PODCAST,
-        podcasts: podcastSearchResults,
-      })
-    },
-  )
-}
-
 export function loadResultsPage(
   query: string,
   resultType: SearchResultType,

@@ -4,7 +4,6 @@ import { EpisodeActionTypes } from './entities/episode'
 import { PlaylistActionTypes } from './entities/playlist'
 import { PodcastActionTypes } from './entities/podcast'
 import { SearchResultActionTypes } from './entities/search_result'
-import { SearchSuggestionsActionTypes } from './entities/search_suggestions'
 import { UserActionTypes } from './entities/user'
 import { HistoryActionTypes } from './history'
 import { RequestActionTypes } from './request'
@@ -41,7 +40,6 @@ export type AppActions =
   | WindowActionTypes
   | RequestActionTypes
   | CategoryActionTypes
-  | SearchSuggestionsActionTypes
   | ContinueAction
 
 export * from './entities/category'
@@ -51,7 +49,6 @@ export * from './entities/feed'
 export * from './entities/playlist'
 export * from './entities/podcast'
 export * from './entities/search_result'
-export * from './entities/search_suggestions'
 export * from './entities/user'
 export * from './history'
 export * from './request'
@@ -64,4 +61,3 @@ export * from './ui/search_bar'
 export * from './ui/search_results_list'
 export * from './ui/subscriptions_feed'
 export * from './window'
-
