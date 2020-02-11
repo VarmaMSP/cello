@@ -31,7 +31,7 @@ const SearchSuggestionsList: React.FC<StateToProps & DispatchToProps> = ({
   const handleOnKeyDown = (e: any) => {
     if (e.keyCode === 38 && cursor > 0) {
       setCursor(cursor - 1)
-    } else if (e.keyCode === 40) {
+    } else if (e.keyCode === 40 && cursor < suggestions.length - 1) {
       setCursor(cursor + 1)
     } else if (e.keyCode === 13) {
       handleSelect(cursor)()
