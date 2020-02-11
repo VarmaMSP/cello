@@ -20,7 +20,7 @@ func GetSuggestions(c *Context, w http.ResponseWriter, req *http.Request) {
 
 	c.Response.StatusCode = http.StatusOK
 	c.Response.Data = &model.ApiResponseData{
-		Suggestions: suggestions,
+		SearchSuggestions: suggestions,
 	}
 }
 
