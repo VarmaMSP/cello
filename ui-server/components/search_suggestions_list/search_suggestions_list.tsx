@@ -24,7 +24,7 @@ const SearchSuggestionsList: React.FC<StateToProps & DispatchToProps> = ({
     if (SearchSuggestion.isPodcast(suggestions[i])) {
       loadPodcastPage(suggestions[i].i)
     } else {
-      loadResultsPage(suggestions[i].header)
+      loadResultsPage(suggestions[i].header.replace(/\<^\>/g, ''))
     }
   }
 
