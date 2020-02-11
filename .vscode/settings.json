@@ -1,10 +1,12 @@
 {
     "go.useLanguageServer": true,
-    "go.lintTool": "gometalinter",
+    "go.lintTool": "revive",
+    "go.toolsEnvVars": {
+        "GO111MODULE": "on"
+    },
     "go.lintFlags": [
-        "--disable-all",
-        "--enable=golint",
-        "--config=${workspaceRoot}/.gometalinter"
+        "--config=${workspaceRoot}/revive.toml",
+        "--formatter=stylish"
     ],
     "editor.insertSpaces": true,
     "editor.formatOnSave": false,

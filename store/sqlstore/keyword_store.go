@@ -76,3 +76,23 @@ func (s *SqlKeywordStore) GetByText(text string) (*model.Keyword, *model.AppErro
 
 	return keyword, nil
 }
+
+func (s *SqlKeywordStore) GetAllPaginated(lastId int64, limit int) (res []*model.Keyword, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM keyword id > %d ORDER BY id LIMIT %d`,
+		joinStrings((&model.Keyword{}).DbColumns(), ","), lastId, limit,
+	)
+
+	copyTo := func() []interface{} {
+		tmp := &model.Keyword{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_keyword_store.get_all_paginated", err.Error(), http.StatusInternalServerError,
+		)
+	}
+	return
+}
