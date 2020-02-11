@@ -35,6 +35,7 @@ func (api *Api) RegisterHandlers() {
 
 	r.Handler("GET", "/", api.H(GetHomePageData))
 	r.Handler("GET", "/results", api.H(GetResultsPageData))
+	r.Handler("GET", "/suggest", api.H(GetSuggestions))
 	r.Handler("GET", "/history", api.HAuth(GetHistoryPageData))
 	r.Handler("GET", "/subscriptions", api.HAuth(GetSubscriptionsPageData))
 	r.Handler("GET", "/playlists", api.HAuth(GetPlaylistsPageData))

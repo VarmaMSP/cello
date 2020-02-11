@@ -6,6 +6,24 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
+func GetSuggestions(c *Context, w http.ResponseWriter, req *http.Request) {
+	c.RequireQuery()
+	if c.Err != nil {
+		return
+	}
+
+	suggestions, err := c.App.SuggestKeywords(c.Params.Query)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	c.Response.StatusCode = http.StatusOK
+	c.Response.Data = &model.ApiResponseData{
+		Suggestions: suggestions,
+	}
+}
+
 func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 	c.RequireQuery()
 	if c.Err != nil {
