@@ -10,19 +10,16 @@ import (
 	"github.com/varmamsp/cello/service/elasticsearch"
 )
 
-func (app *App) SuggestKeywords(searchQuery string) ([]*model.SearchSuggestion, *model.AppError) {
-	var searchService *elastic.SearchService
-	if words := strings.Split(searchQuery, " "); len(words) > 1 {
-		searchService = app.KeywordPhrasePrefixSearch(words)
-	} else if len(words) == 1 {
-		searchService = app.KeywordPrefixSearch(words[0])
+func (app *App) SuggestKeywords(tokens []string) ([]*model.SearchSuggestion, *model.AppError) {
+	var err error
+	var results *elastic.SearchResult
+
+	if len(tokens) > 1 {
+		results, err = app.KeywordPhrasePrefixSearch(tokens)
 	} else {
-		return nil, model.NewAppError(
-			"app.suggestKeywords", "empty input", http.StatusBadRequest, nil,
-		)
+		results, err = app.KeywordPrefixSearch(tokens[0])
 	}
 
-	results, err := searchService.Do(context.TODO())
 	if err != nil {
 		return nil, model.NewAppError(
 			"app.suggestKeywords", err.Error(), http.StatusInternalServerError, nil,
@@ -44,7 +41,30 @@ func (app *App) SuggestKeywords(searchQuery string) ([]*model.SearchSuggestion, 
 	return searchSuggestions, nil
 }
 
-func (app *App) KeywordPrefixSearch(prefix string) *elastic.SearchService {
+func (app *App) SuggestPodcasts(tokens []string) ([]*model.SearchSuggestion, *model.AppError) {
+	results, err := app.PodcastPharseSearch(tokens)
+	if err != nil {
+		return nil, model.NewAppError(
+			"app.typeahead_podcasts", "no results", http.StatusInternalServerError, nil,
+		)
+	}
+
+	if results.Hits == nil || results.Hits.Hits == nil || len(results.Hits.Hits) == 0 {
+		return []*model.SearchSuggestion{}, nil
+	}
+
+	searchSuggestions := []*model.SearchSuggestion{}
+	for _, hit := range results.Hits.Hits {
+		tmp := &model.SearchSuggestion{}
+		if err := tmp.LoadFromPodcast(hit); err == nil {
+			searchSuggestions = append(searchSuggestions, tmp)
+		}
+	}
+
+	return searchSuggestions, nil
+}
+
+func (app *App) KeywordPrefixSearch(prefix string) (*elastic.SearchResult, error) {
 	return app.ElasticSearch.Search().
 		Index(elasticsearch.KeywordIndexName).
 		Query(elastic.NewTermQuery("text.prefix", prefix)).
@@ -54,12 +74,13 @@ func (app *App) KeywordPrefixSearch(prefix string) *elastic.SearchService {
 			PostTags("</em>").
 			Fields(elastic.NewHighlighterField("text")),
 		).
-		Size(5)
+		Size(5).
+		Do(context.TODO())
 }
 
-func (app *App) KeywordPhrasePrefixSearch(words []string) *elastic.SearchService {
-	phrase := strings.Join(words[0:len(words)-1], " ")
-	prefix := words[len(words)-1]
+func (app *App) KeywordPhrasePrefixSearch(tokens []string) (*elastic.SearchResult, error) {
+	phrase := strings.Join(tokens[0:len(tokens)-1], " ")
+	prefix := tokens[len(tokens)-1]
 
 	return app.ElasticSearch.Search().
 		Index(elasticsearch.KeywordIndexName).
@@ -79,13 +100,16 @@ func (app *App) KeywordPhrasePrefixSearch(words []string) *elastic.SearchService
 			PostTags("</em>").
 			Fields(elastic.NewHighlighterField("text")),
 		).
-		Size(5)
+		Size(5).
+		Do(context.TODO())
 }
 
-func (app *App) TypeaheadPodcasts(searchQuery string) ([]*model.PodcastSearchResult, *model.AppError) {
-	results, err := app.ElasticSearch.Search().
+func (app *App) PodcastPharseSearch(tokens []string) (*elastic.SearchResult, error) {
+	phrase := strings.Join(tokens, " ")
+
+	return app.ElasticSearch.Search().
 		Index(elasticsearch.PodcastIndexName).
-		Query(elastic.NewMultiMatchQuery(searchQuery).
+		Query(elastic.NewMultiMatchQuery(phrase).
 			Type("bool_prefix").
 			Field("title").
 			Field("title._2gram").
@@ -96,33 +120,15 @@ func (app *App) TypeaheadPodcasts(searchQuery string) ([]*model.PodcastSearchRes
 		).
 		Highlight(elastic.NewHighlight().
 			FragmentSize(200).
-			PreTags("<span class=\"result-highlight\">").
-			PostTags("</span>").
+			PreTags("<em>").
+			PostTags("</em>").
 			Fields(
 				elastic.NewHighlighterField("title"),
 				elastic.NewHighlighterField("author"),
 			),
 		).
-		Size(6).
+		Size(4).
 		Do(context.TODO())
-
-	if err != nil {
-		return nil, model.NewAppError("app.typeahead_podcasts", "no results", http.StatusInternalServerError, nil)
-	}
-
-	if results.Hits == nil || results.Hits.Hits == nil || len(results.Hits.Hits) == 0 {
-		return []*model.PodcastSearchResult{}, nil
-	}
-
-	podcastSearchResults := []*model.PodcastSearchResult{}
-	for _, hit := range results.Hits.Hits {
-		tmp := &model.PodcastSearchResult{}
-		if err := tmp.LoadDetails(hit); err == nil {
-			tmp.Description = ""
-			podcastSearchResults = append(podcastSearchResults, tmp)
-		}
-	}
-	return podcastSearchResults, nil
 }
 
 func (app *App) SearchPodcasts(searchQuery string, offset, limit int) ([]*model.PodcastSearchResult, *model.AppError) {

@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/varmamsp/cello/model"
 )
@@ -12,10 +13,24 @@ func GetSuggestions(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	suggestions, err := c.App.SuggestKeywords(c.Params.Query)
+	tokens := strings.Split(c.Params.Query, " ")
+	if len(tokens) == 0 {
+		return
+	}
+
+	suggestions, err := c.App.SuggestKeywords(tokens)
 	if err != nil {
 		c.Err = err
 		return
+	}
+
+	if l := len(tokens); l >= 3 || l == 2 && len(tokens[1]) >= 4 {
+		podcasts, err := c.App.SuggestPodcasts(tokens)
+		if err != nil {
+			c.Err = err
+			return
+		}
+		suggestions = append(suggestions, podcasts...)
 	}
 
 	c.Response.StatusCode = http.StatusOK
@@ -166,23 +181,5 @@ func BrowseResults(c *Context, w http.ResponseWriter, req *http.Request) {
 
 	} else {
 		c.SetInvalidQueryParam("type")
-	}
-}
-
-func SearchSuggestions(c *Context, w http.ResponseWriter, req *http.Request) {
-	c.RequireQuery()
-	if c.Err != nil {
-		return
-	}
-
-	podcastSearchResults, err := c.App.TypeaheadPodcasts(c.Params.Query)
-	if err != nil {
-		c.Err = err
-		return
-	}
-
-	c.Response.StatusCode = http.StatusOK
-	c.Response.Data = &model.ApiResponseData{
-		PodcastSearchResults: podcastSearchResults,
 	}
 }
