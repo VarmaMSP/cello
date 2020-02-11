@@ -8,6 +8,7 @@ const (
 	TASK_NAME_REIMPORT_PODCASTS        = "reimport_podcasts"
 	TASK_NAME_REINDEX_EPISODES         = "reindex_episodes"
 	TASK_NAME_REINDEX_PODCASTS         = "reindex_podcasts"
+	TASK_NAME_INDEX_KEYWORDS           = "index_keywords"
 	TASK_NAME_FIX_CATEGORIES           = "fix_categories"
 	TASK_NAME_EXTRACT_KEYWORDS         = "extract_keywords"
 
