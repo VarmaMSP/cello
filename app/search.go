@@ -3,11 +3,84 @@ package app
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"github.com/olivere/elastic/v7"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/elasticsearch"
 )
+
+func (app *App) SuggestKeywords(searchQuery string) ([]*model.SearchSuggestion, *model.AppError) {
+	var searchService *elastic.SearchService
+	if words := strings.Split(searchQuery, " "); len(words) > 1 {
+		searchService = app.KeywordPhrasePrefixSearch(words)
+	} else if len(words) == 1 {
+		searchService = app.KeywordPrefixSearch(words[0])
+	} else {
+		return nil, model.NewAppError(
+			"app.suggestKeywords", "empty input", http.StatusBadRequest, nil,
+		)
+	}
+
+	results, err := searchService.Do(context.TODO())
+	if err != nil {
+		return nil, model.NewAppError(
+			"app.suggestKeywords", err.Error(), http.StatusInternalServerError, nil,
+		)
+	}
+
+	if results.Hits == nil || results.Hits.Hits == nil || len(results.Hits.Hits) == 0 {
+		return []*model.SearchSuggestion{}, nil
+	}
+
+	searchSuggestions := []*model.SearchSuggestion{}
+	for _, hit := range results.Hits.Hits {
+		tmp := &model.SearchSuggestion{}
+		if err := tmp.LoadFromKeyword(hit); err == nil {
+			searchSuggestions = append(searchSuggestions, tmp)
+		}
+	}
+
+	return searchSuggestions, nil
+}
+
+func (app *App) KeywordPrefixSearch(prefix string) *elastic.SearchService {
+	return app.ElasticSearch.Search().
+		Index(elasticsearch.KeywordIndexName).
+		Query(elastic.NewTermQuery("text.prefix", prefix)).
+		Highlight(elastic.NewHighlight().
+			FragmentSize(10).
+			PreTags("<em>").
+			PostTags("</em>").
+			Fields(elastic.NewHighlighterField("text")),
+		).
+		Size(5)
+}
+
+func (app *App) KeywordPhrasePrefixSearch(words []string) *elastic.SearchService {
+	phrase := strings.Join(words[0:len(words)-1], " ")
+	prefix := words[len(words)-1]
+
+	return app.ElasticSearch.Search().
+		Index(elasticsearch.KeywordIndexName).
+		Query(elastic.NewBoolQuery().
+			Must(
+				elastic.NewFuzzyQuery("text", phrase).
+					Fuzziness("AUTO").
+					MaxExpansions(30).
+					PrefixLength(0).
+					Transpositions(true),
+				elastic.NewTermQuery("text.prefix", prefix),
+			),
+		).
+		Highlight(elastic.NewHighlight().
+			FragmentSize(10).
+			PreTags("<em>").
+			PostTags("</em>").
+			Fields(elastic.NewHighlighterField("text")),
+		).
+		Size(5)
+}
 
 func (app *App) TypeaheadPodcasts(searchQuery string) ([]*model.PodcastSearchResult, *model.AppError) {
 	results, err := app.ElasticSearch.Search().
