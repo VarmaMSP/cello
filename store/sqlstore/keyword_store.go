@@ -91,7 +91,7 @@ func (s *SqlKeywordStore) GetAllPaginated(lastId int64, limit int) (res []*model
 
 	if err := s.Query(copyTo, sql); err != nil {
 		appE = model.NewAppError(
-			"store.sqlstore.sql_keyword_store.get_all_paginated", err.Error(), http.StatusInternalServerError,
+			"store.sqlstore.sql_keyword_store.get_all_paginated", err.Error(), http.StatusInternalServerError, nil,
 		)
 	}
 	return
