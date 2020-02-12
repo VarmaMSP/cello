@@ -11,19 +11,16 @@ import SearchSuggestionsList, {
 } from './search_suggestions_list'
 
 function mapStateToProps(state: AppState): StateToProps {
-  const searchText = getText(state).trim()
-  const currentSuggestion = <SearchSuggestion>{
-    t: 'T',
-    i: 'C',
-    header: searchText,
-    subHeader: '',
-  }
-
   return {
-    suggestions:
-      searchText.length > 0
-        ? [currentSuggestion, ...getSuggestions(state)]
-        : getSuggestions(state),
+    suggestions: [
+      <SearchSuggestion>{
+        t: 'T',
+        i: 'C',
+        header: getText(state).trim(),
+        subHeader: '',
+      },
+      ...getSuggestions(state),
+    ],
   }
 }
 
