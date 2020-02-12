@@ -65,7 +65,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         />
       </form>
 
-      {showSuggestions && (
+      {showSuggestions && searchText.trim().length > 0 && (
         <Portal>
           <div ref={popper.ref} style={popper.styles}>
             <SearchSuggestions />

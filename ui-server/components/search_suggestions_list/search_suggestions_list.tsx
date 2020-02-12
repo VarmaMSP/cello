@@ -18,7 +18,7 @@ const SearchSuggestionsList: React.FC<StateToProps & DispatchToProps> = ({
   loadResultsPage,
   loadPodcastPage,
 }) => {
-  const [cursor, setCursor] = useState<number>(1)
+  const [cursor, setCursor] = useState<number>(0)
 
   const handleSelect = (i: number) => () => {
     if (SearchSuggestion.isPodcast(suggestions[i])) {
@@ -47,7 +47,7 @@ const SearchSuggestionsList: React.FC<StateToProps & DispatchToProps> = ({
     return () => document.removeEventListener('keydown', handleOnKeyDown)
   }, [cursor, suggestions.length])
 
-  return suggestions.length > 0 && suggestions[0].i === 'C' ? (
+  return (
     <div
       style={{ width: '32rem' }}
       className="z-10 px-2 py-2 bg-white border border-blue-400 rounded-lg"
@@ -58,8 +58,6 @@ const SearchSuggestionsList: React.FC<StateToProps & DispatchToProps> = ({
           : renderTextSuggestion(s, handleSelect(i), cursor === i),
       )}
     </div>
-  ) : (
-    <></>
   )
 }
 
