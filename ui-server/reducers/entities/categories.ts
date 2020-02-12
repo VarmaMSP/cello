@@ -1,6 +1,6 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { Category } from 'types/models'
+import { Category } from 'models'
 
 const merge = (c1: Category, c2: Category): Category => ({
   id: c2.id,

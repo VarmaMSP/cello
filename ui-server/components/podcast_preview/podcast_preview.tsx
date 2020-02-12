@@ -1,5 +1,5 @@
 import { PodcastLink } from 'components/link'
-import { Podcast, PodcastSearchResult } from 'types/models'
+import { Podcast, PodcastSearchResult } from 'models'
 import { getImageUrl } from 'utils/dom'
 
 export interface StateToProps {

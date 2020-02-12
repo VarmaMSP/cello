@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getEpisodeById } from 'selectors/entities/episodes'
 import { AppState } from 'store'
-import { Episode } from 'types/models'
+import { Episode } from 'models'
 import { PageContext } from 'types/utilities'
 import { getIdFromUrlParam } from 'utils/format'
 

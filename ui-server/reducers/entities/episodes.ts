@@ -1,6 +1,6 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { Episode } from 'types/models'
+import { Episode } from 'models'
 import { addKeyToArr } from 'utils/immutable'
 
 const byId: Reducer<{ [episodeId: string]: Episode }, T.AppActions> = (

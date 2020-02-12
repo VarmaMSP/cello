@@ -1,7 +1,7 @@
 import ModalContainer from 'components/modal/modal_container'
 import Overlay from 'components/modal/overlay'
 import React from 'react'
-import { Playlist } from 'types/models'
+import { Playlist } from 'models'
 import PlaylistsListItem from './playlists_list_item'
 
 export interface StateToProps {

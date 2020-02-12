@@ -1,5 +1,5 @@
 import { AppState } from 'store'
-import { Category } from 'types/models'
+import { Category } from 'models'
 
 export function getCategoryById(state: AppState, categoryId: string) {
   return state.entities.categories.byId[categoryId]

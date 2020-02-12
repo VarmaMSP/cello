@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getPodcastById } from 'selectors/entities/podcasts'
 import { AppState } from 'store'
-import { Podcast } from 'types/models'
+import { Podcast } from 'models'
 import { PageContext } from 'types/utilities'
 import { getIdFromUrlParam } from 'utils/utils'
 

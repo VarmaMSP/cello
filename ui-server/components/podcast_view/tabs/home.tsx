@@ -1,5 +1,5 @@
 import React from 'react'
-import { Podcast } from 'types/models'
+import { Podcast } from 'models'
 import CategoryList from '../components/category_list'
 import EpisodeList from '../components/episode_list'
 

@@ -1,4 +1,4 @@
-import { User } from 'types/models'
+import { User } from 'models'
 
 export const USER_ADD = 'user/add'
 

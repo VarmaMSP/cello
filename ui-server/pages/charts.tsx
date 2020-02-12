@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getCategoryById } from 'selectors/entities/categories'
 import { AppState } from 'store'
-import { Category } from 'types/models'
+import { Category } from 'models'
 import { PageContext } from 'types/utilities'
 import { getIdFromUrlParam } from 'utils/format'
 

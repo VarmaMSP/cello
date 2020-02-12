@@ -1,7 +1,7 @@
 import classnames from 'classnames'
 import { iconMap } from 'components/icon'
 import React, { useEffect, useState } from 'react'
-import { SearchSuggestion } from 'types/models'
+import { SearchSuggestion } from 'models'
 import { getImageUrl, stopEventPropagation } from 'utils/dom'
 
 export interface StateToProps {

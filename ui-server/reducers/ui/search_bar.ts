@@ -1,6 +1,6 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { SearchSuggestion } from 'types/models'
+import { SearchSuggestion } from 'models'
 
 const text: Reducer<string, T.AppActions> = (state = '', action) => {
   switch (action.type) {

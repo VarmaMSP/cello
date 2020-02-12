@@ -1,6 +1,6 @@
 import NavTabs from 'components/nav_tabs'
 import React from 'react'
-import { Playlist } from 'types/models'
+import { Playlist } from 'models'
 import PlaylistHeader from './components/playlist_header'
 import HomeTab from './home_tab/home_tab'
 

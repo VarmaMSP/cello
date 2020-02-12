@@ -1,7 +1,7 @@
 import NavTabs from 'components/nav_tabs'
 import { NextSeo } from 'next-seo'
 import React from 'react'
-import { Episode } from 'types/models'
+import { Episode } from 'models'
 import EpisodeHeader from './components/episode_header'
 import HomeTab from './tabs/home'
 

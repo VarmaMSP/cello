@@ -1,4 +1,4 @@
-import { Episode } from 'types/models'
+import { Episode } from 'models'
 
 export const RECEIVED_HISTORY_FEED = 'RECEIVED_HISTORY_FEED'
 export const RECEIVED_ALL_HISTORY_FEED = 'RECEIVED_ALL_HISTORY_FEED'

@@ -1,5 +1,5 @@
 import * as T from 'types/actions'
-import { Curation, Podcast } from 'types/models'
+import { Curation, Podcast } from 'models'
 import { doFetch } from 'utils/fetch'
 import * as RequestId from 'utils/request_id'
 import { requestAction } from './utils'

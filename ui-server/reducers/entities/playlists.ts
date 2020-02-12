@@ -1,6 +1,6 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { Playlist } from 'types/models'
+import { Playlist } from 'models'
 import { addKeyToArr, addToArr } from 'utils/immutable'
 
 const byId: Reducer<{ [playlistId: string]: Playlist }, T.AppActions> = (

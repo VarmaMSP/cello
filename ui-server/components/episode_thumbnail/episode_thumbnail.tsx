@@ -1,6 +1,6 @@
 import classnames from 'classnames'
 import { iconMap } from 'components/icon'
-import { Episode, Podcast } from 'types/models'
+import { Episode, Podcast } from 'models'
 import { getImageUrl } from 'utils/dom'
 import { formatDuration } from 'utils/format'
 

@@ -1,6 +1,6 @@
 import ButtonShowMore from 'components/button_show_more'
 import EpisodePreview from 'components/episode_preview'
-import { Episode } from 'types/models'
+import { Episode } from 'models'
 
 export interface StateToProps {
   feed: Episode[]

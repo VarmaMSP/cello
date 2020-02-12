@@ -1,6 +1,6 @@
 import { NextSeo, NextSeoProps } from 'next-seo'
 import React, { useEffect } from 'react'
-import { Category, Episode, Playlist, Podcast } from 'types/models'
+import { Category, Episode, Playlist, Podcast } from 'models'
 import { getImageUrl } from 'utils/dom'
 import { pageview } from 'utils/gtag'
 

@@ -1,6 +1,6 @@
 import NavTabs from 'components/nav_tabs'
 import React from 'react'
-import { Podcast } from 'types/models'
+import { Podcast } from 'models'
 import PodcastHeader from './components/podcast_header/podcast_header'
 import HomeTab from './tabs/home'
 

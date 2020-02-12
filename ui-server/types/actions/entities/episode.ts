@@ -1,4 +1,4 @@
-import { Episode, Playback } from 'types/models'
+import { Episode, Playback } from 'models'
 
 export const EPISODE_ADD = 'episode/add'
 export const EPISODE_JOIN_PLAYBACK = 'episode/join_playbacks'

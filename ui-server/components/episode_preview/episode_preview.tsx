@@ -4,7 +4,7 @@ import { EpisodeLink, PodcastLink } from 'components/link'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import parseISO from 'date-fns/parseISO'
 import React from 'react'
-import { Episode, EpisodeSearchResult, Podcast } from 'types/models'
+import { Episode, EpisodeSearchResult, Podcast } from 'models'
 
 export interface StateToProps {
   episode: Episode

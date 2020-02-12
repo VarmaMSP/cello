@@ -1,4 +1,4 @@
-import { Playlist } from 'types/models'
+import { Playlist } from 'models'
 
 export interface DispatchToProps {
   addEpisode: () => void

@@ -4,7 +4,7 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { getSuggestions, getText } from 'selectors/ui/search_bar'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import { SearchSuggestion } from 'types/models'
+import { SearchSuggestion } from 'models'
 import SearchSuggestionsList, {
   DispatchToProps,
   StateToProps,

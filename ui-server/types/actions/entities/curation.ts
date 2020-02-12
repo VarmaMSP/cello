@@ -1,4 +1,4 @@
-import { Curation } from 'types/models'
+import { Curation } from 'models'
 
 export const CURATION_ADD = 'curation/add'
 export const CURATION_ADD_PODCASTS = 'curation/add_podcasts'

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { AppState } from 'store'
-import { Episode } from 'types/models'
+import { Episode } from 'models'
 import { $Id } from 'types/utilities'
 
 export function makeSelectSubscriptionsFeed() {

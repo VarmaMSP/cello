@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-unfetch'
-import { ApiResponse } from 'types/models/api_response'
+import { ApiResponse } from 'models/api_response'
 
 export interface FetchRequest {
   method: 'GET' | 'PUT' | 'POST'

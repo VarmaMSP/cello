@@ -1,6 +1,6 @@
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { Podcast } from 'types/models'
+import { Podcast } from 'models'
 
 const byId: Reducer<{ [podcastId: string]: Podcast }, T.AppActions> = (
   state = {},

@@ -1,4 +1,4 @@
-import { SearchSuggestion } from 'types/models/search_suggestions'
+import { SearchSuggestion } from 'models/search_suggestions'
 
 export const SEARCH_BAR_UPDATE_TEXT = 'search_bar/update_text'
 export const SEARCH_BAR_EXPAND = 'search_bar/expand'

@@ -1,7 +1,7 @@
 import ButtonShowMore from 'components/button_show_more'
 import EpisodePreview from 'components/episode_preview'
 import React, { useEffect } from 'react'
-import { Episode, Podcast } from 'types/models'
+import { Episode, Podcast } from 'models'
 
 export interface StateToProps {
   isUserSignedIn: boolean

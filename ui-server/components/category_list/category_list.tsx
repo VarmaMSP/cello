@@ -1,7 +1,7 @@
 import classnames from 'classnames'
 import { ChartLink } from 'components/link'
 import React from 'react'
-import { Category } from 'types/models'
+import { Category } from 'models'
 
 export interface StateToProps {
   categories: Category[]

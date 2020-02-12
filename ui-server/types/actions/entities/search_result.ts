@@ -1,4 +1,4 @@
-import { EpisodeSearchResult, PodcastSearchResult } from 'types/models'
+import { EpisodeSearchResult, PodcastSearchResult } from 'models'
 
 export const SEARCH_RESULT_ADD_PODCAST = 'search_result/add_podcast'
 export const SEARCH_RESULT_ADD_EPISODE = 'search_result/add_epiosde'

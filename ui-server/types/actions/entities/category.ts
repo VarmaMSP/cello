@@ -1,4 +1,4 @@
-import { Category } from 'types/models/category'
+import { Category } from 'models/category'
 
 export const CATEGORY_ADD = 'category/add'
 export const CATEGORY_ADD_PODCASTS = 'category/add_podcasts'

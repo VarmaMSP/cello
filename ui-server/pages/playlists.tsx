@@ -12,7 +12,7 @@ import { getPlaylistById } from 'selectors/entities/playlists'
 import { getIsUserSignedIn } from 'selectors/session'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import { Playlist } from 'types/models'
+import { Playlist } from 'models'
 import { PageContext } from 'types/utilities'
 import { getIdFromUrlParam } from 'utils/utils'
 

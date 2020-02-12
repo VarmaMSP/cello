@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { AppState } from 'store'
-import { Episode, Podcast } from 'types/models'
+import { Episode, Podcast } from 'models'
 import { PodcastEpisodeListOrder } from 'types/ui'
 import { $Id } from 'types/utilities'
 
