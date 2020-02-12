@@ -22,6 +22,7 @@ type TaskSchedulerJob struct {
 	fixCategories          *task.FixCategories
 	fixKeywords            *task.FixKeywords
 	extractKeywords        *task.ExtractKeywords
+	cleanUpKeywords        *task.CleanUpKeywords
 }
 
 func NewTaskSchedulerJob(app *app.App, config *model.Config) (model.Job, error) {
@@ -80,6 +81,11 @@ func NewTaskSchedulerJob(app *app.App, config *model.Config) (model.Job, error) 
 	}
 
 	s.extractKeywords, err = task.NewExtractKeywords(app)
+	if err != nil {
+		return nil, err
+	}
+
+	s.cleanUpKeywords, err = task.NewCleanUpKeywords(app)
 	if err != nil {
 		return nil, err
 	}
@@ -191,5 +197,8 @@ func (job *TaskSchedulerJob) callTask(task *model.Task) {
 
 	case model.TASK_NAME_EXTRACT_KEYWORDS:
 		job.extractKeywords.Call()
+
+	case model.TASK_NAME_CLEAN_UP_KEYWORDS:
+		job.cleanUpKeywords.Call()
 	}
 }

@@ -12,6 +12,7 @@ const (
 	TASK_NAME_FIX_CATEGORIES           = "fix_categories"
 	TASK_NAME_EXTRACT_KEYWORDS         = "extract_keywords"
 	TASK_NAME_FIX_KEYWORDS             = "fix_keywords"
+	TASK_NAME_CLEAN_UP_KEYWORDS        = "clean_up_keywords"
 
 	TASK_TYPE_PERIODIC  = "PERIODIC"
 	TASK_TYPE_ONEOFF    = "ONEOFF"

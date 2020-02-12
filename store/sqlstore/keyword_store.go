@@ -1,7 +1,6 @@
 package sqlstore
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -19,8 +18,8 @@ func NewSqlKeywordStore(store SqlStore) *SqlKeywordStore {
 func (s *SqlKeywordStore) Upsert(keyword *model.Keyword) (*model.Keyword, *model.AppError) {
 	if k, err := s.GetByText(keyword.Text); err != nil {
 		return nil, err
-	} else if k != nil {
-		return k, nil
+	} else if len(k) > 1 {
+		return k[0], nil
 	}
 
 	keyword.PreSave()
@@ -57,24 +56,25 @@ func (s *SqlKeywordStore) SaveEpisodeKeyword(episodeKeyword *model.EpisodeKeywor
 	return episodeKeyword, nil
 }
 
-func (s *SqlKeywordStore) GetByText(text string) (*model.Keyword, *model.AppError) {
-	keyword := &model.Keyword{}
-	sql_ := fmt.Sprintf(
+func (s *SqlKeywordStore) GetByText(text string) (res []*model.Keyword, appE *model.AppError) {
+	sql := fmt.Sprintf(
 		"SELECT %s FROM keyword WHERE text = '%s'",
-		joinStrings(keyword.DbColumns(), ","), text,
+		joinStrings((&model.Keyword{}).DbColumns(), ","), text,
 	)
 
-	if err := s.GetMaster().QueryRow(sql_).Scan(keyword.FieldAddrs()...); err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
-		}
-		return nil, model.NewAppError(
+	copyTo := func() []interface{} {
+		tmp := &model.Keyword{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
 			"store.sqlstore.sql_keyword_store.get_by_text", err.Error(), http.StatusInternalServerError,
 			map[string]interface{}{"text": text},
 		)
 	}
-
-	return keyword, nil
+	return
 }
 
 func (s *SqlKeywordStore) GetAllPaginated(lastId int64, limit int) (res []*model.Keyword, appE *model.AppError) {
@@ -92,6 +92,23 @@ func (s *SqlKeywordStore) GetAllPaginated(lastId int64, limit int) (res []*model
 	if err := s.Query(copyTo, sql); err != nil {
 		appE = model.NewAppError(
 			"store.sqlstore.sql_keyword_store.get_all_paginated", err.Error(), http.StatusInternalServerError, nil,
+		)
+	}
+	return
+}
+
+func (s *SqlKeywordStore) GetDuplicates() (res []string, appE *model.AppError) {
+	sql := "SELECT text FROM keyword GROUP BY text HAVING count(id) > 1"
+
+	copyTo := func() []interface{} {
+		tmp := ""
+		res = append(res, tmp)
+		return []interface{}{&tmp}
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.NewAppError(
+			"store.sqlstore.sql_keyword_store.get_duplicates", err.Error(), http.StatusInternalServerError, nil,
 		)
 	}
 	return
