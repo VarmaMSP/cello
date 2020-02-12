@@ -3,21 +3,22 @@ package app
 import (
 	"context"
 	"net/http"
-	"strings"
 
 	"github.com/olivere/elastic/v7"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/elasticsearch"
 )
 
-func (app *App) SuggestKeywords(tokens []string) ([]*model.SearchSuggestion, *model.AppError) {
+func (app *App) SuggestKeywords(phrase, prefix string) ([]*model.SearchSuggestion, *model.AppError) {
 	var err error
 	var results *elastic.SearchResult
 
-	if len(tokens) > 1 {
-		results, err = app.KeywordPhrasePrefixSearch(tokens)
+	if phrase != "" && prefix != "" {
+		results, err = app.KeywordPhrasePrefixSearch(phrase, prefix)
+	} else if phrase != "" && prefix == "" {
+		results, err = app.KeywordPhraseSearch(phrase)
 	} else {
-		results, err = app.KeywordPrefixSearch(tokens[0])
+		results, err = app.KeywordPrefixSearch(prefix)
 	}
 
 	if err != nil {
@@ -41,8 +42,8 @@ func (app *App) SuggestKeywords(tokens []string) ([]*model.SearchSuggestion, *mo
 	return searchSuggestions, nil
 }
 
-func (app *App) SuggestPodcasts(tokens []string) ([]*model.SearchSuggestion, *model.AppError) {
-	results, err := app.PodcastPharseSearch(tokens)
+func (app *App) SuggestPodcasts(phrase string) ([]*model.SearchSuggestion, *model.AppError) {
+	results, err := app.PodcastPharseSearch(phrase)
 	if err != nil {
 		return nil, model.NewAppError(
 			"app.typeahead_podcasts", "no results", http.StatusInternalServerError, nil,
@@ -64,24 +65,7 @@ func (app *App) SuggestPodcasts(tokens []string) ([]*model.SearchSuggestion, *mo
 	return searchSuggestions, nil
 }
 
-func (app *App) KeywordPrefixSearch(prefix string) (*elastic.SearchResult, error) {
-	return app.ElasticSearch.Search().
-		Index(elasticsearch.KeywordIndexName).
-		Query(elastic.NewTermQuery("text.prefix", prefix)).
-		Highlight(elastic.NewHighlight().
-			FragmentSize(10).
-			PreTags("<em>").
-			PostTags("</em>").
-			Fields(elastic.NewHighlighterField("text")),
-		).
-		Size(5).
-		Do(context.TODO())
-}
-
-func (app *App) KeywordPhrasePrefixSearch(tokens []string) (*elastic.SearchResult, error) {
-	phrase := strings.Join(tokens[0:len(tokens)-1], " ")
-	prefix := tokens[len(tokens)-1]
-
+func (app *App) KeywordPhrasePrefixSearch(phrase, prefix string) (*elastic.SearchResult, error) {
 	return app.ElasticSearch.Search().
 		Index(elasticsearch.KeywordIndexName).
 		Query(elastic.NewBoolQuery().
@@ -104,9 +88,40 @@ func (app *App) KeywordPhrasePrefixSearch(tokens []string) (*elastic.SearchResul
 		Do(context.TODO())
 }
 
-func (app *App) PodcastPharseSearch(tokens []string) (*elastic.SearchResult, error) {
-	phrase := strings.Join(tokens, " ")
+func (app *App) KeywordPhraseSearch(phrase string) (*elastic.SearchResult, error) {
+	return app.ElasticSearch.Search().
+		Index(elasticsearch.KeywordIndexName).
+		Query(elastic.NewFuzzyQuery("text", phrase).
+			Fuzziness("AUTO").
+			MaxExpansions(30).
+			PrefixLength(0).
+			Transpositions(true),
+		).
+		Highlight(elastic.NewHighlight().
+			FragmentSize(10).
+			PreTags("<em>").
+			PostTags("</em>").
+			Fields(elastic.NewHighlighterField("text")),
+		).
+		Size(5).
+		Do(context.TODO())
+}
 
+func (app *App) KeywordPrefixSearch(prefix string) (*elastic.SearchResult, error) {
+	return app.ElasticSearch.Search().
+		Index(elasticsearch.KeywordIndexName).
+		Query(elastic.NewTermQuery("text.prefix", prefix)).
+		Highlight(elastic.NewHighlight().
+			FragmentSize(10).
+			PreTags("<em>").
+			PostTags("</em>").
+			Fields(elastic.NewHighlighterField("text")),
+		).
+		Size(5).
+		Do(context.TODO())
+}
+
+func (app *App) PodcastPharseSearch(phrase string) (*elastic.SearchResult, error) {
 	return app.ElasticSearch.Search().
 		Index(elasticsearch.PodcastIndexName).
 		Query(elastic.NewMultiMatchQuery(phrase).

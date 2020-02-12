@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
@@ -106,7 +107,7 @@ func (c *Context) RequireChartId() *Context {
 }
 
 func (c *Context) RequireQuery() *Context {
-	if c.Err == nil && c.Params.Query == "" {
+	if c.Err == nil && c.Params.Query == "" || len(strings.TrimSpace(c.Params.Query)) == 0 {
 		c.SetInvalidQueryParam("query")
 	}
 	return c

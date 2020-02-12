@@ -13,19 +13,18 @@ func GetSuggestions(c *Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	tokens := strings.Split(c.Params.Query, " ")
-	if len(tokens) == 0 {
-		return
-	}
+	words := strings.Split(c.Params.Query, " ")
+	phrase := strings.Join(words[:len(words)-1], " ")
+	prefix := words[len(words)-1]
 
-	suggestions, err := c.App.SuggestKeywords(tokens)
+	suggestions, err := c.App.SuggestKeywords(phrase, prefix)
 	if err != nil {
 		c.Err = err
 		return
 	}
 
-	if l := len(tokens); l >= 3 || l == 2 && len(tokens[1]) >= 4 {
-		podcasts, err := c.App.SuggestPodcasts(tokens)
+	if len(words) >= 3 {
+		podcasts, err := c.App.SuggestPodcasts(phrase)
 		if err != nil {
 			c.Err = err
 			return
