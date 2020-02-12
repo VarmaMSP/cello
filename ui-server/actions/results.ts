@@ -5,7 +5,7 @@ import { SearchResultType, SearchSortBy } from 'types/search'
 import { doFetch } from 'utils/fetch'
 import * as gtag from 'utils/gtag'
 import * as RequestId from 'utils/request_id'
-import { qs } from 'utils/utils'
+import { encodeQueryParam, qs } from 'utils/utils'
 import { requestAction } from './utils'
 
 export function loadResultsPage(
@@ -29,7 +29,9 @@ export function loadResultsPage(
         pathname: '/results',
         query: { query, resultType, sortBy },
       },
-      `/results?query=${query}&type=${resultType}&sort_by=${sortBy}`,
+      `/results?query=${encodeQueryParam(
+        query,
+      )}&type=${resultType}&sort_by=${sortBy}`,
     )
   }
 }
