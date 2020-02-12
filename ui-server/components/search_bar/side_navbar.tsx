@@ -2,7 +2,7 @@ import classnames from 'classnames'
 import ButtonWithIcon from 'components/button_with_icon'
 import SearchSuggestions from 'components/search_suggestions_list'
 import usePopper from 'hooks/usePopper'
-import React from 'react'
+import React, { useRef } from 'react'
 import { Portal } from 'react-portal'
 import { stopEventPropagation } from 'utils/dom'
 import withProps, { SearchBarProps } from './with_props'
@@ -14,6 +14,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   showSuggestions,
   setShowSuggestions,
 }) => {
+  const formRef = useRef() as React.RefObject<HTMLFormElement>
   const [reference, popper] = usePopper(
     {
       placement: 'bottom-start',
@@ -33,10 +34,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <>
       <form
+        ref={formRef}
         className="relative flex items-center px-2 py-1"
-        onSubmit={(e: React.SyntheticEvent<HTMLFormElement>) =>
+        onSubmit={(e: React.SyntheticEvent<HTMLFormElement>) => {
+          if (!!formRef.current) {
+            Array.from(formRef.current.children).map((c: any) => c.blur())
+          }
           e.preventDefault()
-        }
+        }}
       >
         <ButtonWithIcon
           className="absolute inset-y-0 right-0 w-4 h-auto mr-4 text-gray-700"
