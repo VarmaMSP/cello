@@ -8,7 +8,7 @@ const HomeView: React.FC<{}> = () => {
     <div>
       <Recommended />
 
-      <h1 className="pb-1 text-xl tracking-wide text-gray-800 font-medium">
+      <h1 className="pb-1 text-xl tracking-wide font-semibold">
         {'Browse By Categories'}
       </h1>
       <hr className="mb-3" />

@@ -1,6 +1,6 @@
 import { ChartLink } from 'components/link'
-import React from 'react'
 import { Category } from 'models'
+import React from 'react'
 
 export interface StateToProps {
   categories: Category[]
@@ -39,7 +39,7 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({ categories }) => {
           childIds.map((childId) => (
             <div
               key={`${parentId}${childId}`}
-              className="bg-gray-200 mr-4 my-2 px-3 text-2xs text-gray-900 tracking-wide leading-loose border border-gray-300 rounded-full"
+              className="bg-gray-200 mr-4 my-2 px-3 text-2xs tracking-wide leading-loose border border-gray-300 rounded-full"
             >
               <ChartLink chartUrlParam={parent.urlParam}>
                 <a className="font-medium hover:text-blue-800 hover:underline">{`${parent.name}`}</a>
@@ -55,7 +55,7 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({ categories }) => {
         ) : (
           <div
             key={`${parentId}`}
-            className="bg-gray-200 mr-4 my-2 px-3 text-2xs font-medium text-gray-900 tracking-wide leading-loose rounded-full"
+            className="bg-gray-200 mr-4 my-2 px-3 text-2xs font-medium tracking-wide leading-loose rounded-full"
           >
             <ChartLink chartUrlParam={parent.urlParam}>
               <a className="font-medium hover:text-blue-800 hover:underline">{`${parent.name}`}</a>

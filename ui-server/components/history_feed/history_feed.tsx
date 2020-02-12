@@ -1,8 +1,8 @@
 import ButtonShowMore from 'components/button_show_more'
 import EpisodePreview from 'components/episode_preview'
 import parseISO from 'date-fns/parseISO'
-import React from 'react'
 import { Episode } from 'models'
+import React from 'react'
 
 export interface StateToProps {
   history: Episode[]
@@ -41,7 +41,7 @@ const HistoryFeed: React.FC<StateToProps & DispatchToProps> = ({
 
   return (
     <div>
-      <h1 className="pt-3 pb-1 text-xl tracking-wide text-gray-800 font-medium">
+      <h1 className="pt-3 pb-1 text-xl tracking-wide font-semibold">
         {'History'}
       </h1>
       <hr className="mb-3" />

@@ -3,8 +3,8 @@ import EpisodeThumbnail from 'components/episode_thumbnail'
 import { EpisodeLink, PodcastLink } from 'components/link'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import parseISO from 'date-fns/parseISO'
-import React from 'react'
 import { Episode, EpisodeSearchResult, Podcast } from 'models'
+import React from 'react'
 
 export interface StateToProps {
   episode: Episode
@@ -61,14 +61,16 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
         )}
 
         <div
-          className="text-xs md:break-normal break-all tracking-wide leading-normal md:line-clamp-2 line-clamp-3 cursor-default"
+          className="text-xs md:break-normal break-all tracking-normal leading-normal md:line-clamp-2 line-clamp-3 cursor-default"
           style={{ hyphens: 'auto' }}
         >
-          <span className="text-gray-900">{`${formatDistanceToNow(
+          <span className="text-gray-900 font-medium">{`${formatDistanceToNow(
             parseISO(episode.pubDate),
           )} ago`}</span>
           <span className="mx-2 text-black font-extrabold">&middot;</span>
           <span
+            className="text-xs text-black"
+            style={{ fontWeight: 450 }}
             dangerouslySetInnerHTML={{
               __html: showHighlights
                 ? episodeSearchResult.description

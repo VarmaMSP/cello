@@ -33,7 +33,7 @@ const SubscriptionsFeed: React.SFC<StateToProps & DispatchToProps> = ({
 
   return (
     <div>
-      <h1 className="pt-3 pb-1 text-xl tracking-wide text-gray-800 font-medium">
+      <h1 className="pt-3 pb-1 text-xl tracking-wide font-semibold">
         {'Feed'}
       </h1>
       <hr className="mb-3" />

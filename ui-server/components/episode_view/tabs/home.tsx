@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react'
 import { Episode } from 'models'
+import React, { useEffect, useRef } from 'react'
 
 interface OwnProps {
   episode: Episode
@@ -24,10 +24,9 @@ const HomeTab: React.FC<OwnProps> = ({ episode }) => {
 
   return (
     <div>
-      <h2 className="font-medium tracking-wider mb-2">{'Description'}</h2>
       <div
         ref={ref}
-        className="external-html lg:pr-16 text-sm leading-relaxed tracking-wide text-gray-900"
+        className="external-html lg:pr-10 text-sm font-medium leading-relaxed"
         dangerouslySetInnerHTML={{ __html: episode.description }}
       />
     </div>
