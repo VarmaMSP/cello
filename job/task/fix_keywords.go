@@ -1,15 +1,21 @@
 package task
 
-import "github.com/varmamsp/cello/app"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/varmamsp/cello/app"
+	"github.com/varmamsp/cello/model"
+)
 
 type FixKeywords struct {
-	*app.App,
+	*app.App
 }
 
 func NewFixKeywords(app *app.App) (*FixKeywords, error) {
 	return &FixKeywords{
 		App: app,
-	}
+	}, nil
 }
 
 func (s *FixKeywords) Call() {
@@ -27,12 +33,12 @@ func (s *FixKeywords) Call() {
 
 			for _, keyword := range keywords {
 				if model.IsValidKeyword(keyword.Text) {
-					if err := s.Store.Keyword.UpdateText(keyword.Id, strings.ToLower(keyword.Text)); err != nil {
+					if err := s.Store.Keyword().SetText(keyword.Id, strings.ToLower(keyword.Text)); err != nil {
 						fmt.Println(err)
 						break
 					}
 				} else {
-					if err := s.Store.Keyword.Delete(keyword.Id); err != nil {
+					if err := s.Store.Keyword().Delete(keyword.Id); err != nil {
 						fmt.Println(err)
 						break
 					}
@@ -42,7 +48,7 @@ func (s *FixKeywords) Call() {
 			if len(keywords) < limit {
 				break
 			}
-			lastId = keywords[len(keywords)-1]
+			lastId = keywords[len(keywords)-1].Id
 		}
 	}()
 }
