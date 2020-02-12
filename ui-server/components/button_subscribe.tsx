@@ -29,9 +29,9 @@ const ButtonSubscribe: React.SFC<Props> = (props) => {
     <button
       className={classNames(
         props.className,
-        'rounded tracking-tight focus:outline-none focus:shadow-outline',
+        'rounded font-semibold tracking-wide focus:outline-none focus:shadow-outline',
         {
-          'bg-indigo-500 text-white': !isSubscribed,
+          'bg-purple-600 text-white': !isSubscribed,
           'bg-gray-300 text-gray-700': isSubscribed,
         },
       )}
