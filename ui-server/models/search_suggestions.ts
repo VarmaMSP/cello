@@ -1,3 +1,5 @@
+import { uniqueId } from 'utils/utils'
+
 const TYPE_TEXT = 'T'
 const TYPE_PODCAST = 'P'
 
@@ -6,6 +8,7 @@ const ICON_HISTORY = 'H'
 const ICON_CURRENT = 'C'
 
 export class SearchSuggestion {
+  id: string
   t: string
   i: string
   header: string
@@ -28,6 +31,7 @@ export class SearchSuggestion {
   }
 
   constructor(j: any) {
+    this.id = uniqueId()
     this.t = j['t'] || TYPE_TEXT
     this.i = j['i'] || ICON_SEARCH
     this.header = j['h1'] || ''

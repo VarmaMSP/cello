@@ -1,7 +1,7 @@
 import classnames from 'classnames'
 import { iconMap } from 'components/icon'
-import React, { useEffect, useState } from 'react'
 import { SearchSuggestion } from 'models'
+import React, { useEffect, useState } from 'react'
 import { getImageUrl, stopEventPropagation } from 'utils/dom'
 
 export interface StateToProps {
@@ -70,7 +70,7 @@ function renderTextSuggestion(
 
   return (
     <div
-      key={`${s.i}-${s.t}-${s.header}`}
+      key={s.id}
       className={classnames(
         'search-suggestion flex items-center px-3 py-1 hover:bg-gray-200 cursor-pointer rounded',
         { 'bg-gray-200': active },
@@ -96,7 +96,7 @@ function renderItemSuggestion(
 ): JSX.Element {
   return (
     <div
-      key={`${s.i}-${s.t}-${s.header}`}
+      key={s.id}
       className={classnames(
         'search-suggestion flex p-3 hover:bg-gray-200 cursor-pointer rounded',
         { 'bg-gray-200': active },

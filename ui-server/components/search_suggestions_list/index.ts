@@ -1,10 +1,11 @@
 import { loadPodcastPage, loadResultsPage } from 'actions/results'
+import { SearchSuggestion } from 'models'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { getSuggestions, getText } from 'selectors/ui/search_bar'
 import { AppState } from 'store'
 import { AppActions } from 'types/actions'
-import { SearchSuggestion } from 'models'
+import { uniqueId } from 'utils/utils'
 import SearchSuggestionsList, {
   DispatchToProps,
   StateToProps,
@@ -14,6 +15,7 @@ function mapStateToProps(state: AppState): StateToProps {
   return {
     suggestions: [
       <SearchSuggestion>{
+        id: uniqueId(),
         t: 'T',
         i: 'C',
         header: getText(state).trim(),
