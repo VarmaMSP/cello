@@ -244,17 +244,23 @@ func IsValidMediaType(mediaType string) bool {
 
 // IsValidKeyword checks if a keyword from podcast description is valid
 func IsValidKeyword(keyword string) bool {
-	// Check for special characters
-	for _, r := range []rune(keyword) {
-		if !unicode.IsLetter(r) && !unicode.IsSpace(r) {
+	words := strings.Split(keyword, " ")
+
+	// Check for number of words
+	if len(words) < 2 {
+		return false
+	}
+
+	// Check for single character words
+	for _, word := range words {
+		if len([]rune(word)) < 2 {
 			return false
 		}
 	}
 
-	// Check for single character words
-	words := strings.Split(keyword, " ")
-	for _, word := range words {
-		if len([]rune(word)) < 2 {
+	// Check for special characters
+	for _, r := range []rune(keyword) {
+		if !unicode.IsLetter(r) && !unicode.IsSpace(r) {
 			return false
 		}
 	}

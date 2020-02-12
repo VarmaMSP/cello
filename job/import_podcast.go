@@ -198,7 +198,7 @@ func (job *ImportPodcastJob) extract(feedId int64, rssFeed *rss.Feed) (*Entities
 		job.log.Err(err)
 	} else {
 		for _, ent := range doc.Entities() {
-			if tokens := strings.Split(ent.Text, " "); len(tokens) > 1 {
+			if model.IsValidKeyword(ent.Text) {
 				keywords = append(keywords, &model.Keyword{Text: strings.ToLower(ent.Text)})
 			}
 		}
