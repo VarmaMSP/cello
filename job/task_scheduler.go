@@ -20,6 +20,7 @@ type TaskSchedulerJob struct {
 	reindexEpisodes        *task.ReindexEpisodes
 	indexKeywords          *task.IndexKeywords
 	fixCategories          *task.FixCategories
+	fixKeywords            *task.FixKeywords
 	extractKeywords        *task.ExtractKeywords
 }
 
@@ -69,6 +70,11 @@ func NewTaskSchedulerJob(app *app.App, config *model.Config) (model.Job, error) 
 	}
 
 	s.fixCategories, err = task.NewFixCategories(app)
+	if err != nil {
+		return nil, err
+	}
+
+	s.fixKeywords, err = task.NewFixKeywords(app)
 	if err != nil {
 		return nil, err
 	}
@@ -179,6 +185,9 @@ func (job *TaskSchedulerJob) callTask(task *model.Task) {
 
 	case model.TASK_NAME_FIX_CATEGORIES:
 		job.fixCategories.Call()
+
+	case model.TASK_NAME_FIX_KEYWORDS:
+		job.fixKeywords.Call()
 
 	case model.TASK_NAME_EXTRACT_KEYWORDS:
 		job.extractKeywords.Call()
