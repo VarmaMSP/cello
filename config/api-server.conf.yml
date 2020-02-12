@@ -65,10 +65,10 @@ jobs:
 
   create_thumbnail:
     enable: false
-    worker_limit: 4
+    worker_limit: 10
 
   task_scheduler:
-    enable: false
+    enable: true
     worker_limit: 10
 
   sync_playback:
