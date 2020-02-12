@@ -96,3 +96,38 @@ func (s *SqlKeywordStore) GetAllPaginated(lastId int64, limit int) (res []*model
 	}
 	return
 }
+
+func (s *SqlKeywordStore) SetText(keywordId int64, text string) *model.AppError {
+	sql := fmt.Sprintf("UPDATE keyword SET text = '%s' WHERE id = %d", text, keywordId)
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return model.NewAppError(
+			"store.sqlstore.sql_keyword_store.set_text", err.Error(), http.StatusInternalServerError,
+			map[string]interface{}{"keyword_id": keywordId, "text": text},
+		)
+	}
+
+	return nil
+}
+
+func (s *SqlKeywordStore) Delete(keywordId int64) *model.AppError {
+	appErrorC := model.NewAppErrorC(
+		"store.sqlstore.sql_keyword_store.delete", http.StatusInternalServerError, map[string]interface{}{"keyword_id": keywordId},
+	)
+
+	sql := fmt.Sprintf("DELETE FROM podcast_keyword WHERE keyword_id = %d", keywordId)
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return appErrorC(err.Error())
+	}
+
+	sql = fmt.Sprintf("DELETE FROM episode_keyword WHERE keyword_id = %d", keywordId)
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return appErrorC(err.Error())
+	}
+
+	sql = fmt.Sprintf("DELETE FROM keyword WHERE id = %d", keywordId)
+	if _, err := s.GetMaster().Exec(sql); err != nil {
+		return appErrorC(err.Error())
+	}
+
+	return nil
+}

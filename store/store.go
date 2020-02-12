@@ -103,4 +103,6 @@ type KeywordStore interface {
 	SaveEpisodeKeyword(episodeKeyword *model.EpisodeKeyword) (*model.EpisodeKeyword, *model.AppError)
 	GetByText(text string) (*model.Keyword, *model.AppError)
 	GetAllPaginated(lastId int64, limit int) ([]*model.Keyword, *model.AppError)
+	SetText(keywordId int64, text string) *model.AppError
+	Delete(keywordId int64) *model.AppError
 }
