@@ -12,6 +12,7 @@ import { AppState } from 'store'
 import * as T from 'types/actions'
 import { UpdateTextAction } from 'types/actions/ui/search_bar'
 import { doFetch } from 'utils/fetch'
+import { encodeQueryParam } from 'utils/utils'
 
 const searchEpic: Epic<T.AppActions, T.AppActions, AppState> = (action$) =>
   action$.pipe(
@@ -22,7 +23,7 @@ const searchEpic: Epic<T.AppActions, T.AppActions, AppState> = (action$) =>
       from(
         doFetch({
           method: 'GET',
-          urlPath: `/suggest?query=${action.text}`,
+          urlPath: `/suggest?query=${encodeQueryParam(action.text)}`,
         }),
       ).pipe(
         map(({ searchSuggestions }) => ({

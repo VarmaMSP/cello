@@ -18,7 +18,7 @@ function mapStateToProps(state: AppState): StateToProps {
         id: uniqueId(),
         t: 'T',
         i: 'C',
-        header: getText(state).trim(),
+        header: getText(state),
         subHeader: '',
       },
       ...getSuggestions(state),

@@ -52,3 +52,10 @@ export function uniqueId() {
       .substr(2, 9)
   )
 }
+
+export function encodeQueryParam(s: string): string {
+  return s
+    .trim()
+    .replace(/ /g, '+')
+    .concat(s[s.length - 1] === ' ' ? '+' : '')
+}
