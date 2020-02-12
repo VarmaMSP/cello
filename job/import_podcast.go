@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"time"
 	"strings"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/varmamsp/gofeed/rss"
@@ -199,16 +199,16 @@ func (job *ImportPodcastJob) extract(feedId int64, rssFeed *rss.Feed) (*Entities
 	} else {
 		for _, ent := range doc.Entities() {
 			if tokens := strings.Split(ent.Text, " "); len(tokens) > 1 {
-				keywords = append(keywords, &model.Keyword{Text: ent.Text})
+				keywords = append(keywords, &model.Keyword{Text: strings.ToLower(ent.Text)})
 			}
 		}
 	}
-	
+
 	return &EntitiesToSave{
-		podcast: podcast,
-		episodes: episodes,
+		podcast:           podcast,
+		episodes:          episodes,
 		podcastCategories: podcastCategories,
-		keywords: keywords,
+		keywords:          keywords,
 	}, nil
 }
 
@@ -264,7 +264,7 @@ func (job *ImportPodcastJob) save(toSave *EntitiesToSave) (*EntitiesToIndex, *mo
 	}
 
 	return &EntitiesToIndex{
-		podcast: toSave.podcast,
+		podcast:  toSave.podcast,
 		episodes: episodesToIndex,
 		keywords: keywordsToIndex,
 	}, nil
@@ -287,13 +287,13 @@ func (job *ImportPodcastJob) index(toIndex *EntitiesToIndex) *model.AppError {
 			Type:        podcast.Type,
 			Complete:    podcast.Complete,
 		})
-	
+
 	for i, keyword := range keywords {
 		indexRequests[i+1] = elastic.NewBulkIndexRequest().
 			Index(elasticsearch.KeywordIndexName).
 			Id(model.StrFromInt64(keyword.Id)).
 			Doc(&model.KeywordIndex{
-				Text: keyword.Text,
+				Text:    keyword.Text,
 				AddedBy: "0",
 			})
 	}
