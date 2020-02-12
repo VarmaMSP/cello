@@ -1,7 +1,6 @@
 {
     "go.useLanguageServer": true,
     "go.lintTool": "revive",
-    "go.toolsGoPath": "~/gotools",
     "go.toolsEnvVars": {
         "GO111MODULE": "on"
     },
