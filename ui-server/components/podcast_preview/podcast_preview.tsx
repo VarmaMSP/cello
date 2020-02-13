@@ -48,7 +48,7 @@ const PodcastPreview: React.FC<StateToProps & OwnProps> = ({
         />
 
         <div
-          className="text-xs text-black md:break-normal break-all leading-normal tracking-normal md:line-clamp-2 line-clamp-3 cursor-default"
+          className="text-xs text-gray-900 md:break-normal break-all leading-normal tracking-normal md:line-clamp-2 line-clamp-3 cursor-default"
           style={{ hyphens: 'auto' }}
           dangerouslySetInnerHTML={{
             __html: showHighlights

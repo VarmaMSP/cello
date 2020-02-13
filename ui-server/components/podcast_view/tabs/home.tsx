@@ -11,7 +11,7 @@ const PodcastAbout: React.FC<OwnProps> = ({ podcast }) => {
   return (
     <div>
       <div
-        className="mt-6 text-black text-sm font-medium leading-relaxed"
+        className="mt-6 text-gray-900 text-sm font-medium leading-relaxed"
         style={{ hyphens: 'auto' }}
       >
         <div>{podcast.description}</div>

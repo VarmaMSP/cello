@@ -20,19 +20,19 @@ const ButtonSignin: React.SFC<DispatchToProps & OwnProps> = ({
   return (
     <button
       className={classnames(
-        'w-full h-full bg-orange-600 text-gray-100 leading-loose',
+        'w-full h-full text-orange-700 tracking-wide border-2 border-orange-700 leading-sung rounded-lg',
         'tracking-wide focus:outline-none focus:shadow-outline',
-        {
-          'rounded-full': !small,
-          'rounded-lg': small,
-        },
       )}
       onClick={showSignInModal}
     >
       {small ? (
-        <p className="text-sm">{'SIGN IN'}</p>
+        <p className="text-sm font-bold">{'SIGN IN'}</p>
       ) : (
-        <p className="text-sm font-medium">{'SIGN IN / SIGN UP'}</p>
+        <div className="text-sm font-bold">
+          <span>{'SIGN IN'}</span>
+          <span className="font-normal mx-1">{'/'}</span>
+          <span>{'SIGN UP'}</span>
+        </div>
       )}
     </button>
   )

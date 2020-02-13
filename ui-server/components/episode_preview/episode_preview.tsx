@@ -41,7 +41,7 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
         <EpisodeLink episodeUrlParam={episode.urlParam}>
           <a
             className={classnames(
-              'md:text-base text-sm font-semibold tracking-wide line-clamp-2',
+              'md:text-base text-sm text-black font-semibold tracking-wide line-clamp-2',
               { 'mb-1': small },
             )}
             dangerouslySetInnerHTML={{
@@ -69,7 +69,7 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
           )} ago`}</span>
           <span className="mx-2 text-black font-extrabold">&middot;</span>
           <span
-            className="text-xs text-black"
+            className="text-xs text-gray-900"
             style={{ fontWeight: 450 }}
             dangerouslySetInnerHTML={{
               __html: showHighlights

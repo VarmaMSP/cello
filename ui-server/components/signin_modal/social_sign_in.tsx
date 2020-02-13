@@ -17,7 +17,7 @@ const SocialSignIn: React.SFC<Props> = (props) => {
       className="flex items-center justify-center md:w-3/5 w-full h-13 mx-auto my-4 border md:border-2 md:hover:border-gray-600 border-gray-400 rounded-lg focus:outline-none focus:shadow-outline"
     >
       <SocialMediaIcon className="w-6" />
-      <div className="text-lg text-gray-700 px-5">{text}</div>
+      <div className="text-lg text-gray-900 tracking-wide px-5">{text}</div>
     </button>
   )
 }

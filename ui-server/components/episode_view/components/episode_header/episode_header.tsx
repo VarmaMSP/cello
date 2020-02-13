@@ -34,16 +34,16 @@ const EpisodeHeader: React.FC<Props> = ({
       <EpisodeThumbnail episodeId={episode.id} large showIcon />
       <div className="flex flex-col flex-auto w-1/2 justify-between lg:px-5 px-3">
         <div className="w-full mb-3">
-          <h2 className="md:text-xl text-lg text-gray-900 font-medium leading-snug line-clamp-2">
+          <h2 className="md:text-xl text-lg text-black font-medium leading-snug line-clamp-2">
             {episode.title}
           </h2>
           <PodcastLink podcastUrlParam={podcast.urlParam}>
-            <a className="block mb-2 md:text-base text-sm leading-relaxed line-clamp-1">
+            <a className="block mb-2 md:text-base text-sm text-gray-800 font-medium leading-relaxed line-clamp-1">
               {podcast.title}
             </a>
           </PodcastLink>
 
-          <div className="text-2xs">{`Published on ${pubDate}`}</div>
+          <div className="text-2xs font-medium text-gray-700 tracking-wide">{`Published on ${pubDate}`}</div>
         </div>
 
         <div className="flex align-bottom">
