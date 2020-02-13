@@ -59,12 +59,10 @@ func (c *Context) RequireSession() *Context {
 		return c
 	}
 
-	if c.Params.UserId == 0 {
-		c.Params.UserId = c.Session.UserId
-	}
-
-	if c.Session.UserId == 0 {
+	if c.Session == nil || c.Session.UserId == 0 {
 		c.SetSessionExpired()
+	} else {
+		c.Params.UserId = c.Session.UserId
 	}
 
 	return c

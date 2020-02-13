@@ -1,6 +1,7 @@
 package task
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/olivere/elastic/v7"
@@ -60,7 +61,7 @@ func (s *CleanUpKeywords) Call() {
 				end = len(deleteRequests)
 			}
 
-			if _, err := s.ElasticSearch.Bulk().Add(deleteRequests[i:end]...).Do(contenxt.TODO()); err != nil {
+			if _, err := s.ElasticSearch.Bulk().Add(deleteRequests[i:end]...).Do(context.TODO()); err != nil {
 				fmt.Println(err)
 				return
 			}
