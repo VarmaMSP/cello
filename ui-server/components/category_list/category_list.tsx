@@ -1,7 +1,7 @@
 import classnames from 'classnames'
 import { ChartLink } from 'components/link'
-import React from 'react'
 import { Category } from 'models'
+import React from 'react'
 
 export interface StateToProps {
   categories: Category[]
@@ -44,7 +44,7 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({
             <ChartLink chartUrlParam={parent.urlParam} key={parentId}>
               <a
                 className={classnames(
-                  'block my-2 text-black tracking-wide',
+                  'block my-2 text-black tracking-wide font-medium',
                   className,
                 )}
               >
@@ -57,7 +57,7 @@ const CategoryList: React.FC<StateToProps & OwnProps> = ({
         return (
           <div key={parentId} className={classnames('my-2', className)}>
             <ChartLink chartUrlParam={parent.urlParam} key={parentId}>
-              <a className="block text-black tracking-wide mb-1">
+              <a className="block text-black tracking-wide font-medium mb-1">
                 {parent.name}
               </a>
             </ChartLink>

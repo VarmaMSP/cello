@@ -68,6 +68,7 @@ export function requestAction<T extends Promise<any>>(
       console.log(err)
       if ((err as FetchException).statusCode === 401) {
         dispatch({ type: AT.SESSION_DELETE })
+        dispatch({ type: AT.MODAL_MANAGER_SHOW_SIGN_IN_MODAL })
       }
       !!requestId && dispatch({ type: AT.REQUEST_FAILURE, requestId })
     }

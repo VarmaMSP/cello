@@ -33,7 +33,7 @@ const PodcastHeader: React.SFC<OwnProps> = ({ podcast }) => {
             {`${podcast.totalEpisodes} episodes`}
           </h4>
         </div>
-        <ButtonSubscribe className="w-24 py-1 text-xs" podcastId={podcast.id} />
+        <ButtonSubscribe className="w-42 py-1 text-xs" podcastId={podcast.id} />
       </div>
     </div>
   )
