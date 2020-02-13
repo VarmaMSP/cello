@@ -64,12 +64,12 @@ const EpisodePreview: React.FC<StateToProps & OwnProps> = ({
           className="text-xs md:break-normal break-all tracking-normal leading-normal md:line-clamp-2 line-clamp-3 cursor-default"
           style={{ hyphens: 'auto' }}
         >
-          <span className="text-gray-900 font-medium">{`${formatDistanceToNow(
+          <span className="text-gray-700 font-medium">{`${formatDistanceToNow(
             parseISO(episode.pubDate),
           )} ago`}</span>
           <span className="mx-2 text-black font-extrabold">&middot;</span>
           <span
-            className="text-xs text-gray-900"
+            className="text-xs text-gray-800"
             style={{ fontWeight: 450 }}
             dangerouslySetInnerHTML={{
               __html: showHighlights

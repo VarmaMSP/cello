@@ -20,7 +20,7 @@ const MenuItem: React.SFC<Props> = ({ icon, name, href }) => {
         className={classnames(
           'flex items-center w-full h-full px-4 my-3 cursor-pointer rounded-full',
           {
-            'text-gray-800': href !== currentUrlPath,
+            'text-gray-800 hover:bg-gray-200': href !== currentUrlPath,
             'text-red-600 bg-red-100 rounded-full': href === currentUrlPath,
           },
         )}
