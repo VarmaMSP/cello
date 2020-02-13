@@ -1,5 +1,5 @@
 import { getHomePageData } from 'actions/home'
-import HomeView from 'components/home_view/home_view'
+import HomeView from 'components/explore_view'
 import PageLayout from 'components/page_layout'
 import { ExplorePageSeo } from 'components/seo'
 import React from 'react'
