@@ -20,12 +20,10 @@ const SearchSuggestionsList: React.FC<StateToProps & DispatchToProps> = ({
 }) => {
   const [cursor, setCursor] = useState<number>(0)
 
-  const handleSelect = (i: number) => () => {
-    if (SearchSuggestion.isPodcast(suggestions[i])) {
-      loadPodcastPage(suggestions[i].i)
-    } else {
-      loadResultsPage(suggestions[i].header.replace(/<\/?em>/g, ''))
-    }
+  const handleOnClick = (s: SearchSuggestion) => () => {
+    SearchSuggestion.isPodcast(s)
+      ? loadPodcastPage(s.i)
+      : loadResultsPage(s.header.replace(/<\/?em>/g, ''))
   }
 
   const handleOnKeyDown = (e: any) => {
@@ -34,7 +32,9 @@ const SearchSuggestionsList: React.FC<StateToProps & DispatchToProps> = ({
     } else if (e.keyCode === 40 && cursor < suggestions.length - 1) {
       setCursor(cursor + 1)
     } else if (e.keyCode === 13) {
-      handleSelect(cursor)()
+      SearchSuggestion.isPodcast(suggestions[cursor])
+        ? loadPodcastPage(suggestions[cursor].i)
+        : loadResultsPage(suggestions[cursor].header.replace(/<\/?em>/g, ''))
     }
   }
 
@@ -45,7 +45,7 @@ const SearchSuggestionsList: React.FC<StateToProps & DispatchToProps> = ({
   useEffect(() => {
     document.addEventListener('keydown', handleOnKeyDown)
     return () => document.removeEventListener('keydown', handleOnKeyDown)
-  }, [cursor, suggestions.length])
+  }, [cursor, suggestions.map((x) => x.id).join()])
 
   return (
     <div
@@ -54,8 +54,8 @@ const SearchSuggestionsList: React.FC<StateToProps & DispatchToProps> = ({
     >
       {suggestions.map((s, i) =>
         SearchSuggestion.isPodcast(s)
-          ? renderItemSuggestion(s, handleSelect(i), cursor === i)
-          : renderTextSuggestion(s, handleSelect(i), cursor === i),
+          ? renderItemSuggestion(s, handleOnClick(s), cursor === i)
+          : renderTextSuggestion(s, handleOnClick(s), cursor === i),
       )}
     </div>
   )
