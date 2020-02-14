@@ -64,12 +64,22 @@ export default class AudioPlayer extends Component<Props> {
     this.audio.volume = this.props.volume
     this.audio.playbackRate = this.props.playbackRate
 
+    this.audio.addEventListener('error', (err) => {
+      console.log('audio player', err)
+    })
     // Can Play
+    this.audio.addEventListener('seeked', () => {
+      console.log('seeked ', 'played')
+      this.props.setAudioState('PLAYING')
+      this.audio.play()
+    })
     this.audio.addEventListener('canplay', () => {
+      console.log('canplay ', 'playing')
       this.props.setAudioState('PAUSED')
       this.audio.play()
     })
     this.audio.addEventListener('playing', () => {
+      console.log('playing ', 'playing')
       this.props.setAudioState('PLAYING')
       this.audio.play()
     })
