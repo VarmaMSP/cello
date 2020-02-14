@@ -65,23 +65,20 @@ export default class AudioPlayer extends Component<Props> {
     this.audio.playbackRate = this.props.playbackRate
 
     this.audio.addEventListener('error', (err) => {
-      console.log('audio player', err)
+      console.log('audio player: ', err)
+      this.audio.load()
+      this.audio.currentTime = this.props.currentTime
     })
     // Can Play
     this.audio.addEventListener('seeked', () => {
-      console.log('seeked ', 'played')
       this.props.setAudioState('PLAYING')
-      this.audio.play()
     })
     this.audio.addEventListener('canplay', () => {
-      console.log('canplay ', 'playing')
       this.props.setAudioState('PAUSED')
       this.audio.play()
     })
     this.audio.addEventListener('playing', () => {
-      console.log('playing ', 'playing')
       this.props.setAudioState('PLAYING')
-      this.audio.play()
     })
     // Pause
     this.audio.addEventListener('pause', () => {
@@ -93,23 +90,13 @@ export default class AudioPlayer extends Component<Props> {
     })
     // Loading
     this.audio.addEventListener('loadstart', () => {
-      console.log('loadstart')
       this.props.setAudioState('LOADING')
     })
     this.audio.addEventListener('seeking', () => {
-      console.log('seeking')
       this.props.setAudioState('LOADING')
     })
     this.audio.addEventListener('waiting', () => {
-      console.log('waiting')
       this.props.setAudioState('LOADING')
-    })
-    this.audio.addEventListener('stalled', () => {
-      console.log('stalled')
-      this.props.setAudioState('LOADING')
-    })
-    this.audio.addEventListener('suspend', () => {
-      console.log('suspend')
     })
     //Ended
     this.audio.addEventListener('ended', () => {
