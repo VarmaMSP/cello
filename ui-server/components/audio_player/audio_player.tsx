@@ -110,7 +110,6 @@ export default class AudioPlayer extends Component<Props> {
     })
     this.audio.addEventListener('suspend', () => {
       console.log('suspend')
-      this.props.setAudioState('LOADING')
     })
     //Ended
     this.audio.addEventListener('ended', () => {
