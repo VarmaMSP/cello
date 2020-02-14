@@ -1,6 +1,6 @@
+import { Episode, Podcast } from 'models'
 import React, { Component } from 'react'
 import { AudioState, ViewportSize } from 'types/app'
-import { Episode, Podcast } from 'models'
 import AudioPlayerLarge from './audio_player_large'
 import AudioPlayerSmall from './audio_player_small'
 
@@ -40,13 +40,15 @@ export default class AudioPlayer extends Component<Props> {
     if (episodeId !== '' && episodeId !== prevProps.episodeId) {
       this.audio.src = this.props.episode.mediaUrl
       this.audio.currentTime = this.props.currentTime
+      this.audio.load()
+
       this.props.syncPlayback(
         prevProps.episodeId,
         (prevProps.currentTime / prevProps.duration) * 100,
       )
     }
 
-    if (Math.abs(volume - prevProps.volume) < 1e-5 ) {
+    if (Math.abs(volume - prevProps.volume) < 1e-5) {
       this.audio.volume = volume
     }
 
@@ -69,6 +71,7 @@ export default class AudioPlayer extends Component<Props> {
     })
     this.audio.addEventListener('playing', () => {
       this.props.setAudioState('PLAYING')
+      this.audio.play()
     })
     // Pause
     this.audio.addEventListener('pause', () => {
@@ -80,9 +83,23 @@ export default class AudioPlayer extends Component<Props> {
     })
     // Loading
     this.audio.addEventListener('loadstart', () => {
+      console.log('loadstart')
       this.props.setAudioState('LOADING')
     })
     this.audio.addEventListener('seeking', () => {
+      console.log('seeking')
+      this.props.setAudioState('LOADING')
+    })
+    this.audio.addEventListener('waiting', () => {
+      console.log('waiting')
+      this.props.setAudioState('LOADING')
+    })
+    this.audio.addEventListener('stalled', () => {
+      console.log('stalled')
+      this.props.setAudioState('LOADING')
+    })
+    this.audio.addEventListener('suspend', () => {
+      console.log('suspend')
       this.props.setAudioState('LOADING')
     })
     //Ended
@@ -102,6 +119,7 @@ export default class AudioPlayer extends Component<Props> {
 
     if (this.props.episodeId !== '') {
       this.audio.src = this.props.episode.mediaUrl
+      this.audio.load()
     }
 
     setInterval(() => {
