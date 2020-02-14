@@ -3,10 +3,10 @@ import ButtonWithIcon from 'components/button_with_icon'
 import { iconMap } from 'components/icon'
 import { EpisodeLink } from 'components/link'
 import usePopper from 'hooks/usePopper'
+import { Episode, Podcast } from 'models'
 import React, { useState } from 'react'
 import { Portal } from 'react-portal'
 import { AudioState } from 'types/app'
-import { Episode, Podcast } from 'models'
 import { getImageUrl, stopEventPropagation } from 'utils/dom'
 import ActionButton from './components/action_button'
 import SeekBar from './components/seek_bar'
@@ -70,7 +70,7 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
       }}
     >
       <div
-        className="flex items-center justify-between w-full h-22 border border-gray-400 bg-white rounded-lg"
+        className="flex items-center justify-between w-full h-22 border border-gray-400 bg-white rounded"
         style={{
           marginBottom: '8px',
           marginRight: '8px',
@@ -78,7 +78,7 @@ const AudioPlayerLarge: React.SFC<Props> = (props) => {
         }}
       >
         <img
-          className="flex-none w-22 h-22 border-r rounded-lg"
+          className="flex-none w-22 h-22 border-r rounded"
           src={getImageUrl(podcast.urlParam)}
         />
 
