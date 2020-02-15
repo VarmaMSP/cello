@@ -51,7 +51,7 @@ const EpisodeHeader: React.FC<Props> = ({
             className="w-42 py-1 text-xs text-center text-white font-semibold tracking-wide bg-purple-600 rounded focus:outline-none focus:shadow-outline"
             onClick={() => showAddToPlaylistModal()}
           >
-            <span className="ml-2 font-medium">ADD TO PLAYLIST</span>
+            {'ADD TO PLAYLIST'}
           </button>
         </div>
       </div>
