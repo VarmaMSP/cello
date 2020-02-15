@@ -19,7 +19,7 @@ const AudioPlayerSettings: React.FC<StateToProps & DispatchToProps> = ({
   changePlaybackRate,
 }) => {
   return (
-    <div className="px-4 py-6 bg-white border border-gray-300 shadow-md rounded-lg">
+    <div className="px-4 py-6 bg-white border border-gray-400 shadow-md rounded-lg">
       <RangeControl
         icon="volume"
         value={volume}
