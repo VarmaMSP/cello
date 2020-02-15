@@ -19,7 +19,7 @@ const Categories: React.FC<StateToProps> = ({ categories }) => {
             key={x.id}
             className="w-full md:w-1/4 px-2 py-2 text-gray-900 hover:text-black font-medium tracking-wide"
           >
-            <ChartLink chartUrlParam={x.id}>
+            <ChartLink chartUrlParam={x.urlParam}>
               <a>{x.name}</a>
             </ChartLink>
           </div>
