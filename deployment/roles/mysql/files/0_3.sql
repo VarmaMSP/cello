@@ -14,7 +14,7 @@ CREATE TABLE `podcast_keyword` (
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE `episode_Keyword` (
+CREATE TABLE `episode_keyword` (
     `keyword_id` INT,
     `episode_id` INT,
     FOREIGN KEY (`keyword_id`) REFERENCES `keyword` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,

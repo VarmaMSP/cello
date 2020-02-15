@@ -72,7 +72,7 @@ jobs:
     worker_limit: 10
 
   sync_playback:
-    enable: false
+    enable: true
 
 oauth:
   google:
