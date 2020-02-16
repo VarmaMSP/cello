@@ -14,17 +14,28 @@ func GetSuggestions(c *Context, w http.ResponseWriter, req *http.Request) {
 	}
 
 	words := strings.Split(c.Params.Query, " ")
-	phrase := strings.Join(words[:len(words)-1], " ")
-	prefix := words[len(words)-1]
+	wordCount := len(words)
 
-	suggestions, err := c.App.SuggestKeywords(phrase, prefix)
+	phraseWords := words[:wordCount-1]
+	phraseNoFuzzy := 0
+	if len(phraseWords) > 1 {
+		for i := 0; i < len(phraseWords)-2; i++ {
+			phraseNoFuzzy += len(phraseWords[i])
+		}
+		phraseNoFuzzy += len(phraseWords) - 2
+	}
+
+	phrase := strings.Join(phraseWords, " ")
+	prefix := words[wordCount-1]
+
+	suggestions, err := c.App.SuggestKeywords(phrase, prefix, phraseNoFuzzy)
 	if err != nil {
 		c.Err = err
 		return
 	}
 
-	if len(words) >= 3 {
-		podcasts, err := c.App.SuggestPodcasts(phrase)
+	if len(words) > 1 {
+		podcasts, err := c.App.SuggestPodcasts(phrase, prefix, phraseNoFuzzy)
 		if err != nil {
 			c.Err = err
 			return
