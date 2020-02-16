@@ -33,7 +33,6 @@ export interface DispatchToProps {
 
 const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
   isUserSignedIn,
-  searchBarText,
   query,
   resultType,
   sortBy,
@@ -81,13 +80,7 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
             <ButtonShowMore
               isLoading={isLoadingMore}
               loadMore={() =>
-                loadMore(
-                  searchBarText,
-                  resultType,
-                  sortBy,
-                  podcastIds.length,
-                  20,
-                )
+                loadMore(query, resultType, sortBy, podcastIds.length, 20)
               }
             />
           </div>
@@ -154,13 +147,7 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
             <ButtonShowMore
               isLoading={isLoadingMore}
               loadMore={() =>
-                loadMore(
-                  searchBarText,
-                  resultType,
-                  sortBy,
-                  episodeIds.length,
-                  20,
-                )
+                loadMore(query, resultType, sortBy, episodeIds.length, 20)
               }
             />
           </div>

@@ -30,6 +30,11 @@ export default class ResultsPage extends Component<OwnProps> {
     })
 
     store.dispatch({
+      type: T.SEARCH_BAR_UPDATE_TEXT,
+      text: q,
+    })
+
+    store.dispatch({
       type: T.SEARCH_RESULTS_RESULT_TYPE,
       resultType,
     })
