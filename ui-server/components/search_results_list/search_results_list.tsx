@@ -127,12 +127,12 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
                     </a>
                   </PodcastLink>
                   <PodcastLink podcastUrlParam={p.urlParam}>
-                    <a className="text-xs tracking-wide font-medium leading-snug line-clamp-1">
+                    <a className="text-sm tracking-wide font-medium leading-tight line-clamp-2">
                       {p.title}
                     </a>
                   </PodcastLink>
                   <PodcastLink podcastUrlParam={p.urlParam}>
-                    <a className="text-2xs text-gray-900 tracking-wide font-medium leading-snug line-clamp-1">
+                    <a className="text-2xs text-gray-900 tracking-wide font-medium leading-loose line-clamp-1">
                       {p.author}
                     </a>
                   </PodcastLink>
