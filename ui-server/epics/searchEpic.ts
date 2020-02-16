@@ -17,7 +17,9 @@ import { encodeQueryParam } from 'utils/utils'
 const searchEpic: Epic<T.AppActions, T.AppActions, AppState> = (action$) =>
   action$.pipe(
     ofType(T.SEARCH_BAR_UPDATE_TEXT),
-    filter<UpdateTextAction>(({ text }) => text.trim().length > 0),
+    filter<UpdateTextAction>(
+      ({ text, skipSuggestions }) => text.trim().length > 0 && !skipSuggestions,
+    ),
     debounceTime<UpdateTextAction>(300),
     concatMap<UpdateTextAction, Observable<T.AppActions>>((action) =>
       from(

@@ -1,6 +1,6 @@
+import { SearchSuggestion } from 'models'
 import { combineReducers, Reducer } from 'redux'
 import * as T from 'types/actions'
-import { SearchSuggestion } from 'models'
 
 const text: Reducer<string, T.AppActions> = (state = '', action) => {
   switch (action.type) {
@@ -19,6 +19,16 @@ const suggestions: Reducer<SearchSuggestion[], T.AppActions> = (
   switch (action.type) {
     case T.SEARCH_BAR_UPDATE_SEARCH_SUGGESTIONS:
       return action.suggestions
+
+    default:
+      return state
+  }
+}
+
+const cursor: Reducer<number, T.AppActions> = (state = 0, action) => {
+  switch (action.type) {
+    case T.SEARCH_BAR_SET_CURSOR:
+      return action.cursor
 
     default:
       return state
@@ -54,6 +64,7 @@ const collapse: Reducer<boolean, T.AppActions> = (state = true, action) => {
 export default combineReducers({
   text,
   suggestions,
+  cursor,
   showSuggestions,
   collapse,
 })
