@@ -1,3 +1,6 @@
+- name: clone repo
+  import_tasks: clone-repo.yml
+
 - name: install golang
   import_tasks: install-go.yml
 
