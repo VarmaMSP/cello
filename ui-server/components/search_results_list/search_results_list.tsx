@@ -112,7 +112,7 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
         {podcastsBestMatch.length > 0 && (
           <>
             <div className="text-lg font-semibold my-3">Podcasts</div>
-            <div className="flex overflow-x-scroll">
+            <div className="flex overflow-x-auto">
               {podcastsBestMatch.map((p) => (
                 <div
                   key={p.id}
