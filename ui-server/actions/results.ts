@@ -115,11 +115,23 @@ export function getResultsPageData(
         })
 
         dispatch({
+          type: T.SEARCH_RESULT_ADD_PODCAST,
+          podcastSearchResults,
+          searchQuery: query,
+        })
+
+        dispatch({
           type: T.SEARCH_RESULTS_LIST_LOAD_EPISODE_PAGE,
           searchQuery: query,
           sortBy: sortBy,
           page: 0,
           episodeIds: episodeSearchResults.map((x) => x.id),
+        })
+
+        dispatch({
+          type: T.SEARCH_RESULTS_LIST_LOAD_PODcAST_BEST_MATCH,
+          searchQuery: query,
+          podcastIds: podcastSearchResults.map((x) => x.id),
         })
 
         if (episodes.length < 25) {

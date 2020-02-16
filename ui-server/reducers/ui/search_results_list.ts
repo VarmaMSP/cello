@@ -66,6 +66,24 @@ const podcasts: Reducer<
   }
 }
 
+const podcastsBestMatch: Reducer<
+  {
+    [searchQuery: string]: string[]
+  },
+  T.AppActions
+> = (state = {}, action) => {
+  switch (action.type) {
+    case T.SEARCH_RESULTS_LIST_LOAD_PODcAST_BEST_MATCH:
+      return {
+        ...state,
+        [action.searchQuery]: action.podcastIds,
+      }
+
+    default:
+      return state
+  }
+}
+
 const episodes: Reducer<
   {
     [searchQuery: string]: {
@@ -112,6 +130,7 @@ export default combineReducers({
   resultType,
   sortBy,
   podcasts,
+  podcastsBestMatch,
   episodes,
   receivedAll,
 })

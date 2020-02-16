@@ -1,6 +1,6 @@
+import { Episode, Podcast } from 'models'
 import { createSelector } from 'reselect'
 import { AppState } from 'store'
-import { Episode, Podcast } from 'models'
 import { SearchSortBy } from 'types/search'
 import { $Id } from 'types/utilities'
 
@@ -44,6 +44,19 @@ export function makeGetPodcasts() {
         : [],
       receivedAll.includes(`${query}:podcast:${sortBy}`),
     ],
+  )
+}
+
+export function makeGetPodcastsBestMatch() {
+  return createSelector<
+    AppState,
+    string,
+    { [query: string]: $Id<Podcast>[] },
+    $Id<Podcast>[]
+  >(
+    getQuery,
+    (state) => state.ui.resultsList.podcastsBestMatch,
+    (query, all) => all[query] || [],
   )
 }
 
