@@ -1,45 +1,69 @@
 import classnames from 'classnames'
 import { iconMap } from 'components/icon'
 import { SearchSuggestion } from 'models'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { getImageUrl, stopEventPropagation } from 'utils/dom'
 
 export interface StateToProps {
+  cursor: number
   suggestions: SearchSuggestion[]
 }
 
 export interface DispatchToProps {
+  setCursor: (c: number) => void
+  setSearchText: (text: string) => void
   loadResultsPage: (text: string) => void
   loadPodcastPage: (podcastUrlParam: string) => void
 }
 
 const SearchSuggestionsList: React.FC<StateToProps & DispatchToProps> = ({
+  cursor,
   suggestions,
-  loadResultsPage,
+  setCursor,
+  setSearchText,
   loadPodcastPage,
+  loadResultsPage,
 }) => {
-  const [cursor, setCursor] = useState<number>(0)
+  const handleOnClick = (c: number) => () => {
+    setCursor(c)
+    SearchSuggestion.isPodcast(suggestions[c])
+      ? loadPodcastPage(suggestions[c].i)
+      : loadResultsPage(suggestions[c].header.replace(/<\/?em>/g, ''))
+  }
 
-  const handleOnClick = (s: SearchSuggestion) => () => {
-    SearchSuggestion.isPodcast(s)
-      ? loadPodcastPage(s.i)
-      : loadResultsPage(s.header.replace(/<\/?em>/g, ''))
+  const handleOnMouseOver = (c: number) => () => {
+    setCursor(c)
   }
 
   const handleOnKeyDown = (e: any) => {
-    if (e.keyCode === 38 && cursor > 0) {
-      setCursor(cursor - 1)
-    } else if (e.keyCode === 40 && cursor < suggestions.length - 1) {
-      setCursor(cursor + 1)
-    } else if (e.keyCode === 13) {
-      SearchSuggestion.isPodcast(suggestions[cursor])
-        ? loadPodcastPage(suggestions[cursor].i)
-        : loadResultsPage(suggestions[cursor].header.replace(/<\/?em>/g, ''))
+    switch (e.keyCode) {
+      case 38:
+        const c1 = cursor > 0 ? cursor - 1 : suggestions.length - 1
+        setCursor(c1)
+        if (SearchSuggestion.isTextSearch(suggestions[c1])) {
+          setSearchText(suggestions[c1].header.replace(/<\/?em>/g, ''))
+        }
+        return
+
+      case 40:
+        const c2 = cursor < suggestions.length - 1 ? cursor + 1 : 0
+        setCursor(c2)
+        if (SearchSuggestion.isTextSearch(suggestions[c2])) {
+          setSearchText(suggestions[c2].header.replace(/<\/?em>/g, ''))
+        }
+        return
+
+      case 13:
+        setCursor(cursor)
+        SearchSuggestion.isPodcast(suggestions[cursor])
+          ? loadPodcastPage(suggestions[cursor].i)
+          : loadResultsPage(suggestions[cursor].header.replace(/<\/?em>/g, ''))
+        return
     }
   }
 
   useEffect(() => {
-    cursor >= suggestions.length && setCursor(0)
+    setCursor(0)
   }, [suggestions.length])
 
   useEffect(() => {
@@ -47,23 +71,38 @@ const SearchSuggestionsList: React.FC<StateToProps & DispatchToProps> = ({
     return () => document.removeEventListener('keydown', handleOnKeyDown)
   }, [cursor, suggestions.map((x) => x.id).join()])
 
-  return (
+  return suggestions.length > 1 ? (
     <div
       style={{ width: '32rem' }}
       className="z-10 px-2 py-2 bg-white border border-blue-400 rounded-lg"
     >
-      {suggestions.map((s, i) =>
-        SearchSuggestion.isPodcast(s)
-          ? renderItemSuggestion(s, handleOnClick(s), cursor === i)
-          : renderTextSuggestion(s, handleOnClick(s), cursor === i),
-      )}
+      {suggestions
+        .slice(1)
+        .map((s, i) =>
+          SearchSuggestion.isPodcast(s)
+            ? renderItemSuggestion(
+                s,
+                handleOnClick(i + 1),
+                handleOnMouseOver(i + 1),
+                cursor === i + 1,
+              )
+            : renderTextSuggestion(
+                s,
+                handleOnClick(i + 1),
+                handleOnMouseOver(i + 1),
+                cursor === i + 1,
+              ),
+        )}
     </div>
+  ) : (
+    <></>
   )
 }
 
 function renderTextSuggestion(
   s: SearchSuggestion,
   onClick: () => void,
+  onMouseOver: () => void,
   active: boolean,
 ): JSX.Element {
   const Icon = iconMap[s.i === 'S' ? 'search' : 'enter']
@@ -72,10 +111,11 @@ function renderTextSuggestion(
     <div
       key={s.id}
       className={classnames(
-        'search-suggestion flex items-center px-3 py-1 hover:bg-gray-200 cursor-pointer rounded',
+        'search-suggestion flex items-center px-3 py-1 cursor-pointer rounded',
         { 'bg-gray-200': active },
       )}
       onClick={onClick}
+      onMouseOver={onMouseOver}
       onPointerDown={stopEventPropagation}
       onMouseDown={stopEventPropagation}
       onTouchStart={stopEventPropagation}
@@ -92,6 +132,7 @@ function renderTextSuggestion(
 function renderItemSuggestion(
   s: SearchSuggestion,
   onClick: () => void,
+  onMouseOver: () => void,
   active: boolean,
 ): JSX.Element {
   return (
@@ -102,6 +143,7 @@ function renderItemSuggestion(
         { 'bg-gray-200': active },
       )}
       onClick={onClick}
+      onMouseOver={onMouseOver}
       onPointerDown={stopEventPropagation}
       onMouseDown={stopEventPropagation}
       onTouchStart={stopEventPropagation}

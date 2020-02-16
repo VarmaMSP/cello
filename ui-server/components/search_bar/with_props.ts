@@ -25,6 +25,7 @@ interface StateToProps {
 }
 
 interface DispatchToProps {
+  setCursor: (c: number) => void
   collapseSearchBar: () => void
   changeSearchText: (text: string) => void
   loadResultsPage: (
@@ -46,13 +47,19 @@ const withProps = (
   loadResultsPage,
   showSuggestions,
   setShowSuggestions,
+  setCursor,
 }) => {
   const handleTextChange = (e: React.FormEvent<HTMLInputElement>) => {
+    e.preventDefault()
+
+    setCursor(0)
     changeSearchText(e.currentTarget.value)
   }
 
   const handleTextSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
     !!e && e.preventDefault()
+
+    setCursor(0)
     collapseSearchBar()
     loadResultsPage(searchText, resultType, sortBy)
   }
@@ -83,6 +90,8 @@ const mapDispatchToProps = (
   collapseSearchBar: () => dispatch({ type: T.SEARCH_BAR_COLLAPSE }),
   setShowSuggestions: (e: boolean) =>
     dispatch({ type: T.SEARCH_BAR_SET_SHOW_SUGGESTIONS, value: e }),
+  setCursor: (c: number) =>
+    dispatch({ type: T.SEARCH_BAR_SET_CURSOR, cursor: c }),
 })
 
 export default (child: React.FC<SearchBarProps>) =>
