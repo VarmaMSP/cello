@@ -46,7 +46,7 @@ const SearchResultsFilter: React.FC<StateToProps & DispatchToProps> = (
               )}
               onClick={() => onResultTypeChange(t)}
             >
-              {`${t}s`}
+              {t === 'episode' ? 'all' : 'podcasts'}
             </div>
             <div
               className={classNames('h-1 w-20 rounded-full', {

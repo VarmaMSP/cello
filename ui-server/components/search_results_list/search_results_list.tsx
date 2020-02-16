@@ -109,30 +109,40 @@ const SearchResultsList: React.FC<StateToProps & DispatchToProps> = ({
 
     return (
       <div>
-        <div className="flex">
-          {podcastsBestMatch.map((p) => (
-            <div key={p.id} className="flex-none md:w-28 w-22 mx-4 my-6">
-              <PodcastLink podcastUrlParam={p.urlParam}>
-                <a>
-                  <img
-                    className="w-full h-auto mb-2 flex-none object-contain rounded-lg border"
-                    src={getImageUrl(p.urlParam)}
-                  />
-                </a>
-              </PodcastLink>
-              <PodcastLink podcastUrlParam={p.urlParam}>
-                <a className="text-xs tracking-wide font-medium leading-snug line-clamp-1">
-                  {p.title}
-                </a>
-              </PodcastLink>
-              <PodcastLink podcastUrlParam={p.urlParam}>
-                <a className="text-2xs text-gray-900 tracking-wide font-medium leading-snug line-clamp-1">
-                  {p.author}
-                </a>
-              </PodcastLink>
+        {podcastsBestMatch.length > 0 && (
+          <>
+            <div className="text-lg font-semibold my-3">Podcasts</div>
+            <div className="flex">
+              {podcastsBestMatch.map((p) => (
+                <div
+                  key={p.id}
+                  className="flex-none md:w-28 w-22 mx-4 mt-3 mb-6"
+                >
+                  <PodcastLink podcastUrlParam={p.urlParam}>
+                    <a>
+                      <img
+                        className="w-full h-auto mb-2 flex-none object-contain rounded-lg border"
+                        src={getImageUrl(p.urlParam)}
+                      />
+                    </a>
+                  </PodcastLink>
+                  <PodcastLink podcastUrlParam={p.urlParam}>
+                    <a className="text-xs tracking-wide font-medium leading-snug line-clamp-1">
+                      {p.title}
+                    </a>
+                  </PodcastLink>
+                  <PodcastLink podcastUrlParam={p.urlParam}>
+                    <a className="text-2xs text-gray-900 tracking-wide font-medium leading-snug line-clamp-1">
+                      {p.author}
+                    </a>
+                  </PodcastLink>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
+
+        <div className="text-lg font-semibold my-3">Episodes</div>
         {episodeIds.map((id) => (
           <div key={id} className="mb-6">
             <EpisodePreview episodeId={id} showHighlights />
