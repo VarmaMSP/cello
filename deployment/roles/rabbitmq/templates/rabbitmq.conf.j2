@@ -1,8 +1,0 @@
-listeners.tcp.1 = 127.0.0.1:5672
-listeners.tcp.2 = ::1:5672
-listeners.tcp.3 = {{ hostvars[inventory_hostname]['private_ip'] }}:5672
-
-management.tcp.port              = 15672
-management.tcp.ip                = {{ hostvars[inventory_hostname]['private_ip'] }}
-management.login_session_timeout = 60
-     

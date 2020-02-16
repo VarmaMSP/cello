@@ -1,8 +1,0 @@
-- name: install nodejs
-  import_tasks: install-node.yml
-
-- name: build server
-  import_tasks: build-server.yml
-
-- name: run service
-  import_tasks: service.yml

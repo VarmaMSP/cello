@@ -1,9 +1,0 @@
-- include_vars:
-    file: passwords.yml
-    name: passwords
-
-- name: install minio
-  import_tasks: install.yml
-
-- name: start minio
-  import_tasks: service.yml

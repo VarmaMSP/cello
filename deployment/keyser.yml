@@ -1,7 +1,0 @@
-- hosts: keyser
-  tasks:
-    - include_role:
-        name: mysql
-
-    - include_role:
-        name: minio
