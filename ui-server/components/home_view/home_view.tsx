@@ -66,7 +66,7 @@ const HomeView: React.FC<StateToProps> = ({ isUserSignedIn }) => {
             )}
           >
             {
-              'Discover, Subscribe, Curate Your Favourite Podcasts And Episodes. Sign In Now To Get Started.'
+              'Discover, subscribe, curate your favourite podcasts and episodes. Sign in now to get started.'
             }
           </h3>
           <div
@@ -94,7 +94,7 @@ const HomeView: React.FC<StateToProps> = ({ isUserSignedIn }) => {
           </h1>
           <h2 className="md:w-3/4 w-full mt-3 mx-auto text-lg text-center text-gray-800 font-medium leading-relaxed tracking-wide">
             {
-              'Search For Person, Topic, Place, Podcast, Episode.. From A Directory Of 638,417 Podcasts And 21,07,559 Episodes.'
+              'Search for person, topic, place, podcast, episode.. From directory of 638,417 podcasts and 21,07,559 episodes.'
             }
           </h2>
         </div>
@@ -111,7 +111,7 @@ const HomeView: React.FC<StateToProps> = ({ isUserSignedIn }) => {
           </h1>
           <h2 className="md:w-3/4 w-full mt-3 mx-auto text-lg text-center text-gray-800 font-medium leading-relaxed tracking-wide">
             {
-              'Subscribe To Your Favourite Podcasts And Get Lastest Episodes In Your Subscriptions Feed.'
+              'Subscribe to your favourite podcasts and get lastest episodes in your subscriptions feed.'
             }
           </h2>
         </div>
@@ -128,7 +128,7 @@ const HomeView: React.FC<StateToProps> = ({ isUserSignedIn }) => {
           </h1>
           <h2 className="md:w-3/4 w-full mt-3 mx-auto text-lg text-center text-gray-800 font-medium leading-relaxed tracking-wide">
             {
-              'Your Progress Gets Automatically Saved, So Just Pick Up Your Favourite Episode From Where You Left.'
+              'Your progress gets automatically saved, So just pick up your favourite episode from where you left off.'
             }
           </h2>
         </div>
@@ -137,7 +137,7 @@ const HomeView: React.FC<StateToProps> = ({ isUserSignedIn }) => {
       <h1 className="md:mt-8 mt-24 text-center font-medium tracking-wide">
         <span className="text-xl">{'Not Sure Where To Start ? '}</span>
         <span className="text-lg">
-          {'Check Out These Critically Acclaimed Podcasts'}
+          {'Check out these critically acclaimed podcasts'}
         </span>
       </h1>
       <div className="flex mt-6">
