@@ -50,6 +50,36 @@ func (app *App) SearchPodcasts(searchQuery string, offset, limit int) ([]*model.
 	return podcastSearchResults, nil
 }
 
+func (app *App) SearchPodcastsByPhrase(phrase string) ([]*model.PodcastSearchResult, *model.AppError) {
+	results, err := app.ElasticSearch.Search().
+		Index(elasticsearch.PodcastIndexName).
+		Query(elastic.NewMultiMatchQuery(phrase).
+			Type("phrase").
+			FieldWithBoost("title", 1.5).
+			Field("author").
+			TieBreaker(0.4),
+		).
+		Size(6).
+		Do(context.TODO())
+
+	if err != nil {
+		return nil, model.NewAppError("app.search_podcasts", err.Error(), http.StatusInternalServerError, nil)
+	}
+
+	if results.Hits == nil || results.Hits.Hits == nil || len(results.Hits.Hits) == 0 {
+		return []*model.PodcastSearchResult{}, nil
+	}
+
+	podcastSearchResults := []*model.PodcastSearchResult{}
+	for _, hit := range results.Hits.Hits {
+		tmp := &model.PodcastSearchResult{}
+		if err := tmp.LoadDetails(hit); err == nil {
+			podcastSearchResults = append(podcastSearchResults, tmp)
+		}
+	}
+	return podcastSearchResults, nil
+}
+
 func (app *App) SearchEpisodes(searchQuery, sortBy string, offset, limit int) ([]*model.EpisodeSearchResult, *model.AppError) {
 	q := app.ElasticSearch.Search().
 		Index(elasticsearch.EpisodeIndexName).

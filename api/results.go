@@ -95,10 +95,20 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		podcastIds := make([]int64, len(episodes))
+		podcastSearchResults, err := c.App.SearchPodcastsByPhrase(c.Params.Query)
+		if err != nil {
+			c.Err = err
+			return
+		}
+
+		podcastIds := make([]int64, len(episodes)+len(podcastSearchResults))
 		for i, episode := range episodes {
 			podcastIds[i] = episode.PodcastId
 		}
+		for i, podcastSearchResult := range podcastSearchResults {
+			podcastIds[i+len(episodes)] = podcastSearchResult.Id
+		}
+
 		podcasts, err := c.App.GetPodcastsByIds(podcastIds)
 		if err != nil {
 			c.Err = err
@@ -110,6 +120,7 @@ func GetResultsPageData(c *Context, w http.ResponseWriter, req *http.Request) {
 			Podcasts:             podcasts,
 			Episodes:             episodes,
 			EpisodeSearchResults: episodeSearchResults,
+			PodcastSearchResults: podcastSearchResults,
 		}
 
 	} else {
