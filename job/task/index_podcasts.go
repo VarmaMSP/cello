@@ -10,17 +10,17 @@ import (
 	"github.com/varmamsp/cello/service/elasticsearch"
 )
 
-type ReindexPodcasts struct {
+type IndexPodcasts struct {
 	*app.App
 }
 
-func NewReindexPodcasts(app *app.App) (*ReindexPodcasts, error) {
-	return &ReindexPodcasts{
+func NewIndexPodcasts(app *app.App) (*IndexPodcasts, error) {
+	return &IndexPodcasts{
 		App: app,
 	}, nil
 }
 
-func (s *ReindexPodcasts) Call() {
+func (s *IndexPodcasts) Call() {
 	fmt.Println("Reindex Podcast Task started")
 
 	go func() {

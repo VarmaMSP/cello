@@ -16,8 +16,8 @@ type TaskSchedulerJob struct {
 	scrapeItunesDirectory  *task.ScrapeItunesDirectory
 	schedulePodcastRefresh *task.SchedulePodcastRefresh
 	reimportPodcasts       *task.ReimportPodcasts
-	reindexPodcasts        *task.ReindexPodcasts
-	reindexEpisodes        *task.ReindexEpisodes
+	indexPodcasts          *task.IndexPodcasts
+	indexEpisodes          *task.IndexEpisodes
 	indexKeywords          *task.IndexKeywords
 	fixCategories          *task.FixCategories
 	fixKeywords            *task.FixKeywords
@@ -55,12 +55,12 @@ func NewTaskSchedulerJob(app *app.App, config *model.Config) (model.Job, error) 
 		return nil, err
 	}
 
-	s.reindexPodcasts, err = task.NewReindexPodcasts(app)
+	s.indexPodcasts, err = task.NewIndexPodcasts(app)
 	if err != nil {
 		return nil, err
 	}
 
-	s.reindexEpisodes, err = task.NewReindexEpisodes(app)
+	s.indexEpisodes, err = task.NewIndexEpisodes(app)
 	if err != nil {
 		return nil, err
 	}
@@ -180,11 +180,11 @@ func (job *TaskSchedulerJob) callTask(task *model.Task) {
 	case model.TASK_NAME_REIMPORT_PODCASTS:
 		job.reimportPodcasts.Call()
 
-	case model.TASK_NAME_REINDEX_EPISODES:
-		job.reindexEpisodes.Call()
+	case model.TASK_NAME_INDEX_EPISODES:
+		job.indexEpisodes.Call()
 
-	case model.TASK_NAME_REINDEX_PODCASTS:
-		job.reindexPodcasts.Call()
+	case model.TASK_NAME_INDEX_PODCASTS:
+		job.indexPodcasts.Call()
 
 	case model.TASK_NAME_INDEX_KEYWORDS:
 		job.indexKeywords.Call()
