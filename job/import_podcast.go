@@ -4,12 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/varmamsp/gofeed/rss"
-	"gopkg.in/jdkato/prose.v2"
 
 	h "github.com/go-http-utils/headers"
 	"github.com/olivere/elastic/v7"
@@ -84,13 +82,11 @@ type EntitiesToSave struct {
 	podcast           *model.Podcast
 	episodes          []*model.Episode
 	podcastCategories []*model.PodcastCategory
-	keywords          []*model.Keyword
 }
 
 type EntitiesToIndex struct {
 	podcast  *model.Podcast
 	episodes []*model.Episode
-	keywords []*model.Keyword
 }
 
 func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
@@ -191,24 +187,10 @@ func (job *ImportPodcastJob) extract(feedId int64, rssFeed *rss.Feed) (*Entities
 		)
 	}
 
-	// Keywords
-	keywords := []*model.Keyword{}
-	doc, err := prose.NewDocument(podcast.Description)
-	if err != nil {
-		job.log.Err(err)
-	} else {
-		for _, ent := range doc.Entities() {
-			if model.IsValidKeyword(ent.Text) {
-				keywords = append(keywords, &model.Keyword{Text: strings.ToLower(ent.Text)})
-			}
-		}
-	}
-
 	return &EntitiesToSave{
 		podcast:           podcast,
 		episodes:          episodes,
 		podcastCategories: podcastCategories,
-		keywords:          keywords,
 	}, nil
 }
 
@@ -236,25 +218,6 @@ func (job *ImportPodcastJob) save(toSave *EntitiesToSave) (*EntitiesToIndex, *mo
 		episodesToIndex = append(episodesToIndex, episode)
 	}
 
-	// Keywords
-	keywordsToIndex := []*model.Keyword{}
-	for _, keyword := range toSave.keywords {
-		k, err := job.Store.Keyword().Upsert(keyword)
-		if err != nil {
-			job.log.Err(err)
-			continue
-		}
-
-		if _, err := job.Store.Keyword().SavePodcastKeyword(&model.PodcastKeyword{
-			KeywordId: k.Id,
-			PodcastId: toSave.podcast.Id,
-		}); err != nil {
-			job.log.Err(err)
-			continue
-		}
-		keywordsToIndex = append(keywordsToIndex, k)
-	}
-
 	// Create thumbnail
 	job.createThumbnailP.D <- CreateThumbnailJobInput{
 		Id:         toSave.podcast.Id,
@@ -266,15 +229,13 @@ func (job *ImportPodcastJob) save(toSave *EntitiesToSave) (*EntitiesToIndex, *mo
 	return &EntitiesToIndex{
 		podcast:  toSave.podcast,
 		episodes: episodesToIndex,
-		keywords: keywordsToIndex,
 	}, nil
 }
 
 func (job *ImportPodcastJob) index(toIndex *EntitiesToIndex) *model.AppError {
 	podcast := toIndex.podcast
 	episodes := toIndex.episodes
-	keywords := toIndex.keywords
-	indexRequests := make([]elastic.BulkableRequest, len(keywords)+len(episodes)+1)
+	indexRequests := make([]elastic.BulkableRequest, len(episodes)+1)
 
 	indexRequests[0] = elastic.NewBulkIndexRequest().
 		Index(elasticsearch.PodcastIndexName).
@@ -287,16 +248,6 @@ func (job *ImportPodcastJob) index(toIndex *EntitiesToIndex) *model.AppError {
 			Type:        podcast.Type,
 			Complete:    podcast.Complete,
 		})
-
-	for i, keyword := range keywords {
-		indexRequests[i+1] = elastic.NewBulkIndexRequest().
-			Index(elasticsearch.KeywordIndexName).
-			Id(model.StrFromInt64(keyword.Id)).
-			Doc(&model.KeywordIndex{
-				Text:    keyword.Text,
-				AddedBy: "0",
-			})
-	}
 
 	for i, episode := range episodes {
 		indexRequests[i+1] = elastic.NewBulkIndexRequest().

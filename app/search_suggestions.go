@@ -50,6 +50,8 @@ func (app *App) SuggestPodcasts(phrase, prefix string, noFuzzy int) ([]*model.Se
 		results, err = app.PodcastPhrasePrefixSearch(phrase, prefix, noFuzzy)
 	} else if phrase != "" && prefix == "" {
 		results, err = app.PodcastPhraseSearch(phrase, noFuzzy)
+	} else {
+		results, err = app.PodcastPrefixSearch(prefix)
 	}
 
 	if err != nil {
@@ -174,5 +176,19 @@ func (app *App) PodcastPhraseSearch(phrase string, noFuzzy int) (*elastic.Search
 			),
 		).
 		Size(4).
+		Do(context.TODO())
+}
+
+func (app *App) PodcastPrefixSearch(prefix string) (*elastic.SearchResult, error) {
+	return app.ElasticSearch.Search().
+		Index(elasticsearch.PodcastIndexName).
+		Query(elastic.NewTermQuery("title.prefix", prefix)).
+		Highlight(elastic.NewHighlight().
+			FragmentSize(10).
+			PreTags("<em>").
+			PostTags("</em>").
+			Fields(elastic.NewHighlighterField("text")),
+		).
+		Size(5).
 		Do(context.TODO())
 }

@@ -1,9 +1,6 @@
 run-cello:
 	go run ./cmd/cello/main.go
 
-run-ui-server:
-	cd ./ui-server && npm run dev
-
 purge-data: 
 	curl -X DELETE 'http://localhost:9200/_all'
 

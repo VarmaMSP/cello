@@ -30,7 +30,9 @@ SELECT user.name, podcast.title FROM subscription
     WHERE subscription.user_id = '';
 
 -- USER PLAYBACKS
-SELECT user.name, episode.title FROM playback
+SELECT user.name, playback.current_progress, SEC_TO_TIME(episode.duration) AS duration, episode.title, DATE(CONVERT_TZ(playback.last_played_at, "+00:00", "+05:30")) AS played_at FROM playback
     INNER JOIN user ON playback.user_id = user.id
     INNER JOIN episode ON playback.episode_id = episode.id
-    WHERE playback.user_id = '';
+    WHERE playback.user_id = '12'
+    ORDER BY playback.last_played_at;
+
