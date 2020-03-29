@@ -10,7 +10,7 @@ import (
 )
 
 func GetHomePageData(c *Context, w http.ResponseWriter, req *http.Request) {
-	recommended, err := c.App.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_DISCOVER, "recommended.json")
+	recommended, err := c.App.GetStaticFile(s3.BUCKET_NAME_PHENOPOD_DISCOVER, "home.json")
 	if err != nil {
 		c.Err = err
 		return
@@ -26,11 +26,7 @@ func GetHomePageData(c *Context, w http.ResponseWriter, req *http.Request) {
 	c.Response.Data = &model.ApiResponseData{
 		Categories: categories,
 	}
-	c.Response.Raw = model.EncodeToJson(&struct {
-		Recommended json.RawMessage `json:"recommended"`
-	}{
-		Recommended: (json.RawMessage)(recommended),
-	})
+	c.Response.Raw = recommended
 }
 
 func GetChart(c *Context, w http.ResponseWriter, req *http.Request) {
