@@ -497,5 +497,51 @@
                 "title": "Pod Save America"
             }
         ]
+    },
+
+    {
+        "title": "Software Engineering",
+        "podcasts": [
+            {
+                "id": "bqlwRa",
+                "url_param": "software-engineering-daily-bqlwRa",
+                "title": "Software Engineering Daily"
+            },
+            {
+                "id": "b68yYz",
+                "url_param": "the-changelog-b68yYz",
+                "title": "The Changelog"
+            },
+            {
+                "id": "el5EO5",
+                "url_param": "full-stack-radio-el5EO5",
+                "title": "Full Stack Radio"
+            },
+            {
+                "id": "enxOKP",
+                "url_param": "functional-geekery-enxOKP",
+                "title": "Functional Geekery"
+            },
+            {
+                "id": "dy8PJW",
+                "url_param": "js-party-dy8PJW",
+                "title": "JS Party"
+            },
+            {
+                "id": "eERMBl",
+                "url_param": "developer-tea-eERMBl",
+                "title": "Developer Tea"
+            },
+            {
+                "id": "eVNmrX",
+                "url_param": "front-end-happy-hour-eVNmrX",
+                "title": "Front End Happy Hour"
+            },
+            {
+                "id": "eER13g",
+                "url_param": "corecursive-software-engineering-interviews-eER13g",
+                "title": "CoRecursive - Software Engineering Interviews"
+            }
+        ]
     }
 ]
