@@ -11,17 +11,9 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-const (
-	BUCKET_NAME_THUMBNAILS        = "thumbnails"
-	BUCKET_NAME_PHENOPOD_CHARTS   = "phenopod-charts"
-	BUCKET_NAME_PHENOPOD_DISCOVER = "phenopod-discover"
-	BUCKET_NAME_CHARTABLE_CHARTS  = "chartable-charts"
-	BUCKET_NAME_ASSETS            = "assets"
-)
-
-type S3FileStore struct {
+type s3Backend struct {
 	client    *minio.Client
-	endpoint  string
+	address   string
 	accessKey string
 	secretKey string
 	secure    bool
@@ -32,7 +24,7 @@ type S3FileStore struct {
 	writeOpts minio.PutObjectOptions
 }
 
-func (s3 *S3FileStore) makeBucketIfNotExist() error {
+func (s3 *s3Backend) makeBucketIfNotExist() error {
 	if exists, err := s3.client.BucketExists(s3.bucket); err != nil {
 		return err
 	} else if exists {
@@ -42,7 +34,7 @@ func (s3 *S3FileStore) makeBucketIfNotExist() error {
 	return s3.client.MakeBucket(s3.bucket, s3.region)
 }
 
-func (s3 *S3FileStore) updateBucketPolicy() error {
+func (s3 *s3Backend) updateBucketPolicy() error {
 	if s3.policy == nil {
 		return nil
 	}
@@ -64,8 +56,8 @@ func (s3 *S3FileStore) updateBucketPolicy() error {
 	return nil
 }
 
-func (s3 *S3FileStore) Init() *model.AppError {
-	if client, err := minio.New(s3.endpoint, s3.accessKey, s3.secretKey, s3.secure); err != nil {
+func (s3 *s3Backend) init() *model.AppError {
+	if client, err := minio.New(s3.address, s3.accessKey, s3.secretKey, s3.secure); err != nil {
 		return model.NewAppError("s3_file_store.init", err.Error(), http.StatusInternalServerError, nil)
 	} else {
 		s3.client = client
@@ -82,7 +74,7 @@ func (s3 *S3FileStore) Init() *model.AppError {
 	return nil
 }
 
-func (s3 *S3FileStore) FileExists(path string) (bool, *model.AppError) {
+func (s3 *s3Backend) FileExists(path string) (bool, *model.AppError) {
 	if _, err := s3.client.StatObject(s3.bucket, path, minio.StatObjectOptions{}); err != nil {
 		if err.(minio.ErrorResponse).Code == "NoSuchKey" {
 			return false, nil
@@ -93,7 +85,7 @@ func (s3 *S3FileStore) FileExists(path string) (bool, *model.AppError) {
 	}
 }
 
-func (s3 *S3FileStore) ReadFile(path string) ([]byte, *model.AppError) {
+func (s3 *s3Backend) ReadFile(path string) ([]byte, *model.AppError) {
 	obj, err := s3.client.GetObject(s3.bucket, path, s3.readOpts)
 	if err != nil {
 		return nil, model.NewAppError("s3_file_store.read_file", err.Error(), http.StatusInternalServerError, nil)
@@ -107,7 +99,7 @@ func (s3 *S3FileStore) ReadFile(path string) ([]byte, *model.AppError) {
 	}
 }
 
-func (s3 *S3FileStore) WriteFile(fr io.Reader, path string) (int64, *model.AppError) {
+func (s3 *s3Backend) WriteFile(fr io.Reader, path string) (int64, *model.AppError) {
 	var buf bytes.Buffer
 	if _, err := buf.ReadFrom(fr); err != nil {
 		return 0, model.NewAppError("s3_file_store.write_file", err.Error(), http.StatusInternalServerError, nil)
@@ -120,7 +112,7 @@ func (s3 *S3FileStore) WriteFile(fr io.Reader, path string) (int64, *model.AppEr
 	}
 }
 
-func (s3 *S3FileStore) RemoveFile(path string) *model.AppError {
+func (s3 *s3Backend) RemoveFile(path string) *model.AppError {
 	if err := s3.client.RemoveObject(s3.bucket, path); err != nil {
 		return model.NewAppError("s3_file_store.remove_file", err.Error(), http.StatusInternalServerError, nil)
 	} else {

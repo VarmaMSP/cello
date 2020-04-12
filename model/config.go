@@ -45,6 +45,7 @@ type Minio struct {
 	Address   string `mapstructure:"address"`
 	AccessKey string `mapstructure:"access_key"`
 	SecretKey string `mapstructure:"secret_key"`
+	Region    string `mapstructure:"region"`
 }
 
 // Queue

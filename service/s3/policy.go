@@ -2,6 +2,12 @@ package s3
 
 import "encoding/json"
 
+const (
+	POLICY_VERSION       = "2012-10-17"
+	POLICY_ID_THUMBNAILS = "2-12-2019"
+	POLICY_ID_ASSETS     = "2-12-2019"
+)
+
 // AWS POLICY GENERATOR
 // https://awspolicygen.s3.amazonaws.com/policygen.html
 
@@ -19,12 +25,6 @@ type AwsPolicyStatement struct {
 	Resource  []string          `json:"Resource"`
 }
 
-const (
-	POLICY_VERSION       = "2012-10-17"
-	POLICY_ID_THUMBNAILS = "2-12-2019"
-	POLICY_ID_ASSETS     = "2-12-2019"
-)
-
 func getNewBucketPolicy(bucketName string) AwsPolicy {
 	switch bucketName {
 	case BUCKET_NAME_THUMBNAILS:
@@ -32,7 +32,7 @@ func getNewBucketPolicy(bucketName string) AwsPolicy {
 			Id:      POLICY_ID_THUMBNAILS,
 			Version: POLICY_VERSION,
 			Statement: []AwsPolicyStatement{
-				AwsPolicyStatement{
+				{
 					Sid:       "PublicReadAccess",
 					Effect:    "Allow",
 					Principal: map[string]string{"AWS": "*"},
@@ -47,7 +47,7 @@ func getNewBucketPolicy(bucketName string) AwsPolicy {
 			Id:      POLICY_ID_ASSETS,
 			Version: POLICY_VERSION,
 			Statement: []AwsPolicyStatement{
-				AwsPolicyStatement{
+				{
 					Sid:       "PublicReadAccess",
 					Effect:    "Allow",
 					Principal: map[string]string{"AWS": "*"},
