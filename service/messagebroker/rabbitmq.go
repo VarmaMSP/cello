@@ -67,6 +67,7 @@ func (b *rabbitmqBackend) reconnector() {
 			for _, consumer := range b.consumers {
 				consumer.recover <- struct{}{}
 			}
+			break
 		}
 	}
 }
