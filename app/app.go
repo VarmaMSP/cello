@@ -8,7 +8,6 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/dghubble/oauth1"
 	twitterOAuth "github.com/dghubble/oauth1/twitter"
-	"github.com/go-playground/validator/v10"
 	"github.com/gomodule/redigo/redis"
 	"github.com/minio/minio-go/v6"
 	"github.com/olivere/elastic/v7"
@@ -28,8 +27,6 @@ import (
 
 type App struct {
 	HostName string
-
-	Validate *validator.Validate
 
 	Store                store.Store
 	S3                   *minio.Client
@@ -58,8 +55,6 @@ func NewApp(config model.Config) (*App, error) {
 		app.Log = zerolog.New(os.Stdout).With().Timestamp().Logger()
 		app.HostName = "https://phenopod.com"
 	}
-
-	app.Validate = validator.New()
 
 	var err error
 
