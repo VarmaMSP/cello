@@ -2,17 +2,29 @@ package searchengine
 
 import "github.com/varmamsp/cello/model"
 
-type SearchEngine interface {
+type Broker interface {
 	Podcast() PodcastIndex
 	Episode() EpisodeIndex
 }
 
 type PodcastIndex interface {
-	Index(podcast *model.Podcast) *model.AppError
-	BulkIndex(podcasts []*model.Podcast) *model.AppError
+	CreateIndex() *model.AppError
+	DeleteIndex() *model.AppError
+
+	Save(podcast *model.Podcast) *model.AppError
+	BulkSave(podcasts []*model.Podcast) *model.AppError
+	Delete(podcastId int64) *model.AppError
+
+	Search(query string) ([]*model.Podcast, *model.AppError)
+	GetSuggestions(query string) ([]*model.Podcast, *model.AppError)
 }
 
 type EpisodeIndex interface {
-	Index(episode *model.Episode) *model.AppError
-	BulkIndex(episodes []*model.Episode) *model.AppError
+	CreateIndex() *model.AppError
+	DeleteIndex() *model.AppError
+
+	Save(episode *model.Episode) *model.AppError
+	BulkSave(episodes []*model.Episode) *model.AppError
+
+	Search(query string) ([]*model.Episode, *model.AppError)
 }

@@ -1,6 +1,9 @@
 package elasticsearch_
 
 import (
+	"context"
+	"net/http"
+
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/searchengine"
 )
@@ -54,10 +57,41 @@ func newESEpisodeIndex(broker esBroker) (searchengine.EpisodeIndex, error) {
 	return &esEpisodeIndex{broker}, nil
 }
 
-func (e *esEpisodeIndex) Index(episode *model.Episode) *model.AppError {
+func (e *esEpisodeIndex) CreateIndex() *model.AppError {
+	result, err := e.getClient().CreateIndex(EPISODE_INDEX).
+		Body(EPISODE_INDEX_MAPPING).
+		Do(context.TODO())
+
+	if err != nil {
+		return model.NewAppError("create_index", err.Error(), http.StatusInternalServerError, nil)
+	} else if result == nil {
+		return model.NewAppError("create_index", "result is nil", http.StatusInternalServerError, nil)
+	}
+
+	return nil
+}
+
+func (e *esEpisodeIndex) DeleteIndex() *model.AppError {
+	result, err := e.getClient().DeleteIndex(EPISODE_INDEX).
+		Do(context.TODO())
+
+	if err != nil {
+		return model.NewAppError("create_index", err.Error(), http.StatusInternalServerError, nil)
+	} else if result == nil {
+		return model.NewAppError("create_index", "result is nil", http.StatusInternalServerError, nil)
+	}
+
+	return nil
+}
+
+func (e *esEpisodeIndex) Save(episode *model.Episode) *model.AppError {
 	panic("not implemented") // TODO: Implement
 }
 
-func (e *esEpisodeIndex) BulkIndex(episodes []*model.Episode) *model.AppError {
+func (e *esEpisodeIndex) BulkSave(episodes []*model.Episode) *model.AppError {
 	panic("not implemented") // TODO: Implement
+}
+
+func (e *esEpisodeIndex) Search(query string) ([]*model.Episode, *model.AppError) {
+	return nil, nil
 }

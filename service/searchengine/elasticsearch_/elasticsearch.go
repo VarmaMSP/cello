@@ -23,7 +23,7 @@ type esSupplier struct {
 	episode searchengine.EpisodeIndex
 }
 
-func NewESSearchEngine(config *model.Config) (searchengine.SearchEngine, error) {
+func NewESBroker(config *model.Config) (searchengine.Broker, error) {
 	client, err := elastic.NewClient(
 		elastic.SetURL("http://"+config.Elasticsearch.Address),
 		elastic.SetBasicAuth(config.Elasticsearch.User, config.Elasticsearch.Password),
