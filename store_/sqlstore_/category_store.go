@@ -2,15 +2,16 @@ package sqlstore_
 
 import (
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/store_"
 )
 
 type sqlCategoryStore struct {
-	sqlStore
+	sqldb.Broker
 }
 
-func newSqlCategoryStore(store sqlStore) store_.CategoryStore {
-	return &sqlCategoryStore{store}
+func newSqlCategoryStore(broker sqldb.Broker) store_.CategoryStore {
+	return &sqlCategoryStore{broker}
 }
 
 func (s *sqlCategoryStore) Get(categoryId int64) (*model.Category, *model.AppError) {

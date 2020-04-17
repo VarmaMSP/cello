@@ -2,15 +2,16 @@ package sqlstore_
 
 import (
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/store_"
 )
 
 type sqlEpisodeStore struct {
-	sqlStore
+	sqldb.Broker
 }
 
-func newSqlEpisodeStore(store sqlStore) store_.EpisodeStore {
-	return &sqlEpisodeStore{store}
+func newSqlEpisodeStore(broker sqldb.Broker) store_.EpisodeStore {
+	return &sqlEpisodeStore{broker}
 }
 
 func (s *sqlEpisodeStore) Save(episode *model.Episode) *model.AppError {

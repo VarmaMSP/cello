@@ -2,15 +2,16 @@ package sqlstore_
 
 import (
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/store_"
 )
 
 type sqlUserStore struct {
-	sqlStore
+	sqldb.Broker
 }
 
-func newSqlUserStore(store sqlStore) store_.UserStore {
-	return &sqlUserStore{store}
+func newSqlUserStore(broker sqldb.Broker) store_.UserStore {
+	return &sqlUserStore{broker}
 }
 
 func (s *sqlUserStore) Save(user *model.User) *model.AppError {

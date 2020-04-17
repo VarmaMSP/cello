@@ -1,21 +1,11 @@
 package sqlstore_
 
 import (
-	"database/sql"
-	"time"
-
-	"github.com/go-sql-driver/mysql"
-	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/store_"
 )
 
-type sqlStore interface {
-	getMaster() *sql.DB
-}
-
-type sqlSupplier struct {
-	db *sql.DB
-
+type sqlStore struct {
 	feed         store_.FeedStore
 	podcast      store_.PodcastStore
 	episode      store_.EpisodeStore
@@ -27,84 +17,53 @@ type sqlSupplier struct {
 	playlist     store_.PlaylistStore
 }
 
-func NewSqlStore(config *model.Config) (store_.Store, error) {
-	db, err := sql.Open("mysql", makeMysqlDSN(config))
-	if err != nil {
-		return nil, err
-	}
-	if err := db.Ping(); err != nil {
-		return nil, err
-	}
+func NewSqlStore(broker sqldb.Broker) (store_.Store, error) {
+	s := &sqlStore{}
+	s.feed = newSqlFeedStore(broker)
+	s.podcast = newSqlPodcastStore(broker)
+	s.episode = newSqlEpisodeStore(broker)
+	s.category = newSqlCategoryStore(broker)
+	s.task = newSqlTaskStore(broker)
+	s.user = newSqlUserStore(broker)
+	s.subscription = newSqlSubscriptionStore(broker)
+	s.playback = newSqlPlaybackStore(broker)
+	s.playlist = newSqlPlaylistStore(broker)
 
-	supplier := &sqlSupplier{}
-
-	supplier.db = db
-	supplier.feed = newSqlFeedStore(supplier)
-	supplier.podcast = newSqlPodcastStore(supplier)
-	supplier.episode = newSqlEpisodeStore(supplier)
-	supplier.category = newSqlCategoryStore(supplier)
-	supplier.task = newSqlTaskStore(supplier)
-	supplier.user = newSqlUserStore(supplier)
-	supplier.subscription = newSqlSubscriptionStore(supplier)
-	supplier.playback = newSqlPlaybackStore(supplier)
-	supplier.playlist = newSqlPlaylistStore(supplier)
-
-	return supplier, nil
+	return s, nil
 }
 
-// sqlstore implementation
-func (s *sqlSupplier) getMaster() *sql.DB {
-	return s.db
-}
-
-// Store implementation
-func (s *sqlSupplier) Feed() store_.FeedStore {
+func (s *sqlStore) Feed() store_.FeedStore {
 	return s.feed
 }
 
-func (s *sqlSupplier) Podcast() store_.PodcastStore {
+func (s *sqlStore) Podcast() store_.PodcastStore {
 	return s.podcast
 }
 
-func (s *sqlSupplier) Episode() store_.EpisodeStore {
+func (s *sqlStore) Episode() store_.EpisodeStore {
 	return s.episode
 }
 
-func (s *sqlSupplier) Category() store_.CategoryStore {
+func (s *sqlStore) Category() store_.CategoryStore {
 	return s.category
 }
 
-func (s *sqlSupplier) Task() store_.TaskStore {
+func (s *sqlStore) Task() store_.TaskStore {
 	return s.task
 }
 
-func (s *sqlSupplier) User() store_.UserStore {
+func (s *sqlStore) User() store_.UserStore {
 	return s.user
 }
 
-func (s *sqlSupplier) Playback() store_.PlaybackStore {
+func (s *sqlStore) Playback() store_.PlaybackStore {
 	return s.playback
 }
 
-func (s *sqlSupplier) Subscription() store_.SubscriptionStore {
+func (s *sqlStore) Subscription() store_.SubscriptionStore {
 	return s.subscription
 }
 
-func (s *sqlSupplier) Playlist() store_.PlaylistStore {
+func (s *sqlStore) Playlist() store_.PlaylistStore {
 	return s.playlist
-}
-
-func makeMysqlDSN(config *model.Config) string {
-	c := mysql.NewConfig()
-	c.Net = "tcp"
-	c.Addr = config.Mysql.Address
-	c.DBName = config.Mysql.Database
-	c.User = config.Mysql.User
-	c.Passwd = config.Mysql.Password
-	c.AllowNativePasswords = true
-	c.Params = map[string]string{"collation": "utf8mb4_unicode_ci"}
-	c.ReadTimeout = 2 * time.Minute
-	c.WriteTimeout = 2 * time.Minute
-
-	return c.FormatDSN()
 }

@@ -2,15 +2,16 @@ package sqlstore_
 
 import (
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/store_"
 )
 
 type sqlFeedStore struct {
-	sqlStore
+	sqldb.Broker
 }
 
-func newSqlFeedStore(store sqlStore) store_.FeedStore {
-	return &sqlFeedStore{store}
+func newSqlFeedStore(broker sqldb.Broker) store_.FeedStore {
+	return &sqlFeedStore{broker}
 }
 
 func (s *sqlFeedStore) Save(feed *model.Feed) *model.AppError {

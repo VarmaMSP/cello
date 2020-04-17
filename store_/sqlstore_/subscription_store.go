@@ -2,15 +2,16 @@ package sqlstore_
 
 import (
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/store_"
 )
 
 type sqlSubscriptionStore struct {
-	sqlStore
+	sqldb.Broker
 }
 
-func newSqlSubscriptionStore(store sqlStore) store_.SubscriptionStore {
-	return &sqlSubscriptionStore{store}
+func newSqlSubscriptionStore(broker sqldb.Broker) store_.SubscriptionStore {
+	return &sqlSubscriptionStore{broker}
 }
 
 func (s *sqlSubscriptionStore) Save(subscription *model.Subscription) *model.AppError {

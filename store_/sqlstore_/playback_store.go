@@ -2,15 +2,16 @@ package sqlstore_
 
 import (
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/store_"
 )
 
 type sqlPlaybackStore struct {
-	sqlStore
+	sqldb.Broker
 }
 
-func newSqlPlaybackStore(store sqlStore) store_.PlaybackStore {
-	return &sqlPlaybackStore{store}
+func newSqlPlaybackStore(broker sqldb.Broker) store_.PlaybackStore {
+	return &sqlPlaybackStore{broker}
 }
 
 func (s *sqlPlaybackStore) Save(playback *model.Playback) *model.AppError {
