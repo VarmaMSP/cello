@@ -1,7 +1,8 @@
 package searchlayer
 
 import (
-	"github.com/varmamsp/cello/service/searchengine"
+	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/elasticsearch_"
 	"github.com/varmamsp/cello/store_"
 )
 
@@ -12,12 +13,22 @@ type searchStore struct {
 	episode store_.EpisodeStore
 }
 
-func NewSearchLayer(baseStore store_.Store, broker searchengine.Broker) store_.Store {
-	return &searchStore{
-		Store:   baseStore,
-		podcast: &searchPodcastStore{PodcastStore: baseStore.Podcast(), podcastIndex: broker.Podcast()},
-		episode: &searchEpisodeStore{EpisodeStore: baseStore.Episode(), episodeIndex: broker.Episode()},
+func NewSearchLayer(baseStore store_.Store, broker elasticsearch_.Broker) (store_.Store, *model.AppError) {
+	s := &searchStore{Store: baseStore}
+
+	if episodeStore, err := newSearchEpisodeStore(baseStore.Episode(), broker); err != nil {
+		return nil, err
+	} else {
+		s.episode = episodeStore
 	}
+
+	if podcastStore, err := newSearchPodcastStore(baseStore.Podcast(), broker); err != nil {
+		return nil, err
+	} else {
+		s.podcast = podcastStore
+	}
+
+	return s, nil
 }
 
 func (s *searchStore) Podcast() store_.PodcastStore {
