@@ -6,6 +6,10 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (m *mysqlBroker) Patch(table string, old, new model.DbModel) (sql.Result, error) {
+func (splr *supplier) Patch(table string, old, new model.DbModel) (sql.Result, error) {
+	panic("")
+}
+
+func (splr *supplier) Exec(sql string, values ...interface{}) error {
 	panic("")
 }

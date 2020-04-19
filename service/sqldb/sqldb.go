@@ -6,9 +6,11 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
+// Broker implements some common helper functions while exposing
+// the underling Mysql handle.
 type Broker interface {
-	// GetMaster returns a connectio to mater db.
-	GetMaster() *sql.DB
+	// C returns underlying db handle.
+	C() *sql.DB
 
 	// Insert runs insert query for table without a autso generated PK.
 	Insert(table string, item model.DbModel) (*sql.Result, error)
@@ -16,9 +18,10 @@ type Broker interface {
 	Insert_(table string, item model.DbModel) (*sql.Result, error)
 	// BulkInsert inserts multiple items in single query
 	BulkInsert(table string, items []model.DbModel) (*sql.Result, error)
-
 	// Patch persists changes to item
 	Patch(table string, old, new model.DbModel) (sql.Result, error)
+	// Exec executes given sql
+	Exec(sql string, values ...interface{}) error
 
 	// Query runs given sql and copies each result to copyTo func result
 	Query(copyTo func() []interface{}, sql string, values ...interface{}) error

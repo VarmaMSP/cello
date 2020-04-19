@@ -1,28 +1,29 @@
-package elasticsearch_
+package searchengine
 
 import (
 	"context"
+	"errors"
 
 	"github.com/olivere/elastic/v7"
 	"github.com/varmamsp/cello/model"
 )
 
-func (s *supplier) IndexDoc(index string, item model.EsModel) *model.AppError {
-	resp, err := s.client.Index().
+func (splr *supplier) Index(index string, item model.EsModel) error {
+	resp, err := splr.client.Index().
 		Index(index).
 		Id(item.GetId()).
 		BodyJson(item).
 		Do(context.TODO())
-	if err != nil {
-		return model.New500Error("elasticsearch.broker.index_doc", err.Error(), nil)
-	} else if resp == nil {
-		return model.New500Error("elasticsearch.broker.index_doc", "no response", nil)
-	}
 
+	if err != nil {
+		return err
+	} else if resp == nil {
+		return errors.New("No Index Doc Response")
+	}
 	return nil
 }
 
-func (s *supplier) BulkIndexDoc(index string, items []model.EsModel) *model.AppError {
+func (splr *supplier) BulkIndex(index string, items []model.EsModel) error {
 	if len(items) == 0 {
 		return nil
 	}
@@ -42,13 +43,12 @@ func (s *supplier) BulkIndexDoc(index string, items []model.EsModel) *model.AppE
 			end = len(reqs)
 		}
 
-		resp, err := s.client.Bulk().Add(reqs[i:end]...).Do(context.TODO())
+		resp, err := splr.client.Bulk().Add(reqs[i:end]...).Do(context.TODO())
 		if err != nil {
-			return model.New500Error("elasticsearch.broker.bulk_index_doc", err.Error(), nil)
+			return err
 		} else if resp == nil {
-			return model.New500Error("elasticsearch.broker.bulk_index_doc", "no resp", nil)
+			return errors.New("No Response")
 		}
 	}
-
 	return nil
 }

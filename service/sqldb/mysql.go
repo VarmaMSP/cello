@@ -8,11 +8,11 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-type mysqlBroker struct {
+type supplier struct {
 	db *sql.DB
 }
 
-func NewSqlDbBroker(config *model.Config) (Broker, error) {
+func NewBroker(config *model.Config) (Broker, error) {
 	db, err := sql.Open("mysql", makeMysqlDSN(config))
 	if err != nil {
 		return nil, err
@@ -21,11 +21,11 @@ func NewSqlDbBroker(config *model.Config) (Broker, error) {
 		return nil, err
 	}
 
-	return &mysqlBroker{db: db}, nil
+	return &supplier{db: db}, nil
 }
 
-func (m *mysqlBroker) GetMaster() *sql.DB {
-	return m.db
+func (splr *supplier) C() *sql.DB {
+	return splr.db
 }
 
 func makeMysqlDSN(config *model.Config) string {

@@ -6,14 +6,14 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (m *mysqlBroker) Insert(table string, item model.DbModel) (*sql.Result, error) {
+func (splr *supplier) Insert(table string, item model.DbModel) (*sql.Result, error) {
 	panic("")
 }
 
-func (m *mysqlBroker) Insert_(table string, item model.DbModel) (*sql.Result, error) {
+func (splr *supplier) Insert_(table string, item model.DbModel) (*sql.Result, error) {
 	panic("")
 }
 
-func (m *mysqlBroker) BulkInsert(table string, items []model.DbModel) (*sql.Result, error) {
+func (splr *supplier) BulkInsert(table string, items []model.DbModel) (*sql.Result, error) {
 	panic("")
 }
