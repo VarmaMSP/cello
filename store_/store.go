@@ -32,6 +32,7 @@ type PodcastStore interface {
 	GetByIds(podcastIds []int64) ([]*model.Podcast, *model.AppError)
 	GetSubscriptions(userId int64) ([]*model.Podcast, *model.AppError)
 	Update(old, new *model.Podcast) *model.AppError
+	Search(query string) ([]*model.Podcast, *model.AppError)
 }
 
 type EpisodeStore interface {

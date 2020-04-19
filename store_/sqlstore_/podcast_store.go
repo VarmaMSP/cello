@@ -3,15 +3,10 @@ package sqlstore_
 import (
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
-	"github.com/varmamsp/cello/store_"
 )
 
 type sqlPodcastStore struct {
 	sqldb.Broker
-}
-
-func newSqlPodcastStore(broker sqldb.Broker) store_.PodcastStore {
-	return &sqlPodcastStore{broker}
 }
 
 func (s *sqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {

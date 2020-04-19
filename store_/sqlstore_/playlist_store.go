@@ -3,15 +3,10 @@ package sqlstore_
 import (
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
-	"github.com/varmamsp/cello/store_"
 )
 
 type sqlPlaylistStore struct {
 	sqldb.Broker
-}
-
-func newSqlPlaylistStore(broker sqldb.Broker) store_.PlaylistStore {
-	return &sqlPlaylistStore{broker}
 }
 
 func (s *sqlPlaylistStore) Save(playlist *model.Playlist) *model.AppError {

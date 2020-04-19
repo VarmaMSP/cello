@@ -19,15 +19,15 @@ type sqlStore struct {
 
 func NewSqlStore(broker sqldb.Broker) (store_.Store, error) {
 	s := &sqlStore{}
-	s.feed = newSqlFeedStore(broker)
-	s.podcast = newSqlPodcastStore(broker)
-	s.episode = newSqlEpisodeStore(broker)
-	s.category = newSqlCategoryStore(broker)
-	s.task = newSqlTaskStore(broker)
-	s.user = newSqlUserStore(broker)
-	s.subscription = newSqlSubscriptionStore(broker)
-	s.playback = newSqlPlaybackStore(broker)
-	s.playlist = newSqlPlaylistStore(broker)
+	s.feed = &sqlFeedStore{Broker: broker}
+	s.podcast = &sqlPodcastStore{Broker: broker}
+	s.episode = &sqlEpisodeStore{Broker: broker}
+	s.category = &sqlCategoryStore{Broker: broker}
+	s.task = &sqlTaskStore{Broker: broker}
+	s.user = &sqlUserStore{Broker: broker}
+	s.subscription = &sqlSubscriptionStore{Broker: broker}
+	s.playback = &sqlPlaybackStore{Broker: broker}
+	s.playlist = &sqlPlaylistStore{Broker: broker}
 
 	return s, nil
 }
