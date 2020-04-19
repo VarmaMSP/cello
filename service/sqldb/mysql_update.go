@@ -11,5 +11,6 @@ func (splr *supplier) Patch(table string, old, new model.DbModel) (sql.Result, e
 }
 
 func (splr *supplier) Exec(sql string, values ...interface{}) error {
-	panic("")
+	_, err := splr.db.Exec(sql, values...)
+	return err
 }
