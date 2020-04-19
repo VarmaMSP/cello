@@ -27,7 +27,7 @@ func NewSqlStore(broker sqldb.Broker) (store_.Store, error) {
 	s.user = &sqlUserStore{Broker: broker}
 	s.subscription = &sqlSubscriptionStore{Broker: broker}
 	s.playback = &sqlPlaybackStore{Broker: broker}
-	s.playlist = &sqlPlaylistStore{Broker: broker}
+	s.playlist = &sqlPlaylistStore{Store: s, Broker: broker}
 
 	return s, nil
 }
