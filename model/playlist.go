@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 
+	"github.com/varmamsp/cello/util/datetime"
 	"github.com/varmamsp/cello/util/hashid"
 )
 
@@ -33,7 +34,7 @@ func (p *Playlist) MarshalJSON() ([]byte, error) {
 		Id:        hashid.Encode(p.Id),
 		UrlParam:  hashid.UrlParam(p.Title, p.Id),
 		UserId:    hashid.Encode(p.UserId),
-		UpdatedAt: DateTimeFromTimestamp(p.UpdatedAt),
+		UpdatedAt: datetime.FromUnix(p.UpdatedAt),
 	})
 }
 
@@ -55,10 +56,10 @@ func (p *Playlist) PreSave() {
 	}
 
 	if p.CreatedAt == 0 {
-		p.CreatedAt = Now()
+		p.CreatedAt = datetime.Unix()
 	}
 
 	if p.UpdatedAt == 0 {
-		p.UpdatedAt = Now()
+		p.UpdatedAt = datetime.Unix()
 	}
 }

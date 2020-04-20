@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 
+	"github.com/varmamsp/cello/util/datetime"
 	"github.com/varmamsp/cello/util/hashid"
 )
 
@@ -34,10 +35,10 @@ func (p *PlaylistMember) FieldAddrs() []interface{} {
 
 func (p *PlaylistMember) PreSave() {
 	if p.CreatedAt == 0 {
-		p.CreatedAt = Now()
+		p.CreatedAt = datetime.Unix()
 	}
 
 	if p.UpdatedAt == 0 {
-		p.UpdatedAt = Now()
+		p.UpdatedAt = datetime.Unix()
 	}
 }

@@ -1,5 +1,7 @@
 package model
 
+import "github.com/varmamsp/cello/util/datetime"
+
 const (
 	TASK_NAME_SCRAPE_TRENDING          = "scrape_trending"
 	TASK_NAME_SCRAPE_CATEGORIES        = "scrape_categories"
@@ -50,10 +52,10 @@ func (t *Task) FieldAddrs() []interface{} {
 
 func (t *Task) PreSave() {
 	if t.CreatedAt == 0 {
-		t.CreatedAt = Now()
+		t.CreatedAt = datetime.Unix()
 	}
 
 	if t.UpdatedAt == 0 {
-		t.UpdatedAt = Now()
+		t.UpdatedAt = datetime.Unix()
 	}
 }

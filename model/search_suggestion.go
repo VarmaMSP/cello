@@ -39,27 +39,7 @@ func (s *SearchSuggestion) MarshalJSON() ([]byte, error) {
 }
 
 func (s *SearchSuggestion) LoadFromKeyword(hit *elastic.SearchHit) *AppError {
-	appErrorC := NewAppErrorC("model.search_suggestion.load_from_keyword", http.StatusBadRequest, nil)
-
-	if hit.Source == nil {
-		return appErrorC("source is nil")
-	}
-
-	index := KeywordIndex{}
-	if err := json.Unmarshal(hit.Source, &index); err != nil {
-		return appErrorC(err.Error())
-	}
-
-	s.Type = SEARCH_SUGGESTION_TYPE_TEXT
-
-	s.Icon = SEARCH_SUGGESTION_ICON_SEARCH
-
-	s.Header = index.Text
-	if len(hit.Highlight["text"]) > 0 {
-		s.Header = strings.Join(hit.Highlight["text"], ",")
-	}
-
-	return nil
+	panic("")
 }
 
 func (s *SearchSuggestion) LoadFromPodcast(hit *elastic.SearchHit) *AppError {
@@ -69,7 +49,7 @@ func (s *SearchSuggestion) LoadFromPodcast(hit *elastic.SearchHit) *AppError {
 		return appErrorC("source is nil")
 	}
 
-	index := PodcastIndex{}
+	index := PodcastForIndexing{}
 	if err := json.Unmarshal(hit.Source, &index); err != nil {
 		return appErrorC(err.Error())
 	}

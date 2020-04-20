@@ -4,6 +4,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/varmamsp/cello/util/datetime"
 	"github.com/varmamsp/gofeed/rss"
 )
 
@@ -39,11 +40,11 @@ func (f *Feed) FieldAddrs() []interface{} {
 
 func (f *Feed) PreSave() {
 	if f.CreatedAt == 0 {
-		f.CreatedAt = Now()
+		f.CreatedAt = datetime.Unix()
 	}
 
 	if f.UpdatedAt == 0 {
-		f.UpdatedAt = Now()
+		f.UpdatedAt = datetime.Unix()
 	}
 }
 
@@ -68,7 +69,7 @@ func (f *Feed) SetRefershInterval(rssFeed *rss.Feed) {
 	if len(items) == 1 {
 		f.RefreshEnabled = 1
 		f.RefreshInterval = 4 * secondsInHour
-		if items[0].PubDateParsed != nil && SecondsSince(items[0].PubDateParsed) > 3*secondsInMonth {
+		if items[0].PubDateParsed != nil && datetime.SecondsSince(items[0].PubDateParsed) > 3*secondsInMonth {
 			f.RefreshEnabled = 0
 		}
 		return
@@ -89,7 +90,7 @@ func (f *Feed) SetRefershInterval(rssFeed *rss.Feed) {
 	sort.SliceStable(itemPubDates, func(i, j int) bool { return itemPubDates[i].After(*itemPubDates[j]) })
 
 	// disable refresh for podcasts that havent published an episode in more than 1 years
-	if SecondsSince(itemPubDates[0]) > secondsInYear {
+	if datetime.SecondsSince(itemPubDates[0]) > secondsInYear {
 		f.RefreshEnabled = 0
 		return
 	}

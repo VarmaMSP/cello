@@ -12,15 +12,13 @@ type ApiResponse struct {
 }
 
 type ApiResponseData struct {
-	Users                []*User                `json:"users,omitempty"`
-	Podcasts             []*Podcast             `json:"podcasts,omitempty"`
-	Episodes             []*Episode             `json:"episodes,omitempty"`
-	Playbacks            []*Playback            `json:"playbacks,omitempty"`
-	Playlists            []*Playlist            `json:"playlists,omitempty"`
-	PodcastSearchResults []*PodcastSearchResult `json:"podcast_search_results,omitempty"`
-	EpisodeSearchResults []*EpisodeSearchResult `json:"episode_search_results,omitempty"`
-	Categories           []*Category            `json:"categories,omitempty"`
-	SearchSuggestions    []*SearchSuggestion    `json:"search_suggestions,omitempty"`
+	Users             []*User             `json:"users,omitempty"`
+	Podcasts          []*Podcast          `json:"podcasts,omitempty"`
+	Episodes          []*Episode          `json:"episodes,omitempty"`
+	Playbacks         []*Playback         `json:"playbacks,omitempty"`
+	Playlists         []*Playlist         `json:"playlists,omitempty"`
+	Categories        []*Category         `json:"categories,omitempty"`
+	SearchSuggestions []*SearchSuggestion `json:"search_suggestions,omitempty"`
 }
 
 func (r *ApiResponse) ToJson() []byte {

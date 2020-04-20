@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 
+	"github.com/varmamsp/cello/util/datetime"
 	"github.com/varmamsp/cello/util/hashid"
 )
 
@@ -60,14 +61,14 @@ func (p *Playback) PreSave() {
 	}
 
 	if p.LastPlayedAt == "" {
-		p.LastPlayedAt = NowDateTime()
+		p.LastPlayedAt = datetime.Now()
 	}
 
 	if p.CreatedAt == 0 {
-		p.CreatedAt = Now()
+		p.CreatedAt = datetime.Unix()
 	}
 
 	if p.UpdatedAt == 0 {
-		p.UpdatedAt = Now()
+		p.UpdatedAt = datetime.Unix()
 	}
 }

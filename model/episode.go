@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/olivere/elastic/v7"
+	"github.com/varmamsp/cello/util/datetime"
 	"github.com/varmamsp/cello/util/hashid"
 	"github.com/varmamsp/gofeed/rss"
 )
@@ -123,7 +124,7 @@ func (e *Episode) LoadDetails(rssItem *rss.Item) *AppError {
 
 	// Pub Date
 	if rssItem.PubDateParsed != nil {
-		e.PubDate = FormatDateTime(rssItem.PubDateParsed)
+		e.PubDate = datetime.FromTime(rssItem.PubDateParsed)
 	} else {
 		return appErrorC("No pubdate found")
 	}
@@ -263,11 +264,11 @@ func (e *Episode) PreSave() {
 	}
 
 	if e.CreatedAt == 0 {
-		e.CreatedAt = Now()
+		e.CreatedAt = datetime.Unix()
 	}
 
 	if e.UpdatedAt == 0 {
-		e.UpdatedAt = Now()
+		e.UpdatedAt = datetime.Unix()
 	}
 }
 

@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 	"unicode"
 
 	strip "github.com/grokify/html-strip-tags-go"
@@ -16,11 +15,7 @@ import (
 )
 
 const (
-	MYSQL_DATETIME = "2006-01-02 15:04:05"
-
 	MAX_SUMMARY_SIZE = 230
-
-	MIN_HASH_ID_LENGTH = 6
 
 	COMMENT_INVALID_STATUS_CODE    = "INVALID_STATUS_CODE"
 	COMMENT_INVALID_CONTENT_TYPE   = "INVALID_CONTENT_TYPE"
@@ -67,45 +62,6 @@ func ParseTime(timeString string) int {
 		sec = sec + t*s
 	}
 	return sec
-}
-
-// Now returns unix timestamp
-func Now() int64 {
-	return time.Now().UTC().Unix()
-}
-
-// SecondsSince returns number of seconds elapsed since t
-func SecondsSince(t *time.Time) int {
-	return int(time.Since(*t).Seconds())
-}
-
-// NowDateTime returns UTC time in Mysql datetime format
-func NowDateTime() string {
-	return time.Now().UTC().Format(MYSQL_DATETIME)
-}
-
-// ParseDateTime parses mysql date time string
-func ParseDateTime(s string) *time.Time {
-	if res, err := time.Parse(MYSQL_DATETIME, s); err == nil {
-		return &res
-	}
-	return nil
-}
-
-// FormatDateTime formats time to mysql datetime
-func FormatDateTime(t *time.Time) string {
-	return t.UTC().Format(MYSQL_DATETIME)
-}
-
-// TimeFromTimestamp converts timestamp to time
-func TimeFromTimestamp(t int64) *time.Time {
-	res := time.Unix(t, 0)
-	return &res
-}
-
-// DateTimeFromTimestamp converts timestamp to mysql time stamp
-func DateTimeFromTimestamp(t int64) string {
-	return TimeFromTimestamp(t).UTC().Format(MYSQL_DATETIME)
 }
 
 var (

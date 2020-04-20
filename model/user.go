@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 
+	"github.com/varmamsp/cello/util/datetime"
 	"github.com/varmamsp/cello/util/hashid"
 )
 
@@ -138,41 +139,41 @@ func (t *TwitterAccount) FieldAddrs() []interface{} {
 
 func (u *User) PreSave() {
 	if u.CreatedAt == 0 {
-		u.CreatedAt = Now()
+		u.CreatedAt = datetime.Unix()
 	}
 
 	if u.UpdatedAt == 0 {
-		u.UpdatedAt = Now()
+		u.UpdatedAt = datetime.Unix()
 	}
 }
 
 func (g *GoogleAccount) PreSave() {
 	if g.CreatedAt == 0 {
-		g.CreatedAt = Now()
+		g.CreatedAt = datetime.Unix()
 	}
 
 	if g.UpdatedAt == 0 {
-		g.UpdatedAt = Now()
+		g.UpdatedAt = datetime.Unix()
 	}
 }
 
 func (f *FacebookAccount) PreSave() {
 	if f.CreatedAt == 0 {
-		f.CreatedAt = Now()
+		f.CreatedAt = datetime.Unix()
 	}
 
 	if f.UpdatedAt == 0 {
-		f.UpdatedAt = Now()
+		f.UpdatedAt = datetime.Unix()
 	}
 }
 
 func (t *TwitterAccount) PreSave() {
 	if t.CreatedAt == 0 {
-		t.CreatedAt = Now()
+		t.CreatedAt = datetime.Unix()
 	}
 
 	if t.UpdatedAt == 0 {
-		t.UpdatedAt = Now()
+		t.UpdatedAt = datetime.Unix()
 	}
 }
 

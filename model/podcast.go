@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/olivere/elastic/v7"
+	"github.com/varmamsp/cello/util/datetime"
 	"github.com/varmamsp/cello/util/hashid"
 	"github.com/varmamsp/gofeed/rss"
 )
@@ -273,10 +274,10 @@ func (p *Podcast) PreSave() {
 	}
 
 	if p.CreatedAt == 0 {
-		p.CreatedAt = Now()
+		p.CreatedAt = datetime.Unix()
 	}
 
 	if p.UpdatedAt == 0 {
-		p.UpdatedAt = Now()
+		p.UpdatedAt = datetime.Unix()
 	}
 }

@@ -1,5 +1,7 @@
 package model
 
+import "github.com/varmamsp/cello/util/datetime"
+
 type Subscription struct {
 	UserId    int64
 	PodcastId int64
@@ -22,10 +24,10 @@ func (s *Subscription) PreSave() {
 	}
 
 	if s.CreatedAt == 0 {
-		s.CreatedAt = Now()
+		s.CreatedAt = datetime.Unix()
 	}
 
 	if s.UpdatedAt == 0 {
-		s.UpdatedAt = Now()
+		s.UpdatedAt = datetime.Unix()
 	}
 }
