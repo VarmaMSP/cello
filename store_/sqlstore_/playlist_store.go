@@ -185,8 +185,10 @@ func (s *sqlPlaylistStore) ChangeMemberPosition(playlistId int64, episodeId int6
 	// Change positions of members between to and from
 	if to < from {
 		sql := fmt.Sprintf(
-			`UPDATE playlist_member SET position = position + 1, updated_at = %d WHERE position >= %d AND position < %d`,
-			model.Now(), to, from,
+			`UPDATE playlist_member
+				SET position = position + 1, updated_at = %d
+				WHERE playlist_id = %d AND position >= %d AND position < %d`,
+			model.Now(), playlistId, to, from,
 		)
 
 		if err := s.Exec(sql); err != nil {
@@ -195,8 +197,10 @@ func (s *sqlPlaylistStore) ChangeMemberPosition(playlistId int64, episodeId int6
 
 	} else {
 		sql := fmt.Sprintf(
-			`UPDATE playlist_member SET position = position - 1, updated_at = %d WHERE position > %d AND position <= %d`,
-			model.Now(), from, to,
+			`UPDATE playlist_member
+				SET position = position - 1, updated_at = %d
+				WHERE playlist_id = %d AND position > %d AND position <= %d`,
+			model.Now(), playlistId, from, to,
 		)
 
 		if err := s.Exec(sql); err != nil {
@@ -206,7 +210,9 @@ func (s *sqlPlaylistStore) ChangeMemberPosition(playlistId int64, episodeId int6
 
 	// Change Member Position
 	sql := fmt.Sprintf(
-		`UPDATE playlist_member SET position = %d, updated_at = %d WHERE playlist_id = %d AND episode_id = %d`,
+		`UPDATE playlist_member
+			SET position = %d, updated_at = %d
+			WHERE playlist_id = %d AND episode_id = %d`,
 		to, model.Now(), playlistId, episodeId,
 	)
 
