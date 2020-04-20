@@ -2,17 +2,17 @@ package searchlayer
 
 import (
 	"github.com/varmamsp/cello/service/searchengine"
-	"github.com/varmamsp/cello/store_"
+	"github.com/varmamsp/cello/store"
 )
 
 type searchStore struct {
-	store_.Store
+	store.Store
 
-	podcast store_.PodcastStore
-	episode store_.EpisodeStore
+	podcast store.PodcastStore
+	episode store.EpisodeStore
 }
 
-func NewSearchLayer(baseStore store_.Store, broker searchengine.Broker) store_.Store {
+func NewSearchLayer(baseStore store.Store, broker searchengine.Broker) store.Store {
 	return &searchStore{
 		Store:   baseStore,
 		podcast: &searchPodcastStore{PodcastStore: baseStore.Podcast(), search: broker},
@@ -20,10 +20,10 @@ func NewSearchLayer(baseStore store_.Store, broker searchengine.Broker) store_.S
 	}
 }
 
-func (s *searchStore) Podcast() store_.PodcastStore {
+func (s *searchStore) Podcast() store.PodcastStore {
 	return s.podcast
 }
 
-func (s *searchStore) Episode() store_.EpisodeStore {
+func (s *searchStore) Episode() store.EpisodeStore {
 	return s.episode
 }

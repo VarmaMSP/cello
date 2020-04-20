@@ -5,6 +5,7 @@ import (
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
+	"github.com/varmamsp/cello/util/datetime"
 )
 
 type sqlFeedStore struct {
@@ -91,7 +92,7 @@ func (s *sqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) (res []*m
 			  id > %d 
 		ORDER BY id
 		LIMIT %d`,
-		cols(&model.Feed{}), model.Now(), lastId, limit,
+		cols(&model.Feed{}), datetime.Unix(), lastId, limit,
 	)
 
 	copyTo := func() []interface{} {

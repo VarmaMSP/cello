@@ -26,7 +26,7 @@ func (r *ApiResponse) ToJson() []byte {
 	if err != nil {
 		e, _ := json.Marshal(&ApiResponse{
 			Status:  "error",
-			Message: "failed to encoded response",
+			Message: "failed to marshal response",
 		})
 		return e
 	}

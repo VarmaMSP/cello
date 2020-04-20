@@ -5,6 +5,7 @@ import (
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
+	"github.com/varmamsp/cello/util/datetime"
 )
 
 type sqlPlaybackStore struct {
@@ -20,7 +21,7 @@ func (s *sqlPlaybackStore) Save(playback *model.Playback) *model.AppError {
 				play_count = play_count + 1,
 				last_played_at = '%s',
 				updated_at = %d`,
-		cols(playback), vals(playback), model.NowDateTime(), model.Now(),
+		cols(playback), vals(playback), datetime.Now(), datetime.Unix(),
 	)
 
 	if err := s.Exec(sql); err != nil {
@@ -38,7 +39,7 @@ func (s *sqlPlaybackStore) Upsert(playback *model.Playback) *model.AppError {
 				play_count = play_count + 1,
 				last_played_at = '%s',
 				updated_at = %d`,
-		cols(playback), vals(playback), model.NowDateTime(), model.Now(),
+		cols(playback), vals(playback), datetime.Now(), datetime.Unix(),
 	)
 
 	if err := s.Exec(sql); err != nil {
@@ -88,7 +89,7 @@ func (s *sqlPlaybackStore) Update(playback *model.Playback) *model.AppError {
 		`UPDATE playback
 			SET current_progress = %f, updated_at = %d
 			WHERE user_id = %d AND episode_id = %d`,
-		playback.CurrentProgress, model.Now(), playback.UserId, playback.EpisodeId,
+		playback.CurrentProgress, datetime.Unix(), playback.UserId, playback.EpisodeId,
 	)
 
 	if err := s.Exec(sql); err != nil {

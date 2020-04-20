@@ -3,11 +3,11 @@ package searchlayer
 import (
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/searchengine"
-	"github.com/varmamsp/cello/store_"
+	"github.com/varmamsp/cello/store"
 )
 
 type searchPodcastStore struct {
-	store_.PodcastStore
+	store.PodcastStore
 	search searchengine.Broker
 }
 

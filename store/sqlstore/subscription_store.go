@@ -5,6 +5,7 @@ import (
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
+	"github.com/varmamsp/cello/util/datetime"
 )
 
 type sqlSubscriptionStore struct {
@@ -17,7 +18,7 @@ func (s *sqlSubscriptionStore) Save(subscription *model.Subscription) *model.App
 	sql := fmt.Sprintf(
 		`INSERT INTO subscription (%s) VALUES (%s)
 			ON DUPLICATE UPDATE active = 1, updated_at = %d`,
-		cols(subscription), vals(subscription), model.Now(),
+		cols(subscription), vals(subscription), datetime.Unix(),
 	)
 
 	if err := s.Exec(sql); err != nil {
@@ -30,7 +31,7 @@ func (s *sqlSubscriptionStore) Delete(userId int64, podcastId int64) *model.AppE
 	sql := fmt.Sprintf(
 		`UPDATE subscription SET active = 0 AND updated_at = %d
 			WHERE podcast_id = %d AND user_id = %d`,
-		model.Now(), podcastId, userId,
+		datetime.Unix(), podcastId, userId,
 	)
 
 	if err := s.Exec(sql); err != nil {

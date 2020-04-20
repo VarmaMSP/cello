@@ -5,11 +5,12 @@ import (
 
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
-	"github.com/varmamsp/cello/store_"
+	"github.com/varmamsp/cello/store"
+	"github.com/varmamsp/cello/util/datetime"
 )
 
 type sqlPlaylistStore struct {
-	store_.Store
+	store.Store
 	sqldb.Broker
 }
 
@@ -188,7 +189,7 @@ func (s *sqlPlaylistStore) ChangeMemberPosition(playlistId int64, episodeId int6
 			`UPDATE playlist_member
 				SET position = position + 1, updated_at = %d
 				WHERE playlist_id = %d AND position >= %d AND position < %d`,
-			model.Now(), playlistId, to, from,
+			datetime.Unix(), playlistId, to, from,
 		)
 
 		if err := s.Exec(sql); err != nil {
@@ -200,7 +201,7 @@ func (s *sqlPlaylistStore) ChangeMemberPosition(playlistId int64, episodeId int6
 			`UPDATE playlist_member
 				SET position = position - 1, updated_at = %d
 				WHERE playlist_id = %d AND position > %d AND position <= %d`,
-			model.Now(), playlistId, from, to,
+			datetime.Unix(), playlistId, from, to,
 		)
 
 		if err := s.Exec(sql); err != nil {
@@ -213,7 +214,7 @@ func (s *sqlPlaylistStore) ChangeMemberPosition(playlistId int64, episodeId int6
 		`UPDATE playlist_member
 			SET position = %d, updated_at = %d
 			WHERE playlist_id = %d AND episode_id = %d`,
-		to, model.Now(), playlistId, episodeId,
+		to, datetime.Unix(), playlistId, episodeId,
 	)
 
 	if err := s.Exec(sql); err != nil {

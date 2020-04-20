@@ -2,22 +2,22 @@ package sqlstore
 
 import (
 	"github.com/varmamsp/cello/service/sqldb"
-	"github.com/varmamsp/cello/store_"
+	"github.com/varmamsp/cello/store"
 )
 
 type sqlStore struct {
-	feed         store_.FeedStore
-	podcast      store_.PodcastStore
-	episode      store_.EpisodeStore
-	category     store_.CategoryStore
-	task         store_.TaskStore
-	user         store_.UserStore
-	playback     store_.PlaybackStore
-	subscription store_.SubscriptionStore
-	playlist     store_.PlaylistStore
+	feed         store.FeedStore
+	podcast      store.PodcastStore
+	episode      store.EpisodeStore
+	category     store.CategoryStore
+	task         store.TaskStore
+	user         store.UserStore
+	playback     store.PlaybackStore
+	subscription store.SubscriptionStore
+	playlist     store.PlaylistStore
 }
 
-func NewSqlStore(broker sqldb.Broker) (store_.Store, error) {
+func NewSqlStore(broker sqldb.Broker) (store.Store, error) {
 	s := &sqlStore{}
 	s.feed = &sqlFeedStore{Broker: broker}
 	s.podcast = &sqlPodcastStore{Broker: broker}
@@ -32,38 +32,38 @@ func NewSqlStore(broker sqldb.Broker) (store_.Store, error) {
 	return s, nil
 }
 
-func (s *sqlStore) Feed() store_.FeedStore {
+func (s *sqlStore) Feed() store.FeedStore {
 	return s.feed
 }
 
-func (s *sqlStore) Podcast() store_.PodcastStore {
+func (s *sqlStore) Podcast() store.PodcastStore {
 	return s.podcast
 }
 
-func (s *sqlStore) Episode() store_.EpisodeStore {
+func (s *sqlStore) Episode() store.EpisodeStore {
 	return s.episode
 }
 
-func (s *sqlStore) Category() store_.CategoryStore {
+func (s *sqlStore) Category() store.CategoryStore {
 	return s.category
 }
 
-func (s *sqlStore) Task() store_.TaskStore {
+func (s *sqlStore) Task() store.TaskStore {
 	return s.task
 }
 
-func (s *sqlStore) User() store_.UserStore {
+func (s *sqlStore) User() store.UserStore {
 	return s.user
 }
 
-func (s *sqlStore) Playback() store_.PlaybackStore {
+func (s *sqlStore) Playback() store.PlaybackStore {
 	return s.playback
 }
 
-func (s *sqlStore) Subscription() store_.SubscriptionStore {
+func (s *sqlStore) Subscription() store.SubscriptionStore {
 	return s.subscription
 }
 
-func (s *sqlStore) Playlist() store_.PlaylistStore {
+func (s *sqlStore) Playlist() store.PlaylistStore {
 	return s.playlist
 }
