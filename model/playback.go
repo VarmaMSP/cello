@@ -1,6 +1,10 @@
 package model
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/varmamsp/cello/util/hashid"
+)
 
 const (
 	PLAYBACK_EVENT_PLAY     = "PLAY"
@@ -44,7 +48,7 @@ func (p *Playback) MarshalJSON() ([]byte, error) {
 		Progress     float64 `json:"progress"`
 		LastPlayedAt string  `json:"last_played_at"`
 	}{
-		EpisodeId:    HashIdFromInt64(p.EpisodeId),
+		EpisodeId:    hashid.Encode(p.EpisodeId),
 		Progress:     p.CurrentProgress,
 		LastPlayedAt: p.LastPlayedAt,
 	})

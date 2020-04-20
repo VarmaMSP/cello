@@ -1,4 +1,4 @@
-package sqlstore_
+package sqlstore
 
 import (
 	"github.com/varmamsp/cello/service/sqldb"

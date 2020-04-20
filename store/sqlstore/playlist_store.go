@@ -1,58 +1,47 @@
 package sqlstore
 
 import (
-	"database/sql"
 	"fmt"
-	"net/http"
 
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/store"
+	"github.com/varmamsp/cello/service/sqldb"
+	"github.com/varmamsp/cello/store_"
 )
 
-type SqlPlaylistStore struct {
-	SqlStore
+type sqlPlaylistStore struct {
+	store_.Store
+	sqldb.Broker
 }
 
-func NewSqlPlaylistStore(store SqlStore) store.PlaylistStore {
-	return &SqlPlaylistStore{store}
-}
-
-func (s *SqlPlaylistStore) Save(playlist *model.Playlist) *model.AppError {
+func (s *sqlPlaylistStore) Save(playlist *model.Playlist) *model.AppError {
 	playlist.PreSave()
 
-	id, err := s.InsertWithoutPK("playlist", playlist)
+	res, err := s.Insert_("playlist", playlist)
 	if err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.save", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"title": playlist.Title, "user_id": playlist.UserId},
-		)
+		return model.New500Error("sql_store.sql_playlist_store.save", err.Error(), nil)
 	}
-	playlist.Id = id
+	playlist.Id, _ = res.LastInsertId()
 	return nil
 }
 
-func (s *SqlPlaylistStore) Get(playlistId int64) (*model.Playlist, *model.AppError) {
-	playlist := &model.Playlist{}
+func (s *sqlPlaylistStore) Get(playlistId int64) (*model.Playlist, *model.AppError) {
+	res := &model.Playlist{}
 	sql := fmt.Sprintf(
 		"SELECT %s FROM playlist WHERE id = %d",
-		joinStrings(playlist.DbColumns(), ","), playlistId,
+		cols(res), playlistId,
 	)
 
-	if err := s.GetMaster().QueryRow(sql).Scan(playlist.FieldAddrs()...); err != nil {
-		return nil, model.NewAppError(
-			"store.sqlstore.sql_playlist_store.get", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId},
-		)
+	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+		return nil, model.New500Error("sql_store.sql_playlist_store.get", err.Error(), nil)
 	}
-	return playlist, nil
+	return res, nil
 }
 
-func (s *SqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE *model.AppError) {
+func (s *sqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		"SELECT %s FROM playlist WHERE user_id = %d",
-		joinStrings((&model.Playlist{}).DbColumns(), ","), userId,
+		cols(&model.Playlist{}), userId,
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Playlist{}
 		res = append(res, tmp)
@@ -60,20 +49,16 @@ func (s *SqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE 
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_playlist_store.get_by_user", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"user_id": userId},
-		)
+		appE = model.New500Error("sql_store.sql_playlist_store.get_by_user", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlPlaylistStore) GetByUserPaginated(userId int64, offset, limit int) (res []*model.Playlist, appE *model.AppError) {
+func (s *sqlPlaylistStore) GetByUserPaginated(userId int64, offset int, limit int) (res []*model.Playlist, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		"SELECT %s FROM playlist WHERE user_id = %d LIMIT %d, %d",
-		joinStrings((&model.Playlist{}).DbColumns(), ","), userId, offset, limit,
+		cols(&model.Playlist{}), userId, offset, limit,
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Playlist{}
 		res = append(res, tmp)
@@ -81,104 +66,69 @@ func (s *SqlPlaylistStore) GetByUserPaginated(userId int64, offset, limit int) (
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_playlist_store.get_by_user_paginated", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"user_id": userId, "offset": offset, "limit": limit},
-		)
+		appE = model.New500Error("sql_store.sql_playlist_store.get_by_user_paginated", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlPlaylistStore) Update(old, new *model.Playlist) *model.AppError {
-	if _, err := s.Update_("playlist", old, new, fmt.Sprintf("id = %d", new.Id)); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.update", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"id": new.Id},
-		)
-	}
-	return nil
+func (s *sqlPlaylistStore) Update(old *model.Playlist, new *model.Playlist) *model.AppError {
+	panic("")
+
 }
 
-func (s *SqlPlaylistStore) UpdateMemberStats(playlistId int64) *model.AppError {
-	count := 0
-	sql_ := fmt.Sprintf("SELECT COUNT(*) FROM playlist_member WHERE playlist_id = %d", playlistId)
-
-	if err := s.GetMaster().QueryRow(sql_).Scan(&count); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.update_member_stats", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId},
-		)
+func (s *sqlPlaylistStore) UpdateMemberStats(playlistId int64) *model.AppError {
+	count, err := s.GetMemberCount(playlistId)
+	if err != nil {
+		return err
 	}
 
-	firstMember := &model.PlaylistMember{}
-	sql_ = fmt.Sprintf(
-		"SELECT %s FROM playlist_member WHERE playlist_id = %d AND position = 1",
-		joinStrings(firstMember.DbColumns(), ","), playlistId,
-	)
-
-	if err := s.GetMaster().QueryRow(sql_).Scan(firstMember.FieldAddrs()...); err != nil && err != sql.ErrNoRows {
-		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.update_member_stats", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId},
-		)
+	var previewImage string
+	if firstMember, err := s.GetMemberByPosition(playlistId, 1); err != nil {
+		return err
+	} else if firstMember == nil {
+		previewImage = "placeholder"
+	} else if episode, err := s.Episode().Get(firstMember.EpisodeId); err != nil {
+		return err
+	} else if podcast, err := s.Podcast().Get(episode.PodcastId); err != nil {
+		return err
+	} else {
+		previewImage = podcast.Title
 	}
 
-	previewImage := "placeholder"
-	if firstMember.EpisodeId != 0 {
-		if episode, err := s.Episode().Get(firstMember.EpisodeId); err == nil {
-			if podcast, err := s.Podcast().Get(episode.PodcastId); err == nil {
-				previewImage = model.UrlParamFromId(podcast.Title, podcast.Id)
-			}
-		}
-	}
-
-	sql_ = fmt.Sprintf(
+	sql := fmt.Sprintf(
 		`UPDATE playlist SET episode_count = %d, preview_image = "%s" WHERE id = %d`,
 		count, previewImage, playlistId,
 	)
 
-	if _, err := s.GetMaster().Exec(sql_); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.update_member_stats", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId},
-		)
-	}
-
-	return nil
-}
-
-func (s *SqlPlaylistStore) Delete(playlistId int64) *model.AppError {
-	sql := fmt.Sprintf("DELETE FROM playlist WHERE id = %d", playlistId)
-
-	if _, err := s.GetMaster().Exec(sql); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.delete", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId},
-		)
+	if err := s.Exec(sql); err != nil {
+		return model.New500Error("sql_store.sql_playlist_store.update_member_stats", err.Error(), nil)
 	}
 	return nil
 }
 
-func (s *SqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppError {
+func (s *sqlPlaylistStore) Delete(playlistId int64) *model.AppError {
+	sql := fmt.Sprintf(`DELETE FROM playlist WHERE id = %d`, playlistId)
+
+	if err := s.Exec(sql); err != nil {
+		return model.New500Error("sql_store.sql_playlist_store.delete", err.Error(), nil)
+	}
+	return nil
+}
+
+func (s *sqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppError {
 	member.PreSave()
 
-	if _, err := s.Insert("playlist_member", []model.DbModel{member}); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.save_member", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": member.PlaylistId, "episode_id": member.EpisodeId},
-		)
+	if _, err := s.Insert("playlist_member", member); err != nil {
+		return model.New500Error("sql_store.sql_playlist_store.add_member", err.Error(), nil)
 	}
 	return nil
 }
 
-func (s *SqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*model.PlaylistMember, appE *model.AppError) {
+func (s *sqlPlaylistStore) GetMembers(playlistIds []int64, episodeIds []int64) (res []*model.PlaylistMember, appE *model.AppError) {
 	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist_member WHERE playlist_id IN (%s) AND episode_id IN (%s)",
-		joinStrings((&model.PlaylistMember{}).DbColumns(), ","),
-		joinInt64s(playlistIds, ","),
-		joinInt64s(episodeIds, ","),
+		`SELECT %s FROM playlist_member WHERE playlist_id IN (%s) AND episode_id IN (%s)`,
+		cols(&model.PlaylistMember{}), joinInt64s(playlistIds), joinInt64s(episodeIds),
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.PlaylistMember{}
 		res = append(res, tmp)
@@ -186,20 +136,16 @@ func (s *SqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*m
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_playlist_store.get_memberships", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"episode_ids": episodeIds},
-		)
+		appE = model.New500Error("sql_store.sql_playlist_store.get_members", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlPlaylistStore) GetMembersByPlaylist(playlistId int64) (res []*model.PlaylistMember, appE *model.AppError) {
+func (s *sqlPlaylistStore) GetMembersByPlaylist(playlistId int64) (res []*model.PlaylistMember, appE *model.AppError) {
 	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist_member WHERE playlist_id = %d ORDER BY position ASC",
-		joinStrings((&model.PlaylistMember{}).DbColumns(), ","), playlistId,
+		`SELECT %s FROM playlist_member WHERE playlist_id = %d ORDER BY position ASC`,
+		cols(&model.PlaylistMember{}), playlistId,
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.PlaylistMember{}
 		res = append(res, tmp)
@@ -207,66 +153,83 @@ func (s *SqlPlaylistStore) GetMembersByPlaylist(playlistId int64) (res []*model.
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_playlist_store.get_members_by_playlist", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId},
-		)
+		appE = model.New500Error("sql_store.sql_playlist_store.get_members_by_playlist", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlPlaylistStore) ChangeMemberPosition(playlistId, episodeId int64, from, to int) *model.AppError {
-	var sql string
+func (s *sqlPlaylistStore) GetMemberByPosition(playlistId int64, position int) (*model.PlaylistMember, *model.AppError) {
+	res := &model.PlaylistMember{}
+	sql := fmt.Sprintf(
+		"SELECT %s FROM playlist_member WHERE playlist_id = %d AND position = %d",
+		cols(res), playlistId, position,
+	)
 
-	// Modify positions for other members
+	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+		return nil, model.New500Error("sql_store.sql_playlist_store.get_member_by_position", err.Error(), nil)
+	}
+	return res, nil
+}
+
+func (s *sqlPlaylistStore) GetMemberCount(playlistId int64) (int, *model.AppError) {
+	res := 0
+	sql := fmt.Sprintf(`SELECT COUNT(*) FROM playlist_member WHERE playlist_id = %d`, playlistId)
+
+	if err := s.QueryRow([]interface{}{&res}, sql); err != nil {
+		return 0, model.New500Error("sql_store.sql_playlist_store.get_member_count", err.Error(), nil)
+	}
+	return res, nil
+}
+
+func (s *sqlPlaylistStore) ChangeMemberPosition(playlistId int64, episodeId int64, from int, to int) *model.AppError {
+	// Change positions of members between to and from
 	if to < from {
-		sql = fmt.Sprintf(
-			"UPDATE playlist_member SET position = position + 1, updated_at = %d WHERE position < %d AND position >= %d",
-			model.Now(), from, to,
+		sql := fmt.Sprintf(
+			`UPDATE playlist_member
+				SET position = position + 1, updated_at = %d
+				WHERE playlist_id = %d AND position >= %d AND position < %d`,
+			model.Now(), playlistId, to, from,
 		)
-	} else if to > from {
-		sql = fmt.Sprintf(
-			"UPDATE playlist_member SET position = position - 1, updated_at = %d WHERE position > %d AND position <= %d",
-			model.Now(), from, to,
-		)
+
+		if err := s.Exec(sql); err != nil {
+			return model.New500Error("sql_store.sql_playlist_store.change_member_position", err.Error(), nil)
+		}
+
 	} else {
-		return nil
-	}
-
-	if _, err := s.GetMaster().Exec(sql); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.change_member_position", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId, "episode_id": episodeId, "from": from, "to": to},
+		sql := fmt.Sprintf(
+			`UPDATE playlist_member
+				SET position = position - 1, updated_at = %d
+				WHERE playlist_id = %d AND position > %d AND position <= %d`,
+			model.Now(), playlistId, from, to,
 		)
+
+		if err := s.Exec(sql); err != nil {
+			return model.New500Error("sql_store.sql_playlist_store.change_member_position", err.Error(), nil)
+		}
 	}
 
-	// set position of member
-	sql = fmt.Sprintf(
-		"UPDATE playlist_member SET position = %d, updated_at = %d WHERE playlist_id = %d AND episode_id = %d",
+	// Change Member Position
+	sql := fmt.Sprintf(
+		`UPDATE playlist_member
+			SET position = %d, updated_at = %d
+			WHERE playlist_id = %d AND episode_id = %d`,
 		to, model.Now(), playlistId, episodeId,
 	)
 
-	if _, err := s.GetMaster().Exec(sql); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.change_member_position", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId, "episode_id": episodeId, "from": from, "to": to},
-		)
+	if err := s.Exec(sql); err != nil {
+		return model.New500Error("sql_store.sql_playlist_store.change_member_position", err.Error(), nil)
 	}
-
 	return nil
 }
 
-func (s *SqlPlaylistStore) DeleteMember(playlistId, episodeId int64) *model.AppError {
+func (s *sqlPlaylistStore) DeleteMember(playlistId int64, episodeId int64) *model.AppError {
 	sql := fmt.Sprintf(
-		"DELETE FROM playlist_member WHERE playlist_id = %d AND episode_id = %d",
+		`DELETE FROM playlist_member WHERE playlist_id = %d AND episode_id = %d`,
 		playlistId, episodeId,
 	)
 
-	if _, err := s.GetMaster().Exec(sql); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_playlist_store.delete_member", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId, "episode_id": episodeId},
-		)
+	if err := s.Exec(sql); err != nil {
+		return model.New500Error("store.sqlstore.sql_playlist_store.delete_member", err.Error(), nil)
 	}
 	return nil
 }

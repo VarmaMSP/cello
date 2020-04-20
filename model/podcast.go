@@ -3,7 +3,10 @@ package model
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
+	"github.com/olivere/elastic/v7"
+	"github.com/varmamsp/cello/util/hashid"
 	"github.com/varmamsp/gofeed/rss"
 )
 
@@ -16,33 +19,38 @@ const (
 
 // https://help.apple.com/itc/podcasts_connect/#/itcb54353390
 type Podcast struct {
-	Id                     int64
-	Title                  string
-	Summary                string
-	Description            string
-	ImagePath              string
-	Language               string
-	Explicit               int
-	Author                 string
-	Type                   string
-	Block                  int
-	Complete               int
-	Link                   string
-	OwnerName              string
-	OwnerEmail             string
-	Copyright              string
-	TotalEpisodes          int
-	TotalSeasons           int
-	LastestEpisodePubDate  string
-	EarliestEpisodePubDate string
-	CreatedAt              int64
-	UpdatedAt              int64
-	// derived fields
-	Categories []*PodcastCategory
+	Id                     int64  `json:"id"`
+	Title                  string `json:"title"`
+	Summary                string `json:"summary,omitempty"`
+	Description            string `json:"description,omitempty"`
+	ImagePath              string `json:"-"`
+	Language               string `json:"language,omitempty"`
+	Explicit               int    `json:"explicit,omitempty"`
+	Author                 string `json:"author,omitempty"`
+	Type                   string `json:"type,omitempty"`
+	Block                  int    `json:"-"`
+	Complete               int    `json:"complete,omitempty"`
+	Link                   string `json:"-"`
+	OwnerName              string `json:"-"`
+	OwnerEmail             string `json:"-"`
+	Copyright              string `json:"copyright,omitempty"`
+	TotalEpisodes          int    `json:"total_episodes,omitempty"`
+	TotalSeasons           int    `json:"total_seasons,omitempty"`
+	LastestEpisodePubDate  string `json:"-"`
+	EarliestEpisodePubDate string `json:"earliest_episode_pub_date,omitempty"`
+	CreatedAt              int64  `json:"-"`
+	UpdatedAt              int64  `json:"-"`
+
+	// For search
+	TitleHighlighted       string `json:"title_highlighted,omitempty"`
+	AuthorHighlighted      string `json:"author_highlighted,omitempty"`
+	DescriptionHighlighted string `json:"description_highlighted,omitempty"`
+
+	// derived
+	Categories []*PodcastCategory `json:"categories,omitempty"`
 }
 
-// Elasticsearch podcast index
-type PodcastIndex struct {
+type PodcastForIndexing struct {
 	Id          int64  `json:"id"`
 	Title       string `json:"title"`
 	Author      string `json:"author"`
@@ -51,53 +59,7 @@ type PodcastIndex struct {
 	Complete    int    `json:"complete"`
 }
 
-func (p *Podcast) Sanitize() {
-	p.Description = ""
-	p.Language = ""
-	p.Explicit = 0
-	p.TotalEpisodes = 0
-	p.TotalSeasons = 0
-	p.Type = ""
-	p.EarliestEpisodePubDate = ""
-	p.Copyright = ""
-}
-
-func (p *Podcast) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&struct {
-		Id                     string             `json:"id"`
-		UrlParam               string             `json:"url_param"`
-		Title                  string             `json:"title"`
-		Summary                string             `json:"summary,omitempty"`
-		Description            string             `json:"description,omitempty"`
-		Language               string             `json:"language,omitempty"`
-		Explicit               int                `json:"explicit,omitempty"`
-		Author                 string             `json:"author,omitempty"`
-		TotalEpisodes          int                `json:"total_episodes,omitempty"`
-		TotalSeasons           int                `json:"total_seasons,omitempty"`
-		Type                   string             `json:"type,omitempty"`
-		Complete               int                `json:"complete,omitempty"`
-		EarliestEpisodePubDate string             `json:"earliest_episode_pub_date,omitempty"`
-		Copyright              string             `json:"copyright,omitempty"`
-		Categories             []*PodcastCategory `json:"categories,omitempty"`
-	}{
-		Id:                     HashIdFromInt64(p.Id),
-		UrlParam:               UrlParamFromId(p.Title, p.Id),
-		Title:                  p.Title,
-		Summary:                p.Summary,
-		Description:            p.Description,
-		Language:               p.Language,
-		Explicit:               p.Explicit,
-		Author:                 p.Author,
-		TotalEpisodes:          p.TotalEpisodes,
-		TotalSeasons:           p.TotalSeasons,
-		Type:                   p.Type,
-		Complete:               p.Complete,
-		EarliestEpisodePubDate: p.EarliestEpisodePubDate,
-		Copyright:              p.Copyright,
-		Categories:             p.Categories,
-	})
-}
-
+// DbModel implementation
 func (p *Podcast) DbColumns() []string {
 	return []string{
 		"id", "title", "summary", "description", "image_path", "language", "explicit", "author", "type", "block",
@@ -112,6 +74,34 @@ func (p *Podcast) FieldAddrs() []interface{} {
 		&p.Complete, &p.Link, &p.OwnerName, &p.OwnerEmail, &p.Copyright, &p.TotalEpisodes, &p.TotalSeasons, &p.LastestEpisodePubDate, &p.EarliestEpisodePubDate, &p.CreatedAt,
 		&p.UpdatedAt,
 	}
+}
+
+// EsModal implementation
+func (pi *PodcastForIndexing) GetId() string {
+	return StrFromInt64(pi.Id)
+}
+
+func (p *Podcast) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		*Podcast
+		Id       string `json:"id"`
+		UrlParam string `json:"url_param"`
+	}{
+		Podcast:  p,
+		Id:       hashid.Encode(p.Id),
+		UrlParam: hashid.UrlParam(p.Title, p.Id),
+	})
+}
+
+func (p *Podcast) Sanitize() {
+	p.Description = ""
+	p.Language = ""
+	p.Explicit = 0
+	p.TotalEpisodes = 0
+	p.TotalSeasons = 0
+	p.Type = ""
+	p.EarliestEpisodePubDate = ""
+	p.Copyright = ""
 }
 
 func (p *Podcast) LoadDetails(rssFeed *rss.Feed) *AppError {
@@ -212,6 +202,45 @@ func (p *Podcast) LoadDetails(rssFeed *rss.Feed) *AppError {
 	}
 
 	return nil
+}
+
+func (p *Podcast) LoadFromSearchHit(hit *elastic.SearchHit) *AppError {
+	appErrorC := NewAppErrorC("model.podcast_search_result.load_details", http.StatusBadRequest, nil)
+
+	if hit.Source == nil {
+		return appErrorC("source is nil")
+	}
+
+	if err := json.Unmarshal(hit.Source, p); err != nil {
+		return appErrorC(err.Error())
+	}
+
+	if hit.Highlight != nil {
+		if len(hit.Highlight["title"]) > 0 {
+			p.TitleHighlighted = strings.Join(hit.Highlight["title"], " ")
+		}
+
+		if len(hit.Highlight["author"]) > 0 {
+			p.AuthorHighlighted = strings.Join(hit.Highlight["author"], " ")
+		}
+
+		if len(hit.Highlight["description"]) > 0 {
+			p.DescriptionHighlighted = strings.Join(hit.Highlight["description"], " ")
+		}
+	}
+
+	return nil
+}
+
+func (p *Podcast) ForIndexing() *PodcastForIndexing {
+	return &PodcastForIndexing{
+		Id:          p.Id,
+		Title:       p.Title,
+		Author:      p.Author,
+		Description: p.Description,
+		Type:        p.Type,
+		Complete:    p.Complete,
+	}
 }
 
 func (p *Podcast) PreSave() {

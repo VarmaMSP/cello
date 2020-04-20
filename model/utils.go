@@ -2,8 +2,6 @@ package model
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
 	"io"
 	"net/mail"
 	"net/url"
@@ -14,7 +12,6 @@ import (
 	"unicode"
 
 	strip "github.com/grokify/html-strip-tags-go"
-	"github.com/speps/go-hashids"
 	"github.com/varmamsp/gofeed/rss"
 )
 
@@ -46,86 +43,8 @@ type DbModel interface {
 	FieldAddrs() []interface{}
 }
 
-type AppError struct {
-	id            string
-	comment       string
-	detailedError string
-	statusCode    int
-	params        map[string]interface{}
-	retry         bool
-}
-
-func (e *AppError) Error() string {
-	return e.id + ": " + e.detailedError
-}
-
-func (e *AppError) Id(id string) *AppError {
-	e.id = id
-	return e
-}
-
-func (e *AppError) GetId() string {
-	return e.id
-}
-
-func (e *AppError) Comment(comment string) *AppError {
-	e.comment = comment
-	return e
-}
-
-func (e *AppError) GetComment() string {
-	if e.comment != "" {
-		return e.comment
-	}
-	return e.detailedError
-}
-
-func (e *AppError) DetailedError(detailedError string) *AppError {
-	e.detailedError = detailedError
-	return e
-}
-
-func (e *AppError) StatusCode(statusCode int) *AppError {
-	e.statusCode = statusCode
-	return e
-}
-
-func (e *AppError) GetStatusCode() int {
-	return e.statusCode
-}
-
-func (e *AppError) Params(params map[string]interface{}) *AppError {
-	e.params = params
-	return e
-}
-
-func (e *AppError) Retry() *AppError {
-	e.retry = true
-	return e
-}
-
-func (e *AppError) CanRetry() bool {
-	return e.retry
-}
-
-func NewAppError(where string, detailedError string, statusCode int, params map[string]interface{}) *AppError {
-	return &AppError{
-		id:            where,
-		detailedError: detailedError,
-		statusCode:    statusCode,
-		params:        params,
-	}
-}
-
-func NewAppErrorC(where string, statusCode int, params map[string]interface{}) func(detailedError string) *AppError {
-	return func(detailedError string) *AppError {
-		return &AppError{
-			id:            where,
-			detailedError: detailedError,
-			statusCode:    statusCode,
-			params:        params,
-		}
-	}
+type EsModel interface {
+	GetId() string
 }
 
 // RssItemGuid returns guid of the item, Enclosure url is returned if no guid is found
@@ -327,114 +246,24 @@ func MinInt(x, y int) int {
 	return y
 }
 
-var hashid, _ = hashids.NewWithData(&hashids.HashIDData{
-	Alphabet:  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
-	MinLength: 6,
-})
-
-// HashIdFromInt64 Encodes hashId
-func HashIdFromInt64(val int64) string {
-	hid, _ := hashid.EncodeInt64(([]int64{val}))
-	return hid
-}
-
-// Int64FromHashId Decodes hashId
-func Int64FromHashId(h string) (int64, error) {
-	if h == "" {
-		return 0, errors.New("HashId is empty")
-	}
-
-	res, err := hashid.DecodeInt64WithError(h)
-	if err != nil {
-		return 0, err
-	}
-	if len(res) != 1 {
-		return 0, errors.New("Hashid invalid")
-	}
-	return res[0], nil
-}
-
-// UrlParamFromId returns urlparam
-func UrlParamFromId(title string, id int64) string {
-	var sb strings.Builder
-
-	wordCount, maxWordCount := 0, 10
-	runeCount, maxRuneCount := 0, 300
-	lastChar, hyphen := rune('-'), rune('-')
-	for _, r := range []rune(title) {
-		if runeCount == maxRuneCount || wordCount == maxWordCount {
-			break
-		}
-		// replace space in title with hyphen while making sure
-		// consequent hyphens do not occur
-		if unicode.IsSpace(r) {
-			if wordCount == maxWordCount-1 {
-				break
-			}
-			if lastChar != hyphen {
-				sb.WriteRune(hyphen)
-				wordCount += 1
-				runeCount += 1
-			}
-			lastChar = rune('-')
-			continue
-		}
-		// retain hyphen from title while making sure
-		// consequent hyphens do not occur
-		if r == hyphen {
-			if lastChar != hyphen {
-				sb.WriteRune(hyphen)
-				runeCount += 1
-				lastChar = rune(hyphen)
-			}
-			continue
-		}
-		// retain all language alphabet and numbers from title
-		if unicode.IsLetter(r) || unicode.IsNumber(r) {
-			sb.WriteRune(unicode.ToLower(r))
-			runeCount += 1
-			lastChar = r
-			continue
-		}
-	}
-
-	return fmt.Sprintf(
-		"%s-%s",
-		sb.String(), HashIdFromInt64(id),
-	)
-}
-
-// IdFromUrlParam return integer from urlparam's hashId
-func IdFromUrlParam(urlParam string) (int64, error) {
-	if urlParam == "" {
-		return 0, errors.New("UrlParam is empty")
-	}
-
-	x := strings.Split(urlParam, "-")
-	if len(x) < 2 || len(x[len(x)-1]) < MIN_HASH_ID_LENGTH {
-		return 0, errors.New("UrlParam is invalid")
-	}
-
-	return Int64FromHashId(x[len(x)-1])
-}
-
 // Parse Category Url param
 func ParseCategoryUrlParam(urlParam string) (string, int64, error) {
-	if urlParam == "" {
-		return "", 0, errors.New("UrlParam is empty")
-	}
+	// if urlParam == "" {
+	// 	return "", 0, errors.New("UrlParam is empty")
+	// }
 
-	x := strings.Split(urlParam, "-")
-	if len(x) < 2 || len(x[len(x)-1]) < MIN_HASH_ID_LENGTH {
-		return "", 0, errors.New("UrlParam is invalid")
-	}
+	// x := strings.Split(urlParam, "-")
+	// if len(x) < 2 || len(x[len(x)-1]) < MIN_HASH_ID_LENGTH {
+	// 	return "", 0, errors.New("UrlParam is invalid")
+	// }
 
-	id, err := Int64FromHashId(x[len(x)-1])
-	if err != nil {
-		return "", 0, err
-	}
+	// id, err := Int64FromHashId(x[len(x)-1])
+	// if err != nil {
+	// 	return "", 0, err
+	// }
 
-	return strings.Join(x[0:len(x)-1], "-"), id, nil
+	// return strings.Join(x[0:len(x)-1], "-"), id, nil
+	panic("")
 }
 
 // RemoveDuplicatesInt64 removes duplicates from []int64

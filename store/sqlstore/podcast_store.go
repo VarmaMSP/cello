@@ -2,54 +2,42 @@ package sqlstore
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/store"
+	"github.com/varmamsp/cello/service/sqldb"
 )
 
-type SqlPodcastStore struct {
-	SqlStore
+type sqlPodcastStore struct {
+	sqldb.Broker
 }
 
-func NewSqlPodcastStore(store SqlStore) store.PodcastStore {
-	return &SqlPodcastStore{store}
-}
-
-func (s *SqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
+func (s *sqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 	podcast.PreSave()
 
-	if _, err := s.Insert("podcast", []model.DbModel{podcast}); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_podcast_store.save", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"title": podcast.Title},
-		)
+	if _, err := s.Insert("podcast", podcast); err != nil {
+		return model.New500Error("sql_store.sql_podcast_store.save", err.Error(), nil)
 	}
 	return nil
 }
 
-func (s *SqlPodcastStore) Get(podcastId int64) (*model.Podcast, *model.AppError) {
-	podcast := &model.Podcast{}
+func (s *sqlPodcastStore) Get(podcastId int64) (*model.Podcast, *model.AppError) {
+	res := &model.Podcast{}
 	sql := fmt.Sprintf(
-		"SELECT %s FROM podcast WHERE id = %d",
-		joinStrings(podcast.DbColumns(), ","), podcastId,
+		`SELECT %s FROM podcast WHERE id = %d`,
+		cols(res), podcastId,
 	)
 
-	if err := s.GetMaster().QueryRow(sql).Scan(podcast.FieldAddrs()...); err != nil {
-		return nil, model.NewAppError(
-			"store.sqlstore.sql_podcast_store.get", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"id": podcastId},
-		)
+	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+		return nil, model.New500Error("sql_store.sql_podcast_store.get", err.Error(), nil)
 	}
-	return podcast, nil
+	return res, nil
 }
 
-func (s *SqlPodcastStore) GetAllPaginated(lastId int64, limit int) (res []*model.Podcast, appE *model.AppError) {
+func (s *sqlPodcastStore) GetAllPaginated(lastId int64, limit int) (res []*model.Podcast, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM podcast WHERE id > %d ORDER BY id LIMIT %d`,
-		joinStrings((&model.Podcast{}).DbColumns(), ","), lastId, limit,
+		cols(&model.Podcast{}), lastId, limit,
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Podcast{}
 		res = append(res, tmp)
@@ -57,20 +45,16 @@ func (s *SqlPodcastStore) GetAllPaginated(lastId int64, limit int) (res []*model
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"sqlstore.sql_podcast_store.get_all_paginated", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"last_id": lastId},
-		)
+		appE = model.New500Error("sql_store.sql_podcast_store.get_all_paginated", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlPodcastStore) GetByIds(podcastIds []int64) (res []*model.Podcast, appE *model.AppError) {
+func (s *sqlPodcastStore) GetByIds(podcastIds []int64) (res []*model.Podcast, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM podcast WHERE id IN (%s)`,
-		joinStrings((&model.Podcast{}).DbColumns(), ","), joinInt64s(podcastIds, ","),
+		cols(&model.Podcast{}), joinInt64s(podcastIds),
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Podcast{}
 		res = append(res, tmp)
@@ -78,41 +62,36 @@ func (s *SqlPodcastStore) GetByIds(podcastIds []int64) (res []*model.Podcast, ap
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"sqlstore.sql_podcast_store.get_by_ids", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"podcast_ids": podcastIds},
-		)
+		appE = model.New500Error("sqlstore.sql_podcast_store.get_by_ids", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, appE *model.AppError) {
-	sql := "SELECT " + Cols(&model.Podcast{}, "podcast") + ` FROM podcast
-		INNER JOIN subscription ON subscription.podcast_id = podcast.id
-		WHERE subscription.active = 1 AND subscription.user_id = ?
-		ORDER BY subscription.updated_at DESC`
-
+func (s *sqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM podcast
+			INNER JOIN subscription ON subscription.podcast_id = podcast.id
+			WHERE subscription.active = 1 AND subscription.user_id = %d
+			ORDER BY subscription.updated_at DESC`,
+		cols(&model.Podcast{}),
+		userId,
+	)
 	copyTo := func() []interface{} {
 		tmp := &model.Podcast{}
 		res = append(res, tmp)
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.Query(copyTo, sql, userId); err != nil {
-		appE = model.NewAppError(
-			"sqlstore.sql_podcast_store.get_subscriptions", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"user_id": userId},
-		)
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.New500Error("sqlstore.sql_podcast_store.get_subscriptions", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlPodcastStore) Update(old, new *model.Podcast) *model.AppError {
-	if _, err := s.Update_("podcast", old, new, fmt.Sprintf("id = %d", new.Id)); err != nil {
-		return model.NewAppError(
-			"sqlstore.sql_curation_store.update", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"podcast_id": new.Id},
-		)
-	}
-	return nil
+func (s *sqlPodcastStore) Update(old *model.Podcast, new *model.Podcast) *model.AppError {
+	panic("not implemented") // TODO: Implement
+}
+
+func (s *sqlPodcastStore) Search(query string) ([]*model.Podcast, *model.AppError) {
+	panic("not implemented") // TODO: Implement
 }

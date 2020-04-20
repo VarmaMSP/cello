@@ -2,56 +2,44 @@ package sqlstore
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/store"
+	"github.com/varmamsp/cello/service/sqldb"
 )
 
-type SqlEpisodeStore struct {
-	SqlStore
+type sqlEpisodeStore struct {
+	sqldb.Broker
 }
 
-func NewSqlEpisodeStore(store SqlStore) store.EpisodeStore {
-	return &SqlEpisodeStore{store}
-}
-
-func (s *SqlEpisodeStore) Save(episode *model.Episode) *model.AppError {
+func (s *sqlEpisodeStore) Save(episode *model.Episode) *model.AppError {
 	episode.PreSave()
 
-	id, err := s.InsertWithoutPK("episode", episode)
+	res, err := s.Insert_("episode", episode)
 	if err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_episode_store.save", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"podcast_id": episode.PodcastId, "title": episode.Title},
-		)
+		return model.New500Error("sql_store.sql_episode_store.save", err.Error(), nil)
 	}
-	episode.Id = id
+	episode.Id, _ = res.LastInsertId()
 	return nil
 }
 
-func (s *SqlEpisodeStore) Get(episodeId int64) (*model.Episode, *model.AppError) {
-	episode := &model.Episode{}
+func (s *sqlEpisodeStore) Get(episodeId int64) (*model.Episode, *model.AppError) {
+	res := &model.Episode{}
 	sql := fmt.Sprintf(
 		`SELECT %s FROM episode WHERE id = %d`,
-		joinStrings(episode.DbColumns(), ","), episodeId,
+		cols(res), episodeId,
 	)
 
-	if err := s.GetMaster().QueryRow(sql).Scan(episode.FieldAddrs()...); err != nil {
-		return nil, model.NewAppError(
-			"store.sqlstore.sql_episode_store.get", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"episode_id": episodeId},
-		)
+	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+		return nil, model.New500Error("sql_store.sql_episode_store.get", err.Error(), nil)
 	}
-	return episode, nil
+	return res, nil
 }
 
-func (s *SqlEpisodeStore) GetAllPaginated(lastId int64, limit int) (res []*model.Episode, appE *model.AppError) {
+func (s *sqlEpisodeStore) GetAllPaginated(lastId int64, limit int) (res []*model.Episode, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM episode WHERE id > %d ORDER BY id LIMIT %d`,
-		joinStrings((&model.Episode{}).DbColumns(), ","), lastId, limit,
+		cols(&model.Episode{}), lastId, limit,
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Episode{}
 		res = append(res, tmp)
@@ -59,19 +47,16 @@ func (s *SqlEpisodeStore) GetAllPaginated(lastId int64, limit int) (res []*model
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_all_paginated", err.Error(), http.StatusInternalServerError, nil,
-		)
+		appE = model.New500Error("sql_store.sql_episode_store.get_all_panigated", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlEpisodeStore) GetByIds(episodeIds []int64) (res []*model.Episode, appE *model.AppError) {
+func (s *sqlEpisodeStore) GetByIds(episodeIds []int64) (res []*model.Episode, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM episode WHERE id IN (%s)`,
-		joinStrings((&model.Episode{}).DbColumns(), ","), joinInt64s(episodeIds, ","),
+		cols(&model.Episode{}), joinInt64s(episodeIds),
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Episode{}
 		res = append(res, tmp)
@@ -79,19 +64,16 @@ func (s *SqlEpisodeStore) GetByIds(episodeIds []int64) (res []*model.Episode, ap
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_by_ids", err.Error(), http.StatusInternalServerError, nil,
-		)
+		appE = model.New500Error("sql_store.sql_episode_store.get_by_ids", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlEpisodeStore) GetByPodcast(podcastId int64) (res []*model.Episode, appE *model.AppError) {
+func (s *sqlEpisodeStore) GetByPodcast(podcastId int64) (res []*model.Episode, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM episode WHERE podcast_id = %d`,
-		joinStrings((&model.Episode{}).DbColumns(), ","), podcastId,
+		cols(&model.Episode{}), podcastId,
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Episode{}
 		res = append(res, tmp)
@@ -99,15 +81,12 @@ func (s *SqlEpisodeStore) GetByPodcast(podcastId int64) (res []*model.Episode, a
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_by_podcast", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"podcast_id": podcastId},
-		)
+		appE = model.New500Error("sql_store.sql_episode_store.get_by_podcast", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlEpisodeStore) GetByPodcastPaginated(podcastId int64, order string, offset, limit int) (res []*model.Episode, appE *model.AppError) {
+func (s *sqlEpisodeStore) GetByPodcastPaginated(podcastId int64, order string, offset int, limit int) (res []*model.Episode, appE *model.AppError) {
 	sqlOrder := "DESC"
 	if order == "pub_date_asc" {
 		sqlOrder = "ASC"
@@ -115,9 +94,8 @@ func (s *SqlEpisodeStore) GetByPodcastPaginated(podcastId int64, order string, o
 
 	sql := fmt.Sprintf(
 		`SELECT %s FROM episode WHERE podcast_id = %d ORDER by pub_date %s LIMIT %d, %d`,
-		joinStrings((&model.Episode{}).DbColumns(), ","), podcastId, sqlOrder, offset, limit,
+		cols(&model.Episode{}), podcastId, sqlOrder, offset, limit,
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Episode{}
 		res = append(res, tmp)
@@ -125,20 +103,16 @@ func (s *SqlEpisodeStore) GetByPodcastPaginated(podcastId int64, order string, o
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_by_podcast_paginated", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"podcast_id": podcastId},
-		)
+		appE = model.New500Error("sql_store.sql_episode_store.get_by_podcast_paginated", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlEpisodeStore) GetByPodcastIdsPaginated(podcastIds []int64, offset, limit int) (res []*model.Episode, appE *model.AppError) {
+func (s *sqlEpisodeStore) GetByPodcastIdsPaginated(podcastIds []int64, offset int, limit int) (res []*model.Episode, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM episode WHERE podcast_id IN (%s) ORDER BY pub_date DESC LIMIT %d, %d`,
-		joinStrings((&model.Episode{}).DbColumns(), ","), joinInt64s(podcastIds, ","), offset, limit,
+		cols(&model.Episode{}), joinInt64s(podcastIds), offset, limit,
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Episode{}
 		res = append(res, tmp)
@@ -146,46 +120,39 @@ func (s *SqlEpisodeStore) GetByPodcastIdsPaginated(podcastIds []int64, offset, l
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_by_podcast_ids_paginated", err.Error(), http.StatusInternalServerError, nil,
-		)
+		appE = model.New500Error("sql_store.sql_episode_store.get_by_podcast_ids_paginated", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlEpisodeStore) GetByPlaylistPaginated(playlistId int64, offset, limit int) (res []*model.Episode, appE *model.AppError) {
-	sql := "SELECT " + Cols(&model.Episode{}, "episode") + ` FROM episode
-		INNER JOIN playlist_member ON playlist_member.episode_id = episode.id
-		WHERE playlist_member.playlist_id = ?
-		ORDER BY playlist_member.updated_at DESC
-		LIMIT ?, ?`
-
+func (s *sqlEpisodeStore) GetByPlaylistPaginated(playlistId int64, offset int, limit int) (res []*model.Episode, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM episode INNER JOIN playlist_member ON playlist_member.episode_id = episode.id
+			WHERE playlist_member.playlist_id = %ds
+			ORDER BY playlist_member.update_at DESC
+			LIMIT %d, %d`,
+		cols(&model.Episode{}), playlistId, offset, limit,
+	)
 	copyTo := func() []interface{} {
 		tmp := &model.Episode{}
 		res = append(res, tmp)
 		return tmp.FieldAddrs()
 	}
 
-	if err := s.Query(copyTo, sql, playlistId, offset, limit); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_episode_store.get_by_playlist_paginated", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"playlist_id": playlistId},
-		)
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.New500Error("sql_store.sql_episode_store.get_by_playlist_paginated", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlEpisodeStore) Block(episodeIds []int64) *model.AppError {
+func (s *sqlEpisodeStore) Block(episodeIds []int64) *model.AppError {
 	sql := fmt.Sprintf(
 		`UPDATE episode SET block = 1 WHERE id IN (%s)`,
-		joinInt64s(episodeIds, ","),
+		joinInt64s(episodeIds),
 	)
 
-	if _, err := s.GetMaster().Exec(sql); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_episode_store.block", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"episode_ids": episodeIds},
-		)
+	if err := s.Exec(sql); err != nil {
+		return model.New500Error("sql_store.sql_episode_store.block", err.Error(), nil)
 	}
 	return nil
 }

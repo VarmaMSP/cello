@@ -1,9 +1,8 @@
 package model
 
 const (
-	POLICY_VERSION       = "2012-10-17"
-	POLICY_ID_THUMBNAILS = "2-12-2019"
-	POLICY_ID_ASSETS     = "2-12-2019"
+	POLICY_ID      = "2-12-2019"
+	POLICY_VERSION = "2012-10-17"
 )
 
 // AWS POLICY GENERATOR
@@ -25,7 +24,7 @@ type AwsPolicyStatement struct {
 
 func NewAwsPolicy(statements []AwsPolicyStatement) AwsPolicy {
 	return AwsPolicy{
-		Id:        POLICY_ID_THUMBNAILS,
+		Id:        POLICY_ID,
 		Version:   POLICY_VERSION,
 		Statement: statements,
 	}

@@ -1,27 +1,17 @@
 package store
 
-import (
-	"github.com/varmamsp/cello/model"
-)
+import "github.com/varmamsp/cello/model"
 
 type Store interface {
-	User() UserStore
 	Feed() FeedStore
 	Podcast() PodcastStore
-	Subscription() SubscriptionStore
 	Episode() EpisodeStore
-	Playback() PlaybackStore
-	Playlist() PlaylistStore
 	Category() CategoryStore
 	Task() TaskStore
-	Keyword() KeywordStore
-}
-
-type UserStore interface {
-	Save(user *model.User) *model.AppError
-	SaveSocialAccount(accountType string, account model.DbModel) *model.AppError
-	Get(userId int64) (*model.User, *model.AppError)
-	GetSocialAccount(accountType, id string) (model.DbModel, *model.AppError)
+	User() UserStore
+	Playback() PlaybackStore
+	Subscription() SubscriptionStore
+	Playlist() PlaylistStore
 }
 
 type FeedStore interface {
@@ -42,11 +32,7 @@ type PodcastStore interface {
 	GetByIds(podcastIds []int64) ([]*model.Podcast, *model.AppError)
 	GetSubscriptions(userId int64) ([]*model.Podcast, *model.AppError)
 	Update(old, new *model.Podcast) *model.AppError
-}
-
-type SubscriptionStore interface {
-	Save(subscription *model.Subscription) *model.AppError
-	Delete(userId, podcastId int64) *model.AppError
+	Search(query string) ([]*model.Podcast, *model.AppError)
 }
 
 type EpisodeStore interface {
@@ -59,29 +45,6 @@ type EpisodeStore interface {
 	GetByPodcastIdsPaginated(podcastIds []int64, offset, limit int) ([]*model.Episode, *model.AppError)
 	GetByPlaylistPaginated(playlistId int64, offset, limit int) ([]*model.Episode, *model.AppError)
 	Block(episodeIds []int64) *model.AppError
-}
-
-type PlaybackStore interface {
-	Save(playback *model.Playback) *model.AppError
-	Upsert(playback *model.Playback) *model.AppError
-	GetByUserPaginated(userId int64, offset, limit int) ([]*model.Playback, *model.AppError)
-	GetByUserByEpisodes(userId int64, episodeIds []int64) ([]*model.Playback, *model.AppError)
-	Update(playback *model.Playback) *model.AppError
-}
-
-type PlaylistStore interface {
-	Save(playlist *model.Playlist) *model.AppError
-	Get(playlistId int64) (*model.Playlist, *model.AppError)
-	GetByUser(userId int64) ([]*model.Playlist, *model.AppError)
-	GetByUserPaginated(userId int64, offset, limit int) ([]*model.Playlist, *model.AppError)
-	Update(old, new *model.Playlist) *model.AppError
-	UpdateMemberStats(playlistId int64) *model.AppError
-	Delete(playlistId int64) *model.AppError
-	SaveMember(member *model.PlaylistMember) *model.AppError
-	GetMembers(playlistIds, episodeIds []int64) ([]*model.PlaylistMember, *model.AppError)
-	GetMembersByPlaylist(playlist int64) ([]*model.PlaylistMember, *model.AppError)
-	ChangeMemberPosition(playlistId, episodeId int64, from, to int) *model.AppError
-	DeleteMember(playlistId, episodeId int64) *model.AppError
 }
 
 type CategoryStore interface {
@@ -97,13 +60,39 @@ type TaskStore interface {
 	Update(old, new *model.Task) *model.AppError
 }
 
-type KeywordStore interface {
-	Upsert(keyword *model.Keyword) (*model.Keyword, *model.AppError)
-	SavePodcastKeyword(podcastKeyword *model.PodcastKeyword) (*model.PodcastKeyword, *model.AppError)
-	SaveEpisodeKeyword(episodeKeyword *model.EpisodeKeyword) (*model.EpisodeKeyword, *model.AppError)
-	GetByText(text string) ([]*model.Keyword, *model.AppError)
-	GetAllPaginated(lastId int64, limit int) ([]*model.Keyword, *model.AppError)
-	GetDuplicates() ([]string, *model.AppError)
-	SetText(keywordId int64, text string) *model.AppError
-	Delete(keywordId int64) *model.AppError
+type UserStore interface {
+	Save(user *model.User) *model.AppError
+	SaveSocialAccount(accountType string, account model.DbModel) *model.AppError
+	Get(userId int64) (*model.User, *model.AppError)
+	GetSocialAccount(accountType, id string) (model.DbModel, *model.AppError)
+}
+
+type PlaybackStore interface {
+	Save(playback *model.Playback) *model.AppError
+	Upsert(playback *model.Playback) *model.AppError
+	GetByUserPaginated(userId int64, offset, limit int) ([]*model.Playback, *model.AppError)
+	GetByUserByEpisodes(userId int64, episodeIds []int64) ([]*model.Playback, *model.AppError)
+	Update(playback *model.Playback) *model.AppError
+}
+
+type SubscriptionStore interface {
+	Save(subscription *model.Subscription) *model.AppError
+	Delete(userId, podcastId int64) *model.AppError
+}
+
+type PlaylistStore interface {
+	Save(playlist *model.Playlist) *model.AppError
+	Get(playlistId int64) (*model.Playlist, *model.AppError)
+	GetByUser(userId int64) ([]*model.Playlist, *model.AppError)
+	GetByUserPaginated(userId int64, offset, limit int) ([]*model.Playlist, *model.AppError)
+	Update(old, new *model.Playlist) *model.AppError
+	UpdateMemberStats(playlistId int64) *model.AppError
+	Delete(playlistId int64) *model.AppError
+	SaveMember(member *model.PlaylistMember) *model.AppError
+	GetMembers(playlistIds, episodeIds []int64) ([]*model.PlaylistMember, *model.AppError)
+	GetMembersByPlaylist(playlist int64) ([]*model.PlaylistMember, *model.AppError)
+	GetMemberByPosition(playlistId int64, position int) (*model.PlaylistMember, *model.AppError)
+	GetMemberCount(playlistId int64) (int, *model.AppError)
+	ChangeMemberPosition(playlistId, episodeId int64, from, to int) *model.AppError
+	DeleteMember(playlistId, episodeId int64) *model.AppError
 }

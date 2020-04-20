@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/olivere/elastic/v7"
+	"github.com/varmamsp/cello/util/hashid"
 )
 
 const (
@@ -75,7 +76,7 @@ func (s *SearchSuggestion) LoadFromPodcast(hit *elastic.SearchHit) *AppError {
 
 	s.Type = SEARCH_SUGGESTION_TYPE_PODCAST
 
-	s.Icon = UrlParamFromId(index.Title, index.Id)
+	s.Icon = hashid.UrlParam(index.Title, index.Id)
 
 	s.Header = index.Title
 	if len(hit.Highlight["title"]) > 0 {

@@ -1,11 +1,15 @@
 package model
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/varmamsp/cello/util/hashid"
+)
 
 type Category struct {
-	Id       int64
-	Name     string
-	ParentId int64
+	Id       int64  `json:"id"`
+	Name     string `json:"name"`
+	ParentId int64  `json:"parent_id"`
 }
 
 type PodcastCategory struct {
@@ -15,17 +19,17 @@ type PodcastCategory struct {
 
 func (c *Category) MarshalJSON() ([]byte, error) {
 	s := &struct {
+		*Category
 		Id       string `json:"id"`
 		UrlParam string `json:"url_param"`
-		Name     string `json:"name"`
 		ParentId string `json:"parent_id,omitempty"`
 	}{
-		Id:       HashIdFromInt64(c.Id),
-		UrlParam: UrlParamFromId(c.Name, c.Id),
-		Name:     c.Name,
+		Category: c,
+		Id:       hashid.Encode(c.Id),
+		UrlParam: hashid.UrlParam(c.Name, c.Id),
 	}
 	if c.ParentId != 0 {
-		s.ParentId = HashIdFromInt64(c.ParentId)
+		s.ParentId = hashid.Encode(c.ParentId)
 	}
 
 	return json.Marshal(s)
@@ -35,20 +39,16 @@ func (c *PodcastCategory) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		CategoryId string `json:"category_id"`
 	}{
-		CategoryId: HashIdFromInt64(c.CategoryId),
+		CategoryId: hashid.Encode(c.CategoryId),
 	})
 }
 
 func (c *Category) DbColumns() []string {
-	return []string{
-		"id", "name", "parent_id",
-	}
+	return []string{"id", "name", "parent_id"}
 }
 
 func (c *Category) FieldAddrs() []interface{} {
-	return []interface{}{
-		&c.Id, &c.Name, &c.ParentId,
-	}
+	return []interface{}{&c.Id, &c.Name, &c.ParentId}
 }
 
 func (pc *PodcastCategory) DbColumns() []string {

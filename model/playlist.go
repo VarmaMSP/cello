@@ -1,44 +1,39 @@
 package model
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/varmamsp/cello/util/hashid"
+)
 
 type Playlist struct {
-	Id           int64
-	UserId       int64
-	Title        string
-	Description  string
-	Privacy      string
-	EpisodeCount int
-	PreviewImage string
-	CreatedAt    int64
-	UpdatedAt    int64
-	// Members for response
-	Members []*PlaylistMember
+	Id           int64  `json:"id"`
+	UserId       int64  `json:"user_id"`
+	Title        string `json:"title"`
+	Description  string `json:"description,omitempty"`
+	Privacy      string `json:"privacy,omitempty"`
+	EpisodeCount int    `json:"episode_count,omitempty"`
+	PreviewImage string `json:"preview_image,omitempty"`
+	CreatedAt    int64  `json:"-"`
+	UpdatedAt    int64  `json:"updated_at"`
+
+	// Derived
+	Members []*PlaylistMember `json:"members"`
 }
 
 func (p *Playlist) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
-		Id           string            `json:"id"`
-		UrlParam     string            `json:"url_param"`
-		UserId       string            `json:"user_id,omitempty"`
-		Title        string            `json:"title"`
-		Description  string            `json:"description,omitempty"`
-		Privacy      string            `json:"privacy,omirempty"`
-		EpisodeCount int               `json:"episode_count,omitempty"`
-		PreviewImage string            `json:"preview_image,omitempty"`
-		UpdatedAt    string            `json:"updated_at"`
-		Members      []*PlaylistMember `json:"members"`
+		*Playlist
+		Id        string `json:"id"`
+		UrlParam  string `json:"url_param"`
+		UserId    string `json:"user_id,omitempty"`
+		UpdatedAt string `json:"updated_at"`
 	}{
-		Id:           HashIdFromInt64(p.Id),
-		UrlParam:     UrlParamFromId(p.Title, p.Id),
-		UserId:       HashIdFromInt64(p.UserId),
-		Title:        p.Title,
-		Description:  p.Description,
-		Privacy:      p.Privacy,
-		EpisodeCount: p.EpisodeCount,
-		PreviewImage: p.PreviewImage,
-		UpdatedAt:    DateTimeFromTimestamp(p.UpdatedAt),
-		Members:      p.Members,
+		Playlist:  p,
+		Id:        hashid.Encode(p.Id),
+		UrlParam:  hashid.UrlParam(p.Title, p.Id),
+		UserId:    hashid.Encode(p.UserId),
+		UpdatedAt: DateTimeFromTimestamp(p.UpdatedAt),
 	})
 }
 

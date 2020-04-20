@@ -2,26 +2,20 @@ package sqlstore
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/store"
+	"github.com/varmamsp/cello/service/sqldb"
 )
 
-type SqlTaskStore struct {
-	SqlStore
+type sqlTaskStore struct {
+	sqldb.Broker
 }
 
-func NewSqlTaskStore(store SqlStore) store.TaskStore {
-	return &SqlTaskStore{store}
-}
-
-func (s *SqlTaskStore) GetAll() (res []*model.Task, appE *model.AppError) {
+func (s *sqlTaskStore) GetAll() (res []*model.Task, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM task WHERE active = 1`,
-		joinStrings((&model.Task{}).DbColumns(), ","),
+		cols(&model.Task{}),
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Task{}
 		res = append(res, tmp)
@@ -29,20 +23,11 @@ func (s *SqlTaskStore) GetAll() (res []*model.Task, appE *model.AppError) {
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"sqlstore.sql_task_store.get_all_active", err.Error(), http.StatusInternalServerError,
-			nil,
-		)
+		appE = model.New500Error("sql_store.sql_task_store.get_all_active", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlTaskStore) Update(old, new *model.Task) *model.AppError {
-	if _, err := s.Update_("task", old, new, fmt.Sprintf("id = %d", new.Id)); err != nil {
-		return model.NewAppError(
-			"sqlstore.sql_task_store.update", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"name": new.Name},
-		)
-	}
-	return nil
+func (s *sqlTaskStore) Update(old *model.Task, new *model.Task) *model.AppError {
+	panic("not implemented") // TODO: Implement
 }

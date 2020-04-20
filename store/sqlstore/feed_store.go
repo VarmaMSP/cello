@@ -2,55 +2,44 @@ package sqlstore
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/service/sqldb"
 )
 
-type SqlFeedStore struct {
-	SqlStore
+type sqlFeedStore struct {
+	sqldb.Broker
 }
 
-func NewSqlFeedStore(store SqlStore) *SqlFeedStore {
-	return &SqlFeedStore{store}
-}
-
-func (s *SqlFeedStore) Save(feed *model.Feed) *model.AppError {
+func (s *sqlFeedStore) Save(feed *model.Feed) *model.AppError {
 	feed.PreSave()
 
-	id, err := s.InsertWithoutPK("feed", feed)
+	res, err := s.Insert_("feed", feed)
 	if err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_feed_store.save", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"source": feed.Source, "source_id": feed.SourceId},
-		)
+		return model.New500Error("sql_store.sql_feed_store.save", err.Error(), nil)
 	}
-	feed.Id = id
+	feed.Id, _ = res.LastInsertId()
 	return nil
 }
 
-func (s *SqlFeedStore) Get(feedId int64) (*model.Feed, *model.AppError) {
-	feed := &model.Feed{}
+func (s *sqlFeedStore) Get(feedId int64) (*model.Feed, *model.AppError) {
+	res := &model.Feed{}
 	sql := fmt.Sprintf(
 		`SELECT %s FROM feed WHERE id = %d`,
-		joinStrings(feed.DbColumns(), ","), feedId,
+		cols(res), feedId,
 	)
 
-	if err := s.GetMaster().QueryRow(sql).Scan(feed.FieldAddrs()...); err != nil {
-		return nil, model.NewAppError(
-			"store.sqlstore.sql_feed_store.get", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"id": feed},
-		)
+	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+		return nil, model.New500Error("sql_store.sql_feed_store.get", err.Error(), nil)
 	}
-	return feed, nil
+	return res, nil
 }
 
-func (s *SqlFeedStore) GetAllPaginated(lastId int64, limit int) (res []*model.Feed, appE *model.AppError) {
+func (s *sqlFeedStore) GetAllPaginated(lastId int64, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM feed WHERE id > %d ORDER BY id LIMIT %d`,
-		joinStrings((&model.Feed{}).DbColumns(), ","), lastId, limit,
+		cols(&model.Feed{}), lastId, limit,
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Feed{}
 		res = append(res, tmp)
@@ -58,36 +47,29 @@ func (s *SqlFeedStore) GetAllPaginated(lastId int64, limit int) (res []*model.Fe
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"sqlstore.sql_feed_store.get_all_paginated", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"last_id": lastId},
-		)
+		appE = model.New500Error("sql_store.sql_feed_store.get_all_paginated", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlFeedStore) GetBySourceId(source, sourceId string) (*model.Feed, *model.AppError) {
-	feed := &model.Feed{}
+func (s *sqlFeedStore) GetBySourceId(source, sourceId string) (*model.Feed, *model.AppError) {
+	res := &model.Feed{}
 	sql := fmt.Sprintf(
 		`SELECT %s FROM feed WHERE source = '%s' AND source_id = '%s'`,
-		joinStrings(feed.DbColumns(), ","), source, sourceId,
+		cols(res), source, sourceId,
 	)
 
-	if err := s.GetMaster().QueryRow(sql).Scan(feed.FieldAddrs()...); err != nil {
-		return nil, model.NewAppError(
-			"store.sqlstore.sql_feed_store.get_by_source_id", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"source": source, "source_id": sourceId},
-		)
+	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+		return nil, model.New500Error("sql_store.sql_feed_store.get_by_source_id", err.Error(), nil)
 	}
-	return feed, nil
+	return res, nil
 }
 
-func (s *SqlFeedStore) GetBySourcePaginated(source string, offset, limit int) (res []*model.Feed, appE *model.AppError) {
+func (s *sqlFeedStore) GetBySourcePaginated(source string, offset, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM feed WHERE source = '%s' LIMIT %d, %d`,
-		joinStrings((&model.Feed{}).DbColumns(), ","), source, offset, limit,
+		cols(&model.Feed{}), source, offset, limit,
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Feed{}
 		res = append(res, tmp)
@@ -95,15 +77,12 @@ func (s *SqlFeedStore) GetBySourcePaginated(source string, offset, limit int) (r
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError(
-			"store.sqlstore.sql_feed_store.get_by_source_paginated", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"source": source},
-		)
+		appE = model.New500Error("sql_store.sql_feed_store.get_by_source_paginated", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) (res []*model.Feed, appE *model.AppError) {
+func (s *sqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM feed
 		WHERE refresh_enabled = 1 AND
@@ -112,7 +91,7 @@ func (s *SqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) (res []*m
 			  id > %d 
 		ORDER BY id
 		LIMIT %d`,
-		joinStrings((&model.Feed{}).DbColumns(), ","), model.Now(), lastId, limit,
+		cols(&model.Feed{}), model.Now(), lastId, limit,
 	)
 
 	copyTo := func() []interface{} {
@@ -122,17 +101,16 @@ func (s *SqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) (res []*m
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError("store.sqlstore.sql_feed_store.get_for_refresh_paginated", err.Error(), http.StatusInternalServerError, nil)
+		appE = model.New500Error("sql_store.sql_feed_store.get_for_refresh_paginated", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlFeedStore) GetFailedToImportPaginated(lastId int64, limit int) (res []*model.Feed, appE *model.AppError) {
+func (s *sqlFeedStore) GetFailedToImportPaginated(lastId int64, limit int) (res []*model.Feed, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM feed WHERE last_refresh_comment <> '' AND id > %d ORDER BY id LIMIT %d`,
-		joinStrings((&model.Feed{}).DbColumns(), ","), lastId, limit,
+		cols(&model.Feed{}), lastId, limit,
 	)
-
 	copyTo := func() []interface{} {
 		tmp := &model.Feed{}
 		res = append(res, tmp)
@@ -140,17 +118,11 @@ func (s *SqlFeedStore) GetFailedToImportPaginated(lastId int64, limit int) (res 
 	}
 
 	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.NewAppError("store.sqlstore.sql_feed_store.get_failed_to_import_paginated", err.Error(), http.StatusInternalServerError, nil)
+		appE = model.New500Error("sql_store.sql_feed_store.get_failed_to_import_paginated", err.Error(), nil)
 	}
 	return
 }
 
-func (s *SqlFeedStore) Update(old, new *model.Feed) *model.AppError {
-	if _, err := s.Update_("feed", old, new, fmt.Sprintf("id = %d", new.Id)); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_feed_store.update", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"id": new.Id},
-		)
-	}
+func (s *sqlFeedStore) Update(old, new *model.Feed) *model.AppError {
 	return nil
 }

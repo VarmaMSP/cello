@@ -1,64 +1,54 @@
 package sqlstore
 
 import (
-	"net/http"
+	"fmt"
 
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/store"
+	"github.com/varmamsp/cello/service/sqldb"
 )
 
-type SqlUserStore struct {
-	SqlStore
+type sqlUserStore struct {
+	sqldb.Broker
 }
 
-func NewSqlUserStore(store SqlStore) store.UserStore {
-	return &SqlUserStore{store}
-}
-
-func (s *SqlUserStore) Save(user *model.User) *model.AppError {
+func (s *sqlUserStore) Save(user *model.User) *model.AppError {
 	user.PreSave()
 
-	id, err := s.InsertWithoutPK("user", user)
+	res, err := s.Insert_("user", user)
 	if err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_user_store.save", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"name": user.Name},
-		)
+		return model.New500Error("sql_store.sql_user_store.save", err.Error(), nil)
 	}
-	user.Id = id
+	user.Id, _ = res.LastInsertId()
 	return nil
 }
 
-func (s *SqlUserStore) SaveSocialAccount(accountType string, account model.DbModel) *model.AppError {
+func (s *sqlUserStore) SaveSocialAccount(accountType string, account model.DbModel) *model.AppError {
 	if accountType != "google" && accountType != "facebook" && accountType != "twitter" {
-		return nil
+		return model.New400Error("sql_store.sql_user_store.save_social_account", "Wrong account type", nil)
 	}
-
 	account.PreSave()
 
-	if _, err := s.Insert(accountType+"_account", []model.DbModel{account}); err != nil {
-		return model.NewAppError(
-			"store.sqlstore.sql_user_store.save_google_account", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"account_type": accountType},
-		)
+	table := accountType + "_account"
+	if _, err := s.Insert(table, account); err != nil {
+		return model.New500Error("sql_store.sql_user_store.save_social_account", err.Error(), nil)
 	}
 	return nil
 }
 
-func (s *SqlUserStore) Get(userId int64) (*model.User, *model.AppError) {
-	user := &model.User{}
-	sql := "SELECT " + Cols(user) + " FROM user WHERE id = ?"
+func (s *sqlUserStore) Get(userId int64) (*model.User, *model.AppError) {
+	res := &model.User{}
+	sql := fmt.Sprintf(
+		`SELECT %s FROM user WHERE id = %d`,
+		cols(res), userId,
+	)
 
-	if err := s.GetMaster().QueryRow(sql, userId).Scan(user.FieldAddrs()...); err != nil {
-		return nil, model.NewAppError(
-			"store.sqlstore.sql_user_store.get", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"user_id": userId},
-		)
+	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+		return nil, model.New500Error("sql_store.sql_user_store.get", err.Error(), nil)
 	}
-	return user, nil
+	return res, nil
 }
 
-func (s *SqlUserStore) GetSocialAccount(accountType, id string) (model.DbModel, *model.AppError) {
+func (s *sqlUserStore) GetSocialAccount(accountType, id string) (model.DbModel, *model.AppError) {
 	var account model.DbModel
 	if accountType == "google" {
 		account = &model.GoogleAccount{}
@@ -70,14 +60,14 @@ func (s *SqlUserStore) GetSocialAccount(accountType, id string) (model.DbModel, 
 		return nil, nil
 	}
 
-	tableName := accountType + "_account"
-	sql := "SELECT " + Cols(account) + " FROM " + tableName + " WHERE id = ?"
+	table := accountType + "_account"
+	sql := fmt.Sprintf(
+		`SELECT %s FROM %s WHERE Id = '%s'`,
+		cols(account), table, id,
+	)
 
-	if err := s.GetMaster().QueryRow(sql, id).Scan(account.FieldAddrs()...); err != nil {
-		return nil, model.NewAppError(
-			"store.sqlstore.sql_user_store.get_social_account", err.Error(), http.StatusInternalServerError,
-			map[string]interface{}{"account_type": accountType, "id": id},
-		)
+	if err := s.QueryRow(account.FieldAddrs(), sql); err != nil {
+		return nil, model.New500Error("sql_store.sql_user_store.get_social_account", err.Error(), nil)
 	}
 	return account, nil
 }

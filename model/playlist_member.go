@@ -1,6 +1,10 @@
 package model
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/varmamsp/cello/util/hashid"
+)
 
 type PlaylistMember struct {
 	PlaylistId int64
@@ -15,7 +19,7 @@ func (p *PlaylistMember) MarshalJSON() ([]byte, error) {
 		EpisodeId string `json:"episode_id"`
 		Position  int    `json:"position"`
 	}{
-		EpisodeId: HashIdFromInt64(p.EpisodeId),
+		EpisodeId: hashid.Encode(p.EpisodeId),
 		Position:  p.Position,
 	})
 }

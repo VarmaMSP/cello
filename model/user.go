@@ -1,6 +1,10 @@
 package model
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/varmamsp/cello/util/hashid"
+)
 
 type User struct {
 	Id           int64
@@ -65,7 +69,7 @@ func (u *User) MarshalJSON() ([]byte, error) {
 		Name  string `json:"name"`
 		Email string `json:"email"`
 	}{
-		Id:    HashIdFromInt64(u.Id),
+		Id:    hashid.Encode(u.Id),
 		Name:  u.Name,
 		Email: u.Email,
 	})
