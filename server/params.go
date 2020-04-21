@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/util/hashid"
 )
 
 const (
@@ -35,21 +35,21 @@ func ParamsFromRequest(r *http.Request) *Params {
 	urlProps := httprouter.ParamsFromContext(r.Context())
 	queryProps := r.URL.Query()
 
-	if val, err := model.IdFromUrlParam(urlProps.ByName("podcastUrlParam")); err == nil {
+	if val, err := hashid.DecodeUrlParam(urlProps.ByName("podcastUrlParam")); err == nil {
 		params.PodcastId = val
-	} else if val, err = model.Int64FromHashId(queryProps.Get("podcast_id")); err == nil {
+	} else if val, err = hashid.DecodeInt64(queryProps.Get("podcast_id")); err == nil {
 		params.PodcastId = val
 	}
 
-	if val, err := model.IdFromUrlParam(urlProps.ByName("episodeUrlParam")); err == nil {
+	if val, err := hashid.DecodeUrlParam(urlProps.ByName("episodeUrlParam")); err == nil {
 		params.EpisodeId = val
-	} else if val, err = model.Int64FromHashId(queryProps.Get("episode_id")); err == nil {
+	} else if val, err = hashid.DecodeInt64(queryProps.Get("episode_id")); err == nil {
 		params.EpisodeId = val
 	}
 
-	if val, err := model.IdFromUrlParam(urlProps.ByName("playlistUrlParam")); err == nil {
+	if val, err := hashid.DecodeUrlParam(urlProps.ByName("playlistUrlParam")); err == nil {
 		params.PlaylistId = val
-	} else if val, err = model.Int64FromHashId(queryProps.Get("playlist_id")); err == nil {
+	} else if val, err = hashid.DecodeInt64(queryProps.Get("playlist_id")); err == nil {
 		params.PlaylistId = val
 	}
 

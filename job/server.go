@@ -1,4 +1,4 @@
-package jobserver
+package job
 
 import (
 	"github.com/varmamsp/cello/model"
