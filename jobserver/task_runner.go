@@ -13,35 +13,62 @@ import (
 )
 
 type TaskRunnerJob struct {
-	store  store.Store
-	search searchengine.Broker
-	mq     messagequeue.Broker
+	store store.Store
+	se    searchengine.Broker
+	mq    messagequeue.Broker
 
-	itunesCrawler crawler.ItunesCrawler
+	itunesCrawler   *crawler.ItunesCrawler
+	refreshPodcastP messagequeue.Producer
 }
 
-func (job *TaskRunnerJob) Run() {
-	ticker := time.NewTicker(10 * time.Second)
+func NewTaskRunnerJob(store store.Store, se searchengine.Broker, mq messagequeue.Broker, config *model.Config) (Job, error) {
+	itunesCrawler, err := crawler.NewItunesCrawler(store, mq, config)
+	if err != nil {
+		return nil, err
+	}
 
-	for _ = range ticker.C {
-		tasks, err := job.store.Task().GetAll()
-		if err != nil {
-			continue
-		}
+	refreshPodcastP, err := mq.NewProducer(
+		messagequeue.EXCHANGE_PHENOPOD_DIRECT,
+		messagequeue.ROUTING_KEY_REFRESH_PODCAST,
+		config.Queues.RefreshPodcast.DeliveryMode,
+	)
+	if err != nil {
+		return nil, err
+	}
 
-		for _, task := range tasks {
-			switch task.Type {
-			case model.TASK_TYPE_PERIODIC:
-				job.periodic(task)
+	return &TaskRunnerJob{
+		store:           store,
+		se:              se,
+		mq:              mq,
+		itunesCrawler:   itunesCrawler,
+		refreshPodcastP: refreshPodcastP,
+	}, nil
+}
 
-			case model.TASK_TYPE_ONEOFF:
-				job.oneoff(task)
+func (job *TaskRunnerJob) Start() {
+	go func() {
+		ticker := time.NewTicker(10 * time.Second)
 
-			case model.TASK_TYPE_IMMEDIATE:
-				job.immediate(task)
+		for range ticker.C {
+			tasks, err := job.store.Task().GetAll()
+			if err != nil {
+				continue
+			}
+
+			for _, task := range tasks {
+				switch task.Type {
+				case model.TASK_TYPE_PERIODIC:
+					job.periodic(task)
+
+				case model.TASK_TYPE_ONEOFF:
+					job.oneoff(task)
+
+				case model.TASK_TYPE_IMMEDIATE:
+					job.immediate(task)
+				}
 			}
 		}
-	}
+	}()
 }
 
 func (job *TaskRunnerJob) periodic(task *model.Task) {
@@ -120,7 +147,7 @@ func (job *TaskRunnerJob) schedulePodcastRefresh() {
 			if err := job.store.Feed().Update(feed, feedU); err != nil {
 				continue
 			}
-			s.refreshPodcastP.D <- feedU
+			job.refreshPodcastP.Publish(feedU)
 		}
 
 		if len(feeds) < limit {
@@ -131,10 +158,10 @@ func (job *TaskRunnerJob) schedulePodcastRefresh() {
 }
 
 func (job *TaskRunnerJob) reindexEpisodes() {
-	if err := job.search.DeleteIndex(searchengine.EPISODE_INDEX); err != nil {
+	if err := job.se.DeleteIndex(searchengine.EPISODE_INDEX); err != nil {
 		return
 	}
-	if err := job.search.CreateIndex(searchengine.EPISODE_INDEX, searchengine.EPISODE_INDEX_MAPPING); err != nil {
+	if err := job.se.CreateIndex(searchengine.EPISODE_INDEX, searchengine.EPISODE_INDEX_MAPPING); err != nil {
 		return
 	}
 
@@ -150,7 +177,7 @@ func (job *TaskRunnerJob) reindexEpisodes() {
 			m[i] = episode.ForIndexing()
 		}
 
-		if err := job.search.BulkIndex(searchengine.EPISODE_INDEX, m); err != nil {
+		if err := job.se.BulkIndex(searchengine.EPISODE_INDEX, m); err != nil {
 			return
 		}
 
@@ -162,10 +189,10 @@ func (job *TaskRunnerJob) reindexEpisodes() {
 }
 
 func (job *TaskRunnerJob) reindexPodcasts() {
-	if err := job.search.DeleteIndex(searchengine.PODCAST_INDEX); err != nil {
+	if err := job.se.DeleteIndex(searchengine.PODCAST_INDEX); err != nil {
 		return
 	}
-	if err := job.search.CreateIndex(searchengine.PODCAST_INDEX, searchengine.PODCAST_INDEX_MAPPING); err != nil {
+	if err := job.se.CreateIndex(searchengine.PODCAST_INDEX, searchengine.PODCAST_INDEX_MAPPING); err != nil {
 		return
 	}
 
@@ -181,7 +208,7 @@ func (job *TaskRunnerJob) reindexPodcasts() {
 			m[i] = podcast.ForIndexing()
 		}
 
-		if err := job.search.BulkIndex(searchengine.PODCAST_INDEX, m); err != nil {
+		if err := job.se.BulkIndex(searchengine.PODCAST_INDEX, m); err != nil {
 			return
 		}
 
