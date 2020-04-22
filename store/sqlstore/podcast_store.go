@@ -88,10 +88,14 @@ func (s *sqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, 
 	return
 }
 
-func (s *sqlPodcastStore) Update(old *model.Podcast, new *model.Podcast) *model.AppError {
-	panic("not implemented") // TODO: Implement
+func (s *sqlPodcastStore) GetTypeaheadSuggestions(query string) ([]*model.SearchSuggestion, *model.AppError) {
+	panic("method not implemented by search layer")
 }
 
-func (s *sqlPodcastStore) Search(query string) ([]*model.Podcast, *model.AppError) {
+func (s *sqlPodcastStore) Search(query string, offset, limit int) ([]*model.Podcast, *model.AppError) {
+	panic("method not implemented by search layer")
+}
+
+func (s *sqlPodcastStore) Update(old *model.Podcast, new *model.Podcast) *model.AppError {
 	panic("not implemented") // TODO: Implement
 }

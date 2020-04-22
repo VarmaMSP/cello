@@ -31,8 +31,9 @@ type PodcastStore interface {
 	GetAllPaginated(lastId int64, limit int) ([]*model.Podcast, *model.AppError)
 	GetByIds(podcastIds []int64) ([]*model.Podcast, *model.AppError)
 	GetSubscriptions(userId int64) ([]*model.Podcast, *model.AppError)
+	GetTypeaheadSuggestions(query string) ([]*model.SearchSuggestion, *model.AppError)
 	Update(old, new *model.Podcast) *model.AppError
-	Search(query string) ([]*model.Podcast, *model.AppError)
+	Search(query string, offset, limit int) ([]*model.Podcast, *model.AppError)
 }
 
 type EpisodeStore interface {
@@ -44,6 +45,7 @@ type EpisodeStore interface {
 	GetByPodcastPaginated(podcastId int64, order string, offset, limit int) ([]*model.Episode, *model.AppError)
 	GetByPodcastIdsPaginated(podcastIds []int64, offset, limit int) ([]*model.Episode, *model.AppError)
 	GetByPlaylistPaginated(playlistId int64, offset, limit int) ([]*model.Episode, *model.AppError)
+	Search(query, sortBy string, offset, limit int) ([]*model.Episode, *model.AppError)
 	Block(episodeIds []int64) *model.AppError
 }
 

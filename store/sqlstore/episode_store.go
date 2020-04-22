@@ -145,6 +145,10 @@ func (s *sqlEpisodeStore) GetByPlaylistPaginated(playlistId int64, offset int, l
 	return
 }
 
+func (s *sqlEpisodeStore) Search(query, sortBy string, limit, offset int) ([]*model.Episode, *model.AppError) {
+	panic("episode.search method not implemented by search layer")
+}
+
 func (s *sqlEpisodeStore) Block(episodeIds []int64) *model.AppError {
 	sql := fmt.Sprintf(
 		`UPDATE episode SET block = 1 WHERE id IN (%s)`,

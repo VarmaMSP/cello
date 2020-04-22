@@ -15,8 +15,8 @@ type searchStore struct {
 func NewSearchLayer(baseStore store.Store, broker searchengine.Broker) store.Store {
 	return &searchStore{
 		Store:   baseStore,
-		podcast: &searchPodcastStore{PodcastStore: baseStore.Podcast(), search: broker},
-		episode: &searchEpisodeStore{EpisodeStore: baseStore.Episode(), search: broker},
+		podcast: &searchPodcastStore{PodcastStore: baseStore.Podcast(), se: broker},
+		episode: &searchEpisodeStore{EpisodeStore: baseStore.Episode(), se: broker},
 	}
 }
 
