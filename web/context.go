@@ -5,12 +5,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/varmamsp/cello/app_"
+	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
 )
 
 type Context struct {
-	App      *app_.App
+	App      *app.App
 	Params   *Params
 	Body     map[string]interface{}
 	Response *model.ApiResponse

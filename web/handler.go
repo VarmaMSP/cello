@@ -4,12 +4,12 @@ import (
 	"net/http"
 
 	"github.com/go-http-utils/headers"
-	"github.com/varmamsp/cello/app_"
+	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
 )
 
 type Handler struct {
-	App            *app_.App
+	App            *app.App
 	HandleFunc     func(*Context, http.ResponseWriter, *http.Request)
 	RequireSession bool
 }

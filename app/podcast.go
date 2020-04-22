@@ -4,22 +4,21 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (app *App) GetPodcast(podcastId int64, includeCategories bool) (*model.Podcast, *model.AppError) {
-	podcast, err := app.Store.Podcast().Get(podcastId)
+func (app *App) GetFeed(id int64) (*model.Feed, *model.AppError) {
+	return app.Store.Feed().Get(id)
+}
+
+func (a *App) GetPodcast(podcastId int64) (*model.Podcast, *model.AppError) {
+	podcast, err := a.Store.Podcast().Get(podcastId)
 	if err != nil {
 		return nil, err
-	}
-	if !includeCategories {
-		return podcast, err
 	}
 
-	podcast.Categories, err = app.Store.Category().GetPodcastCategories(podcastId)
+	podcast.Categories, err = a.Store.Category().GetPodcastCategories(podcastId)
 	if err != nil {
 		return nil, err
 	}
-	if podcast.Categories == nil {
-		podcast.Categories = []*model.PodcastCategory{}
-	}
+
 	return podcast, nil
 }
 

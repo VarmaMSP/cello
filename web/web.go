@@ -3,12 +3,12 @@ package web
 import (
 	"net/http"
 
-	"github.com/varmamsp/cello/app_"
+	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
 )
 
 type Web struct {
-	App    *app_.App
+	App    *app.App
 	Config *model.Config
 }
 

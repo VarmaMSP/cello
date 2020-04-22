@@ -1,17 +1,15 @@
 package app
 
-import (
-	"github.com/varmamsp/cello/model"
-)
+import "github.com/varmamsp/cello/model"
 
-func (app *App) GetCategory(categoryId int64) (*model.Category, *model.AppError) {
-	return app.Store.Category().Get(categoryId)
+func (a *App) GetCategory(categoryId int64) (*model.Category, *model.AppError) {
+	return a.Store.Category().Get(categoryId)
 }
 
-func (app *App) GetAllCategories() ([]*model.Category, *model.AppError) {
-	return app.Store.Category().GetAll()
+func (a *App) GetAllCategories() ([]*model.Category, *model.AppError) {
+	return a.Store.Category().GetAll()
 }
 
-func (app *App) GetCategoriesByIds(categoryIds []int64) ([]*model.Category, *model.AppError) {
-	return app.Store.Category().GetByIds(categoryIds)
+func (a *App) GetCategoriesByIds(categoryIds []int64) ([]*model.Category, *model.AppError) {
+	return a.Store.Category().GetByIds(categoryIds)
 }
