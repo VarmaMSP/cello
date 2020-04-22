@@ -125,7 +125,20 @@ func (s *sqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppEr
 	return nil
 }
 
-func (s *sqlPlaylistStore) GetMembers(playlistIds []int64, episodeIds []int64) (res []*model.PlaylistMember, appE *model.AppError) {
+func (s *sqlPlaylistStore) GetMember(playlistId, episodeId int64) (*model.PlaylistMember, *model.AppError) {
+	res := &model.PlaylistMember{}
+	sql := fmt.Sprintf(
+		`SELECT %s FROM playlist_member WHERE playlist_id = %d AND episode_id = %d`,
+		cols(res), playlistId, episodeId,
+	)
+
+	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+		return nil, model.New500Error("sql_store.sql_playlist_store.get_member", err.Error(), nil)
+	}
+	return res, nil
+}
+
+func (s *sqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*model.PlaylistMember, appE *model.AppError) {
 	sql := fmt.Sprintf(
 		`SELECT %s FROM playlist_member WHERE playlist_id IN (%s) AND episode_id IN (%s)`,
 		cols(&model.PlaylistMember{}), joinInt64s(playlistIds), joinInt64s(episodeIds),
@@ -231,6 +244,15 @@ func (s *sqlPlaylistStore) DeleteMember(playlistId int64, episodeId int64) *mode
 
 	if err := s.Exec(sql); err != nil {
 		return model.New500Error("store.sqlstore.sql_playlist_store.delete_member", err.Error(), nil)
+	}
+	return nil
+}
+
+func (s *sqlPlaylistStore) DeleteMembersByPlaylist(playlistId int64) *model.AppError {
+	sql := fmt.Sprintf(`DELETE FROM playlist_member WHERE playlist_id = %d`, playlistId)
+
+	if err := s.Exec(sql); err != nil {
+		return model.New500Error("store.sqlstore.sql_playlist_store.delete_members_by_playlist", err.Error(), nil)
 	}
 	return nil
 }
