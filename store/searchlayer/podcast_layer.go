@@ -66,7 +66,7 @@ func (s *searchPodcastStore) GetTypeaheadSuggestions(query string) ([]*model.Sea
 					elastic.NewHighlighterField("author"),
 				),
 			).
-			Size(4).
+			Size(6).
 			Do(context.TODO())
 	} else if phrase != "" && prefix == "" {
 		results, err = s.se.C().Search().
@@ -86,7 +86,7 @@ func (s *searchPodcastStore) GetTypeaheadSuggestions(query string) ([]*model.Sea
 					elastic.NewHighlighterField("author"),
 				),
 			).
-			Size(4).
+			Size(6).
 			Do(context.TODO())
 	} else {
 		results, err = s.se.C().Search().
@@ -98,7 +98,7 @@ func (s *searchPodcastStore) GetTypeaheadSuggestions(query string) ([]*model.Sea
 				PostTags("</em>").
 				Fields(elastic.NewHighlighterField("text")),
 			).
-			Size(5).
+			Size(6).
 			Do(context.TODO())
 	}
 
