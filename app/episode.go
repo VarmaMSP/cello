@@ -58,3 +58,12 @@ func (a *App) GetRecentlyPlayedEpisodes(userId int64, offset, limit int) ([]*mod
 
 	return episodes, nil
 }
+
+func (a *App) GetPlaylistEpisodes(playlist *model.Playlist) ([]*model.Episode, *model.AppError) {
+	episodeIds := make([]int64, len(playlist.Members))
+	for i, member := range playlist.Members {
+		episodeIds[i] = member.EpisodeId
+	}
+
+	return a.GetEpisodesByIds(episodeIds)
+}

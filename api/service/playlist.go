@@ -7,7 +7,7 @@ import (
 	"github.com/varmamsp/cello/web"
 )
 
-func addToPlaylistModal(c *web.Context, w http.ResponseWriter, req *http.Request) {
+func addToPlaylist(c *web.Context, w http.ResponseWriter, req *http.Request) {
 	if c.RequireSession().RequireBody(req).RequireEpisodeIds(); c.Err != nil {
 		return
 	}

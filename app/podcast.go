@@ -22,6 +22,15 @@ func (a *App) GetPodcast(podcastId int64) (*model.Podcast, *model.AppError) {
 	return podcast, nil
 }
 
+func (a *App) GetPodcastsForEpisodes(episodes []*model.Episode) ([]*model.Podcast, *model.AppError) {
+	podcastIds := make([]int64, len(episodes))
+	for i, episode := range episodes {
+		podcastIds[i] = episode.PodcastId
+	}
+
+	return a.GetPodcastsByIds(podcastIds)
+}
+
 func (app *App) GetPodcastsByIds(podcastIds []int64) ([]*model.Podcast, *model.AppError) {
 	if len(podcastIds) == 0 {
 		return []*model.Podcast{}, nil

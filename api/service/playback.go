@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/varmamsp/cello/model"
@@ -25,6 +26,7 @@ func getPlaybacks(c *web.Context, w http.ResponseWriter, req *http.Request) {
 }
 
 func syncPlaybackBegin(c *web.Context, w http.ResponseWriter, req *http.Request) {
+	fmt.Println("syncing")
 	if c.RequireSession().RequireBody(req).RequireEpisodeId(); c.Err != nil {
 		return
 	}

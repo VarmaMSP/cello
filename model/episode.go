@@ -84,12 +84,14 @@ func (e *Episode) MarshalJSON() ([]byte, error) {
 	type J Episode
 	return json.Marshal(&struct {
 		*J
-		Id       string `json:"id"`
-		UrlParam string `json:"url_param"`
+		Id        string `json:"id"`
+		PodcastId string `json:"podcast_id"`
+		UrlParam  string `json:"url_param"`
 	}{
-		J:        (*J)(e),
-		Id:       hashid.Encode(e.Id),
-		UrlParam: hashid.UrlParam(e.Title, e.Id),
+		J:         (*J)(e),
+		Id:        hashid.Encode(e.Id),
+		PodcastId: hashid.Encode(e.PodcastId),
+		UrlParam:  hashid.UrlParam(e.Title, e.Id),
 	})
 }
 

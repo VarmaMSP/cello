@@ -11,6 +11,7 @@ import (
 	"unicode"
 
 	strip "github.com/grokify/html-strip-tags-go"
+	"github.com/varmamsp/cello/util/hashid"
 	"github.com/varmamsp/gofeed/rss"
 )
 
@@ -204,22 +205,14 @@ func MinInt(x, y int) int {
 
 // Parse Category Url param
 func ParseCategoryUrlParam(urlParam string) (string, int64, error) {
-	// if urlParam == "" {
-	// 	return "", 0, errors.New("UrlParam is empty")
-	// }
+	id, err := hashid.DecodeUrlParam(urlParam)
+	if err != nil {
+		return "", 0, err
+	}
 
-	// x := strings.Split(urlParam, "-")
-	// if len(x) < 2 || len(x[len(x)-1]) < MIN_HASH_ID_LENGTH {
-	// 	return "", 0, errors.New("UrlParam is invalid")
-	// }
+	x := strings.Split(urlParam, "-")
 
-	// id, err := Int64FromHashId(x[len(x)-1])
-	// if err != nil {
-	// 	return "", 0, err
-	// }
-
-	// return strings.Join(x[0:len(x)-1], "-"), id, nil
-	panic("")
+	return strings.Join(x[0:len(x)-1], "-"), id, nil
 }
 
 // RemoveDuplicatesInt64 removes duplicates from []int64

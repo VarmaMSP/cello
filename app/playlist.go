@@ -125,3 +125,10 @@ func (a *App) HasPermissionToPlaylist(userId int64, playlistId int64) (bool, *mo
 		return playlist.UserId == userId, nil
 	}
 }
+
+func (a *App) HasPermissionToViewPlaylist(session *model.Session, playlist *model.Playlist) bool {
+	if playlist.Privacy == "PRIVATE" {
+		return session != nil && session.UserId == playlist.UserId
+	}
+	return true
+}

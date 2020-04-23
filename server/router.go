@@ -29,6 +29,13 @@ func newRouter(app *app.App) http.Handler {
 	r.Handler("GET", "/subscriptions", web.HAuth(page.Subscriptions))
 	r.Handler("GET", "/playlists", web.HAuth(page.Library))
 
+	r.Handler("GET", "/suggest", web.H(page.Suggest))
+
+	r.Handler("GET", "/charts/:chartUrlParam", web.H(page.Chart))
+	r.Handler("GET", "/podcasts/:podcastUrlParam", web.H(page.Podcast))
+	r.Handler("GET", "/episodes/:episodeUrlParam", web.H(page.Episode))
+	r.Handler("GET", "/playlists/:playlistUrlParam", web.H(page.Playlist))
+
 	r.Handler("GET", "/ajax/browse", web.H(browse.RootHandler))
 	r.Handler("POST", "/ajax/service", web.H(service.RootHandler))
 

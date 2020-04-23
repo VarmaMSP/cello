@@ -37,7 +37,7 @@ func RootHandler(c *web.Context, w http.ResponseWriter, req *http.Request) {
 		endSession(c, w, req)
 
 	case ADD_TO_PLAYLIST:
-		addEpisodeToPlaylist(c, w, req)
+		addToPlaylist(c, w, req)
 
 	case CREATE_PLAYLIST:
 		createPlaylist(c, w, req)
