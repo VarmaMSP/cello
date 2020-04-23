@@ -31,8 +31,26 @@ func searchResults(c *web.Context, w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		podcastIds := make([]int64, len(results))
+		for i, episode := range results {
+			podcastIds[i] = episode.PodcastId
+		}
+		podcasts, err := c.App.GetPodcastsByIds(podcastIds)
+		if err != nil {
+			c.Err = err
+			return
+		}
+
+		if c.Session != nil && c.Session.UserId != 0 {
+			if err := c.App.LoadPlaybacks(c.Session.UserId, results); err != nil {
+				c.Err = err
+				return
+			}
+		}
+
 		c.Response.StatusCode = http.StatusOK
 		c.Response.Data = &model.ApiResponseData{
+			Podcasts: podcasts,
 			Episodes: results,
 		}
 

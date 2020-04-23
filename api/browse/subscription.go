@@ -30,7 +30,15 @@ func subscriptionFeed(c *web.Context, w http.ResponseWriter, req *http.Request) 
 	}
 
 	c.Response.StatusCode = http.StatusOK
-	c.Response.Data = &model.ApiResponseData{
-		Episodes: episodes,
+
+	if c.Params.Offset == 0 {
+		c.Response.Data = &model.ApiResponseData{
+			Podcasts: subscriptions,
+			Episodes: episodes,
+		}
+	} else {
+		c.Response.Data = &model.ApiResponseData{
+			Episodes: episodes,
+		}
 	}
 }

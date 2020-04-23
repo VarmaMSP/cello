@@ -5,6 +5,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/varmamsp/cello/api/browse"
+	"github.com/varmamsp/cello/api/page"
 	"github.com/varmamsp/cello/api/service"
 	"github.com/varmamsp/cello/api/session"
 	"github.com/varmamsp/cello/app"
@@ -21,6 +22,12 @@ func newRouter(app *app.App) http.Handler {
 	r.Handler("GET", "/callback/google", web.H_(session.GoogleLoginCallback))
 	r.Handler("GET", "/callback/facebook", web.H_(session.FacebookLoginCallback))
 	r.Handler("GET", "/callback/twitter", web.H_(session.TwitterLoginCallback))
+
+	r.Handler("GET", "/", web.H(page.Home))
+	r.Handler("GET", "/results", web.H(page.Results))
+	r.Handler("GET", "/history", web.HAuth(page.History))
+	r.Handler("GET", "/subscriptions", web.HAuth(page.Subscriptions))
+	r.Handler("GET", "/playlists", web.HAuth(page.Library))
 
 	r.Handler("GET", "/ajax/browse", web.H(browse.RootHandler))
 	r.Handler("POST", "/ajax/service", web.H(service.RootHandler))
