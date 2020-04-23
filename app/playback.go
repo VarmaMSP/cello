@@ -49,15 +49,15 @@ func (app *App) SyncPlaybackBegin(userId, episodeId int64) *model.AppError {
 	})
 }
 
-func (app *App) SyncPlaybackProgress(episodeId, userId int64, event string, position float64) *model.AppError {
+func (app *App) SyncPlaybackProgress(episodeId, userId int64, position float64) *model.AppError {
+	if err := app.SyncPlaybackP.Publish(&model.PlaybackEvent{
+		Event:     model.PLAYBACK_EVENT_PLAYING,
+		UserId:    userId,
+		EpisodeId: episodeId,
+		Position:  position,
+	}); err != nil {
+		return model.New500Error("sync_playbnack_progress", err.Error(), nil)
+	}
 
-	// if event == model.PLAYBACK_EVENT_PLAYING {
-	// 	app.SyncEpisodePlaybackP.D <- &model.PlaybackEvent{
-	// 		Event:     model.PLAYBACK_EVENT_PLAYING,
-	// 		UserId:    userId,
-	// 		EpisodeId: episodeId,
-	// 		Position:  position,
-	// 	}
-	// }
 	return nil
 }

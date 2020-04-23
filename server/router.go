@@ -6,11 +6,11 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/varmamsp/cello/api/browse"
 	"github.com/varmamsp/cello/api/service"
-	"github.com/varmamsp/cello/app_"
+	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/web"
 )
 
-func newRouter(app *app_.App) http.Handler {
+func newRouter(app *app.App) http.Handler {
 	web := &web.Web{App: app}
 	r := httprouter.New()
 

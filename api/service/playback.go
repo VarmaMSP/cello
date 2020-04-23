@@ -40,4 +40,17 @@ func syncPlaybackProgress(c *web.Context, w http.ResponseWriter, req *http.Reque
 	if c.RequireSession().RequireBody(req).RequireEpisodeId(); c.Err != nil {
 		return
 	}
+
+	position, ok := c.Body["position"].(float64)
+	if !ok {
+		c.SetInvalidBodyParam("position")
+		return
+	}
+
+	if err := c.App.SyncPlaybackProgress(c.Params.UserId, c.Params.EpisodeId, position); err != nil {
+		c.Err = err
+		return
+	}
+
+	c.Response.StatusCode = http.StatusOK
 }

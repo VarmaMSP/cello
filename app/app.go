@@ -26,10 +26,12 @@ type App struct {
 
 	SessionManager *scs.SessionManager
 
+	SyncPlaybackP messagequeue.Producer
+
 	Log zerolog.Logger
 }
 
-func NewApp(store store.Store, se searchengine.Broker, mq messagequeue.Broker, fs filestorage.Broker, cache cache.Broker, log zerolog.Logger, config *model.Config) *App {
+func NewApp(store store.Store, se searchengine.Broker, mq messagequeue.Broker, fs filestorage.Broker, cache cache.Broker, log zerolog.Logger, config *model.Config) (*App, error) {
 	app := &App{
 		Dev:          config.Env == "dev",
 		Config:       config,
@@ -41,9 +43,19 @@ func NewApp(store store.Store, se searchengine.Broker, mq messagequeue.Broker, f
 		Log:          log,
 	}
 
+	if p, err := mq.NewProducer(
+		messagequeue.EXCHANGE_PHENOPOD_DIRECT,
+		messagequeue.ROUTING_KEY_SYNC_PLAYBACK,
+		config.Queues.RefreshPodcast.DeliveryMode,
+	); err != nil {
+		return nil, err
+	} else {
+		app.SyncPlaybackP = p
+	}
+
 	app.SessionManager = scs.New()
 	app.SessionManager.Store = redisstore.New(cache.C())
 	app.SessionManager.Lifetime = 30 * 24 * time.Hour
 
-	return app
+	return app, nil
 }

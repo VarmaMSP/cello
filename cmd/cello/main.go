@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/viper"
-	"github.com/varmamsp/cello/api"
 	"github.com/varmamsp/cello/model"
+	"github.com/varmamsp/cello/server"
 )
 
 const (
@@ -31,10 +31,11 @@ func main() {
 		return
 	}
 
-	api, err := api.NewApi(config)
+	svr, err := server.New(&config)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	api.ListenAndServe()
+
+	svr.Start()
 }

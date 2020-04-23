@@ -1,12 +1,13 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/varmamsp/cello/app_"
+	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/job"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/cache"
@@ -24,7 +25,7 @@ type Server struct {
 	jobSvr  *job.Server
 }
 
-func NewServer(config *model.Config) (*Server, error) {
+func New(config *model.Config) (*Server, error) {
 	var store store.Store
 	if db, err := sqldb.NewBroker(config); err != nil {
 		return nil, err
@@ -70,22 +71,32 @@ func NewServer(config *model.Config) (*Server, error) {
 		logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 	}
 
-	app := app_.NewApp(store, seBroker, mqBroker, fsBroker, cacheBroker, logger, config)
-	job, _ := job.NewJobServer(store, seBroker, mqBroker, fsBroker, config)
+	svr := &Server{}
 
-	return &Server{
-		httpSvr: &http.Server{
+	if app, err := app.NewApp(store, seBroker, mqBroker, fsBroker, cacheBroker, logger, config); err != nil {
+		return nil, err
+	} else {
+		svr.httpSvr = &http.Server{
 			Addr:    "127.0.0.1:8081",
 			Handler: newRouter(app),
-		},
-		jobSvr: job,
-	}, nil
+		}
+	}
+
+	if jobSvr, err := job.NewJobServer(store, seBroker, mqBroker, fsBroker, config); err != nil {
+		return nil, err
+	} else {
+		svr.jobSvr = jobSvr
+	}
+
+	return svr, nil
 }
 
-func (svr *Server) ListenAndServe() {
+func (svr *Server) Start() {
+	svr.jobSvr.Start()
 
-	// err := api.Server.ListenAndServe()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
+	fmt.Println("Server Running on PORT 8081")
+	err := svr.httpSvr.ListenAndServe()
+	if err != nil {
+		fmt.Println(err)
+	}
 }

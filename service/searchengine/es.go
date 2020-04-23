@@ -35,7 +35,7 @@ func (splr *supplier) C() *elastic.Client {
 func (splr *supplier) createIndexIfNotExist(index, mapping string) error {
 	if exists, err := splr.IndexExists(index); err != nil {
 		return err
-	} else if !exists {
+	} else if exists {
 		return nil
 	}
 	return splr.CreateIndex(index, mapping)
