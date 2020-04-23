@@ -63,3 +63,13 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		w.Write(c.Response.ToJson())
 	}
 }
+
+type Handler_ struct {
+	App        *app.App
+	HandleFunc func(*Context, http.ResponseWriter, *http.Request)
+}
+
+func (h *Handler_) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	c := &Context{App: h.App}
+	h.HandleFunc(c, w, req)
+}

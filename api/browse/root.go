@@ -14,8 +14,7 @@ const (
 )
 
 func RootHandler(c *web.Context, w http.ResponseWriter, req *http.Request) {
-	c.RequireEndpoint()
-	if c.Err != nil {
+	if c.RequireEndpoint(); c.Err != nil {
 		return
 	}
 

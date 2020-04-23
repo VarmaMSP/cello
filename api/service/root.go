@@ -25,8 +25,7 @@ const (
 )
 
 func RootHandler(c *web.Context, w http.ResponseWriter, req *http.Request) {
-	c.RequireEndpoint()
-	if c.Err != nil {
+	if c.RequireEndpoint(); c.Err != nil {
 		return
 	}
 
@@ -44,18 +43,14 @@ func RootHandler(c *web.Context, w http.ResponseWriter, req *http.Request) {
 		createPlaylist(c, w, req)
 
 	case EDIT_PLAYLIST:
-		c.RequireAction()
-		if c.Err == nil {
-			switch c.Params.Action {
-			case ACTION_ADD_EPISODE:
-				addEpisodeToPlaylist(c, w, req)
-
-			case ACTION_REMOVE_EPISODE:
-				removeEpisodeFromPlaylist(c, w, req)
-
-			default:
-				c.SetInvalidQueryParam("action")
-			}
+		if c.RequireAction(); c.Err != nil {
+			return
+		} else if action := c.Params.Action; action == ACTION_ADD_EPISODE {
+			addEpisodeToPlaylist(c, w, req)
+		} else if action == ACTION_REMOVE_EPISODE {
+			removeEpisodeFromPlaylist(c, w, req)
+		} else {
+			c.SetInvalidQueryParam("action")
 		}
 
 	case DELETE_PLAYLIST:
@@ -65,29 +60,21 @@ func RootHandler(c *web.Context, w http.ResponseWriter, req *http.Request) {
 		getPlaybacks(c, w, req)
 
 	case PLAYBACK_SYNC:
-		c.RequireSession().RequireAction().RequireBody(req)
-		if c.Err == nil {
-			switch c.Params.Action {
-			case ACTION_PLAYBACK_BEGIN:
-
-			case ACTION_PLAYBACK_PROGRESS:
-
-			default:
-				c.SetInvalidQueryParam("endpoint")
-			}
+		if c.RequireAction(); c.Err != nil {
+			return
+		} else if action := c.Params.Action; action == ACTION_PLAYBACK_BEGIN {
+			syncPlaybackBegin(c, w, req)
+		} else if action == ACTION_PLAYBACK_PROGRESS {
+			syncPlaybackProgress(c, w, req)
+		} else {
+			c.SetInvalidQueryParam("action")
 		}
 
 	case SUBSCRIBE_PODCAST:
-		c.RequireSession().RequireBody(req)
-		if c.Err == nil {
-			subscribeToPodcast(c, w, req)
-		}
+		subscribeToPodcast(c, w, req)
 
 	case UNSUBSCRIBE_PODCAST:
-		c.RequireSession().RequireBody(req)
-		if c.Err == nil {
-			unsubscribeToPodcast(c, w, req)
-		}
+		unsubscribeToPodcast(c, w, req)
 
 	default:
 		c.SetInvalidQueryParam("endpoint")

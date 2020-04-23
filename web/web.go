@@ -20,6 +20,13 @@ func (w *Web) H(h func(*Context, http.ResponseWriter, *http.Request)) http.Handl
 	})
 }
 
+func (w *Web) H_(h func(*Context, http.ResponseWriter, *http.Request)) http.Handler {
+	return &Handler_{
+		App:        w.App,
+		HandleFunc: h,
+	}
+}
+
 func (w *Web) HAuth(h func(*Context, http.ResponseWriter, *http.Request)) http.Handler {
 	return w.App.SessionManager.LoadAndSave(&Handler{
 		App:            w.App,

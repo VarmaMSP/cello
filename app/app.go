@@ -15,8 +15,9 @@ import (
 )
 
 type App struct {
-	Dev    bool
-	Config *model.Config
+	Dev      bool
+	HostName string
+	Config   *model.Config
 
 	Store        store.Store
 	SearchEngine searchengine.Broker
@@ -33,7 +34,8 @@ type App struct {
 
 func NewApp(store store.Store, se searchengine.Broker, mq messagequeue.Broker, fs filestorage.Broker, cache cache.Broker, log zerolog.Logger, config *model.Config) (*App, error) {
 	app := &App{
-		Dev:          config.Env == "dev",
+		Dev:          false,
+		HostName:     "https://phenopod.com",
 		Config:       config,
 		Store:        store,
 		SearchEngine: se,
@@ -41,6 +43,11 @@ func NewApp(store store.Store, se searchengine.Broker, mq messagequeue.Broker, f
 		FileStorage:  fs,
 		Cache:        cache,
 		Log:          log,
+	}
+
+	if app.Config.Env == "dev" {
+		app.Dev = true
+		app.HostName = "http://localhost:8080"
 	}
 
 	if p, err := mq.NewProducer(

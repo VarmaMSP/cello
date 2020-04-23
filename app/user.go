@@ -10,7 +10,7 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
-func (a *App) CreateUserViaGoogle(ctx context.Context) (*model.User, *model.AppError) {
+func (a *App) CreateUserWithGoogle(ctx context.Context) (*model.User, *model.AppError) {
 	googleUser, err := googleLogin.UserFromContext(ctx)
 	if err != nil {
 		return nil, model.NewAppError("app.user.create_user_with_google", err.Error(), http.StatusInternalServerError, nil)
@@ -51,7 +51,7 @@ func (a *App) CreateUserViaGoogle(ctx context.Context) (*model.User, *model.AppE
 	return user, nil
 }
 
-func (a *App) CreateUserViaFacebook(ctx context.Context) (*model.User, *model.AppError) {
+func (a *App) CreateUserWithFacebook(ctx context.Context) (*model.User, *model.AppError) {
 	facebookUser, err := facebookLogin.UserFromContext(ctx)
 	if err != nil {
 		return nil, model.NewAppError("app.user.create_user_with_faceboook", err.Error(), http.StatusInternalServerError, nil)
@@ -85,7 +85,7 @@ func (a *App) CreateUserViaFacebook(ctx context.Context) (*model.User, *model.Ap
 	return user, nil
 }
 
-func (a *App) CreateUserViaTwitter(ctx context.Context) (*model.User, *model.AppError) {
+func (a *App) CreateUserWithTwitter(ctx context.Context) (*model.User, *model.AppError) {
 	twitterUser, err := twitterLogin.UserFromContext(ctx)
 	if err != nil {
 		return nil, nil
@@ -130,6 +130,12 @@ func (a *App) CreateUserViaTwitter(ctx context.Context) (*model.User, *model.App
 
 func (a *App) GetUser(userId int64) (*model.User, *model.AppError) {
 	return a.Store.User().Get(userId)
+}
+
+func (a *App) NewSession(ctx context.Context, user *model.User) {
+	session := &model.Session{UserId: user.Id, IsAdmin: user.IsAdmin}
+	a.SessionManager.Put(ctx, "user_id", session.UserId)
+	a.SessionManager.Put(ctx, "is_admin", session.IsAdmin)
 }
 
 func (a *App) GetSession(ctx context.Context) *model.Session {
