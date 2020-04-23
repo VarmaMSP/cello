@@ -97,5 +97,8 @@ func (s *sqlPodcastStore) Search(query string, offset, limit int) ([]*model.Podc
 }
 
 func (s *sqlPodcastStore) Update(old *model.Podcast, new *model.Podcast) *model.AppError {
-	panic("not implemented") // TODO: Implement
+	if _, err := s.Patch("podcast", old, new); err != nil {
+		return model.New500Error("sqlstore.sql_podcast_store.update", err.Error(), nil)
+	}
+	return nil
 }

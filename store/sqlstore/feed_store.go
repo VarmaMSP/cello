@@ -125,5 +125,8 @@ func (s *sqlFeedStore) GetFailedToImportPaginated(lastId int64, limit int) (res 
 }
 
 func (s *sqlFeedStore) Update(old, new *model.Feed) *model.AppError {
+	if _, err := s.Patch("feed", old, new); err != nil {
+		return model.New500Error("sql_store.sql_feed_store.update", err.Error(), nil)
+	}
 	return nil
 }

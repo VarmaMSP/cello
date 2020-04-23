@@ -29,5 +29,8 @@ func (s *sqlTaskStore) GetAll() (res []*model.Task, appE *model.AppError) {
 }
 
 func (s *sqlTaskStore) Update(old *model.Task, new *model.Task) *model.AppError {
-	panic("not implemented") // TODO: Implement
+	if _, err := s.Patch("task", old, new); err != nil {
+		return model.New500Error("sql_store.sql_task_store.get_all_active", err.Error(), nil)
+	}
+	return nil
 }

@@ -73,8 +73,10 @@ func (s *sqlPlaylistStore) GetByUserPaginated(userId int64, offset int, limit in
 }
 
 func (s *sqlPlaylistStore) Update(old *model.Playlist, new *model.Playlist) *model.AppError {
-	panic("")
-
+	if _, err := s.Patch("playlist", old, new); err != nil {
+		return model.New500Error("sql_store.sql_playlist_store.upate", err.Error(), nil)
+	}
+	return nil
 }
 
 func (s *sqlPlaylistStore) UpdateMemberStats(playlistId int64) *model.AppError {
