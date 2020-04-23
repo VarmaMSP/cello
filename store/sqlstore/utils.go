@@ -9,8 +9,21 @@ import (
 )
 
 // cols returns comma separated column names for given model.
-func cols(m model.DbModel) string {
+func cols(m model.DbModel, prefix ...string) string {
+	if len(prefix) == 1 {
+		return colsWithPrefix(m, prefix[0])
+	}
 	return strings.Join(m.DbColumns(), ",")
+}
+
+func colsWithPrefix(m model.DbModel, prefix string) string {
+	columns := m.DbColumns()
+	columnsP := make([]string, len(columns))
+	for i, column := range columns {
+		columnsP[i] = fmt.Sprintf("%s.%s", prefix, column)
+	}
+
+	return strings.Join(columnsP, ",")
 }
 
 // vals returns comma separated values for given model.

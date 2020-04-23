@@ -73,7 +73,7 @@ func (s *sqlPodcastStore) GetSubscriptions(userId int64) (res []*model.Podcast, 
 			INNER JOIN subscription ON subscription.podcast_id = podcast.id
 			WHERE subscription.active = 1 AND subscription.user_id = %d
 			ORDER BY subscription.updated_at DESC`,
-		cols(&model.Podcast{}),
+		cols(&model.Podcast{}, "podcast"),
 		userId,
 	)
 	copyTo := func() []interface{} {
