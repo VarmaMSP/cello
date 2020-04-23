@@ -2,17 +2,21 @@ package app
 
 import "github.com/varmamsp/cello/model"
 
-func (a *App) CreatePlaylistWithEpisode(playlist *model.Playlist, episodeId int64) (*model.Playlist, *model.AppError) {
+func (a *App) CreatePlaylistWithEpisodes(playlist *model.Playlist, episodeIds []int64) (*model.Playlist, *model.AppError) {
 	if err := a.Store.Playlist().Save(playlist); err != nil {
 		return nil, err
 	}
 
-	if err := a.Store.Playlist().SaveMember(&model.PlaylistMember{
-		PlaylistId: playlist.Id,
-		EpisodeId:  episodeId,
-		Position:   1,
-	}); err != nil {
-		return nil, err
+	for i, episodeId := range episodeIds {
+		member := &model.PlaylistMember{
+			PlaylistId: playlist.Id,
+			EpisodeId:  episodeId,
+			Position:   i + 1,
+		}
+		if err := a.Store.Playlist().SaveMember(member); err != nil {
+			return nil, err
+		}
+		playlist.Members = append(playlist.Members, member)
 	}
 
 	if err := a.Store.Playlist().UpdateMemberStats(playlist.Id); err != nil {
@@ -22,7 +26,7 @@ func (a *App) CreatePlaylistWithEpisode(playlist *model.Playlist, episodeId int6
 	return playlist, nil
 }
 
-func (a *App) SaveEpisodeToPlaylist(playlistId, episodeId int64) *model.AppError {
+func (a *App) AddEpisodeToPlaylist(playlistId, episodeId int64) *model.AppError {
 	count, err := a.Store.Playlist().GetMemberCount(playlistId)
 	if err != nil {
 		return err
@@ -39,19 +43,7 @@ func (a *App) SaveEpisodeToPlaylist(playlistId, episodeId int64) *model.AppError
 	return a.Store.Playlist().UpdateMemberStats(playlistId)
 }
 
-func (a *App) DeletePlaylist(playlistId int64) *model.AppError {
-	if err := a.Store.Playlist().Delete(playlistId); err != nil {
-		return err
-	}
-
-	if err := a.Store.Playlist().DeleteMembersByPlaylist(playlistId); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (a *App) DeleteEpisodeFromPlaylist(playlistId, episodeId int64) *model.AppError {
+func (a *App) RemoveEpisodeFromPlaylist(playlistId, episodeId int64) *model.AppError {
 	member, err := a.Store.Playlist().GetMember(playlistId, episodeId)
 	if err != nil {
 		return err
@@ -66,6 +58,18 @@ func (a *App) DeleteEpisodeFromPlaylist(playlistId, episodeId int64) *model.AppE
 	}
 
 	return a.Store.Playlist().UpdateMemberStats(playlistId)
+}
+
+func (a *App) DeletePlaylist(playlistId int64) *model.AppError {
+	if err := a.Store.Playlist().Delete(playlistId); err != nil {
+		return err
+	}
+
+	if err := a.Store.Playlist().DeleteMembersByPlaylist(playlistId); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (a *App) GetPlaylist(playlistId int64) (*model.Playlist, *model.AppError) {
@@ -112,4 +116,12 @@ func (a *App) GetPlaylistsByUser(userId int64, includeEpisodes ...int64) ([]*mod
 	}
 
 	return playlists, nil
+}
+
+func (a *App) HasPermissionToPlaylist(userId int64, playlistId int64) (bool, *model.AppError) {
+	if playlist, err := a.Store.Playlist().Get(playlistId); err != nil {
+		return false, err
+	} else {
+		return playlist.UserId == userId, nil
+	}
 }

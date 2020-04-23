@@ -22,6 +22,10 @@ func (c *Context) SetSessionExpired() {
 	c.Err = model.NewAppError("api.context.session_expired", "", http.StatusUnauthorized, nil)
 }
 
+func (c *Context) SetNotPermitted(resource string) {
+	c.Err = model.NewAppError("api.context.no_permission", resource, http.StatusBadRequest, nil)
+}
+
 func (c *Context) SetInvalidUrlParam(param string) {
 	c.Err = model.NewAppError("api.context.invalid_url_param", param, http.StatusBadRequest, nil)
 }
@@ -49,6 +53,7 @@ func (c *Context) RequireBody(req *http.Request) *Context {
 		c.Err = model.NewAppError("api.context.invalid_body", err.Error(), http.StatusBadRequest, nil)
 	} else {
 		c.Body = body
+		c.Params.LoadFromBody(body)
 	}
 
 	return c
@@ -101,6 +106,14 @@ func (c *Context) RequireChartId() *Context {
 	if c.Err == nil && c.Params.ChartId == "" {
 		c.SetInvalidUrlParam("chart_id")
 	}
+	return c
+}
+
+func (c *Context) RequireEpisodeIds() *Context {
+	if c.Params.EpisodeIds == nil || len(c.Params.EpisodeIds) == 0 {
+		c.SetInvalidUrlParam("episode_ids")
+	}
+
 	return c
 }
 

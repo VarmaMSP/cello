@@ -34,6 +34,19 @@ func DecodeInt64(id string) (int64, error) {
 	return res[0], nil
 }
 
+func DecodeInt64s(ids []string) ([]int64, error) {
+	res := make([]int64, len(ids))
+	for i := 0; i < len(ids); i++ {
+		if tmp, err := DecodeInt64(ids[i]); err != nil {
+			return nil, err
+		} else {
+			res[i] = tmp
+		}
+	}
+
+	return res, nil
+}
+
 func DecodeUrlParam(urlParam string) (int64, error) {
 	if urlParam == "" {
 		return 0, errors.New("UrlParam is empty")

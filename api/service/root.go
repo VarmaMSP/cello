@@ -35,25 +35,16 @@ func RootHandler(c *web.Context, w http.ResponseWriter, req *http.Request) {
 		loadSession(c, w, req)
 
 	case END_SESSION:
-		c.RequireSession()
-		if c.Err == nil {
-			endSession(c, w, req)
-		}
+		endSession(c, w, req)
 
 	case ADD_TO_PLAYLIST:
-		c.RequireSession().RequireBody(req)
-		if c.Err == nil {
-			addToPlaylist(c, w, req)
-		}
+		addEpisodeToPlaylist(c, w, req)
 
 	case CREATE_PLAYLIST:
-		c.RequireSession().RequireBody(req)
-		if c.Err == nil {
-			createPlaylist(c, w, req)
-		}
+		createPlaylist(c, w, req)
 
 	case EDIT_PLAYLIST:
-		c.RequireSession().RequireAction().RequireBody(req)
+		c.RequireAction()
 		if c.Err == nil {
 			switch c.Params.Action {
 			case ACTION_ADD_EPISODE:
@@ -63,21 +54,15 @@ func RootHandler(c *web.Context, w http.ResponseWriter, req *http.Request) {
 				removeEpisodeFromPlaylist(c, w, req)
 
 			default:
-				c.SetInvalidQueryParam("endpoint")
+				c.SetInvalidQueryParam("action")
 			}
 		}
 
 	case DELETE_PLAYLIST:
-		c.RequireSession().RequireBody(req)
-		if c.Err == nil {
-			deletePlaylist(c, w, req)
-		}
+		deletePlaylist(c, w, req)
 
 	case GET_PLAYBACKS:
-		c.RequireSession().RequireBody(req)
-		if c.Err == nil {
-			getPlaybacks(c, w, req)
-		}
+		getPlaybacks(c, w, req)
 
 	case PLAYBACK_SYNC:
 		c.RequireSession().RequireAction().RequireBody(req)
@@ -95,13 +80,13 @@ func RootHandler(c *web.Context, w http.ResponseWriter, req *http.Request) {
 	case SUBSCRIBE_PODCAST:
 		c.RequireSession().RequireBody(req)
 		if c.Err == nil {
-			addPodcastToSubscriptions(c, w, req)
+			subscribeToPodcast(c, w, req)
 		}
 
 	case UNSUBSCRIBE_PODCAST:
 		c.RequireSession().RequireBody(req)
 		if c.Err == nil {
-			removePodcastFromSubscriptions(c, w, req)
+			unsubscribeToPodcast(c, w, req)
 		}
 
 	default:

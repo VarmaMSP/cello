@@ -17,6 +17,7 @@ type Params struct {
 	UserId     int64
 	PodcastId  int64
 	EpisodeId  int64
+	EpisodeIds []int64
 	PlaylistId int64
 	ChartId    string
 	Offset     int
@@ -31,7 +32,38 @@ type Params struct {
 
 func ParamsFromRequest(r *http.Request) *Params {
 	params := &Params{}
+	params.LoadFromRequest(r)
 
+	return params
+}
+
+func (params *Params) LoadFromBody(body map[string]interface{}) {
+	if podcastHashId, ok := body["podcast_id"].(string); ok {
+		if podcastId, err := hashid.DecodeInt64(podcastHashId); err != nil {
+			params.PodcastId = podcastId
+		}
+	}
+
+	if episodeHashId, ok := body["episode_id"].(string); ok {
+		if episodeId, err := hashid.DecodeInt64(episodeHashId); err != nil {
+			params.EpisodeId = episodeId
+		}
+	}
+
+	if playlistHashId, ok := body["playlist_id"].(string); ok {
+		if playlistId, err := hashid.DecodeInt64(playlistHashId); err != nil {
+			params.PlaylistId = playlistId
+		}
+	}
+
+	if episodeHashIds, ok := body["episode_ids"].([]string); ok {
+		if episodeIds, err := hashid.DecodeInt64s(episodeHashIds); err != nil {
+			params.EpisodeIds = episodeIds
+		}
+	}
+}
+
+func (params *Params) LoadFromRequest(r *http.Request) {
 	urlProps := httprouter.ParamsFromContext(r.Context())
 	queryProps := r.URL.Query()
 
@@ -82,6 +114,4 @@ func ParamsFromRequest(r *http.Request) *Params {
 	params.Endpoint = queryProps.Get("endpoint")
 
 	params.Action = queryProps.Get("action")
-
-	return params
 }

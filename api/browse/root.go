@@ -21,22 +21,13 @@ func RootHandler(c *web.Context, w http.ResponseWriter, req *http.Request) {
 
 	switch c.Params.Endpoint {
 	case SEARCH_RESULTS:
-		c.RequireQuery()
-		if c.Err == nil {
-			searchResults(c, w, req)
-		}
+		searchResults(c, w, req)
 
 	case SUBSCRIPTION_FEED:
-		c.RequireSession()
-		if c.Err == nil {
-			subscriptionFeed(c, w, req)
-		}
+		subscriptionFeed(c, w, req)
 
 	case HISTORY:
-		c.RequireSession()
-		if c.Err == nil {
-			history(c, w, req)
-		}
+		history(c, w, req)
 
 	case PODCAST_EPISODES:
 		podcastEpisodes(c, w, req)
