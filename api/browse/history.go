@@ -12,17 +12,13 @@ func history(c *web.Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	episodes, err := c.App.GetRecentlyPlayedEpisodes(c.Params.UserId, c.Params.Offset, c.Params.Offset)
+	episodes, err := c.App.GetRecentlyPlayedEpisodes(c.Params.UserId, c.Params.Offset, c.Params.Limit)
 	if err != nil {
 		c.Err = err
 		return
 	}
 
-	podcastIds := make([]int64, len(episodes))
-	for i, episode := range episodes {
-		podcastIds[i] = episode.PodcastId
-	}
-	podcasts, err := c.App.GetPodcastsByIds(podcastIds)
+	podcasts, err := c.App.GetPodcastsForEpisodes(episodes)
 	if err != nil {
 		c.Err = err
 		return
