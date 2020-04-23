@@ -88,7 +88,7 @@ func (c *Context) RequirePodcastId() *Context {
 }
 
 func (c *Context) RequireEpisodeId() *Context {
-	if c.Params.EpisodeId == 0 {
+	if c.Err == nil && c.Params.EpisodeId == 0 {
 		c.SetInvalidUrlParam("episode_id")
 	}
 
@@ -110,7 +110,7 @@ func (c *Context) RequireChartId() *Context {
 }
 
 func (c *Context) RequireEpisodeIds() *Context {
-	if c.Params.EpisodeIds == nil || len(c.Params.EpisodeIds) == 0 {
+	if c.Err == nil && (c.Params.EpisodeIds == nil || len(c.Params.EpisodeIds) == 0) {
 		c.SetInvalidUrlParam("episode_ids")
 	}
 
@@ -118,7 +118,7 @@ func (c *Context) RequireEpisodeIds() *Context {
 }
 
 func (c *Context) RequireQuery() *Context {
-	if c.Err == nil && c.Params.Query == "" || len(strings.TrimSpace(c.Params.Query)) == 0 {
+	if c.Err == nil && (c.Params.Query == "" || len(strings.TrimSpace(c.Params.Query)) == 0) {
 		c.SetInvalidQueryParam("query")
 	}
 	return c

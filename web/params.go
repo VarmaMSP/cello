@@ -10,7 +10,7 @@ import (
 
 const (
 	OFFSET_DEFAULT = 0
-	LIMIT_DEFAULT  = 10
+	LIMIT_DEFAULT  = 15
 )
 
 type Params struct {
@@ -39,26 +39,30 @@ func ParamsFromRequest(r *http.Request) *Params {
 
 func (params *Params) LoadFromBody(body map[string]interface{}) {
 	if podcastHashId, ok := body["podcast_id"].(string); ok {
-		if podcastId, err := hashid.DecodeInt64(podcastHashId); err != nil {
+		if podcastId, err := hashid.DecodeInt64(podcastHashId); err == nil {
 			params.PodcastId = podcastId
 		}
 	}
 
 	if episodeHashId, ok := body["episode_id"].(string); ok {
-		if episodeId, err := hashid.DecodeInt64(episodeHashId); err != nil {
+		if episodeId, err := hashid.DecodeInt64(episodeHashId); err == nil {
 			params.EpisodeId = episodeId
 		}
 	}
 
 	if playlistHashId, ok := body["playlist_id"].(string); ok {
-		if playlistId, err := hashid.DecodeInt64(playlistHashId); err != nil {
+		if playlistId, err := hashid.DecodeInt64(playlistHashId); err == nil {
 			params.PlaylistId = playlistId
 		}
 	}
 
-	if episodeHashIds, ok := body["episode_ids"].([]string); ok {
-		if episodeIds, err := hashid.DecodeInt64s(episodeHashIds); err != nil {
-			params.EpisodeIds = episodeIds
+	if episodeHashIds, ok := body["episode_ids"].([]interface{}); ok {
+		for _, episodeHashId := range episodeHashIds {
+			if x, ok := episodeHashId.(string); ok {
+				if episodeId, err := hashid.DecodeInt64(x); err == nil {
+					params.EpisodeIds = append(params.EpisodeIds, episodeId)
+				}
+			}
 		}
 	}
 }
