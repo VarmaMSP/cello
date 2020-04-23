@@ -18,21 +18,18 @@ type PodcastCategory struct {
 }
 
 func (c *Category) MarshalJSON() ([]byte, error) {
-	s := &struct {
-		*Category
+	type J Category
+	return json.Marshal(&struct {
+		*J
 		Id       string `json:"id"`
 		UrlParam string `json:"url_param"`
 		ParentId string `json:"parent_id,omitempty"`
 	}{
-		Category: c,
+		J:        (*J)(c),
 		Id:       hashid.Encode(c.Id),
 		UrlParam: hashid.UrlParam(c.Name, c.Id),
-	}
-	if c.ParentId != 0 {
-		s.ParentId = hashid.Encode(c.ParentId)
-	}
-
-	return json.Marshal(s)
+		ParentId: hashid.Encode(c.ParentId),
+	})
 }
 
 func (c *PodcastCategory) MarshalJSON() ([]byte, error) {

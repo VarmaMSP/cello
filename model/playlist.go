@@ -23,14 +23,15 @@ type Playlist struct {
 }
 
 func (p *Playlist) MarshalJSON() ([]byte, error) {
+	type J Playlist
 	return json.Marshal(&struct {
-		*Playlist
+		*J
 		Id        string `json:"id"`
 		UrlParam  string `json:"url_param"`
 		UserId    string `json:"user_id,omitempty"`
 		UpdatedAt string `json:"updated_at"`
 	}{
-		Playlist:  p,
+		J:         (*J)(p),
 		Id:        hashid.Encode(p.Id),
 		UrlParam:  hashid.UrlParam(p.Title, p.Id),
 		UserId:    hashid.Encode(p.UserId),

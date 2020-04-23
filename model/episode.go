@@ -81,12 +81,13 @@ func (ei *EpisodeForIndexing) GetId() string {
 }
 
 func (e *Episode) MarshalJSON() ([]byte, error) {
+	type J Episode
 	return json.Marshal(&struct {
-		*Episode
+		*J
 		Id       string `json:"id"`
 		UrlParam string `json:"url_param"`
 	}{
-		Episode:  e,
+		J:        (*J)(e),
 		Id:       hashid.Encode(e.Id),
 		UrlParam: hashid.UrlParam(e.Title, e.Id),
 	})

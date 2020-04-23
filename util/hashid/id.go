@@ -15,6 +15,10 @@ var hid, _ = hashids.NewWithData(&hashids.HashIDData{
 })
 
 func Encode(val int64) string {
+	if val == 0 {
+		return ""
+	}
+
 	id, _ := hid.EncodeInt64(([]int64{val}))
 	return id
 }
