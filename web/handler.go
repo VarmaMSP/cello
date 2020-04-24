@@ -22,6 +22,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c.Session = h.App.GetSession(req.Context())
 	c.Response = &model.ApiResponse{
 		Headers: map[string]string{},
+		Data: &model.ApiResponseData{
+			GlobalSearchResults: &model.SearchResponse{},
+		},
 	}
 
 	c.App.Log.Info().

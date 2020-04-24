@@ -24,7 +24,7 @@ func (s *searchEpisodeStore) Save(episode *model.Episode) *model.AppError {
 	return nil
 }
 
-func (s *searchEpisodeStore) Search(query, sortBy string, limit, offset int) ([]*model.Episode, *model.AppError) {
+func (s *searchEpisodeStore) Search(query, sortBy string, offset, limit int) ([]*model.Episode, *model.AppError) {
 	q := s.se.C().Search().
 		Index(searchengine.EPISODE_INDEX).
 		Query(elastic.NewMultiMatchQuery(query).

@@ -111,7 +111,9 @@ func (params *Params) LoadFromRequest(r *http.Request) {
 
 	params.Query = queryProps.Get("query")
 
-	params.Type = queryProps.Get("type")
+	if params.Type = queryProps.Get("type"); params.Type == "" {
+		params.Type = "episode"
+	}
 
 	params.SortBy = queryProps.Get("sort_by")
 

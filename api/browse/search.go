@@ -1,9 +1,9 @@
 package browse
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/web"
 )
 
@@ -20,19 +20,18 @@ func searchResults(c *web.Context, w http.ResponseWriter, req *http.Request) {
 		}
 
 		c.Response.StatusCode = http.StatusOK
-		c.Response.Data = &model.ApiResponseData{
-			Podcasts: results,
-		}
+		c.Response.Data.GlobalSearchResults.Podcasts = append(c.Response.Data.GlobalSearchResults.Podcasts, results...)
 
 	} else if c.Params.Type == "episode" {
-		results, err := c.App.SearchEpisodes(c.Params.Query, c.Params.SortBy, c.Params.Offset, c.Params.Limit)
+		fmt.Println("running properly")
+		episodeResults, err := c.App.SearchEpisodes(c.Params.Query, c.Params.SortBy, c.Params.Offset, c.Params.Limit)
 		if err != nil {
 			c.Err = err
 			return
 		}
 
-		podcastIds := make([]int64, len(results))
-		for i, episode := range results {
+		podcastIds := make([]int64, len(episodeResults))
+		for i, episode := range episodeResults {
 			podcastIds[i] = episode.PodcastId
 		}
 		podcasts, err := c.App.GetPodcastsByIds(podcastIds)
@@ -42,17 +41,15 @@ func searchResults(c *web.Context, w http.ResponseWriter, req *http.Request) {
 		}
 
 		if c.Session != nil && c.Session.UserId != 0 {
-			if err := c.App.LoadPlaybacks(c.Session.UserId, results); err != nil {
+			if err := c.App.LoadPlaybacks(c.Session.UserId, episodeResults); err != nil {
 				c.Err = err
 				return
 			}
 		}
 
 		c.Response.StatusCode = http.StatusOK
-		c.Response.Data = &model.ApiResponseData{
-			Podcasts: podcasts,
-			Episodes: results,
-		}
+		c.Response.Data.Podcasts = append(c.Response.Data.Podcasts, podcasts...)
+		c.Response.Data.GlobalSearchResults.Episodes = append(c.Response.Data.GlobalSearchResults.Episodes, episodeResults...)
 
 	} else {
 		c.SetInvalidQueryParam("type")
