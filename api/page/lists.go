@@ -26,7 +26,7 @@ func History(c *web.Context, w http.ResponseWriter, req *http.Request) {
 func Results(c *web.Context, w http.ResponseWriter, req *http.Request) {
 	c.Params.Endpoint = browse.SEARCH_RESULTS
 	c.Params.Offset = 0
-	c.Params.Limit = 15
+	c.Params.Limit = 25
 
 	if browse.RootHandler(c, w, req); c.Err != nil {
 		return
