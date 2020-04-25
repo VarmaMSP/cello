@@ -223,6 +223,7 @@ func (e *Episode) LoadFromSearchHit(hit *elastic.SearchHit) *AppError {
 	if err := json.Unmarshal(hit.Source, e); err != nil {
 		return appErrorC(err.Error())
 	}
+	e.Summary = e.Description
 
 	if hit.Highlight != nil {
 		if len(hit.Highlight["title"]) > 0 {
