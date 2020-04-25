@@ -60,19 +60,20 @@ func (s *searchEpisodeStore) SearchByPodcast(podcastId int64, query string, offs
 	results, err := s.se.C().Search().
 		Index(searchengine.EPISODE_INDEX).
 		Query(elastic.NewBoolQuery().
-			Must(
+			Should(
 				elastic.NewMatchPhraseQuery("title", query),
 				elastic.NewMatchPhraseQuery("description", query),
 			).
-			Filter(elastic.NewTermQuery("podcast_id", podcastId)),
+			Filter(elastic.NewTermQuery("podcast_id", podcastId)).
+			MinimumNumberShouldMatch(1),
 		).
 		Highlight(elastic.NewHighlight().
 			FragmentSize(200).
+			NumOfFragments(0).
 			PreTags("<span class=\"result-highlight\">").
 			PostTags("</span>").
 			Fields(
 				elastic.NewHighlighterField("title"),
-				elastic.NewHighlighterField("description"),
 			),
 		).
 		Sort("pub_date", false).
