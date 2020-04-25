@@ -12,17 +12,17 @@ type ApiResponse struct {
 }
 
 type ApiResponseData struct {
-	Users               []*User             `json:"users,omitempty"`
-	Podcasts            []*Podcast          `json:"podcasts,omitempty"`
-	Episodes            []*Episode          `json:"episodes,omitempty"`
-	Playbacks           []*Playback         `json:"playbacks,omitempty"`
-	Playlists           []*Playlist         `json:"playlists,omitempty"`
-	Categories          []*Category         `json:"categories,omitempty"`
-	SearchSuggestions   []*SearchSuggestion `json:"search_suggestions,omitempty"`
-	GlobalSearchResults *SearchResponse     `json:"global_search_results,omitempty"`
+	Users             []*User             `json:"users,omitempty"`
+	Podcasts          []*Podcast          `json:"podcasts,omitempty"`
+	Episodes          []*Episode          `json:"episodes,omitempty"`
+	Playbacks         []*Playback         `json:"playbacks,omitempty"`
+	Playlists         []*Playlist         `json:"playlists,omitempty"`
+	Categories        []*Category         `json:"categories,omitempty"`
+	SearchSuggestions []*SearchSuggestion `json:"search_suggestions,omitempty"`
+	SearchResults     *SearchResults      `json:"search_results,omitempty"`
 }
 
-type SearchResponse struct {
+type SearchResults struct {
 	Podcasts []*Podcast `json:"podcasts,omitempty"`
 	Episodes []*Episode `json:"episodes,omitempty"`
 }

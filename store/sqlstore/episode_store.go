@@ -145,7 +145,11 @@ func (s *sqlEpisodeStore) GetByPlaylistPaginated(playlistId int64, offset int, l
 	return
 }
 
-func (s *sqlEpisodeStore) Search(query, sortBy string, limit, offset int) ([]*model.Episode, *model.AppError) {
+func (s *sqlEpisodeStore) Search(query, sortBy string, offset, limit int) ([]*model.Episode, *model.AppError) {
+	panic("episode.search method not implemented by search layer")
+}
+
+func (s *sqlEpisodeStore) SearchByPodcast(podcastId int64, query string, offset, limit int) ([]*model.Episode, *model.AppError) {
 	panic("episode.search method not implemented by search layer")
 }
 

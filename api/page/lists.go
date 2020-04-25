@@ -24,7 +24,7 @@ func History(c *web.Context, w http.ResponseWriter, req *http.Request) {
 }
 
 func Results(c *web.Context, w http.ResponseWriter, req *http.Request) {
-	c.Params.Endpoint = browse.SEARCH_RESULTS
+	c.Params.Endpoint = browse.GLOBAL_SEARCH_RESULTS
 	c.Params.Offset = 0
 	c.Params.Limit = 25
 

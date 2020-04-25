@@ -7,10 +7,11 @@ import (
 )
 
 const (
-	SEARCH_RESULTS    = "search_results"
-	SUBSCRIPTION_FEED = "subscriptions_feed"
-	HISTORY           = "history_feed"
-	PODCAST_EPISODES  = "podcast_episodes"
+	GLOBAL_SEARCH_RESULTS  = "search_results"
+	PODCAST_SEARCH_RESULTS = "podcast_search_results"
+	SUBSCRIPTION_FEED      = "subscriptions_feed"
+	HISTORY                = "history_feed"
+	PODCAST_EPISODES       = "podcast_episodes"
 )
 
 func RootHandler(c *web.Context, w http.ResponseWriter, req *http.Request) {
@@ -19,8 +20,11 @@ func RootHandler(c *web.Context, w http.ResponseWriter, req *http.Request) {
 	}
 
 	switch c.Params.Endpoint {
-	case SEARCH_RESULTS:
+	case GLOBAL_SEARCH_RESULTS:
 		searchResults(c, w, req)
+
+	case PODCAST_SEARCH_RESULTS:
+		podcastSearch(c, w, req)
 
 	case SUBSCRIPTION_FEED:
 		subscriptionFeed(c, w, req)

@@ -42,3 +42,23 @@ func Podcast(c *web.Context, w http.ResponseWriter, req *http.Request) {
 		c.Response.Data.Categories = categories
 	}
 }
+
+func PodcastSearch(c *web.Context, w http.ResponseWriter, req *http.Request) {
+	if c.RequirePodcastId(); c.Err != nil {
+		return
+	}
+
+	podcast, err := c.App.GetPodcast(c.Params.PodcastId)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	c.Params.Endpoint = browse.PODCAST_SEARCH_RESULTS
+	c.Params.Offset = 0
+	c.Params.Limit = 25
+	if browse.RootHandler(c, w, req); c.Err == nil {
+		c.Response.StatusCode = http.StatusOK
+		c.Response.Data.Podcasts = []*model.Podcast{podcast}
+	}
+}

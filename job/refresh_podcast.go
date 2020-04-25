@@ -21,7 +21,8 @@ type RefreshPodcastJob struct {
 	httpClient       *http.Client
 	rateLimiter      chan struct{}
 	createThumbnailP messagequeue.Producer
-	input            messagequeue.Consumer
+
+	input messagequeue.Consumer
 }
 
 func NewRefreshPodcastJob(store store.Store, mq messagequeue.Broker, config *model.Config) (Job, error) {
@@ -220,7 +221,7 @@ func (job *RefreshPodcastJob) save(refreshData *RefreshData) *model.AppError {
 	}
 
 	// Update Stats
-	podcastU.TotalEpisodes = podcastU.TotalEpisodes + len(episodesToAdd) - len(episodesToBlock)
+	podcastU.TotalEpisodes = podcastU.TotalEpisodes + len(episodesToAdd)
 	if len(episodesToAdd) > 0 {
 		if podcastU.TotalSeasons < episodesToAdd[0].Season {
 			podcastU.TotalSeasons = episodesToAdd[0].Season

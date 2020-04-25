@@ -46,6 +46,7 @@ type EpisodeStore interface {
 	GetByPodcastIdsPaginated(podcastIds []int64, offset, limit int) ([]*model.Episode, *model.AppError)
 	GetByPlaylistPaginated(playlistId int64, offset, limit int) ([]*model.Episode, *model.AppError)
 	Search(query, sortBy string, offset, limit int) ([]*model.Episode, *model.AppError)
+	SearchByPodcast(podcastId int64, query string, offset, limit int) ([]*model.Episode, *model.AppError)
 	Block(episodeIds []int64) *model.AppError
 }
 

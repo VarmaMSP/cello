@@ -33,6 +33,7 @@ func newRouter(app *app.App) http.Handler {
 
 	r.Handler("GET", "/charts/:chartUrlParam", web.H(page.Chart))
 	r.Handler("GET", "/podcasts/:podcastUrlParam", web.H(page.Podcast))
+	r.Handler("GET", "/podcasts/:podcastUrlParam/search", web.H(page.PodcastSearch))
 	r.Handler("GET", "/episodes/:episodeUrlParam", web.H(page.Episode))
 	r.Handler("GET", "/playlists/:playlistUrlParam", web.H(page.Playlist))
 

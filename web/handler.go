@@ -23,7 +23,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c.Response = &model.ApiResponse{
 		Headers: map[string]string{},
 		Data: &model.ApiResponseData{
-			GlobalSearchResults: &model.SearchResponse{},
+			SearchResults: &model.SearchResults{},
 		},
 	}
 

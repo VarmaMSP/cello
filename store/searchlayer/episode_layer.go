@@ -53,7 +53,40 @@ func (s *searchEpisodeStore) Search(query, sortBy string, offset, limit int) ([]
 	if err != nil {
 		return nil, model.New500Error("search_layer.search_episode_store.search", err.Error(), nil)
 	}
+	return episodesFromSearch(results)
+}
 
+func (s *searchEpisodeStore) SearchByPodcast(podcastId int64, query string, offset, limit int) ([]*model.Episode, *model.AppError) {
+	results, err := s.se.C().Search().
+		Index(searchengine.EPISODE_INDEX).
+		Query(elastic.NewBoolQuery().
+			Must(
+				elastic.NewMatchPhraseQuery("title", query),
+				elastic.NewMatchPhraseQuery("description", query),
+			).
+			Filter(elastic.NewTermQuery("podcast_id", podcastId)),
+		).
+		Highlight(elastic.NewHighlight().
+			FragmentSize(200).
+			PreTags("<span class=\"result-highlight\">").
+			PostTags("</span>").
+			Fields(
+				elastic.NewHighlighterField("title"),
+				elastic.NewHighlighterField("description"),
+			),
+		).
+		Sort("pub_date", false).
+		From(offset).
+		Size(limit).
+		Do(context.TODO())
+
+	if err != nil {
+		return nil, model.New500Error("search_layer.search_episode_store.search_by_podcast", err.Error(), nil)
+	}
+	return episodesFromSearch(results)
+}
+
+func episodesFromSearch(results *elastic.SearchResult) ([]*model.Episode, *model.AppError) {
 	if results.Hits == nil || results.Hits.Hits == nil || len(results.Hits.Hits) == 0 {
 		return []*model.Episode{}, nil
 	}

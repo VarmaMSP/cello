@@ -136,6 +136,11 @@ func (s *searchPodcastStore) Search(query string, offset, limit int) ([]*model.P
 	if err != nil {
 		return nil, model.New500Error("search_layer.search_podcast_store.search", err.Error(), nil)
 	}
+
+	return podcastsFromSearch(results)
+}
+
+func podcastsFromSearch(results *elastic.SearchResult) ([]*model.Podcast, *model.AppError) {
 	if results.Hits == nil || results.Hits.Hits == nil || len(results.Hits.Hits) == 0 {
 		return []*model.Podcast{}, nil
 	}
