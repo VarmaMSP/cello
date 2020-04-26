@@ -146,6 +146,10 @@ func (s *sqlPlaylistStore) GetMember(playlistId, episodeId int64) (*model.Playli
 }
 
 func (s *sqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*model.PlaylistMember, appE *model.AppError) {
+	if len(playlistIds) == 0 || len(episodeIds) == 0 {
+		return
+	}
+
 	sql := fmt.Sprintf(
 		`SELECT %s FROM playlist_member WHERE playlist_id IN (%s) AND episode_id IN (%s)`,
 		cols(&model.PlaylistMember{}), joinInt64s(playlistIds), joinInt64s(episodeIds),
