@@ -6,6 +6,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/alexedwards/scs/redisstore v0.0.0-20190903163413-4cd374bf181e
 	github.com/alexedwards/scs/v2 v2.2.0
+	github.com/avct/uasurfer v0.0.0-20191028135549-26b5daa857f1
 	github.com/deckarep/golang-set v1.7.1 // indirect
 	github.com/dghubble/gologin v2.1.0+incompatible // indirect
 	github.com/dghubble/gologin/v2 v2.2.0

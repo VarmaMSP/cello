@@ -1,8 +1,10 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/avct/uasurfer"
 	"github.com/go-http-utils/headers"
 	"github.com/varmamsp/cello/app"
 	"github.com/varmamsp/cello/model"
@@ -27,10 +29,12 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		},
 	}
 
+	ua := uasurfer.Parse(req.Header.Get(headers.UserAgent))
 	c.App.Log.Info().
 		Str("method", req.Method).
 		Str("path", req.URL.String()).
-		Str("user_agent", req.Header.Get(headers.UserAgent)).
+		Str("device", ua.DeviceType.StringTrimPrefix()).
+		Str("user_agent", fmt.Sprintf("%s-%s", ua.OS.Platform.StringTrimPrefix(), ua.Browser.Name.StringTrimPrefix())).
 		Msg("")
 
 	if h.RequireSession {
