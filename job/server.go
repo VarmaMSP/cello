@@ -90,8 +90,8 @@ func (svr *Server) Start() {
 		svr.createThumbnail.Start()
 	}
 
-	if svr.createThumbnail != nil {
-		svr.createThumbnail.Start()
+	if svr.syncPlayback != nil {
+		svr.syncPlayback.Start()
 	}
 
 	if svr.taskRunner != nil {
