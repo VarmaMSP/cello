@@ -65,10 +65,6 @@ func (a *App) DeletePlaylist(playlistId int64) *model.AppError {
 		return err
 	}
 
-	if err := a.Store.Playlist().DeleteMembersByPlaylist(playlistId); err != nil {
-		return err
-	}
-
 	return nil
 }
 

@@ -45,6 +45,7 @@ func createPlaylist(c *web.Context, w http.ResponseWriter, req *http.Request) {
 	}
 
 	playlist, err := c.App.CreatePlaylistWithEpisodes(&model.Playlist{
+		UserId:      c.Params.UserId,
 		Title:       title,
 		Description: description,
 		Privacy:     privacy,

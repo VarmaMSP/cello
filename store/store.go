@@ -99,5 +99,4 @@ type PlaylistStore interface {
 	GetMemberCount(playlistId int64) (int, *model.AppError)
 	ChangeMemberPosition(playlistId, episodeId int64, from, to int) *model.AppError
 	DeleteMember(playlistId, episodeId int64) *model.AppError
-	DeleteMembersByPlaylist(playlistId int64) *model.AppError
 }

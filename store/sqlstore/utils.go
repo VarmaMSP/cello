@@ -37,14 +37,6 @@ func vals(m model.DbModel) string {
 	return strings.Join(s, ",")
 }
 
-func joinInt64s(vals []int64) string {
-	s := make([]string, len(vals))
-	for i, val := range vals {
-		s[i] = model.StrFromInt64(val)
-	}
-	return strings.Join(s, ",")
-}
-
 func formatToSqlValue(i interface{}) string {
 	switch v := i.(type) {
 	case int:
@@ -59,4 +51,12 @@ func formatToSqlValue(i interface{}) string {
 	default:
 		return fmt.Sprintf("%v", v)
 	}
+}
+
+func joinInt64s(vals []int64) string {
+	s := make([]string, len(vals))
+	for i, val := range vals {
+		s[i] = model.StrFromInt64(val)
+	}
+	return strings.Join(s, ",")
 }

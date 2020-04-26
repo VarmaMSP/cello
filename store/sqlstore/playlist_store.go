@@ -7,6 +7,7 @@ import (
 	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/store"
 	"github.com/varmamsp/cello/util/datetime"
+	"github.com/varmamsp/cello/util/hashid"
 )
 
 type sqlPlaylistStore struct {
@@ -95,7 +96,7 @@ func (s *sqlPlaylistStore) UpdateMemberStats(playlistId int64) *model.AppError {
 	} else if podcast, err := s.Podcast().Get(episode.PodcastId); err != nil {
 		return err
 	} else {
-		previewImage = podcast.Title
+		previewImage = hashid.UrlParam(podcast.Title, podcast.Id)
 	}
 
 	sql := fmt.Sprintf(
@@ -110,8 +111,12 @@ func (s *sqlPlaylistStore) UpdateMemberStats(playlistId int64) *model.AppError {
 }
 
 func (s *sqlPlaylistStore) Delete(playlistId int64) *model.AppError {
-	sql := fmt.Sprintf(`DELETE FROM playlist WHERE id = %d`, playlistId)
+	sql := fmt.Sprintf(`DELETE FROM playlist_member WHERE playlist_id = %d`, playlistId)
+	if err := s.Exec(sql); err != nil {
+		return model.New500Error("sql_store.sql_playlist_store.delete", err.Error(), nil)
+	}
 
+	sql = fmt.Sprintf(`DELETE FROM playlist WHERE id = %d`, playlistId)
 	if err := s.Exec(sql); err != nil {
 		return model.New500Error("sql_store.sql_playlist_store.delete", err.Error(), nil)
 	}
@@ -246,15 +251,6 @@ func (s *sqlPlaylistStore) DeleteMember(playlistId int64, episodeId int64) *mode
 
 	if err := s.Exec(sql); err != nil {
 		return model.New500Error("store.sqlstore.sql_playlist_store.delete_member", err.Error(), nil)
-	}
-	return nil
-}
-
-func (s *sqlPlaylistStore) DeleteMembersByPlaylist(playlistId int64) *model.AppError {
-	sql := fmt.Sprintf(`DELETE FROM playlist_member WHERE playlist_id = %d`, playlistId)
-
-	if err := s.Exec(sql); err != nil {
-		return model.New500Error("store.sqlstore.sql_playlist_store.delete_members_by_playlist", err.Error(), nil)
 	}
 	return nil
 }
