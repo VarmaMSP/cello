@@ -58,6 +58,7 @@ type EpisodeForIndexing struct {
 	PubDate     string `json:"pub_date"`
 	Duration    int    `json:"duration"`
 	Type        string `json:"type"`
+	MediaUrl    string `json:"media_url"`
 }
 
 // DbModel implementation
@@ -285,6 +286,7 @@ func (e *Episode) ForIndexing() *EpisodeForIndexing {
 		PubDate:     e.PubDate,
 		Duration:    e.Duration,
 		Type:        e.Type,
+		MediaUrl:    e.MediaUrl,
 	}
 }
 

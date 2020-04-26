@@ -31,6 +31,9 @@ const (
 				},
 				"type": {
 					"type": "keyword"
+				},
+				"media_url": {
+					"type": "keyword"
 				}
 			}
 		}
