@@ -61,8 +61,11 @@ func (s *searchEpisodeStore) SearchByPodcast(podcastId int64, query string, offs
 		Index(searchengine.EPISODE_INDEX).
 		Query(elastic.NewBoolQuery().
 			Should(
-				elastic.NewMatchPhraseQuery("title", query),
-				elastic.NewMatchPhraseQuery("description", query),
+				elastic.NewMultiMatchQuery(query).
+					FieldWithBoost("title", 1.5).
+					Field("description").
+					Fuzziness("AUTO").
+					TieBreaker(0.3),
 			).
 			Filter(elastic.NewTermQuery("podcast_id", podcastId)).
 			MinimumNumberShouldMatch(1),
@@ -76,7 +79,6 @@ func (s *searchEpisodeStore) SearchByPodcast(podcastId int64, query string, offs
 				elastic.NewHighlighterField("title"),
 			),
 		).
-		Sort("pub_date", false).
 		From(offset).
 		Size(limit).
 		Do(context.TODO())
