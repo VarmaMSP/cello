@@ -1,6 +1,9 @@
 package model
 
-import "github.com/varmamsp/cello/util/datetime"
+import (
+	"github.com/varmamsp/cello/util/datetime"
+	"github.com/varmamsp/cello/util/hashid"
+)
 
 type Subscription struct {
 	UserId    int64
@@ -8,6 +11,10 @@ type Subscription struct {
 	Active    int
 	CreatedAt int64
 	UpdatedAt int64
+}
+
+func (s *Subscription) MarshalJSON() ([]byte, error) {
+	return []byte(hashid.Encode(s.PodcastId)), nil
 }
 
 func (s *Subscription) DbColumns() []string {

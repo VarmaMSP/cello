@@ -27,6 +27,23 @@ func (s *sqlSubscriptionStore) Save(subscription *model.Subscription) *model.App
 	return nil
 }
 
+func (s *sqlSubscriptionStore) GetByUser(userId int64) (res []*model.Subscription, appE *model.AppError) {
+	sql := fmt.Sprintf(
+		`SELECT %s FROM subscription WHERE user_id = %d`,
+		cols(&model.Subscription{}), userId,
+	)
+	copyTo := func() []interface{} {
+		tmp := &model.Subscription{}
+		res = append(res, tmp)
+		return tmp.FieldAddrs()
+	}
+
+	if err := s.Query(copyTo, sql); err != nil {
+		appE = model.New500Error("sqlstore.sql_subscription_store.get_by_user", err.Error(), nil)
+	}
+	return
+}
+
 func (s *sqlSubscriptionStore) Delete(userId int64, podcastId int64) *model.AppError {
 	sql := fmt.Sprintf(
 		`DELETE FROM subscription WHERE podcast_id = %d AND user_id = %d`,

@@ -8,14 +8,15 @@ import (
 )
 
 type User struct {
-	Id           int64
-	Name         string
-	Email        string
-	Gender       string
-	SignInMethod string
-	IsAdmin      int
-	CreatedAt    int64
-	UpdatedAt    int64
+	Id           int64           `json:"id"`
+	Name         string          `json:"name"`
+	Email        string          `json:"email"`
+	Gender       string          `json:"-"`
+	SignInMethod string          `json:"-"`
+	IsAdmin      int             `json:"-"`
+	CreatedAt    int64           `json:"-"`
+	UpdatedAt    int64           `json:"-"`
+	Subscription []*Subscription `json:"subscriptions"`
 }
 
 type Session struct {
@@ -65,14 +66,13 @@ type TwitterAccount struct {
 }
 
 func (u *User) MarshalJSON() ([]byte, error) {
+	type J User
 	return json.Marshal(&struct {
-		Id    string `json:"id"`
-		Name  string `json:"name"`
-		Email string `json:"email"`
+		*J
+		Id string `json:"id"`
 	}{
-		Id:    hashid.Encode(u.Id),
-		Name:  u.Name,
-		Email: u.Email,
+		J:  (*J)(u),
+		Id: hashid.Encode(u.Id),
 	})
 }
 

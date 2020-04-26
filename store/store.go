@@ -80,6 +80,7 @@ type PlaybackStore interface {
 
 type SubscriptionStore interface {
 	Save(subscription *model.Subscription) *model.AppError
+	GetByUser(userId int64) ([]*model.Subscription, *model.AppError)
 	Delete(userId, podcastId int64) *model.AppError
 }
 
