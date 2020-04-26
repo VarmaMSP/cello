@@ -67,3 +67,28 @@ func (a *App) GetPlaylistEpisodes(playlist *model.Playlist) ([]*model.Episode, *
 
 	return a.GetEpisodesByIds(episodeIds)
 }
+
+// Temporary solution
+// https://github.com/VarmaMSP/cello/issues/1
+func (a *App) LoadMediaUrls(episodes []*model.Episode) *model.AppError {
+	if len(episodes) == 0 {
+		return nil
+	}
+
+	episodeIds := make([]int64, len(episodes))
+	episodeById := map[int64]*model.Episode{}
+	for i, episode := range episodes {
+		episodeIds[i] = episode.Id
+		episodeById[episode.Id] = episode
+	}
+
+	episodes_, err := a.Store.Episode().GetByIds(episodeIds)
+	if err != nil {
+		return err
+	}
+
+	for _, e := range episodes_ {
+		episodeById[e.Id].MediaUrl = e.MediaUrl
+	}
+	return nil
+}

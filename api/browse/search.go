@@ -27,6 +27,10 @@ func searchResults(c *web.Context, w http.ResponseWriter, req *http.Request) {
 			c.Err = err
 			return
 		}
+		if err := c.App.LoadMediaUrls(episodeResults); err != nil {
+			c.Err = err
+			return
+		}
 
 		podcastIds := make([]int64, len(episodeResults))
 		for i, episode := range episodeResults {
@@ -61,6 +65,10 @@ func podcastSearch(c *web.Context, w http.ResponseWriter, req *http.Request) {
 
 	episodeResults, err := c.App.SearchEpisodesInPodcast(c.Params.PodcastId, c.Params.Query, c.Params.Offset, c.Params.Limit)
 	if err != nil {
+		c.Err = err
+		return
+	}
+	if err := c.App.LoadMediaUrls(episodeResults); err != nil {
 		c.Err = err
 		return
 	}
