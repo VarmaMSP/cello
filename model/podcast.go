@@ -31,7 +31,7 @@ type Podcast struct {
 	Type                   string `json:"type,omitempty"`
 	Block                  int    `json:"-"`
 	Complete               int    `json:"complete,omitempty"`
-	Link                   string `json:"-"`
+	Link                   string `json:"link,omitempty"`
 	OwnerName              string `json:"-"`
 	OwnerEmail             string `json:"-"`
 	Copyright              string `json:"copyright,omitempty"`
@@ -46,6 +46,10 @@ type Podcast struct {
 	TitleHighlighted       string `json:"title_highlighted,omitempty"`
 	AuthorHighlighted      string `json:"author_highlighted,omitempty"`
 	DescriptionHighlighted string `json:"description_highlighted,omitempty"`
+
+	// From Feed
+	FeedUrl           string `json:"feed_url,omitempty"`
+	FeedLastRefreshAt string `json:"feed_last_refresh_at,omitempty"`
 
 	// derived
 	Categories []*PodcastCategory `json:"categories,omitempty"`
@@ -204,6 +208,11 @@ func (p *Podcast) LoadDetails(rssFeed *rss.Feed) *AppError {
 	}
 
 	return nil
+}
+
+func (p *Podcast) LoadFeedDetails(feed *Feed) {
+	p.FeedUrl = feed.Url
+	p.FeedLastRefreshAt = datetime.FromUnix(feed.LastRefreshAt)
 }
 
 func (p *Podcast) LoadFromSearchHit(hit *elastic.SearchHit) *AppError {
