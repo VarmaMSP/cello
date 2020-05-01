@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/varmamsp/gofeed/rss"
 
 	h "github.com/go-http-utils/headers"
@@ -18,13 +19,14 @@ import (
 
 type ImportPodcastJob struct {
 	store            store.Store
+	log              zerolog.Logger
 	httpClient       *http.Client
 	rateLimiter      chan struct{}
 	createThumbnailP messagequeue.Producer
 	input            messagequeue.Consumer
 }
 
-func NewImportPodcastJob(store store.Store, mq messagequeue.Broker, config *model.Config) (Job, error) {
+func NewImportPodcastJob(store store.Store, mq messagequeue.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
 	importPodcastC, err := mq.NewConsumer(
 		messagequeue.QUEUE_IMPORT_PODCAST,
 		config.Queues.ImportPodcast.ConsumerName,
@@ -48,6 +50,7 @@ func NewImportPodcastJob(store store.Store, mq messagequeue.Broker, config *mode
 	workerLimit := config.Jobs.ImportPodcast.WorkerLimit
 	return &ImportPodcastJob{
 		store: store,
+		log:   log.With().Str("ctx", "job_server.import_podcast").Logger(),
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
 			Transport: &http.Transport{
@@ -62,6 +65,7 @@ func NewImportPodcastJob(store store.Store, mq messagequeue.Broker, config *mode
 }
 
 func (job *ImportPodcastJob) Start() {
+	job.log.Info().Msg("started")
 	job.input.Consume(job.Call)
 }
 
@@ -114,7 +118,7 @@ func (job *ImportPodcastJob) Call(delivery amqp.Delivery) {
 		feedU.LastRefreshAt = now
 		feedU.UpdatedAt = now
 		if err := job.store.Feed().Update(&feed, &feedU); err != nil {
-
+			job.log.Error().Msg(err.Error())
 		}
 	}()
 }
@@ -180,6 +184,7 @@ func (job *ImportPodcastJob) save(toSave *EntitiesToSave) *model.AppError {
 	// Categories
 	for _, podcastCategory := range toSave.podcastCategories {
 		if err := job.store.Category().SavePodcastCategory(podcastCategory); err != nil {
+			job.log.Error().Msg(err.Error())
 			continue
 		}
 	}
@@ -188,18 +193,21 @@ func (job *ImportPodcastJob) save(toSave *EntitiesToSave) *model.AppError {
 	episodesToIndex := []*model.Episode{}
 	for _, episode := range toSave.episodes {
 		if err := job.store.Episode().Save(episode); err != nil {
+			job.log.Error().Msg(err.Error())
 			continue
 		}
 		episodesToIndex = append(episodesToIndex, episode)
 	}
 
 	// Create thumbnail
-	job.createThumbnailP.Publish(CreateThumbnailJobInput{
+	if err := job.createThumbnailP.Publish(CreateThumbnailJobInput{
 		Id:         toSave.podcast.Id,
 		Type:       "PODCAST",
 		ImageSrc:   toSave.podcast.ImagePath,
 		ImageTitle: hashid.UrlParam(toSave.podcast.Title, toSave.podcast.Id),
-	})
+	}); err != nil {
+		job.log.Error().Msg(err.Error())
+	}
 
 	return nil
 }

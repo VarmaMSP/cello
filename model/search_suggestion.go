@@ -38,10 +38,6 @@ func (s *SearchSuggestion) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (s *SearchSuggestion) LoadFromKeyword(hit *elastic.SearchHit) *AppError {
-	panic("")
-}
-
 func (s *SearchSuggestion) LoadFromPodcast(hit *elastic.SearchHit) *AppError {
 	appErrorC := NewAppErrorC("model.search_suggestion.load_from_podcast", http.StatusBadRequest, nil)
 

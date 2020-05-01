@@ -82,7 +82,7 @@ func New(config *model.Config) (*Server, error) {
 		}
 	}
 
-	if jobSvr, err := job.NewJobServer(store, seBroker, mqBroker, fsBroker, config); err != nil {
+	if jobSvr, err := job.NewJobServer(store, seBroker, mqBroker, fsBroker, logger, config); err != nil {
 		return nil, err
 	} else {
 		svr.jobSvr = jobSvr

@@ -1,6 +1,7 @@
 package job
 
 import (
+	"github.com/rs/zerolog"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/filestorage"
 	"github.com/varmamsp/cello/service/messagequeue"
@@ -13,10 +14,7 @@ type Job interface {
 }
 
 type Server struct {
-	store  store.Store
-	se     searchengine.Broker
-	mq     messagequeue.Broker
-	fs     filestorage.Broker
+	log    zerolog.Logger
 	config *model.Config
 
 	importPodcast   Job
@@ -26,16 +24,14 @@ type Server struct {
 	taskRunner      Job
 }
 
-func NewJobServer(store store.Store, se searchengine.Broker, mq messagequeue.Broker, fs filestorage.Broker, config *model.Config) (*Server, error) {
+func NewJobServer(store store.Store, se searchengine.Broker, mq messagequeue.Broker, fs filestorage.Broker, log zerolog.Logger, config *model.Config) (*Server, error) {
 	svr := &Server{
-		store:  store,
-		se:     se,
-		mq:     mq,
+		log:    log,
 		config: config,
 	}
 
 	if svr.config.Jobs.ImportPodcast.Enable {
-		if job, err := NewImportPodcastJob(svr.store, svr.mq, svr.config); err != nil {
+		if job, err := NewImportPodcastJob(store, mq, svr.log, svr.config); err != nil {
 			return nil, err
 		} else {
 			svr.importPodcast = job
@@ -43,7 +39,7 @@ func NewJobServer(store store.Store, se searchengine.Broker, mq messagequeue.Bro
 	}
 
 	if svr.config.Jobs.RefreshPodcast.Enable {
-		if job, err := NewRefreshPodcastJob(svr.store, svr.mq, svr.config); err != nil {
+		if job, err := NewRefreshPodcastJob(store, mq, svr.log, svr.config); err != nil {
 			return nil, err
 		} else {
 			svr.refreshPodcast = job
@@ -51,7 +47,7 @@ func NewJobServer(store store.Store, se searchengine.Broker, mq messagequeue.Bro
 	}
 
 	if svr.config.Jobs.SyncPlayback.Enable {
-		if job, err := NewSyncPlaybackJob(svr.store, svr.mq, svr.config); err != nil {
+		if job, err := NewSyncPlaybackJob(store, mq, svr.log, svr.config); err != nil {
 			return nil, err
 		} else {
 			svr.syncPlayback = job
@@ -59,7 +55,7 @@ func NewJobServer(store store.Store, se searchengine.Broker, mq messagequeue.Bro
 	}
 
 	if svr.config.Jobs.CreateThumbnail.Enable {
-		if job, err := NewCreateThumbnailJob(svr.store, svr.mq, svr.fs, svr.config); err != nil {
+		if job, err := NewCreateThumbnailJob(store, mq, fs, svr.log, svr.config); err != nil {
 			return nil, err
 		} else {
 			svr.createThumbnail = job
@@ -67,7 +63,7 @@ func NewJobServer(store store.Store, se searchengine.Broker, mq messagequeue.Bro
 	}
 
 	if svr.config.Jobs.TaskScheduler.Enable {
-		if job, err := NewTaskRunnerJob(svr.store, svr.se, svr.mq, svr.config); err != nil {
+		if job, err := NewTaskRunnerJob(store, se, mq, svr.log, svr.config); err != nil {
 			return nil, err
 		} else {
 			svr.taskRunner = job

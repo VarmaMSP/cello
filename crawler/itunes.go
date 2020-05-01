@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/rs/zerolog"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/messagequeue"
 	"github.com/varmamsp/cello/store"
@@ -26,6 +27,8 @@ const (
 type ItunesCrawler struct {
 	// store
 	store store.Store
+	// logger
+	log zerolog.Logger
 	// message queue
 	importPodcastP messagequeue.Producer
 	// url frontier
@@ -40,7 +43,7 @@ type ItunesCrawler struct {
 	rateLimiter chan struct{}
 }
 
-func NewItunesCrawler(s store.Store, b messagequeue.Broker, config *model.Config) (*ItunesCrawler, error) {
+func NewItunesCrawler(s store.Store, b messagequeue.Broker, log zerolog.Logger, config *model.Config) (*ItunesCrawler, error) {
 	importPodcastP, err := b.NewProducer(
 		messagequeue.EXCHANGE_PHENOPOD_DIRECT,
 		messagequeue.ROUTING_KEY_IMPORT_PODCAST,
@@ -52,6 +55,7 @@ func NewItunesCrawler(s store.Store, b messagequeue.Broker, config *model.Config
 
 	crawler := &ItunesCrawler{
 		store:          s,
+		log:            log.With().Str("ctx", "crawler").Logger(),
 		urlF:           NewFrontier(10000),
 		itunesIdF:      NewFrontier(10000),
 		pageQ:          make(chan io.ReadCloser, 10),
@@ -176,10 +180,12 @@ func (c *ItunesCrawler) pollAndSaveFeedDetails() {
 				Url:      result.FeedUrl,
 			}
 			if err := c.store.Feed().Save(feed); err != nil {
+				c.log.Error().Msg(err.Error())
 				continue
 			}
 
 			if err := c.importPodcastP.Publish(feed); err != nil {
+				c.log.Error().Msg(err.Error())
 				continue
 			}
 		}

@@ -99,17 +99,6 @@ func (p *Podcast) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (p *Podcast) Sanitize() {
-	p.Description = ""
-	p.Language = ""
-	p.Explicit = 0
-	p.TotalEpisodes = 0
-	p.TotalSeasons = 0
-	p.Type = ""
-	p.EarliestEpisodePubDate = ""
-	p.Copyright = ""
-}
-
 func (p *Podcast) LoadDetails(rssFeed *rss.Feed) *AppError {
 	appErrorC := NewAppErrorC(
 		"model.podcast.load_details",
@@ -252,6 +241,13 @@ func (p *Podcast) ForIndexing() *PodcastForIndexing {
 		Type:        p.Type,
 		Complete:    p.Complete,
 	}
+}
+
+func (p *Podcast) Compact() {
+	p.Summary = ""
+	p.Description = ""
+	p.Link = ""
+	p.Copyright = ""
 }
 
 func (p *Podcast) PreSave() {

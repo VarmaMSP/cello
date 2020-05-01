@@ -33,10 +33,10 @@ type Episode struct {
 	Duration    int    `json:"duration,omitempty"`
 	Link        string `json:"-"`
 	ImageLink   string `json:"-"`
-	Explicit    int    `json:"explicit"`
-	Episode     int    `json:"episode"`
-	Season      int    `json:"season"`
-	Type        string `json:"type"`
+	Explicit    int    `json:"explicit,omitempty"`
+	Episode     int    `json:"episode,omitempty"`
+	Season      int    `json:"season,omitempty"`
+	Type        string `json:"type,omitempty"`
 	Block       int    `json:"-"`
 	CreatedAt   int64  `json:"-"`
 	UpdatedAt   int64  `json:"-"`
@@ -46,8 +46,8 @@ type Episode struct {
 	DescriptionHighlighted string `json:"description_highlighted,omitempty"`
 
 	// derived
-	Progress     float64 `json:"progress"`
-	LastPlayedAt string  `json:"last_played_at"`
+	Progress     float64 `json:"progress,omitempty"`
+	LastPlayedAt string  `json:"last_played_at,omitempty"`
 }
 
 type EpisodeForIndexing struct {
@@ -290,16 +290,8 @@ func (e *Episode) ForIndexing() *EpisodeForIndexing {
 	}
 }
 
-func EpisodesJoinPlaybacks(episodes []*Episode, playbacks []*Playback) {
-	playbackMap := map[int64]*Playback{}
-	for _, playback := range playbacks {
-		playbackMap[playback.EpisodeId] = playback
-	}
-
-	for _, episode := range episodes {
-		if playback, ok := playbackMap[episode.Id]; ok {
-			episode.Progress = playback.CurrentProgress
-			episode.LastPlayedAt = playback.LastPlayedAt
-		}
-	}
+func (e *Episode) Compact() {
+	e.Summary = ""
+	e.Description = ""
+	e.Type = ""
 }

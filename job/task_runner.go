@@ -1,9 +1,9 @@
 package job
 
 import (
-	"fmt"
 	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/varmamsp/cello/crawler"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/messagequeue"
@@ -16,13 +16,14 @@ type TaskRunnerJob struct {
 	store store.Store
 	se    searchengine.Broker
 	mq    messagequeue.Broker
+	log   zerolog.Logger
 
 	itunesCrawler   *crawler.ItunesCrawler
 	refreshPodcastP messagequeue.Producer
 }
 
-func NewTaskRunnerJob(store store.Store, se searchengine.Broker, mq messagequeue.Broker, config *model.Config) (Job, error) {
-	itunesCrawler, err := crawler.NewItunesCrawler(store, mq, config)
+func NewTaskRunnerJob(store store.Store, se searchengine.Broker, mq messagequeue.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
+	itunesCrawler, err := crawler.NewItunesCrawler(store, mq, log, config)
 	if err != nil {
 		return nil, err
 	}
@@ -40,19 +41,21 @@ func NewTaskRunnerJob(store store.Store, se searchengine.Broker, mq messagequeue
 		store:           store,
 		se:              se,
 		mq:              mq,
+		log:             log.With().Str("ctx", "job_server.task_runner").Logger(),
 		itunesCrawler:   itunesCrawler,
 		refreshPodcastP: refreshPodcastP,
 	}, nil
 }
 
 func (job *TaskRunnerJob) Start() {
+	job.log.Info().Msg("started")
 	go func() {
 		ticker := time.NewTicker(10 * time.Second)
 
 		for range ticker.C {
 			tasks, err := job.store.Task().GetAll()
 			if err != nil {
-				continue
+				job.log.Error().Msg(err.Error())
 			}
 
 			for _, task := range tasks {
@@ -81,7 +84,7 @@ func (job *TaskRunnerJob) periodic(task *model.Task) {
 	taskU.NextRunAt = now + int64(task.Interval)
 	taskU.UpdatedAt = now
 	if err := job.store.Task().Update(task, &taskU); err != nil {
-		fmt.Println(err)
+		job.log.Error().Msg(err.Error())
 		return
 	}
 	job.callTask(task)
@@ -97,6 +100,7 @@ func (job *TaskRunnerJob) oneoff(task *model.Task) {
 	taskU.Active = 0
 	taskU.UpdatedAt = now
 	if err := job.store.Task().Update(task, &taskU); err != nil {
+		job.log.Error().Msg(err.Error())
 		return
 	}
 	job.callTask(task)
@@ -109,6 +113,7 @@ func (job *TaskRunnerJob) immediate(task *model.Task) {
 	taskU.Active = 0
 	taskU.UpdatedAt = now
 	if err := job.store.Task().Update(task, &taskU); err != nil {
+		job.log.Error().Msg(err.Error())
 		return
 	}
 	job.callTask(task)
@@ -145,7 +150,7 @@ func (job *TaskRunnerJob) schedulePodcastRefresh() {
 			feedU.LastRefreshAt = datetime.Unix()
 			feedU.LastRefreshComment = "PENDING"
 			if err := job.store.Feed().Update(feed, feedU); err != nil {
-				continue
+				job.log.Error().Msg(err.Error())
 			}
 			job.refreshPodcastP.Publish(feedU)
 		}
@@ -159,9 +164,11 @@ func (job *TaskRunnerJob) schedulePodcastRefresh() {
 
 func (job *TaskRunnerJob) reindexEpisodes() {
 	if err := job.se.DeleteIndex(searchengine.EPISODE_INDEX); err != nil {
+		job.log.Error().Msg(err.Error())
 		return
 	}
 	if err := job.se.CreateIndex(searchengine.EPISODE_INDEX, searchengine.EPISODE_INDEX_MAPPING); err != nil {
+		job.log.Error().Msg(err.Error())
 		return
 	}
 
@@ -169,6 +176,7 @@ func (job *TaskRunnerJob) reindexEpisodes() {
 	for {
 		episodes, err := job.store.Episode().GetAllPaginated(lastId, limit)
 		if err != nil {
+			job.log.Error().Msg(err.Error())
 			return
 		}
 
@@ -178,6 +186,7 @@ func (job *TaskRunnerJob) reindexEpisodes() {
 		}
 
 		if err := job.se.BulkIndex(searchengine.EPISODE_INDEX, m); err != nil {
+			job.log.Error().Msg(err.Error())
 			return
 		}
 
@@ -190,9 +199,11 @@ func (job *TaskRunnerJob) reindexEpisodes() {
 
 func (job *TaskRunnerJob) reindexPodcasts() {
 	if err := job.se.DeleteIndex(searchengine.PODCAST_INDEX); err != nil {
+		job.log.Error().Msg(err.Error())
 		return
 	}
 	if err := job.se.CreateIndex(searchengine.PODCAST_INDEX, searchengine.PODCAST_INDEX_MAPPING); err != nil {
+		job.log.Error().Msg(err.Error())
 		return
 	}
 
@@ -200,6 +211,7 @@ func (job *TaskRunnerJob) reindexPodcasts() {
 	for {
 		podcasts, err := job.store.Podcast().GetAllPaginated(lastId, limit)
 		if err != nil {
+			job.log.Error().Msg(err.Error())
 			return
 		}
 
@@ -209,6 +221,7 @@ func (job *TaskRunnerJob) reindexPodcasts() {
 		}
 
 		if err := job.se.BulkIndex(searchengine.PODCAST_INDEX, m); err != nil {
+			job.log.Error().Msg(err.Error())
 			return
 		}
 

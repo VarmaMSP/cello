@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/nfnt/resize"
+	"github.com/rs/zerolog"
 	"github.com/streadway/amqp"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/filestorage"
@@ -24,6 +25,7 @@ const (
 type CreateThumbnailJob struct {
 	store       store.Store
 	fs          filestorage.Broker
+	log         zerolog.Logger
 	httpClient  *http.Client
 	rateLimiter chan struct{}
 	input       messagequeue.Consumer
@@ -36,7 +38,7 @@ type CreateThumbnailJobInput struct {
 	ImageTitle string `json:"image_title"`
 }
 
-func NewCreateThumbnailJob(store store.Store, mq messagequeue.Broker, fs filestorage.Broker, config *model.Config) (Job, error) {
+func NewCreateThumbnailJob(store store.Store, mq messagequeue.Broker, fs filestorage.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
 	createThumbnailC, err := mq.NewConsumer(
 		messagequeue.QUEUE_CREATE_THUMBNAIL,
 		config.Queues.CreateThumbnail.ConsumerName,
@@ -53,6 +55,7 @@ func NewCreateThumbnailJob(store store.Store, mq messagequeue.Broker, fs filesto
 	return &CreateThumbnailJob{
 		store: store,
 		fs:    fs,
+		log:   log.With().Str("ctx", "job_server.create_thumbnail").Logger(),
 		httpClient: &http.Client{
 			Timeout: 1200 * time.Second,
 			Transport: &http.Transport{
@@ -66,6 +69,7 @@ func NewCreateThumbnailJob(store store.Store, mq messagequeue.Broker, fs filesto
 }
 
 func (job *CreateThumbnailJob) Start() {
+	job.log.Info().Msg("started")
 	job.input.Consume(job.Call)
 }
 
@@ -99,6 +103,7 @@ func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {
 		if input.Type == "PODCAST" {
 			err := job.saveImage(img, file)
 			if err != nil {
+				job.log.Error().Msg(err.Error())
 				if !delivery.Redelivered {
 					delivery.Nack(false, true) // requeue
 				} else {

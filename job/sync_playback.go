@@ -5,6 +5,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/streadway/amqp"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/messagequeue"
@@ -13,12 +14,13 @@ import (
 
 type SyncPlaybackJob struct {
 	store          store.Store
+	log            zerolog.Logger
 	input          messagequeue.Consumer
 	inputBatchSize int
 	buffer         chan amqp.Delivery
 }
 
-func NewSyncPlaybackJob(store store.Store, mq messagequeue.Broker, config *model.Config) (Job, error) {
+func NewSyncPlaybackJob(store store.Store, mq messagequeue.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
 	syncPlaybackC, err := mq.NewConsumer(
 		messagequeue.QUEUE_SYNC_PLAYBACK,
 		config.Queues.SyncPlayback.ConsumerName,
@@ -32,6 +34,7 @@ func NewSyncPlaybackJob(store store.Store, mq messagequeue.Broker, config *model
 
 	return &SyncPlaybackJob{
 		store:          store,
+		log:            log.With().Str("ctx", "job_server.sync_playback_job").Logger(),
 		input:          syncPlaybackC,
 		inputBatchSize: 1000,
 		buffer:         make(chan amqp.Delivery),
@@ -39,6 +42,7 @@ func NewSyncPlaybackJob(store store.Store, mq messagequeue.Broker, config *model
 }
 
 func (job *SyncPlaybackJob) Start() {
+	job.log.Info().Msg("started")
 	job.input.Consume(func(d amqp.Delivery) { job.buffer <- d })
 	go job.Run()
 }
@@ -90,11 +94,13 @@ func (job *SyncPlaybackJob) Call(deliveries []amqp.Delivery) {
 	for _, x := range eventsByUserByEpisode {
 		for _, y := range x {
 			sort.Slice(y, func(i, j int) bool { return false })
-			job.store.Playback().Update(&model.Playback{
+			if err := job.store.Playback().Update(&model.Playback{
 				UserId:          y[len(y)-1].UserId,
 				EpisodeId:       y[len(y)-1].EpisodeId,
 				CurrentProgress: y[len(y)-1].Position,
-			})
+			}); err != nil {
+				job.log.Error().Msg(err.Error())
+			}
 		}
 	}
 }

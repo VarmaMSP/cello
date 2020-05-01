@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/streadway/amqp"
 
 	h "github.com/go-http-utils/headers"
@@ -18,14 +19,14 @@ import (
 
 type RefreshPodcastJob struct {
 	store            store.Store
+	log              zerolog.Logger
 	httpClient       *http.Client
 	rateLimiter      chan struct{}
 	createThumbnailP messagequeue.Producer
-
-	input messagequeue.Consumer
+	input            messagequeue.Consumer
 }
 
-func NewRefreshPodcastJob(store store.Store, mq messagequeue.Broker, config *model.Config) (Job, error) {
+func NewRefreshPodcastJob(store store.Store, mq messagequeue.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
 	refreshPodcastC, err := mq.NewConsumer(
 		messagequeue.QUEUE_REFRESH_PODCAST,
 		config.Queues.RefreshPodcast.ConsumerName,
@@ -47,9 +48,9 @@ func NewRefreshPodcastJob(store store.Store, mq messagequeue.Broker, config *mod
 	}
 
 	workerLimit := config.Jobs.RefreshPodcast.WorkerLimit
-
 	return &RefreshPodcastJob{
 		store: store,
+		log:   log.With().Str("ctx", "job_server.refresh_podcast").Logger(),
 		httpClient: &http.Client{
 			Timeout: 90 * time.Second,
 			Transport: &http.Transport{
@@ -64,6 +65,7 @@ func NewRefreshPodcastJob(store store.Store, mq messagequeue.Broker, config *mod
 }
 
 func (job *RefreshPodcastJob) Start() {
+	job.log.Info().Msg("started")
 	job.input.Consume(job.Call)
 }
 
@@ -109,6 +111,8 @@ func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 			goto update_feed
 
 		} else if err := job.save(refreshData); err != nil {
+			job.log.Error().Msg(err.Error())
+
 			feedU.ETag = headers[h.ETag]
 			feedU.LastModified = headers[h.LastModified]
 			feedU.LastRefreshComment = err.Error()
@@ -124,7 +128,7 @@ func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 		feedU.LastRefreshAt = now
 		feedU.UpdatedAt = now
 		if err := job.store.Feed().Update(&feed, &feedU); err != nil {
-
+			job.log.Error().Msg(err.Error())
 		}
 	}()
 }
@@ -205,6 +209,7 @@ func (job *RefreshPodcastJob) save(refreshData *RefreshData) *model.AppError {
 	if len(episodesToAdd) > 0 {
 		for _, episode := range episodesToAdd {
 			if err := job.store.Episode().Save(episode); err != nil {
+				job.log.Error().Msg(err.Error())
 				continue
 			}
 		}
@@ -212,16 +217,17 @@ func (job *RefreshPodcastJob) save(refreshData *RefreshData) *model.AppError {
 
 	// Update thumbnail
 	if podcast.ImagePath != podcastU.ImagePath {
-		job.createThumbnailP.Publish(&CreateThumbnailJobInput{
+		if err := job.createThumbnailP.Publish(&CreateThumbnailJobInput{
 			Id:         podcast.Id,
 			Type:       "PODCAST",
 			ImageSrc:   podcast.ImagePath,
 			ImageTitle: hashid.UrlParam(podcast.Title, podcast.Id),
-		})
+		}); err != nil {
+			job.log.Error().Msg(err.Error())
+		}
 	}
 
 	// Update Stats
-	podcastU.TotalEpisodes = podcastU.TotalEpisodes + len(episodesToAdd)
 	if len(episodesToAdd) > 0 {
 		if podcastU.TotalSeasons < episodesToAdd[0].Season {
 			podcastU.TotalSeasons = episodesToAdd[0].Season
@@ -230,7 +236,7 @@ func (job *RefreshPodcastJob) save(refreshData *RefreshData) *model.AppError {
 	}
 
 	if err := job.store.Podcast().Update(podcast, podcastU); err != nil {
-
+		job.log.Error().Msg(err.Error())
 	}
 
 	return nil
