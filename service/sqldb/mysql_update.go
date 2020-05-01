@@ -10,6 +10,8 @@ import (
 )
 
 func (splr *supplier) Patch(table string, old, new model.DbModel) (sql.Result, error) {
+	new.PreSave()
+
 	cols := new.DbColumns()
 	oldValues := valuesFromAddrs(old.FieldAddrs())
 	newValues := valuesFromAddrs(new.FieldAddrs())

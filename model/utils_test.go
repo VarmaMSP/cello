@@ -15,6 +15,7 @@ func TestParseTime(t *testing.T) {
 	assert.Equal(90, ParseTime("00:01:30"))
 	assert.Equal(3630, ParseTime("01:00:30"))
 	assert.Equal(3630, ParseTime("1:0:30"))
+	assert.Equal(90, ParseTime("00:01:30:00"))
 }
 
 func TestIsContentTypeFeed(t *testing.T) {

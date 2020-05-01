@@ -57,6 +57,10 @@ func RssItemGuid(item *rss.Item) string {
 // ParseTime parses number of seconds from a string of HH:MM:SS / MM:SS / SS format
 func ParseTime(timeString string) int {
 	x := strings.Split(timeString, ":")
+	if len(x) > 3 {
+		x = x[:3]
+	}
+
 	sec := 0
 	for i, s := len(x)-1, 1; i >= 0; i, s = i-1, s*60 {
 		t, _ := strconv.Atoi(x[i])
