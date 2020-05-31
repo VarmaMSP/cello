@@ -66,7 +66,12 @@ func NewImportPodcastJob(store store.Store, mq messagequeue.Broker, log zerolog.
 
 func (job *ImportPodcastJob) Start() {
 	job.log.Info().Msg("started")
-	job.input.Consume(job.Call)
+	go func() {
+		d := job.input.Consume()
+		for {
+			job.Call(<-d)
+		}
+	}()
 }
 
 type EntitiesToSave struct {

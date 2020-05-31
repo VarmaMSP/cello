@@ -17,7 +17,6 @@ type SyncPlaybackJob struct {
 	log            zerolog.Logger
 	input          messagequeue.Consumer
 	inputBatchSize int
-	buffer         chan amqp.Delivery
 }
 
 func NewSyncPlaybackJob(store store.Store, mq messagequeue.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
@@ -37,41 +36,38 @@ func NewSyncPlaybackJob(store store.Store, mq messagequeue.Broker, log zerolog.L
 		log:            log.With().Str("ctx", "job_server.sync_playback_job").Logger(),
 		input:          syncPlaybackC,
 		inputBatchSize: 1000,
-		buffer:         make(chan amqp.Delivery),
 	}, nil
 }
 
 func (job *SyncPlaybackJob) Start() {
 	job.log.Info().Msg("started")
-	job.input.Consume(func(d amqp.Delivery) { job.buffer <- d })
-	go job.Run()
-}
+	go func() {
+		d := job.input.Consume()
+		timeout := time.NewTimer(10 * time.Second)
 
-func (job *SyncPlaybackJob) Run() {
-	timeout := time.NewTimer(10 * time.Second)
+		for {
+			var deliveries []amqp.Delivery
+		BATCH_LOOP:
+			for i, _ := 0, timeout.Reset(10*time.Second); i < job.inputBatchSize; i++ {
+				select {
+				case delivery := <-d:
+					deliveries = append(deliveries, delivery)
+					if len(deliveries) == job.inputBatchSize && !timeout.Stop() {
+						<-timeout.C
+					}
 
-	for {
-		var deliveries []amqp.Delivery
-	BATCH_LOOP:
-		for i, _ := 0, timeout.Reset(10*time.Second); i < job.inputBatchSize; i++ {
-			select {
-			case delivery := <-job.buffer:
-				deliveries = append(deliveries, delivery)
-				if len(deliveries) == job.inputBatchSize && !timeout.Stop() {
-					<-timeout.C
+				case <-timeout.C:
+					break BATCH_LOOP
 				}
-
-			case <-timeout.C:
-				break BATCH_LOOP
 			}
-		}
 
-		if len(deliveries) == 0 {
-			continue
-		}
+			if len(deliveries) == 0 {
+				continue
+			}
 
-		job.Call(deliveries)
-	}
+			job.Call(deliveries)
+		}
+	}()
 }
 
 func (job *SyncPlaybackJob) Call(deliveries []amqp.Delivery) {

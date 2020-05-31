@@ -2,14 +2,12 @@ package messagequeue
 
 import (
 	"encoding/json"
-	"errors"
 
 	"github.com/streadway/amqp"
 )
 
 type producerSupplier struct {
-	getConnection func() *amqp.Connection
-
+	connection   *amqp.Connection
 	channel      *amqp.Channel
 	exchange     string
 	routingKey   string
@@ -17,22 +15,12 @@ type producerSupplier struct {
 }
 
 func (p *producerSupplier) init() error {
-	connection := p.getConnection()
-	if connection == nil {
-		return errors.New("No Connection Provided")
-	}
-
-	if channel, err := connection.Channel(); err != nil {
+	if channel, err := p.connection.Channel(); err != nil {
 		return err
 	} else {
 		p.channel = channel
 	}
-
 	return nil
-}
-
-func (p *producerSupplier) recover() {
-	p.init()
 }
 
 func (p *producerSupplier) Publish(o interface{}) error {

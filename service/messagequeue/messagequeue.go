@@ -14,5 +14,5 @@ type Producer interface {
 }
 
 type Consumer interface {
-	Consume(func(d amqp.Delivery))
+	Consume() <-chan amqp.Delivery
 }

@@ -70,7 +70,12 @@ func NewCreateThumbnailJob(store store.Store, mq messagequeue.Broker, fs filesto
 
 func (job *CreateThumbnailJob) Start() {
 	job.log.Info().Msg("started")
-	job.input.Consume(job.Call)
+	go func() {
+		d := job.input.Consume()
+		for {
+			job.Call(<-d)
+		}
+	}()
 }
 
 func (job *CreateThumbnailJob) Call(delivery amqp.Delivery) {

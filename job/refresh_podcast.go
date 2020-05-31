@@ -66,7 +66,12 @@ func NewRefreshPodcastJob(store store.Store, mq messagequeue.Broker, log zerolog
 
 func (job *RefreshPodcastJob) Start() {
 	job.log.Info().Msg("started")
-	job.input.Consume(job.Call)
+	go func() {
+		d := job.input.Consume()
+		for {
+			job.Call(<-d)
+		}
+	}()
 }
 
 type RefreshData struct {
@@ -79,6 +84,7 @@ type RefreshData struct {
 func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 	var feed model.Feed
 	if err := json.Unmarshal(delivery.Body, &feed); err != nil {
+		job.log.Error().Msg(err.Error())
 		delivery.Ack(false)
 		return
 	}
@@ -95,6 +101,7 @@ func (job *RefreshPodcastJob) Call(delivery amqp.Delivery) {
 		feedU := feed
 
 		if rssFeed, headers, err := fetchRssFeed(feed.Url, map[string]string{h.ETag: feed.ETag, h.LastModified: feed.LastModified}, job.httpClient); err != nil {
+			job.log.Error().Msg(err.Error())
 			feedU.LastRefreshComment = err.Error()
 			goto update_feed
 

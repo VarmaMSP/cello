@@ -2,7 +2,6 @@ package messagequeue
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/streadway/amqp"
 	"github.com/varmamsp/cello/model"
@@ -15,9 +14,6 @@ type supplier struct {
 
 	producerConn *amqp.Connection
 	consumerConn *amqp.Connection
-
-	producers []*producerSupplier
-	consumers []*consumerSupplier
 }
 
 func NewBroker(config *model.Config) (Broker, error) {
@@ -88,8 +84,6 @@ func NewBroker(config *model.Config) (Broker, error) {
 		return nil, err
 	}
 
-	go splr.reconnector()
-
 	return splr, nil
 }
 
@@ -156,40 +150,6 @@ func (splr *supplier) createAndBindQueue(queue, exchange, routingKey string, arg
 	)
 }
 
-func (splr *supplier) reconnector() {
-	for {
-		select {
-		case _, ok := <-splr.producerConn.NotifyClose(make(chan *amqp.Error)):
-			if !ok {
-				return
-			}
-			break
-
-		case _, ok := <-splr.consumerConn.NotifyClose(make(chan *amqp.Error)):
-			if !ok {
-				return
-			}
-			break
-		}
-
-		for {
-			time.Sleep(time.Minute)
-			if err := splr.init(); err != nil {
-				continue
-			}
-
-			for _, c := range splr.consumers {
-				c.recover()
-			}
-			for _, p := range splr.producers {
-				p.recover()
-			}
-
-			break
-		}
-	}
-}
-
 func (splr *supplier) getProducerConn() *amqp.Connection {
 	return splr.producerConn
 }
@@ -200,22 +160,22 @@ func (splr *supplier) getConsumerConn() *amqp.Connection {
 
 func (splr *supplier) NewProducer(exchange, routingKey string, deliveryMode uint8) (Producer, error) {
 	p := &producerSupplier{
-		getConnection: splr.getProducerConn,
-		exchange:      exchange,
-		routingKey:    routingKey,
-		deliveryMode:  deliveryMode,
+		connection:   splr.producerConn,
+		exchange:     exchange,
+		routingKey:   routingKey,
+		deliveryMode: deliveryMode,
 	}
 
 	if err := p.init(); err != nil {
 		return nil, err
 	}
-	splr.producers = append(splr.producers, p)
+
 	return p, nil
 }
 
 func (splr *supplier) NewConsumer(queue, consumer string, autoAck, exclusive bool, preFetchCount int) (Consumer, error) {
 	c := &consumerSupplier{
-		getConnection: splr.getConsumerConn,
+		connection:    splr.consumerConn,
 		queue:         queue,
 		consumer:      consumer,
 		autoAck:       autoAck,
@@ -226,6 +186,6 @@ func (splr *supplier) NewConsumer(queue, consumer string, autoAck, exclusive boo
 	if err := c.init(); err != nil {
 		return nil, err
 	}
-	splr.consumers = append(splr.consumers, c)
+
 	return c, nil
 }
