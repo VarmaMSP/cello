@@ -180,12 +180,12 @@ func (c *ItunesCrawler) pollAndSaveFeedDetails() {
 				Url:      result.FeedUrl,
 			}
 			if err := c.store.Feed().Save(feed); err != nil {
-				c.log.Error().Msg(err.Error())
+				c.log.Error().Str("source_id", feed.SourceId).Msg(err.Error())
 				continue
 			}
 
 			if err := c.importPodcastP.Publish(feed); err != nil {
-				c.log.Error().Msg(err.Error())
+				c.log.Error().Str("source_id", feed.SourceId).Msg(err.Error())
 				continue
 			}
 		}

@@ -24,6 +24,27 @@ type Feed struct {
 	UpdatedAt          int64
 }
 
+// Create a stateless Web Crawler
+type Feed_ struct {
+	Id                 int64
+	Url                string
+	ETag               string
+	LastModified       string
+	RefreshEnabled     int
+	RefreshInterval    int
+	LastRefreshAt      int64
+	LastRefreshComment string
+	NextRefreshAt      int64
+	CreatedAt          int64
+	UpdatedAt          int64
+}
+
+type FeedSource struct {
+	Name      string // Manual, itunes, spotify etc
+	Uri       string // index
+	CreatedAt int64
+}
+
 func (f *Feed) DbColumns() []string {
 	return []string{
 		"id", "source", "source_id", "url", "etag", "last_modified", "refresh_enabled", "refresh_interval", "last_refresh_at", "last_refresh_comment",
