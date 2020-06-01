@@ -137,3 +137,10 @@ func (c *Context) RequireAction() *Context {
 	}
 	return c
 }
+
+func (c *Context) RequireGuestAccount() *Context {
+	if c.Err == nil && c.Params.GuestAccount == nil {
+		c.SetInvalidQueryParam("guest_account")
+	}
+	return c
+}

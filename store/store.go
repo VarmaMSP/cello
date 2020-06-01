@@ -65,8 +65,10 @@ type TaskStore interface {
 
 type UserStore interface {
 	Save(user *model.User) *model.AppError
+	SaveGuestAccount(account *model.GuestAccount) *model.AppError
 	SaveSocialAccount(accountType string, account model.DbModel) *model.AppError
 	Get(userId int64) (*model.User, *model.AppError)
+	GetGuestAccount(id string) (*model.GuestAccount, *model.AppError)
 	GetSocialAccount(accountType, id string) (model.DbModel, *model.AppError)
 }
 

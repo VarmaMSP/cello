@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/util/hashid"
 )
 
@@ -14,20 +15,21 @@ const (
 )
 
 type Params struct {
-	UserId     int64
-	PodcastId  int64
-	EpisodeId  int64
-	EpisodeIds []int64
-	PlaylistId int64
-	ChartId    string
-	Offset     int
-	Limit      int
-	Order      string
-	Query      string
-	Type       string
-	SortBy     string
-	Endpoint   string
-	Action     string
+	UserId       int64
+	PodcastId    int64
+	EpisodeId    int64
+	EpisodeIds   []int64
+	PlaylistId   int64
+	ChartId      string
+	Offset       int
+	Limit        int
+	Order        string
+	Query        string
+	Type         string
+	SortBy       string
+	Endpoint     string
+	Action       string
+	GuestAccount *model.GuestAccount
 }
 
 func ParamsFromRequest(r *http.Request) *Params {
@@ -64,6 +66,10 @@ func (params *Params) LoadFromBody(body map[string]interface{}) {
 				}
 			}
 		}
+	}
+
+	if guestAccount, ok := body["guest_account"].(model.GuestAccount); ok {
+		params.GuestAccount = &guestAccount
 	}
 }
 

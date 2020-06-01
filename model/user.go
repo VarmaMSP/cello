@@ -49,6 +49,16 @@ type FacebookAccount struct {
 	UpdatedAt int64
 }
 
+type GuestAccount struct {
+	Id          string `json:"id"`
+	UserId      int64  `json:"-"`
+	DeviceUuid  string `json:"device_uuid"`
+	DeviceOs    string `json:"device_os"`
+	DeviceModel string `json:"device_model"`
+	CreatedAt   int64  `json:"-"`
+	UpdatedAt   int64  `json:"-"`
+}
+
 type TwitterAccount struct {
 	Id             string
 	UserId         int64
@@ -120,6 +130,20 @@ func (f *FacebookAccount) FieldAddrs() []interface{} {
 	}
 }
 
+func (g *GuestAccount) DbColumns() []string {
+	return []string{
+		"id", "user_id", "device_uuid", "device_os",
+		"device_model", "created_at", "updated_at",
+	}
+}
+
+func (g *GuestAccount) FieldAddrs() []interface{} {
+	return []interface{}{
+		&g.Id, &g.UserId, &g.DeviceUuid, &g.DeviceOs,
+		&g.DeviceModel, &g.CreatedAt, &g.UpdatedAt,
+	}
+}
+
 func (t *TwitterAccount) DbColumns() []string {
 	return []string{
 		"id", "user_id", "name", "screen_name",
@@ -164,6 +188,16 @@ func (f *FacebookAccount) PreSave() {
 
 	if f.UpdatedAt == 0 {
 		f.UpdatedAt = datetime.Unix()
+	}
+}
+
+func (g *GuestAccount) PreSave() {
+	if g.CreatedAt == 0 {
+		g.CreatedAt = datetime.Unix()
+	}
+
+	if g.UpdatedAt == 0 {
+		g.UpdatedAt = datetime.Unix()
 	}
 }
 

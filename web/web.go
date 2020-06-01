@@ -20,6 +20,7 @@ func (w *Web) H(h func(*Context, http.ResponseWriter, *http.Request)) http.Handl
 	})
 }
 
+// H_ returns a handler without session manager wrapped around it
 func (w *Web) H_(h func(*Context, http.ResponseWriter, *http.Request)) http.Handler {
 	return &Handler_{
 		App:        w.App,

@@ -10,6 +10,35 @@ import (
 	"github.com/varmamsp/cello/model"
 )
 
+func (a *App) CreateUserWithGuest(guest *model.GuestAccount) (*model.User, *model.AppError) {
+	if guestAccount, err := a.Store.User().GetGuestAccount(""); err == nil {
+		return a.Store.User().Get(guestAccount.UserId)
+	}
+
+	user := &model.User{
+		Name:         "",
+		Email:        "",
+		Gender:       "",
+		SignInMethod: "GUEST",
+	}
+	if err := a.Store.User().Save(user); err != nil {
+		return nil, err
+	}
+
+	guestAccount := &model.GuestAccount{
+		Id:          guest.Id,
+		UserId:      user.Id,
+		DeviceUuid:  guest.DeviceUuid,
+		DeviceOs:    guest.DeviceOs,
+		DeviceModel: guest.DeviceModel,
+	}
+	if err := a.Store.User().SaveGuestAccount(guestAccount); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
 func (a *App) CreateUserWithGoogle(ctx context.Context) (*model.User, *model.AppError) {
 	googleUser, err := googleLogin.UserFromContext(ctx)
 	if err != nil {

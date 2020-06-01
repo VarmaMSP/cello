@@ -9,6 +9,18 @@ import (
 	"github.com/varmamsp/cello/web"
 )
 
+// For Mobile
+func LoginWithGuest(c *web.Context, w http.ResponseWriter, req *http.Request) {
+	if c.RequireBody(req).RequireGuestAccount(); c.Err != nil {
+		return
+	}
+
+	if user, err := c.App.CreateUserWithGuest(c.Params.GuestAccount); err == nil {
+		c.App.NewSession(req.Context(), user)
+	}
+}
+
+// For Web
 func LoginWithGoogle(c *web.Context, w http.ResponseWriter, req *http.Request) {
 	googleLogin.StateHandler(
 		cookieConfig(c),

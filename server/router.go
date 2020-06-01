@@ -16,12 +16,16 @@ func newRouter(app *app.App) http.Handler {
 	web := &web.Web{App: app}
 	r := httprouter.New()
 
+	// SignIn for Web
 	r.Handler("GET", "/signin/google", web.H_(session.LoginWithGoogle))
 	r.Handler("GET", "/signin/facebook", web.H_(session.LoginWithFacebook))
 	r.Handler("GET", "/signin/twitter", web.H_(session.LoginWithTwitter))
 	r.Handler("GET", "/callback/google", web.H_(session.GoogleLoginCallback))
 	r.Handler("GET", "/callback/facebook", web.H_(session.FacebookLoginCallback))
 	r.Handler("GET", "/callback/twitter", web.H_(session.TwitterLoginCallback))
+
+	// Signin for mobile
+	r.Handler("GET", "/signin/guest", web.H(session.LoginWithGuest))
 
 	r.Handler("GET", "/", web.H(page.Home))
 	r.Handler("GET", "/results", web.H(page.Results))

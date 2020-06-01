@@ -22,6 +22,15 @@ func (s *sqlUserStore) Save(user *model.User) *model.AppError {
 	return nil
 }
 
+func (s *sqlUserStore) SaveGuestAccount(account *model.GuestAccount) *model.AppError {
+	account.PreSave()
+
+	if _, err := s.Insert("guest_account", account); err != nil {
+		return model.New500Error("sql_store.sql_user_store.save_social_account", err.Error(), nil)
+	}
+	return nil
+}
+
 func (s *sqlUserStore) SaveSocialAccount(accountType string, account model.DbModel) *model.AppError {
 	if accountType != "google" && accountType != "facebook" && accountType != "twitter" {
 		return model.New400Error("sql_store.sql_user_store.save_social_account", "Wrong account type", nil)
@@ -64,6 +73,19 @@ func (s *sqlUserStore) GetSocialAccount(accountType, id string) (model.DbModel, 
 	sql := fmt.Sprintf(
 		`SELECT %s FROM %s WHERE Id = '%s'`,
 		cols(account), table, id,
+	)
+
+	if err := s.QueryRow(account.FieldAddrs(), sql); err != nil {
+		return nil, model.New500Error("sql_store.sql_user_store.get_social_account", err.Error(), nil)
+	}
+	return account, nil
+}
+
+func (s *sqlUserStore) GetGuestAccount(id string) (*model.GuestAccount, *model.AppError) {
+	account := &model.GuestAccount{}
+	sql := fmt.Sprintf(
+		`SELECT %s FROM guest_account WHERE id = '%s'`,
+		cols(account), id,
 	)
 
 	if err := s.QueryRow(account.FieldAddrs(), sql); err != nil {
