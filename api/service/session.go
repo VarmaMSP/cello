@@ -9,6 +9,8 @@ import (
 
 func loadSession(c *web.Context, w http.ResponseWriter, req *http.Request) {
 	if c.Session == nil {
+		c.Response.StatusCode = http.StatusOK
+		c.Response.Data = &model.ApiResponseData{}
 		return
 	}
 

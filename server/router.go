@@ -23,9 +23,10 @@ func newRouter(app *app.App) http.Handler {
 	r.Handler("GET", "/callback/google", web.H_(session.GoogleLoginCallback))
 	r.Handler("GET", "/callback/facebook", web.H_(session.FacebookLoginCallback))
 	r.Handler("GET", "/callback/twitter", web.H_(session.TwitterLoginCallback))
-
-	// Signin for mobile
-	r.Handler("GET", "/signin/guest", web.H(session.LoginWithGuest))
+	// SignIn for mobile
+	r.Handler("POST", "/mobile/signin/guest", web.H(session.LoginWithGuest))
+	r.Handler("POST", "/mobile/signin/google", web.H(session.LoginWithGuest))
+	r.Handler("POST", "/mobile/signin/facebook", web.H(session.LoginWithGuest))
 
 	r.Handler("GET", "/", web.H(page.Home))
 	r.Handler("GET", "/results", web.H(page.Results))

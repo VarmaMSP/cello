@@ -11,7 +11,7 @@ import (
 )
 
 func (a *App) CreateUserWithGuest(guest *model.GuestAccount) (*model.User, *model.AppError) {
-	if guestAccount, err := a.Store.User().GetGuestAccount(""); err == nil {
+	if guestAccount, err := a.Store.User().GetGuestAccount(guest.Id); err == nil {
 		return a.Store.User().Get(guestAccount.UserId)
 	}
 

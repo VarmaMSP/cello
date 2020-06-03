@@ -68,8 +68,12 @@ func (params *Params) LoadFromBody(body map[string]interface{}) {
 		}
 	}
 
-	if guestAccount, ok := body["guest_account"].(model.GuestAccount); ok {
-		params.GuestAccount = &guestAccount
+	if guestAccountMap, ok := body["guest_account"].(map[string]interface{}); ok {
+		params.GuestAccount = &model.GuestAccount{
+			Id:          guestAccountMap["id"].(string),
+			DeviceOs:    guestAccountMap["device_os"].(string),
+			DeviceModel: guestAccountMap["device_model"].(string),
+		}
 	}
 }
 

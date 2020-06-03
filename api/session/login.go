@@ -6,6 +6,7 @@ import (
 	facebookLogin "github.com/dghubble/gologin/v2/facebook"
 	googleLogin "github.com/dghubble/gologin/v2/google"
 	twitterLogin "github.com/dghubble/gologin/v2/twitter"
+	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/web"
 )
 
@@ -15,8 +16,13 @@ func LoginWithGuest(c *web.Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if user, err := c.App.CreateUserWithGuest(c.Params.GuestAccount); err == nil {
+	if user, err := c.App.CreateUserWithGuest(c.Params.GuestAccount); err != nil {
+		c.Err = err
+		return
+	} else {
 		c.App.NewSession(req.Context(), user)
+		c.Response.StatusCode = http.StatusOK
+		c.Response.Data = &model.ApiResponseData{}
 	}
 }
 
