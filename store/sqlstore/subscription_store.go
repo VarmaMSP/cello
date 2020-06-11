@@ -44,6 +44,21 @@ func (s *sqlSubscriptionStore) GetByUser(userId int64) (res []*model.Subscriptio
 	return
 }
 
+func (s *sqlSubscriptionStore) IsUserSubscribed(userId int64, podcastId int64) (bool, *model.AppError) {
+	res := &model.Subscription{}
+	sql := fmt.Sprintf(
+		`SELECT %s FROM subscription WHERE user_id = %d AND podcast_id = %d`,
+		cols(res), userId, podcastId,
+	)
+
+	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+		// err == sql.ErrNoRows
+		return false, nil
+	}
+
+	return true, nil
+}
+
 func (s *sqlSubscriptionStore) Delete(userId int64, podcastId int64) *model.AppError {
 	sql := fmt.Sprintf(
 		`DELETE FROM subscription WHERE podcast_id = %d AND user_id = %d`,

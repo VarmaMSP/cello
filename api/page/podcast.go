@@ -44,6 +44,10 @@ func Podcast(c *web.Context, w http.ResponseWriter, req *http.Request) {
 	}
 	podcast.LoadFeedDetails(feed)
 
+	if c.Params.MobileClient && c.Session != nil && c.Session.UserId != 0 {
+		podcast.IsSubscribed, _ = c.App.IsUserSubscribedToPodcast(c.Session.UserId, c.Params.PodcastId)
+	}
+
 	categoryIds := make([]int64, len(podcast.Categories))
 	for i, category := range podcast.Categories {
 		categoryIds[i] = category.CategoryId

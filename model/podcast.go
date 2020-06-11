@@ -41,18 +41,16 @@ type Podcast struct {
 	EarliestEpisodePubDate string `json:"earliest_episode_pub_date,omitempty"`
 	CreatedAt              int64  `json:"-"`
 	UpdatedAt              int64  `json:"-"`
-
 	// For search
 	TitleHighlighted       string `json:"title_highlighted,omitempty"`
 	AuthorHighlighted      string `json:"author_highlighted,omitempty"`
 	DescriptionHighlighted string `json:"description_highlighted,omitempty"`
-
 	// From Feed
 	FeedUrl           string `json:"feed_url,omitempty"`
 	FeedLastRefreshAt string `json:"feed_last_refresh_at,omitempty"`
-
 	// derived
-	Categories []*PodcastCategory `json:"categories,omitempty"`
+	IsSubscribed bool               `json:"is_subscribed,omitempty"`
+	Categories   []*PodcastCategory `json:"categories,omitempty"`
 }
 
 type PodcastForIndexing struct {

@@ -30,6 +30,7 @@ type Params struct {
 	Endpoint     string
 	Action       string
 	GuestAccount *model.GuestAccount
+	MobileClient bool
 }
 
 func ParamsFromRequest(r *http.Request) *Params {
@@ -130,4 +131,8 @@ func (params *Params) LoadFromRequest(r *http.Request) {
 	params.Endpoint = queryProps.Get("endpoint")
 
 	params.Action = queryProps.Get("action")
+
+	if r.Header.Get("X-PHENOPOD-CLIENT") == "android" {
+		params.MobileClient = true
+	}
 }
