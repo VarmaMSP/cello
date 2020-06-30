@@ -15,22 +15,24 @@ const (
 )
 
 type Params struct {
-	UserId       int64
-	PodcastId    int64
-	EpisodeId    int64
-	EpisodeIds   []int64
-	PlaylistId   int64
-	ChartId      string
-	Offset       int
-	Limit        int
-	Order        string
-	Query        string
-	Type         string
-	SortBy       string
-	Endpoint     string
-	Action       string
-	GuestAccount *model.GuestAccount
-	MobileClient bool
+	UserId              int64
+	PodcastId           int64
+	EpisodeId           int64
+	EpisodeIds          []int64
+	PlaylistId          int64
+	ChartId             string
+	Offset              int
+	Limit               int
+	Order               string
+	Query               string
+	Type                string
+	SortBy              string
+	Endpoint            string
+	Action              string
+	GoogleIdToken       string
+	FacebookAccessToken string
+	GuestAccount        *model.GuestAccount
+	MobileClient        bool
 }
 
 func ParamsFromRequest(r *http.Request) *Params {
@@ -69,9 +71,18 @@ func (params *Params) LoadFromBody(body map[string]interface{}) {
 		}
 	}
 
+	if googleIdToken, ok := body["google_id_token"].(string); ok {
+		params.GoogleIdToken = googleIdToken
+	}
+
+	if facebookAccessToken, ok := body["facebook_access_token"].(string); ok {
+		params.FacebookAccessToken = facebookAccessToken
+	}
+
 	if guestAccountMap, ok := body["guest_account"].(map[string]interface{}); ok {
 		params.GuestAccount = &model.GuestAccount{
 			Id:          guestAccountMap["id"].(string),
+			DeviceUuid:  guestAccountMap["device_uuid"].(string),
 			DeviceOs:    guestAccountMap["device_os"].(string),
 			DeviceModel: guestAccountMap["device_model"].(string),
 		}

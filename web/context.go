@@ -138,6 +138,20 @@ func (c *Context) RequireAction() *Context {
 	return c
 }
 
+func (c *Context) RequireGoogleIdToken() *Context {
+	if c.Err == nil && c.Params.GoogleIdToken == "" {
+		c.SetInvalidBodyParam("google_id_token")
+	}
+	return c
+}
+
+func (c *Context) RequireFacebookAccessToken() *Context {
+	if c.Err == nil && c.Params.FacebookAccessToken == "" {
+		c.SetInvalidBodyParam("facebook_access_token")
+	}
+	return c
+}
+
 func (c *Context) RequireGuestAccount() *Context {
 	if c.Err == nil && c.Params.GuestAccount == nil {
 		c.SetInvalidQueryParam("guest_account")

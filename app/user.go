@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	facebookLogin "github.com/dghubble/gologin/v2/facebook"
-	googleLogin "github.com/dghubble/gologin/v2/google"
 	twitterLogin "github.com/dghubble/gologin/v2/twitter"
 	"github.com/varmamsp/cello/model"
+	google "google.golang.org/api/oauth2/v2"
 )
 
 func (a *App) CreateUserWithGuest(guest *model.GuestAccount) (*model.User, *model.AppError) {
@@ -39,12 +39,7 @@ func (a *App) CreateUserWithGuest(guest *model.GuestAccount) (*model.User, *mode
 	return user, nil
 }
 
-func (a *App) CreateUserWithGoogle(ctx context.Context) (*model.User, *model.AppError) {
-	googleUser, err := googleLogin.UserFromContext(ctx)
-	if err != nil {
-		return nil, model.NewAppError("app.user.create_user_with_google", err.Error(), http.StatusInternalServerError, nil)
-	}
-
+func (a *App) CreateUserWithGoogle(googleUser *google.Userinfoplus) (*model.User, *model.AppError) {
 	// return user if exists
 	if account, err := a.Store.User().GetSocialAccount("google", googleUser.Id); err == nil {
 		googleAccount, _ := account.(*model.GoogleAccount)
@@ -78,6 +73,26 @@ func (a *App) CreateUserWithGoogle(ctx context.Context) (*model.User, *model.App
 	}
 
 	return user, nil
+}
+
+func (a *App) LinkUserToGoogle(user *model.User, googleUser *google.Userinfoplus) *model.AppError {
+	googleAccount := &model.GoogleAccount{
+		Id:         googleUser.Id,
+		UserId:     user.Id,
+		Email:      googleUser.Email,
+		FamilyName: googleUser.FamilyName,
+		Gender:     googleUser.Gender,
+		GivenName:  googleUser.GivenName,
+		Link:       googleUser.Link,
+		Locale:     googleUser.Locale,
+		Name:       googleUser.Name,
+		Picture:    googleUser.Picture,
+	}
+	if err := a.Store.User().SaveSocialAccount("google", googleAccount); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (a *App) CreateUserWithFacebook(ctx context.Context) (*model.User, *model.AppError) {

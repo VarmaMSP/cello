@@ -11,6 +11,7 @@ require (
 	github.com/dghubble/gologin v2.1.0+incompatible // indirect
 	github.com/dghubble/gologin/v2 v2.2.0
 	github.com/dghubble/oauth1 v0.6.0
+	github.com/futurenda/google-auth-id-token-verifier v0.0.0-20170311140316-2a5b89f28b7e
 	github.com/go-http-utils/headers v0.0.0-20161116095340-dd89efed1674
 	github.com/go-ini/ini v1.51.0 // indirect
 	github.com/go-playground/validator v9.30.0+incompatible // indirect
@@ -41,6 +42,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	golang.org/x/sys v0.0.0-20190812172437-4e8604ab3aff // indirect
 	gonum.org/v1/gonum v0.6.2 // indirect
+	google.golang.org/api v0.7.0
 	google.golang.org/appengine v1.6.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/jdkato/prose.v2 v2.0.0-20190814032740-822d591a158c
