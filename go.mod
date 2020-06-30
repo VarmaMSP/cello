@@ -20,6 +20,7 @@ require (
 	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/grokify/html-strip-tags-go v0.0.0-20190424092004-025bd760b278
+	github.com/huandu/facebook/v2 v2.5.2
 	github.com/julienschmidt/httprouter v1.2.0
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mingrammer/commonregex v1.0.1 // indirect

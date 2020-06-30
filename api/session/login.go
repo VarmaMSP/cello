@@ -1,12 +1,14 @@
 package session
 
 import (
+	"errors"
 	"net/http"
 
 	facebookLogin "github.com/dghubble/gologin/v2/facebook"
 	googleLogin "github.com/dghubble/gologin/v2/google"
 	twitterLogin "github.com/dghubble/gologin/v2/twitter"
 	googleAuthIDTokenVerifier "github.com/futurenda/google-auth-id-token-verifier"
+	facebook "github.com/huandu/facebook/v2"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/web"
 	google "google.golang.org/api/oauth2/v2"
@@ -57,7 +59,7 @@ func LoginWithGoogleMobile(c *web.Context, w http.ResponseWriter, req *http.Requ
 	if c.Params.GuestAccount != nil {
 		if user, err := c.App.CreateUserWithGuest(c.Params.GuestAccount); err != nil {
 			c.Err = err
-		} else if err := c.App.LinkUserToGoogle(user, googleUser); err != nil {
+		} else if err := c.App.LinkGoogleToUser(user, googleUser); err != nil {
 			c.Err = err
 		} else {
 			c.App.NewSession(req.Context(), user)
@@ -78,6 +80,42 @@ func LoginWithGoogleMobile(c *web.Context, w http.ResponseWriter, req *http.Requ
 func LoginWithFacebookMobile(c *web.Context, w http.ResponseWriter, req *http.Request) {
 	if c.RequireBody(req).RequireFacebookAccessToken(); c.Err != nil {
 		return
+	}
+
+	res, err := facebook.Get("/me", facebook.Params{
+		"fields":       "name,email",
+		"access_token": c.Params.FacebookAccessToken,
+	})
+	if err != nil {
+		c.SetError(errors.New("Invalid access token"))
+	}
+	println(res)
+
+	var id string
+	var name string
+	var email string
+	res.DecodeField("id", &id)
+	res.DecodeField("name", &name)
+	res.DecodeField("email", &email)
+
+	if c.Params.GuestAccount != nil {
+		if user, err := c.App.CreateUserWithGuest(c.Params.GuestAccount); err != nil {
+			c.Err = err
+		} else if err := c.App.LinkFacebookToUser(user, id, name, email); err != nil {
+			c.Err = err
+		} else {
+			c.App.NewSession(req.Context(), user)
+			c.Response.StatusCode = http.StatusOK
+			c.Response.Data = &model.ApiResponseData{}
+		}
+	} else {
+		if user, err := c.App.CreateUserWithFacebook(id, name, email); err != nil {
+			c.Err = err
+		} else {
+			c.App.NewSession(req.Context(), user)
+			c.Response.StatusCode = http.StatusOK
+			c.Response.Data = &model.ApiResponseData{}
+		}
 	}
 }
 
@@ -111,7 +149,7 @@ func GoogleLoginCallback(c *web.Context, w http.ResponseWriter, req *http.Reques
 						c.SetError(err)
 						return
 					} else if user, err := c.App.CreateUserWithGoogle(googleUser); err != nil {
-						// Do nothing, just redirect
+						// TODO: Handle failure instead of just redirecting the user back to site
 					} else {
 						c.App.NewSession(req.Context(), user)
 					}
@@ -132,7 +170,12 @@ func FacebookLoginCallback(c *web.Context, w http.ResponseWriter, req *http.Requ
 			facebookOAuthConfig(c),
 			c.App.SessionManager.LoadAndSave(
 				http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-					if user, err := c.App.CreateUserWithFacebook(req.Context()); err == nil {
+					if fbUser, err := facebookLogin.UserFromContext(req.Context()); err != nil {
+						c.SetError(err)
+						return
+					} else if user, err := c.App.CreateUserWithFacebook(fbUser.ID, fbUser.Name, fbUser.Email); err != nil {
+						// TODO: Handle failure instead of just redirecting the user back to site
+					} else {
 						c.App.NewSession(req.Context(), user)
 					}
 

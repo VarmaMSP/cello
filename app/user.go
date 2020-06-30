@@ -2,9 +2,7 @@ package app
 
 import (
 	"context"
-	"net/http"
 
-	facebookLogin "github.com/dghubble/gologin/v2/facebook"
 	twitterLogin "github.com/dghubble/gologin/v2/twitter"
 	"github.com/varmamsp/cello/model"
 	google "google.golang.org/api/oauth2/v2"
@@ -75,7 +73,7 @@ func (a *App) CreateUserWithGoogle(googleUser *google.Userinfoplus) (*model.User
 	return user, nil
 }
 
-func (a *App) LinkUserToGoogle(user *model.User, googleUser *google.Userinfoplus) *model.AppError {
+func (a *App) LinkGoogleToUser(user *model.User, googleUser *google.Userinfoplus) *model.AppError {
 	googleAccount := &model.GoogleAccount{
 		Id:         googleUser.Id,
 		UserId:     user.Id,
@@ -95,21 +93,16 @@ func (a *App) LinkUserToGoogle(user *model.User, googleUser *google.Userinfoplus
 	return nil
 }
 
-func (a *App) CreateUserWithFacebook(ctx context.Context) (*model.User, *model.AppError) {
-	facebookUser, err := facebookLogin.UserFromContext(ctx)
-	if err != nil {
-		return nil, model.NewAppError("app.user.create_user_with_faceboook", err.Error(), http.StatusInternalServerError, nil)
-	}
-
+func (a *App) CreateUserWithFacebook(facebookId, facebookName, facebookEmail string) (*model.User, *model.AppError) {
 	// Check if user already exists
-	if account, err := a.Store.User().GetSocialAccount("facebook", facebookUser.ID); err == nil {
+	if account, err := a.Store.User().GetSocialAccount("facebook", facebookId); err == nil {
 		facebookAccount, _ := account.(*model.FacebookAccount)
 		return a.Store.User().Get(facebookAccount.UserId)
 	}
 
 	user := &model.User{
-		Name:         facebookUser.Name,
-		Email:        facebookUser.Email,
+		Name:         facebookName,
+		Email:        facebookEmail,
 		SignInMethod: "FACEBOOK",
 	}
 	if err := a.Store.User().Save(user); err != nil {
@@ -117,16 +110,30 @@ func (a *App) CreateUserWithFacebook(ctx context.Context) (*model.User, *model.A
 	}
 
 	facebookAccount := &model.FacebookAccount{
-		Id:     facebookUser.ID,
+		Id:     facebookId,
 		UserId: user.Id,
-		Name:   facebookUser.Name,
-		Email:  facebookUser.Email,
+		Name:   facebookName,
+		Email:  facebookEmail,
 	}
 	if err := a.Store.User().SaveSocialAccount("facebook", facebookAccount); err != nil {
 		return nil, err
 	}
 
 	return user, nil
+}
+
+func (a *App) LinkFacebookToUser(user *model.User, facebookId, facebookName, facebookEmail string) *model.AppError {
+	facebookAccount := &model.FacebookAccount{
+		Id:     facebookId,
+		UserId: user.Id,
+		Name:   facebookName,
+		Email:  facebookEmail,
+	}
+	if err := a.Store.User().SaveSocialAccount("facebook", facebookAccount); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (a *App) CreateUserWithTwitter(ctx context.Context) (*model.User, *model.AppError) {

@@ -26,7 +26,7 @@ func newRouter(app *app.App) http.Handler {
 	// SignIn for mobile
 	r.Handler("POST", "/mobile/signin/guest", web.H(session.LoginWithGuest))
 	r.Handler("POST", "/mobile/signin/google", web.H(session.LoginWithGoogleMobile))
-	r.Handler("POST", "/mobile/signin/facebook", web.H(session.LoginWithGuest))
+	r.Handler("POST", "/mobile/signin/facebook", web.H(session.LoginWithFacebookMobile))
 
 	r.Handler("GET", "/", web.H(page.Home))
 	r.Handler("GET", "/results", web.H(page.Results))
