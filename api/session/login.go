@@ -1,7 +1,6 @@
 package session
 
 import (
-	"errors"
 	"net/http"
 
 	facebookLogin "github.com/dghubble/gologin/v2/facebook"
@@ -21,7 +20,6 @@ func LoginWithGuest(c *web.Context, w http.ResponseWriter, req *http.Request) {
 
 	if user, err := c.App.CreateUserWithGuest(c.Params.GuestAccount); err != nil {
 		c.Err = err
-		return
 	} else {
 		c.App.NewSession(req.Context(), user)
 		c.Response.StatusCode = http.StatusOK
@@ -35,8 +33,8 @@ func LoginWithGoogleMobile(c *web.Context, w http.ResponseWriter, req *http.Requ
 	}
 
 	v := googleAuthIDTokenVerifier.Verifier{}
-	if err := v.VerifyIDToken(c.Params.GoogleIdToken, []string{}); err != nil {
-		c.SetError(errors.New("Bad id token"))
+	if err := v.VerifyIDToken(c.Params.GoogleIdToken, []string{googleOAuthConfig(c).ClientID}); err != nil {
+		c.SetError(err)
 		return
 	}
 
@@ -63,12 +61,16 @@ func LoginWithGoogleMobile(c *web.Context, w http.ResponseWriter, req *http.Requ
 			c.Err = err
 		} else {
 			c.App.NewSession(req.Context(), user)
+			c.Response.StatusCode = http.StatusOK
+			c.Response.Data = &model.ApiResponseData{}
 		}
 	} else {
 		if user, err := c.App.CreateUserWithGoogle(googleUser); err != nil {
 			c.SetError(err)
 		} else {
 			c.App.NewSession(req.Context(), user)
+			c.Response.StatusCode = http.StatusOK
+			c.Response.Data = &model.ApiResponseData{}
 		}
 	}
 }
