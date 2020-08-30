@@ -8,11 +8,11 @@ import (
 )
 
 type PlaylistMember struct {
-	PlaylistId int64
-	EpisodeId  int64
-	Position   int
-	CreatedAt  int64
-	UpdatedAt  int64
+	PlaylistId int64 `db:"playlist_id"`
+	EpisodeId  int64 `db:"episode_id"`
+	Position   int   `db:"position"`
+	CreatedAt  int64 `db:"created_at"`
+	UpdatedAt  int64 `db:"updated_at"`
 }
 
 func (p *PlaylistMember) MarshalJSON() ([]byte, error) {

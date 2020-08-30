@@ -26,14 +26,14 @@ type Job interface {
 }
 
 type Task struct {
-	Id        int64
-	Name      string
-	Type      string
-	Interval  int
-	NextRunAt int64
-	Active    int
-	CreatedAt int64
-	UpdatedAt int64
+	Id        int64  `db:"id"`
+	Name      string `db:"name"`
+	Type      string `db:"type"`
+	Interval  int    `db:"interval"`
+	NextRunAt int64  `db:"next_run_at"`
+	Active    int    `db:"active"`
+	CreatedAt int64  `db:"created_at"`
+	UpdatedAt int64  `db:"updated_at"`
 }
 
 func (t *Task) DbColumns() []string {

@@ -9,19 +9,19 @@ import (
 )
 
 type Feed struct {
-	Id                 int64
-	Source             string
-	SourceId           string
-	Url                string
-	ETag               string
-	LastModified       string
-	RefreshEnabled     int
-	RefreshInterval    int
-	LastRefreshAt      int64
-	LastRefreshComment string
-	NextRefreshAt      int64
-	CreatedAt          int64
-	UpdatedAt          int64
+	Id                 int64  `db:"id"`
+	Source             string `db:"source"`
+	SourceId           string `db:"source_id"`
+	Url                string `db:"url"`
+	ETag               string `db:"etag"`
+	LastModified       string `db:"last_modified"`
+	RefreshEnabled     int    `db:"refresh_enabled"`
+	RefreshInterval    int    `db:"refresh_interval"`
+	LastRefreshAt      int64  `db:"last_refresh_interval"`
+	LastRefreshComment string `db:"last_refresh_comment"`
+	NextRefreshAt      int64  `db:"next_refresh_at"`
+	CreatedAt          int64  `db:"created_at"`
+	UpdatedAt          int64  `db:"updated_at"`
 }
 
 func (f *Feed) DbColumns() []string {

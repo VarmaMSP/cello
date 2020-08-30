@@ -20,37 +20,40 @@ const (
 
 // https://help.apple.com/itc/podcasts_connect/#/itcb54353390
 type Podcast struct {
-	Id                     int64  `json:"id"`
-	Title                  string `json:"title"`
-	Summary                string `json:"summary,omitempty"`
-	Description            string `json:"description,omitempty"`
-	ImagePath              string `json:"-"`
-	Language               string `json:"language,omitempty"`
-	Explicit               int    `json:"explicit,omitempty"`
-	Author                 string `json:"author,omitempty"`
-	Type                   string `json:"type,omitempty"`
-	Block                  int    `json:"-"`
-	Complete               int    `json:"complete,omitempty"`
-	Link                   string `json:"link,omitempty"`
-	OwnerName              string `json:"-"`
-	OwnerEmail             string `json:"-"`
-	Copyright              string `json:"copyright,omitempty"`
-	TotalEpisodes          int    `json:"total_episodes,omitempty"`
-	TotalSeasons           int    `json:"total_seasons,omitempty"`
-	LastestEpisodePubDate  string `json:"-"`
-	EarliestEpisodePubDate string `json:"earliest_episode_pub_date,omitempty"`
-	CreatedAt              int64  `json:"-"`
-	UpdatedAt              int64  `json:"-"`
+	Id                     int64  `json:"id"                                  db:"id"`
+	Title                  string `json:"title"                               db:"title"`
+	Summary                string `json:"summary,omitempty"                   db:"summary"`
+	Description            string `json:"description,omitempty"               db:"description"`
+	ImagePath              string `json:"-"                                   db:"image_path"`
+	Language               string `json:"language,omitempty"                  db:"language"`
+	Explicit               int    `json:"explicit,omitempty"                  db:"explicit"`
+	Author                 string `json:"author,omitempty"                    db:"author"`
+	Type                   string `json:"type,omitempty"                      db:"type"`
+	Block                  int    `json:"-"                                   db:"block"`
+	Complete               int    `json:"complete,omitempty"                  db:"complete"`
+	Link                   string `json:"link,omitempty"                      db:"link"`
+	OwnerName              string `json:"-"                                   db:"owner_name"`
+	OwnerEmail             string `json:"-"                                   db:"owner_email"`
+	Copyright              string `json:"copyright,omitempty"                 db:"copyright"`
+	TotalEpisodes          int    `json:"total_episodes,omitempty"            db:"total_episodes"`
+	TotalSeasons           int    `json:"total_seasons,omitempty"             db:"total_seasons"`
+	LastestEpisodePubDate  string `json:"-"                                   db:"latest_episode_pub_date"`
+	EarliestEpisodePubDate string `json:"earliest_episode_pub_date,omitempty" db:"earliest_episode_pub_date"`
+	CreatedAt              int64  `json:"-"                                   db:"created_at"`
+	UpdatedAt              int64  `json:"-"                                   db:"updated_at"`
+
 	// For search
-	TitleHighlighted       string `json:"title_highlighted,omitempty"`
-	AuthorHighlighted      string `json:"author_highlighted,omitempty"`
-	DescriptionHighlighted string `json:"description_highlighted,omitempty"`
+	TitleHighlighted       string `json:"title_highlighted,omitempty"       db:"-"`
+	AuthorHighlighted      string `json:"author_highlighted,omitempty"      db:"-"`
+	DescriptionHighlighted string `json:"description_highlighted,omitempty" db:"-"`
+
 	// From Feed
-	FeedUrl           string `json:"feed_url,omitempty"`
-	FeedLastRefreshAt string `json:"feed_last_refresh_at,omitempty"`
+	FeedUrl           string `json:"feed_url,omitempty"             db:"-"`
+	FeedLastRefreshAt string `json:"feed_last_refresh_at,omitempty" db:"-"`
+
 	// derived
-	IsSubscribed bool               `json:"is_subscribed,omitempty"`
-	Categories   []*PodcastCategory `json:"categories,omitempty"`
+	IsSubscribed bool               `json:"is_subscribed,omitempty" db:"-"`
+	Categories   []*PodcastCategory `json:"categories,omitempty"    db:"-"`
 }
 
 type PodcastForIndexing struct {

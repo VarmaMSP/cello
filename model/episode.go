@@ -40,9 +40,11 @@ type Episode struct {
 	Block       int    `json:"-"                     db:"block"`
 	CreatedAt   int64  `json:"-"                     db:"created_at"`
 	UpdatedAt   int64  `json:"-"                     db:"updated_at"`
-	// Highligted fields for search
+
+	// From Search
 	TitleHighlighted       string `json:"title_highlighted,omitempty"        db:"-"`
 	DescriptionHighlighted string `json:"description_highlighted,omitempty"  db:"-"`
+
 	// Derived
 	Progress     float64 `json:"progress,omitempty"        db:"-"`
 	LastPlayedAt string  `json:"last_played_at,omitempty"  db:"-"`

@@ -33,7 +33,8 @@ type Broker interface {
 	// Query runs given sql and copies it to copyTo addresses
 	QueryRow(copyTo []interface{}, sql string, values ...interface{}) error
 
+	// Runs a query and copy results to desctination
 	Query_(dest interface{}, stmt *sqlf.Stmt, options ...QueryOption) error
-
+	// Runs a query that returns a single row and copy it to destination
 	QueryRow_(dest interface{}, stmt *sqlf.Stmt, options ...QueryOption) error
 }

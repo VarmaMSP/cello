@@ -8,18 +8,18 @@ import (
 )
 
 type Playlist struct {
-	Id           int64  `json:"id"`
-	UserId       int64  `json:"user_id"`
-	Title        string `json:"title"`
-	Description  string `json:"description,omitempty"`
-	Privacy      string `json:"privacy,omitempty"`
-	EpisodeCount int    `json:"episode_count,omitempty"`
-	PreviewImage string `json:"preview_image,omitempty"`
-	CreatedAt    int64  `json:"-"`
-	UpdatedAt    int64  `json:"updated_at"`
+	Id           int64  `json:"id"                      db:"id"`
+	UserId       int64  `json:"user_id"                 db:"user_id"`
+	Title        string `json:"title"                   db:"title"`
+	Description  string `json:"description,omitempty"   db:"description"`
+	Privacy      string `json:"privacy,omitempty"       db:"privacy"`
+	EpisodeCount int    `json:"episode_count,omitempty" db:"episode_count"`
+	PreviewImage string `json:"preview_image,omitempty" db:"preview_image"`
+	CreatedAt    int64  `json:"-"                       db:"created_at"`
+	UpdatedAt    int64  `json:"updated_at"              db:"updated_at"`
 
 	// Derived
-	Members []*PlaylistMember `json:"members"`
+	Members []*PlaylistMember `json:"members" db:"-"`
 }
 
 func (p *Playlist) MarshalJSON() ([]byte, error) {
