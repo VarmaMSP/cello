@@ -1,30 +1,30 @@
 package sqldb
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	"github.com/varmamsp/cello/model"
 )
 
 type supplier struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
 func NewBroker(config *model.Config) (Broker, error) {
-	db, err := sql.Open("mysql", makeMysqlDSN(config))
+	db, err := sqlx.Connect("mysql", makeMysqlDSN(config))
 	if err != nil {
 		return nil, err
 	}
-	if err := db.Ping(); err != nil {
-		return nil, err
-	}
-
 	return &supplier{db: db}, nil
 }
 
-func (splr *supplier) C() *sql.DB {
+func (splr *supplier) C() *sqlx.DB {
+	return splr.db
+}
+
+func (splr *supplier) GetMaster() *sqlx.DB {
 	return splr.db
 }
 

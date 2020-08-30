@@ -21,7 +21,7 @@ func NewSqlStore(broker sqldb.Broker) (store.Store, error) {
 	s := &sqlStore{}
 	s.feed = &sqlFeedStore{Broker: broker}
 	s.podcast = &sqlPodcastStore{Broker: broker}
-	s.episode = &sqlEpisodeStore{Broker: broker}
+	s.episode = newSqlEpisodeStore(broker)
 	s.category = &sqlCategoryStore{Broker: broker}
 	s.task = &sqlTaskStore{Broker: broker}
 	s.user = &sqlUserStore{Broker: broker}

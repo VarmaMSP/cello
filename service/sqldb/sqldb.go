@@ -3,6 +3,8 @@ package sqldb
 import (
 	"database/sql"
 
+	"github.com/jmoiron/sqlx"
+	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 )
 
@@ -10,7 +12,10 @@ import (
 // the underling Mysql handle.
 type Broker interface {
 	// C returns underlying db handle.
-	C() *sql.DB
+	C() *sqlx.DB
+
+	// Returns master connection
+	GetMaster() *sqlx.DB
 
 	// Insert runs insert query for table without a autso generated PK.
 	Insert(table string, item model.DbModel) (sql.Result, error)
@@ -27,4 +32,8 @@ type Broker interface {
 	Query(copyTo func() []interface{}, sql string, values ...interface{}) error
 	// Query runs given sql and copies it to copyTo addresses
 	QueryRow(copyTo []interface{}, sql string, values ...interface{}) error
+
+	Query_(dest interface{}, stmt *sqlf.Stmt, options ...QueryOption) error
+
+	QueryRow_(dest interface{}, stmt *sqlf.Stmt, options ...QueryOption) error
 }
