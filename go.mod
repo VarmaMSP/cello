@@ -21,7 +21,9 @@ require (
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/grokify/html-strip-tags-go v0.0.0-20190424092004-025bd760b278
 	github.com/huandu/facebook/v2 v2.5.2
+	github.com/jmoiron/sqlx v1.2.0
 	github.com/julienschmidt/httprouter v1.2.0
+	github.com/leporo/sqlf v1.1.1
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mingrammer/commonregex v1.0.1 // indirect
 	github.com/minio/minio-go v6.0.14+incompatible // indirect
