@@ -1,8 +1,7 @@
 package sqlstore
 
 import (
-	"fmt"
-
+	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
 )
@@ -11,52 +10,49 @@ type sqlCategoryStore struct {
 	sqldb.Broker
 }
 
-func (s *sqlCategoryStore) Get(categoryId int64) (*model.Category, *model.AppError) {
-	res := &model.Category{}
-	sql := fmt.Sprintf(
-		`SELECT %s FROM category WHERE id = %d`,
-		cols(res), categoryId,
-	)
+func newSqlCategoryStore(broker sqldb.Broker) *sqlCategoryStore {
+	return &sqlCategoryStore{
+		Broker: broker,
+	}
+}
 
-	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+func (s *sqlCategoryStore) Get(categoryId int64) (*model.Category, *model.AppError) {
+	query := sqlf.Select("category.*").
+		From("category").
+		Where("id = ?", categoryId)
+
+	var category model.Category
+	if err := s.QueryRow_(&category, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_category_store.get", err.Error(), nil)
 	}
-	return res, nil
+	return &category, nil
 }
 
 func (s *sqlCategoryStore) GetAll() (res []*model.Category, appE *model.AppError) {
-	sql := fmt.Sprintf(`SELECT %s FROM category`, cols(&model.Category{}))
-	copyTo := func() []interface{} {
-		tmp := &model.Category{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
+	query := sqlf.Select("category.*").
+		From("category")
 
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.New500Error("sql_store.sql_category_store.get_all", err.Error(), nil)
+	var categories []*model.Category
+	if err := s.Query_(&categories, query); err != nil {
+		return nil, model.New500Error("sql_store.sql_category_store.get_all", err.Error(), nil)
 	}
-	return
+	return categories, nil
 }
 
-func (s *sqlCategoryStore) GetByIds(categoryIds []int64) (res []*model.Category, appE *model.AppError) {
+func (s *sqlCategoryStore) GetByIds(categoryIds []int64) ([]*model.Category, *model.AppError) {
 	if len(categoryIds) == 0 {
-		return
+		return []*model.Category{}, nil
 	}
 
-	sql := fmt.Sprintf(
-		`SELECT %s FROM category WHERE id IN (%s)`,
-		cols(&model.Category{}), joinInt64s(categoryIds),
-	)
-	copyTo := func() []interface{} {
-		tmp := &model.Category{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
+	query := sqlf.Select("category.*").
+		From("category").
+		Where("id IN (?)", categoryIds)
 
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.New500Error("sql_store.sql_category_store.get_by_ids", err.Error(), nil)
+	var categories []*model.Category
+	if err := s.Query_(&categories, query, sqldb.ExpandVars); err != nil {
+		return nil, model.New500Error("sql_store.sql_category_store.get_by_ids", err.Error(), nil)
 	}
-	return
+	return categories, nil
 }
 
 func (s *sqlCategoryStore) SavePodcastCategory(pCategory *model.PodcastCategory) *model.AppError {
@@ -68,19 +64,14 @@ func (s *sqlCategoryStore) SavePodcastCategory(pCategory *model.PodcastCategory)
 	return nil
 }
 
-func (s *sqlCategoryStore) GetPodcastCategories(podcastId int64) (res []*model.PodcastCategory, appE *model.AppError) {
-	sql := fmt.Sprintf(
-		`SELECT %s FROM podcast_category WHERE podcast_id = %d`,
-		cols(&model.PodcastCategory{}), podcastId,
-	)
-	copyTo := func() []interface{} {
-		tmp := &model.PodcastCategory{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
+func (s *sqlCategoryStore) GetPodcastCategories(podcastId int64) ([]*model.PodcastCategory, *model.AppError) {
+	query := sqlf.Select("podcast_category.*").
+		From("podcast_category").
+		Where("podcast_id = ?", podcastId)
 
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.New500Error("sql_store.sql_category_store.get_podcast_categories", err.Error(), nil)
+	var podcastCategories []*model.PodcastCategory
+	if err := s.Query_(&podcastCategories, query); err != nil {
+		return nil, model.New500Error("sql_store.sql_category_store.get_podcast_categories", err.Error(), nil)
 	}
-	return
+	return podcastCategories, nil
 }

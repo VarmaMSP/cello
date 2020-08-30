@@ -38,7 +38,7 @@ func (splr *supplier) Query_(dest interface{}, stmt *sqlf.Stmt, options ...Query
 
 	if doesOptionExist(ExpandVars, options) {
 		var err error
-		if sql, args, err = sqlx.In(sql, args); err == nil {
+		if sql, args, err = sqlx.In(sql, args...); err != nil {
 			return err
 		}
 	}
@@ -52,7 +52,7 @@ func (splr *supplier) QueryRow_(dest interface{}, stmt *sqlf.Stmt, options ...Qu
 
 	if doesOptionExist(ExpandVars, options) {
 		var err error
-		if sql, args, err = sqlx.In(sql, args); err == nil {
+		if sql, args, err = sqlx.In(sql, args...); err != nil {
 			return err
 		}
 	}

@@ -7,14 +7,14 @@ import (
 )
 
 type Category struct {
-	Id       int64  `json:"id"`
-	Name     string `json:"name"`
-	ParentId int64  `json:"parent_id"`
+	Id       int64  `json:"id"         db:"id"`
+	Name     string `json:"name"       db:"name"`
+	ParentId int64  `json:"parent_id"  db:"parent_id"`
 }
 
 type PodcastCategory struct {
-	PodcastId  int64
-	CategoryId int64
+	PodcastId  int64 `json:"podcast_id" db:"podcast_id"`
+	CategoryId int64 `json:"category_id" db:"category_id"`
 }
 
 func (c *Category) MarshalJSON() ([]byte, error) {

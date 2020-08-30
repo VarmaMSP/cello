@@ -20,34 +20,32 @@ const (
 )
 
 type Episode struct {
-	Id          int64  `json:"id"`
-	PodcastId   int64  `json:"podcast_id"`
-	Guid        string `json:"-"`
-	Title       string `json:"title"`
-	MediaUrl    string `json:"media_url"`
-	MediaType   string `json:"-"`
-	MediaSize   int64  `json:"-"`
-	PubDate     string `json:"pub_date"`
-	Summary     string `json:"summary,omitempty"`
-	Description string `json:"description,omitempty"`
-	Duration    int    `json:"duration,omitempty"`
-	Link        string `json:"-"`
-	ImageLink   string `json:"-"`
-	Explicit    int    `json:"explicit,omitempty"`
-	Episode     int    `json:"episode,omitempty"`
-	Season      int    `json:"season,omitempty"`
-	Type        string `json:"type,omitempty"`
-	Block       int    `json:"-"`
-	CreatedAt   int64  `json:"-"`
-	UpdatedAt   int64  `json:"-"`
-
-	// search
-	TitleHighlighted       string `json:"title_highlighted,omitempty"`
-	DescriptionHighlighted string `json:"description_highlighted,omitempty"`
-
-	// derived
-	Progress     float64 `json:"progress,omitempty"`
-	LastPlayedAt string  `json:"last_played_at,omitempty"`
+	Id          int64  `json:"id"                    db:"id"`
+	PodcastId   int64  `json:"podcast_id"            db:"podcast_id"`
+	Guid        string `json:"-"                     db:"guid"`
+	Title       string `json:"title"                 db:"title"`
+	MediaUrl    string `json:"media_url"             db:"media_url"`
+	MediaType   string `json:"-"                     db:"media_type"`
+	MediaSize   int64  `json:"-"                     db:"media_size"`
+	PubDate     string `json:"pub_date"              db:"pub_date"`
+	Summary     string `json:"summary,omitempty"     db:"summary"`
+	Description string `json:"description,omitempty" db:"description"`
+	Duration    int    `json:"duration,omitempty"    db:"duration"`
+	Link        string `json:"-"                     db:"link"`
+	ImageLink   string `json:"-"                     db:"image_link"`
+	Explicit    int    `json:"explicit,omitempty"    db:"explicit"`
+	Episode     int    `json:"episode,omitempty"     db:"episode"`
+	Season      int    `json:"season,omitempty"      db:"season"`
+	Type        string `json:"type,omitempty"        db:"type"`
+	Block       int    `json:"-"                     db:"block"`
+	CreatedAt   int64  `json:"-"                     db:"created_at"`
+	UpdatedAt   int64  `json:"-"                     db:"updated_at"`
+	// Highligted fields for search
+	TitleHighlighted       string `json:"title_highlighted,omitempty"        db:"-"`
+	DescriptionHighlighted string `json:"description_highlighted,omitempty"  db:"-"`
+	// Derived
+	Progress     float64 `json:"progress,omitempty"        db:"-"`
+	LastPlayedAt string  `json:"last_played_at,omitempty"  db:"-"`
 }
 
 type EpisodeForIndexing struct {
