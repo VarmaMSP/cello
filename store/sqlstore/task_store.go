@@ -1,8 +1,7 @@
 package sqlstore
 
 import (
-	"fmt"
-
+	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
 )
@@ -11,21 +10,17 @@ type sqlTaskStore struct {
 	sqldb.Broker
 }
 
-func (s *sqlTaskStore) GetAll() (res []*model.Task, appE *model.AppError) {
-	sql := fmt.Sprintf(
-		`SELECT %s FROM task WHERE active = 1`,
-		cols(&model.Task{}),
-	)
-	copyTo := func() []interface{} {
-		tmp := &model.Task{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
+func (s *sqlTaskStore) GetAll() ([]*model.Task, *model.AppError) {
+	query := sqlf.
+		Select("*").
+		From("task").
+		Where("active = 1")
 
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.New500Error("sql_store.sql_task_store.get_all_active", err.Error(), nil)
+	var tasks []*model.Task
+	if err := s.Query_(&tasks, query); err != nil {
+		return nil, model.New500Error("sql_store.sql_task_store.get_all_active", err.Error(), nil)
 	}
-	return
+	return tasks, nil
 }
 
 func (s *sqlTaskStore) Update(old *model.Task, new *model.Task) *model.AppError {

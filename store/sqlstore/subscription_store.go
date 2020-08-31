@@ -1,8 +1,10 @@
 package sqlstore
 
 import (
+	"database/sql"
 	"fmt"
 
+	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/util/datetime"
@@ -27,35 +29,32 @@ func (s *sqlSubscriptionStore) Save(subscription *model.Subscription) *model.App
 	return nil
 }
 
-func (s *sqlSubscriptionStore) GetByUser(userId int64) (res []*model.Subscription, appE *model.AppError) {
-	sql := fmt.Sprintf(
-		`SELECT %s FROM subscription WHERE user_id = %d`,
-		cols(&model.Subscription{}), userId,
-	)
-	copyTo := func() []interface{} {
-		tmp := &model.Subscription{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
+func (s *sqlSubscriptionStore) GetByUser(userId int64) ([]*model.Subscription, *model.AppError) {
+	query := sqlf.
+		Select("*").
+		From("subscription").
+		Where("user_id = ?", userId)
 
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.New500Error("sqlstore.sql_subscription_store.get_by_user", err.Error(), nil)
+	var subscriptions []*model.Subscription
+	if err := s.Query_(&subscriptions, query); err != nil {
+		return nil, model.New500Error("sqlstore.sql_subscription_store.get_by_user", err.Error(), nil)
 	}
-	return
+	return subscriptions, nil
 }
 
 func (s *sqlSubscriptionStore) IsUserSubscribed(userId int64, podcastId int64) (bool, *model.AppError) {
-	res := &model.Subscription{}
-	sql := fmt.Sprintf(
-		`SELECT %s FROM subscription WHERE user_id = %d AND podcast_id = %d`,
-		cols(res), userId, podcastId,
-	)
+	query := sqlf.
+		Select("*").
+		From("subscription").
+		Where("user_id = ? AND podcast_id = ?", userId, podcastId)
 
-	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
-		// err == sql.ErrNoRows
-		return false, nil
+	var subscription model.Subscription
+	if err := s.QueryRow_(&subscription, query); err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+		return false, model.New500Error("sqlstore.sql_subscription_store.is_user_subscribed", err.Error(), nil)
 	}
-
 	return true, nil
 }
 
