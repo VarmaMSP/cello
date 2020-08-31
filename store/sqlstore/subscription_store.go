@@ -36,7 +36,7 @@ func (s *sqlSubscriptionStore) GetByUser(userId int64) ([]*model.Subscription, *
 		Where("user_id = ?", userId)
 
 	var subscriptions []*model.Subscription
-	if err := s.Query_(&subscriptions, query); err != nil {
+	if err := s.Query(&subscriptions, query); err != nil {
 		return nil, model.New500Error("sqlstore.sql_subscription_store.get_by_user", err.Error(), nil)
 	}
 	return subscriptions, nil
@@ -49,7 +49,7 @@ func (s *sqlSubscriptionStore) IsUserSubscribed(userId int64, podcastId int64) (
 		Where("user_id = ? AND podcast_id = ?", userId, podcastId)
 
 	var subscription model.Subscription
-	if err := s.QueryRow_(&subscription, query); err != nil {
+	if err := s.QueryRow(&subscription, query); err != nil {
 		if err == sql.ErrNoRows {
 			return false, nil
 		}

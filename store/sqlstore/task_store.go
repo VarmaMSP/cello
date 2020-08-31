@@ -17,7 +17,7 @@ func (s *sqlTaskStore) GetAll() ([]*model.Task, *model.AppError) {
 		Where("active = 1")
 
 	var tasks []*model.Task
-	if err := s.Query_(&tasks, query); err != nil {
+	if err := s.Query(&tasks, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_task_store.get_all_active", err.Error(), nil)
 	}
 	return tasks, nil

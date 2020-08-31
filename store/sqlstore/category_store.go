@@ -22,7 +22,7 @@ func (s *sqlCategoryStore) Get(categoryId int64) (*model.Category, *model.AppErr
 		Where("id = ?", categoryId)
 
 	var category model.Category
-	if err := s.QueryRow_(&category, query); err != nil {
+	if err := s.QueryRow(&category, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_category_store.get", err.Error(), nil)
 	}
 	return &category, nil
@@ -33,7 +33,7 @@ func (s *sqlCategoryStore) GetAll() (res []*model.Category, appE *model.AppError
 		From("category")
 
 	var categories []*model.Category
-	if err := s.Query_(&categories, query); err != nil {
+	if err := s.Query(&categories, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_category_store.get_all", err.Error(), nil)
 	}
 	return categories, nil
@@ -49,7 +49,7 @@ func (s *sqlCategoryStore) GetByIds(categoryIds []int64) ([]*model.Category, *mo
 		Where("id IN (?)", categoryIds)
 
 	var categories []*model.Category
-	if err := s.Query_(&categories, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&categories, query, sqldb.ExpandVars); err != nil {
 		return nil, model.New500Error("sql_store.sql_category_store.get_by_ids", err.Error(), nil)
 	}
 	return categories, nil
@@ -70,7 +70,7 @@ func (s *sqlCategoryStore) GetPodcastCategories(podcastId int64) ([]*model.Podca
 		Where("podcast_id = ?", podcastId)
 
 	var podcastCategories []*model.PodcastCategory
-	if err := s.Query_(&podcastCategories, query); err != nil {
+	if err := s.Query(&podcastCategories, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_category_store.get_podcast_categories", err.Error(), nil)
 	}
 	return podcastCategories, nil

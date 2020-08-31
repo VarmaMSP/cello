@@ -28,7 +28,7 @@ func (s *sqlFeedStore) Get(feedId int64) (*model.Feed, *model.AppError) {
 		Where("id = ?", feedId)
 
 	var feed model.Feed
-	if err := s.QueryRow_(&feed, query); err != nil {
+	if err := s.QueryRow(&feed, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_feed_store.get", err.Error(), nil)
 	}
 	return &feed, nil
@@ -42,7 +42,7 @@ func (s *sqlFeedStore) GetAllPaginated(lastId int64, limit int) ([]*model.Feed, 
 		Limit(limit)
 
 	var feeds []*model.Feed
-	if err := s.Query_(&feeds, query); err != nil {
+	if err := s.Query(&feeds, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_feed_store.get_all_paginated", err.Error(), nil)
 	}
 	return feeds, nil
@@ -54,7 +54,7 @@ func (s *sqlFeedStore) GetBySourceId(source, sourceId string) (*model.Feed, *mod
 		Where("source = ? AND source_id = ?", source, sourceId)
 
 	var feed model.Feed
-	if err := s.QueryRow_(&feed, query); err != nil {
+	if err := s.QueryRow(&feed, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_feed_store.get_by_source_id", err.Error(), nil)
 	}
 	return &feed, nil
@@ -68,7 +68,7 @@ func (s *sqlFeedStore) GetBySourcePaginated(source string, offset, limit int) (r
 		Limit(limit)
 
 	var feeds []*model.Feed
-	if err := s.Query_(&feeds, query); err != nil {
+	if err := s.Query(&feeds, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_feed_store.get_by_source_paginated", err.Error(), nil)
 	}
 	return feeds, nil
@@ -87,7 +87,7 @@ func (s *sqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) ([]*model
 		Limit(limit)
 
 	var feeds []*model.Feed
-	if err := s.Query_(&feeds, query); err != nil {
+	if err := s.Query(&feeds, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_feed_store.get_for_refresh_paginated", err.Error(), nil)
 	}
 	return feeds, nil
@@ -101,7 +101,7 @@ func (s *sqlFeedStore) GetFailedToImportPaginated(lastId int64, limit int) (res 
 		Limit(limit)
 
 	var feeds []*model.Feed
-	if err := s.Query_(&feeds, query); err != nil {
+	if err := s.Query(&feeds, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_feed_store.get_failed_to_import_paginated", err.Error(), nil)
 	}
 	return feeds, nil

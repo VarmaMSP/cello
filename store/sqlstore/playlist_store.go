@@ -34,7 +34,7 @@ func (s *sqlPlaylistStore) Get(playlistId int64) (*model.Playlist, *model.AppErr
 		Where("id = ?", playlistId)
 
 	var playlist model.Playlist
-	if err := s.QueryRow_(&playlist, query); err != nil {
+	if err := s.QueryRow(&playlist, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get", err.Error(), nil)
 	}
 	return &playlist, nil
@@ -47,7 +47,7 @@ func (s *sqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE 
 		Where("user_id = ?", userId)
 
 	var playlists []*model.Playlist
-	if err := s.Query_(&playlists, query); err != nil {
+	if err := s.Query(&playlists, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get_by_user", err.Error(), nil)
 	}
 	return playlists, nil
@@ -62,7 +62,7 @@ func (s *sqlPlaylistStore) GetByUserPaginated(userId int64, offset int, limit in
 		Limit(limit)
 
 	var playlists []*model.Playlist
-	if err := s.Query_(&playlists, query); err != nil {
+	if err := s.Query(&playlists, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get_by_user_paginated", err.Error(), nil)
 	}
 	return playlists, nil
@@ -134,7 +134,7 @@ func (s *sqlPlaylistStore) GetMember(playlistId, episodeId int64) (*model.Playli
 		Where("playlist_id = ? AND episode_id = ?", playlistId, episodeId)
 
 	var playlistMember model.PlaylistMember
-	if err := s.QueryRow_(&playlistMember, query); err != nil {
+	if err := s.QueryRow(&playlistMember, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get_member", err.Error(), nil)
 	}
 	return &playlistMember, nil
@@ -151,7 +151,7 @@ func (s *sqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*m
 		Where("playlist_id IN (?) AND episode_id IN (?)", playlistIds, episodeIds)
 
 	var playlistMembers []*model.PlaylistMember
-	if err := s.Query_(&playlistMembers, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&playlistMembers, query, sqldb.ExpandVars); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get_members", err.Error(), nil)
 	}
 	return playlistMembers, nil
@@ -165,7 +165,7 @@ func (s *sqlPlaylistStore) GetMembersByPlaylist(playlistId int64) (res []*model.
 		OrderBy("position ASC")
 
 	var playlistMembers []*model.PlaylistMember
-	if err := s.Query_(&playlistMembers, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&playlistMembers, query, sqldb.ExpandVars); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get_members_by_playlist", err.Error(), nil)
 	}
 	return playlistMembers, nil
@@ -178,7 +178,7 @@ func (s *sqlPlaylistStore) GetMemberByPosition(playlistId int64, position int) (
 		Where("playlist_id = ? AND position = ?", playlistId, position)
 
 	var playlistMember model.PlaylistMember
-	if err := s.QueryRow_(&playlistMember, query); err != nil {
+	if err := s.QueryRow(&playlistMember, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get_member_by_position", err.Error(), nil)
 	}
 	return &playlistMember, nil
@@ -191,7 +191,7 @@ func (s *sqlPlaylistStore) GetMemberCount(playlistId int64) (int, *model.AppErro
 		Where("playlist_id = ?", playlistId)
 
 	var count int
-	if err := s.QueryRow_(&count, query); err != nil {
+	if err := s.QueryRow(&count, query); err != nil {
 		return 0, model.New500Error("sql_store.sql_playlist_store.get_member_count", err.Error(), nil)
 	}
 	return count, nil

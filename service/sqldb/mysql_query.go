@@ -5,7 +5,7 @@ import (
 	"github.com/leporo/sqlf"
 )
 
-func (splr *supplier) Query(copyTo func() []interface{}, sql string, values ...interface{}) error {
+func (splr *supplier) Query_(copyTo func() []interface{}, sql string, values ...interface{}) error {
 	rows, err := splr.db.Query(sql, values...)
 	if err != nil {
 		return err
@@ -22,7 +22,7 @@ func (splr *supplier) Query(copyTo func() []interface{}, sql string, values ...i
 	return nil
 }
 
-func (splr *supplier) QueryRow(copyTo []interface{}, sql string, values ...interface{}) error {
+func (splr *supplier) QueryRow_(copyTo []interface{}, sql string, values ...interface{}) error {
 	return splr.db.QueryRow(sql, values...).Scan(copyTo...)
 }
 
@@ -32,7 +32,7 @@ const (
 	ExpandVars QueryOption = iota
 )
 
-func (splr *supplier) Query_(dest interface{}, stmt *sqlf.Stmt, options ...QueryOption) error {
+func (splr *supplier) Query(dest interface{}, stmt *sqlf.Stmt, options ...QueryOption) error {
 	sql := stmt.String()
 	args := stmt.Args()
 
@@ -46,7 +46,7 @@ func (splr *supplier) Query_(dest interface{}, stmt *sqlf.Stmt, options ...Query
 	return splr.db.Select(dest, sql, args...)
 }
 
-func (splr *supplier) QueryRow_(dest interface{}, stmt *sqlf.Stmt, options ...QueryOption) error {
+func (splr *supplier) QueryRow(dest interface{}, stmt *sqlf.Stmt, options ...QueryOption) error {
 	sql := stmt.String()
 	args := stmt.Args()
 

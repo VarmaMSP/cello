@@ -58,7 +58,7 @@ func (s *sqlPlaybackStore) GetByUserPaginated(userId int64, offset int, limit in
 		Limit(limit)
 
 	var playbacks []*model.Playback
-	if err := s.Query_(&playbacks, query); err != nil {
+	if err := s.Query(&playbacks, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playback_store.get_by_user_paginated", err.Error(), nil)
 	}
 	return playbacks, nil
@@ -70,7 +70,7 @@ func (s *sqlPlaybackStore) GetByUserByEpisodes(userId int64, episodeIds []int64)
 		Where("user_id = ? AND episode_id IN (?)", userId, episodeIds)
 
 	var playbacks []*model.Playback
-	if err := s.Query_(&playbacks, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&playbacks, query, sqldb.ExpandVars); err != nil {
 		return nil, model.New500Error("sql_store.sql_playback_store.get_by_user_by_episodes", err.Error(), nil)
 	}
 	return playbacks, nil

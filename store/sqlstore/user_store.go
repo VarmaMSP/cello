@@ -1,8 +1,7 @@
 package sqlstore
 
 import (
-	"fmt"
-
+	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
 )
@@ -45,16 +44,16 @@ func (s *sqlUserStore) SaveSocialAccount(accountType string, account model.DbMod
 }
 
 func (s *sqlUserStore) Get(userId int64) (*model.User, *model.AppError) {
-	res := &model.User{}
-	sql := fmt.Sprintf(
-		`SELECT %s FROM user WHERE id = %d`,
-		cols(res), userId,
-	)
+	query := sqlf.
+		Select("*").
+		From("podcast").
+		Where("id = ?", userId)
 
-	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+	var user model.User
+	if err := s.QueryRow(&user, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_user_store.get", err.Error(), nil)
 	}
-	return res, nil
+	return &user, nil
 }
 
 func (s *sqlUserStore) GetSocialAccount(accountType, id string) (model.DbModel, *model.AppError) {
@@ -69,27 +68,26 @@ func (s *sqlUserStore) GetSocialAccount(accountType, id string) (model.DbModel, 
 		return nil, nil
 	}
 
-	table := accountType + "_account"
-	sql := fmt.Sprintf(
-		`SELECT %s FROM %s WHERE Id = '%s'`,
-		cols(account), table, id,
-	)
+	query := sqlf.
+		Select("*").
+		From(accountType+"_account").
+		Where("id = ?", id)
 
-	if err := s.QueryRow(account.FieldAddrs(), sql); err != nil {
+	if err := s.QueryRow_(account.FieldAddrs(), query.String(), query.Args()...); err != nil {
 		return nil, model.New500Error("sql_store.sql_user_store.get_social_account", err.Error(), nil)
 	}
 	return account, nil
 }
 
 func (s *sqlUserStore) GetGuestAccount(id string) (*model.GuestAccount, *model.AppError) {
-	account := &model.GuestAccount{}
-	sql := fmt.Sprintf(
-		`SELECT %s FROM guest_account WHERE id = '%s'`,
-		cols(account), id,
-	)
+	query := sqlf.
+		Select("*").
+		From("guest_account").
+		Where("id = ?", id)
 
-	if err := s.QueryRow(account.FieldAddrs(), sql); err != nil {
-		return nil, model.New500Error("sql_store.sql_user_store.get_social_account", err.Error(), nil)
+	var guestAccount model.GuestAccount
+	if err := s.QueryRow(&guestAccount, query); err != nil {
+		return nil, model.New500Error("sql_store.sql_user_store.get_guest_account", err.Error(), nil)
 	}
-	return account, nil
+	return &guestAccount, nil
 }

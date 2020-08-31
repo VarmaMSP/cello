@@ -36,7 +36,7 @@ func (s *sqlEpisodeStore) Get(episodeId int64) (*model.Episode, *model.AppError)
 		Where("id = ?", episodeId)
 
 	var episode model.Episode
-	if err := s.QueryRow_(&episode, query); err != nil {
+	if err := s.QueryRow(&episode, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_episode_store.get", err.Error(), nil)
 	}
 	return &episode, nil
@@ -49,7 +49,7 @@ func (s *sqlEpisodeStore) GetAllPaginated(lastId int64, limit int) ([]*model.Epi
 		Limit(limit)
 
 	var episodes []*model.Episode
-	if err := s.Query_(&episodes, query); err != nil {
+	if err := s.Query(&episodes, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_episode_store.get_all_panigated", err.Error(), nil)
 	}
 	return episodes, nil
@@ -61,7 +61,7 @@ func (s *sqlEpisodeStore) GetByIds(episodeIds []int64) ([]*model.Episode, *model
 		Where("id IN (?)", episodeIds)
 
 	var episodes []*model.Episode
-	if err := s.Query_(&episodes, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&episodes, query, sqldb.ExpandVars); err != nil {
 		return nil, model.New500Error("sql_store.sql_episode_store.get_by_ids", err.Error(), nil)
 	}
 	return episodes, nil
@@ -73,7 +73,7 @@ func (s *sqlEpisodeStore) GetByPodcast(podcastId int64) ([]*model.Episode, *mode
 		Where("podcast_id = ?", podcastId)
 
 	var episodes []*model.Episode
-	if err := s.Query_(&episodes, query); err != nil {
+	if err := s.Query(&episodes, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_episode_store.get_by_podcast", err.Error(), nil)
 	}
 	return episodes, nil
@@ -93,7 +93,7 @@ func (s *sqlEpisodeStore) GetByPodcastPaginated(podcastId int64, order string, o
 	}
 
 	var episodes []*model.Episode
-	if err := s.Query_(&episodes, query); err != nil {
+	if err := s.Query(&episodes, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_episode_store.get_by_podcast_paginated", err.Error(), nil)
 	}
 	return episodes, nil
@@ -108,7 +108,7 @@ func (s *sqlEpisodeStore) GetByPodcastIdsPaginated(podcastIds []int64, offset in
 		Limit(limit)
 
 	var episodes []*model.Episode
-	if err := s.Query_(&episodes, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&episodes, query, sqldb.ExpandVars); err != nil {
 		return nil, model.New500Error("sql_store.sql_episode_store.get_by_podcast_ids_paginated", err.Error(), nil)
 	}
 	return episodes, nil
@@ -124,7 +124,7 @@ func (s *sqlEpisodeStore) GetByPlaylistPaginated(playlistId int64, offset int, l
 		Limit(limit)
 
 	var episodes []*model.Episode
-	if err := s.Query_(&episodes, query); err != nil {
+	if err := s.Query(&episodes, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_episode_store.get_by_playlist_paginated", err.Error(), nil)
 	}
 	return episodes, nil
