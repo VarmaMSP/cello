@@ -18,24 +18,10 @@ const (
 )
 
 type SearchSuggestion struct {
-	Type      string
-	Icon      string
-	Header    string
-	SubHeader string
-}
-
-func (s *SearchSuggestion) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&struct {
-		Type      string `json:"t"`
-		Icon      string `json:"i,omitempty"`
-		Header    string `json:"h1"`
-		SubHeader string `json:"h2,omitempty"`
-	}{
-		Type:      s.Type,
-		Icon:      s.Icon,
-		Header:    s.Header,
-		SubHeader: s.SubHeader,
-	})
+	Type      string `json:"t"`
+	Icon      string `json:"i,omitempty"`
+	Header    string `json:"h1"`
+	SubHeader string `json:"h2,omitempty"`
 }
 
 func (s *SearchSuggestion) LoadFromPodcast(hit *elastic.SearchHit) *AppError {

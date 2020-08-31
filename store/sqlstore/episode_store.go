@@ -16,9 +16,6 @@ type sqlEpisodeStore struct {
 func newSqlEpisodeStore(broker sqldb.Broker) *sqlEpisodeStore {
 	return &sqlEpisodeStore{
 		Broker: broker,
-		episodeQuery: sqlf.
-			Select("episode.*").
-			From("episode"),
 	}
 }
 
@@ -120,9 +117,9 @@ func (s *sqlEpisodeStore) GetByPodcastIdsPaginated(podcastIds []int64, offset in
 func (s *sqlEpisodeStore) GetByPlaylistPaginated(playlistId int64, offset int, limit int) (res []*model.Episode, appE *model.AppError) {
 	query := sqlf.Select("episode.*").
 		From("episode").
-		Join("playlist_member AS pm", "pm.episode_id = episode.id").
-		Where("pm.playlist_id = ?", playlistId).
-		OrderBy("pm.update_at DESC").
+		Join("playlist_member AS member", "member.episode_id = episode.id").
+		Where("member.playlist_id = ?", playlistId).
+		OrderBy("member.update_at DESC").
 		Offset(offset).
 		Limit(limit)
 
