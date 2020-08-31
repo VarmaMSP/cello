@@ -31,7 +31,7 @@ func (s *sqlEpisodeStore) Save(episode *model.Episode) *model.AppError {
 }
 
 func (s *sqlEpisodeStore) Get(episodeId int64) (*model.Episode, *model.AppError) {
-	query := sqlf.Select("episode.*").
+	query := sqlf.Select("*").
 		From("episode").
 		Where("id = ?", episodeId)
 
@@ -43,7 +43,7 @@ func (s *sqlEpisodeStore) Get(episodeId int64) (*model.Episode, *model.AppError)
 }
 
 func (s *sqlEpisodeStore) GetAllPaginated(lastId int64, limit int) ([]*model.Episode, *model.AppError) {
-	query := sqlf.Select("episode.*").
+	query := sqlf.Select("*").
 		From("episode").
 		Where("id > ?", lastId).
 		Limit(limit)
@@ -56,7 +56,7 @@ func (s *sqlEpisodeStore) GetAllPaginated(lastId int64, limit int) ([]*model.Epi
 }
 
 func (s *sqlEpisodeStore) GetByIds(episodeIds []int64) ([]*model.Episode, *model.AppError) {
-	query := sqlf.Select("episode.*").
+	query := sqlf.Select("*").
 		From("episode").
 		Where("id IN (?)", episodeIds)
 
@@ -68,7 +68,7 @@ func (s *sqlEpisodeStore) GetByIds(episodeIds []int64) ([]*model.Episode, *model
 }
 
 func (s *sqlEpisodeStore) GetByPodcast(podcastId int64) ([]*model.Episode, *model.AppError) {
-	query := sqlf.Select("episode.*").
+	query := sqlf.Select("*").
 		From("episode").
 		Where("podcast_id = ?", podcastId)
 
@@ -80,7 +80,7 @@ func (s *sqlEpisodeStore) GetByPodcast(podcastId int64) ([]*model.Episode, *mode
 }
 
 func (s *sqlEpisodeStore) GetByPodcastPaginated(podcastId int64, order string, offset int, limit int) ([]*model.Episode, *model.AppError) {
-	query := sqlf.Select("episode.*").
+	query := sqlf.Select("*").
 		From("episode").
 		Where("podcast_id = ?", podcastId).
 		Offset(offset).
@@ -100,7 +100,7 @@ func (s *sqlEpisodeStore) GetByPodcastPaginated(podcastId int64, order string, o
 }
 
 func (s *sqlEpisodeStore) GetByPodcastIdsPaginated(podcastIds []int64, offset int, limit int) ([]*model.Episode, *model.AppError) {
-	query := sqlf.Select("episode.*").
+	query := sqlf.Select("*").
 		From("episode").
 		Where("podcast_id IN (?)", podcastIds).
 		OrderBy("episode.pub_date DESC").

@@ -17,7 +17,7 @@ func newSqlCategoryStore(broker sqldb.Broker) *sqlCategoryStore {
 }
 
 func (s *sqlCategoryStore) Get(categoryId int64) (*model.Category, *model.AppError) {
-	query := sqlf.Select("category.*").
+	query := sqlf.Select("*").
 		From("category").
 		Where("id = ?", categoryId)
 
@@ -29,7 +29,7 @@ func (s *sqlCategoryStore) Get(categoryId int64) (*model.Category, *model.AppErr
 }
 
 func (s *sqlCategoryStore) GetAll() (res []*model.Category, appE *model.AppError) {
-	query := sqlf.Select("category.*").
+	query := sqlf.Select("*").
 		From("category")
 
 	var categories []*model.Category
@@ -44,7 +44,7 @@ func (s *sqlCategoryStore) GetByIds(categoryIds []int64) ([]*model.Category, *mo
 		return []*model.Category{}, nil
 	}
 
-	query := sqlf.Select("category.*").
+	query := sqlf.Select("*").
 		From("category").
 		Where("id IN (?)", categoryIds)
 
@@ -65,7 +65,7 @@ func (s *sqlCategoryStore) SavePodcastCategory(pCategory *model.PodcastCategory)
 }
 
 func (s *sqlCategoryStore) GetPodcastCategories(podcastId int64) ([]*model.PodcastCategory, *model.AppError) {
-	query := sqlf.Select("podcast_category.*").
+	query := sqlf.Select("*").
 		From("podcast_category").
 		Where("podcast_id = ?", podcastId)
 

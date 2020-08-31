@@ -50,7 +50,7 @@ func (s *sqlPlaybackStore) Upsert(playback *model.Playback) *model.AppError {
 }
 
 func (s *sqlPlaybackStore) GetByUserPaginated(userId int64, offset int, limit int) ([]*model.Playback, *model.AppError) {
-	query := sqlf.Select("playback.*").
+	query := sqlf.Select("*").
 		From("playback").
 		Where("user_id = ?", userId).
 		OrderBy("last_played_at DESC").
@@ -65,7 +65,7 @@ func (s *sqlPlaybackStore) GetByUserPaginated(userId int64, offset int, limit in
 }
 
 func (s *sqlPlaybackStore) GetByUserByEpisodes(userId int64, episodeIds []int64) (res []*model.Playback, appE *model.AppError) {
-	query := sqlf.Select("playback.*").
+	query := sqlf.Select("*").
 		From("playback").
 		Where("user_id = ? AND episode_id IN (?)", userId, episodeIds)
 

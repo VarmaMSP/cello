@@ -23,7 +23,7 @@ func (s *sqlFeedStore) Save(feed *model.Feed) *model.AppError {
 }
 
 func (s *sqlFeedStore) Get(feedId int64) (*model.Feed, *model.AppError) {
-	query := sqlf.Select("feed.*").
+	query := sqlf.Select("*").
 		From("feed").
 		Where("id = ?", feedId)
 
@@ -35,7 +35,7 @@ func (s *sqlFeedStore) Get(feedId int64) (*model.Feed, *model.AppError) {
 }
 
 func (s *sqlFeedStore) GetAllPaginated(lastId int64, limit int) ([]*model.Feed, *model.AppError) {
-	query := sqlf.Select("feed.*").
+	query := sqlf.Select("*").
 		From("feed").
 		Where("id > ?", lastId).
 		OrderBy("id").
@@ -49,7 +49,7 @@ func (s *sqlFeedStore) GetAllPaginated(lastId int64, limit int) ([]*model.Feed, 
 }
 
 func (s *sqlFeedStore) GetBySourceId(source, sourceId string) (*model.Feed, *model.AppError) {
-	query := sqlf.Select("feed.*").
+	query := sqlf.Select("*").
 		From("feed").
 		Where("source = ? AND source_id = ?", source, sourceId)
 
@@ -61,7 +61,7 @@ func (s *sqlFeedStore) GetBySourceId(source, sourceId string) (*model.Feed, *mod
 }
 
 func (s *sqlFeedStore) GetBySourcePaginated(source string, offset, limit int) (res []*model.Feed, appE *model.AppError) {
-	query := sqlf.Select("feed.*").
+	query := sqlf.Select("*").
 		From("feed").
 		Where("source = ?", source).
 		Offset(offset).
@@ -75,14 +75,14 @@ func (s *sqlFeedStore) GetBySourcePaginated(source string, offset, limit int) (r
 }
 
 func (s *sqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) ([]*model.Feed, *model.AppError) {
-	query := sqlf.Select("feed.*").
+	query := sqlf.Select("*").
 		From("feed").
 		Where(`
 			refresh_enabled = 1 AND
 			last_refresh_comment <> 'PENDING' AND
 			next_refresh_at < ? AND
 			id > ?
-		`, datetime.Unix(), lastId, limit).
+		`, datetime.Unix(), lastId).
 		OrderBy("id").
 		Limit(limit)
 
@@ -94,7 +94,7 @@ func (s *sqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) ([]*model
 }
 
 func (s *sqlFeedStore) GetFailedToImportPaginated(lastId int64, limit int) (res []*model.Feed, appE *model.AppError) {
-	query := sqlf.Select("feed.*").
+	query := sqlf.Select("*").
 		From("feed").
 		Where("last_refresh_comment <> '' AND id > ?", lastId).
 		OrderBy("id").
