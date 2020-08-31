@@ -3,6 +3,7 @@ package sqlstore
 import (
 	"fmt"
 
+	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/util/datetime"
@@ -48,40 +49,31 @@ func (s *sqlPlaybackStore) Upsert(playback *model.Playback) *model.AppError {
 	return nil
 }
 
-func (s *sqlPlaybackStore) GetByUserPaginated(userId int64, offset int, limit int) (res []*model.Playback, appE *model.AppError) {
-	sql := fmt.Sprintf(
-		`SELECT %s FROM playback WHERE user_id = %d
-			ORDER by last_played_at
-			DESC LIMIT %d, %d`,
-		cols(&model.Playback{}), userId, offset, limit,
-	)
-	copyTo := func() []interface{} {
-		tmp := &model.Playback{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
+func (s *sqlPlaybackStore) GetByUserPaginated(userId int64, offset int, limit int) ([]*model.Playback, *model.AppError) {
+	query := sqlf.Select("playback.*").
+		From("playback").
+		Where("user_id = ?", userId).
+		OrderBy("last_played_at DESC").
+		Offset(offset).
+		Limit(limit)
 
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.New500Error("sql_store.sql_playback_store.get_by_user_paginated", err.Error(), nil)
+	var playbacks []*model.Playback
+	if err := s.Query_(&playbacks, query); err != nil {
+		return nil, model.New500Error("sql_store.sql_playback_store.get_by_user_paginated", err.Error(), nil)
 	}
-	return
+	return playbacks, nil
 }
 
 func (s *sqlPlaybackStore) GetByUserByEpisodes(userId int64, episodeIds []int64) (res []*model.Playback, appE *model.AppError) {
-	sql := fmt.Sprintf(
-		`SELECT %s FROM playback WHERE episode_id IN (%s) AND user_id = %d`,
-		cols(&model.Playback{}), joinInt64s(episodeIds), userId,
-	)
-	copyTo := func() []interface{} {
-		tmp := &model.Playback{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
+	query := sqlf.Select("playback.*").
+		From("playback").
+		Where("user_id = ? AND episode_id IN (?)", userId, episodeIds)
 
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.New500Error("sql_store.sql_playback_store.get_by_user_by_episodes", err.Error(), nil)
+	var playbacks []*model.Playback
+	if err := s.Query_(&playbacks, query, sqldb.ExpandVars); err != nil {
+		return nil, model.New500Error("sql_store.sql_playback_store.get_by_user_by_episodes", err.Error(), nil)
 	}
-	return
+	return playbacks, nil
 }
 
 func (s *sqlPlaybackStore) Update(playback *model.Playback) *model.AppError {

@@ -3,6 +3,7 @@ package sqlstore
 import (
 	"fmt"
 
+	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/store"
@@ -27,50 +28,44 @@ func (s *sqlPlaylistStore) Save(playlist *model.Playlist) *model.AppError {
 }
 
 func (s *sqlPlaylistStore) Get(playlistId int64) (*model.Playlist, *model.AppError) {
-	res := &model.Playlist{}
-	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist WHERE id = %d",
-		cols(res), playlistId,
-	)
+	query := sqlf.
+		Select("*").
+		From("playlist").
+		Where("id = ?", playlistId)
 
-	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+	var playlist model.Playlist
+	if err := s.QueryRow_(&playlist, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get", err.Error(), nil)
 	}
-	return res, nil
+	return &playlist, nil
 }
 
 func (s *sqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE *model.AppError) {
-	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist WHERE user_id = %d",
-		cols(&model.Playlist{}), userId,
-	)
-	copyTo := func() []interface{} {
-		tmp := &model.Playlist{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
+	query := sqlf.
+		Select("*").
+		From("playlist").
+		Where("user_id = ?", userId)
 
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.New500Error("sql_store.sql_playlist_store.get_by_user", err.Error(), nil)
+	var playlists []*model.Playlist
+	if err := s.Query_(&playlists, query); err != nil {
+		return nil, model.New500Error("sql_store.sql_playlist_store.get_by_user", err.Error(), nil)
 	}
-	return
+	return playlists, nil
 }
 
 func (s *sqlPlaylistStore) GetByUserPaginated(userId int64, offset int, limit int) (res []*model.Playlist, appE *model.AppError) {
-	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist WHERE user_id = %d LIMIT %d, %d",
-		cols(&model.Playlist{}), userId, offset, limit,
-	)
-	copyTo := func() []interface{} {
-		tmp := &model.Playlist{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
+	query := sqlf.
+		Select("*").
+		From("playlist").
+		Where("user_id = ?", userId).
+		Offset(offset).
+		Limit(limit)
 
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.New500Error("sql_store.sql_playlist_store.get_by_user_paginated", err.Error(), nil)
+	var playlists []*model.Playlist
+	if err := s.Query_(&playlists, query); err != nil {
+		return nil, model.New500Error("sql_store.sql_playlist_store.get_by_user_paginated", err.Error(), nil)
 	}
-	return
+	return playlists, nil
 }
 
 func (s *sqlPlaylistStore) Update(old *model.Playlist, new *model.Playlist) *model.AppError {
@@ -133,16 +128,16 @@ func (s *sqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppEr
 }
 
 func (s *sqlPlaylistStore) GetMember(playlistId, episodeId int64) (*model.PlaylistMember, *model.AppError) {
-	res := &model.PlaylistMember{}
-	sql := fmt.Sprintf(
-		`SELECT %s FROM playlist_member WHERE playlist_id = %d AND episode_id = %d`,
-		cols(res), playlistId, episodeId,
-	)
+	query := sqlf.
+		Select("*").
+		From("playlist_member").
+		Where("playlist_id = ? AND episode_id = ?", playlistId, episodeId)
 
-	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+	var playlistMember model.PlaylistMember
+	if err := s.QueryRow_(&playlistMember, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get_member", err.Error(), nil)
 	}
-	return res, nil
+	return &playlistMember, nil
 }
 
 func (s *sqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*model.PlaylistMember, appE *model.AppError) {
@@ -150,60 +145,56 @@ func (s *sqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*m
 		return
 	}
 
-	sql := fmt.Sprintf(
-		`SELECT %s FROM playlist_member WHERE playlist_id IN (%s) AND episode_id IN (%s)`,
-		cols(&model.PlaylistMember{}), joinInt64s(playlistIds), joinInt64s(episodeIds),
-	)
-	copyTo := func() []interface{} {
-		tmp := &model.PlaylistMember{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
+	query := sqlf.
+		Select("*").
+		From("playlist_member").
+		Where("playlist_id IN (?) AND episode_id IN (?)", playlistIds, episodeIds)
 
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.New500Error("sql_store.sql_playlist_store.get_members", err.Error(), nil)
+	var playlistMembers []*model.PlaylistMember
+	if err := s.Query_(&playlistMembers, query, sqldb.ExpandVars); err != nil {
+		return nil, model.New500Error("sql_store.sql_playlist_store.get_members", err.Error(), nil)
 	}
-	return
+	return playlistMembers, nil
 }
 
 func (s *sqlPlaylistStore) GetMembersByPlaylist(playlistId int64) (res []*model.PlaylistMember, appE *model.AppError) {
-	sql := fmt.Sprintf(
-		`SELECT %s FROM playlist_member WHERE playlist_id = %d ORDER BY position ASC`,
-		cols(&model.PlaylistMember{}), playlistId,
-	)
-	copyTo := func() []interface{} {
-		tmp := &model.PlaylistMember{}
-		res = append(res, tmp)
-		return tmp.FieldAddrs()
-	}
+	query := sqlf.
+		Select("*").
+		From("playlist_member").
+		Where("playlist_id = ?", playlistId).
+		OrderBy("position ASC")
 
-	if err := s.Query(copyTo, sql); err != nil {
-		appE = model.New500Error("sql_store.sql_playlist_store.get_members_by_playlist", err.Error(), nil)
+	var playlistMembers []*model.PlaylistMember
+	if err := s.Query_(&playlistMembers, query, sqldb.ExpandVars); err != nil {
+		return nil, model.New500Error("sql_store.sql_playlist_store.get_members_by_playlist", err.Error(), nil)
 	}
-	return
+	return playlistMembers, nil
 }
 
 func (s *sqlPlaylistStore) GetMemberByPosition(playlistId int64, position int) (*model.PlaylistMember, *model.AppError) {
-	res := &model.PlaylistMember{}
-	sql := fmt.Sprintf(
-		"SELECT %s FROM playlist_member WHERE playlist_id = %d AND position = %d",
-		cols(res), playlistId, position,
-	)
+	query := sqlf.
+		Select("*").
+		From("playlist_member").
+		Where("playlist_id = ? AND position = ?", playlistId, position)
 
-	if err := s.QueryRow(res.FieldAddrs(), sql); err != nil {
+	var playlistMember model.PlaylistMember
+	if err := s.QueryRow_(&playlistMember, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get_member_by_position", err.Error(), nil)
 	}
-	return res, nil
+	return &playlistMember, nil
 }
 
 func (s *sqlPlaylistStore) GetMemberCount(playlistId int64) (int, *model.AppError) {
-	res := 0
-	sql := fmt.Sprintf(`SELECT COUNT(*) FROM playlist_member WHERE playlist_id = %d`, playlistId)
+	query := sqlf.
+		Select("COUNT(*)").
+		From("playlist_member").
+		Where("playlist_id = ?", playlistId)
 
-	if err := s.QueryRow([]interface{}{&res}, sql); err != nil {
+	var count int
+	if err := s.QueryRow_(&count, query); err != nil {
 		return 0, model.New500Error("sql_store.sql_playlist_store.get_member_count", err.Error(), nil)
 	}
-	return res, nil
+	return count, nil
 }
 
 func (s *sqlPlaylistStore) ChangeMemberPosition(playlistId int64, episodeId int64, from int, to int) *model.AppError {
