@@ -1,5 +1,5 @@
 run-cello:
-	go run ./cmd/cello/main.go
+	air
 
 purge-data: 
 	curl -X DELETE 'http://localhost:9200/_all'
