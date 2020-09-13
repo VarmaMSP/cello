@@ -20,8 +20,7 @@ func (s *sqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
 }
 
 func (s *sqlPodcastStore) Get(podcastId int64) (*model.Podcast, *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("podcast").
 		Where("id = ?", podcastId)
 
@@ -33,8 +32,7 @@ func (s *sqlPodcastStore) Get(podcastId int64) (*model.Podcast, *model.AppError)
 }
 
 func (s *sqlPodcastStore) GetAllPaginated(lastId int64, limit int) ([]*model.Podcast, *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("podcast").
 		Where("id > ?", lastId).
 		Limit(limit)
@@ -47,28 +45,26 @@ func (s *sqlPodcastStore) GetAllPaginated(lastId int64, limit int) ([]*model.Pod
 }
 
 func (s *sqlPodcastStore) GetByIds(podcastIds []int64) ([]*model.Podcast, *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("podcast").
-		Where("id IN (?)", podcastIds)
+		Where("id IN ?", podcastIds)
 
 	var podcasts []*model.Podcast
-	if err := s.Query(&podcasts, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&podcasts, query); err != nil {
 		return nil, model.New500Error("sqlstore.sql_podcast_store.get_by_ids", err.Error(), nil)
 	}
 	return podcasts, nil
 }
 
 func (s *sqlPodcastStore) GetSubscriptions(userId int64) ([]*model.Podcast, *model.AppError) {
-	query := sqlf.
-		Select("podcast.*").
+	query := sqlf.Select("podcast.*").
 		From("podcast").
 		Join("subscription AS sub", "sub.podcast_id = podcast.id").
 		Where("sub.active = 1 AND sub.user_id = ?", userId).
 		OrderBy("sub.updated_at DESC")
 
 	var podcasts []*model.Podcast
-	if err := s.Query(&podcasts, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&podcasts, query); err != nil {
 		return nil, model.New500Error("sqlstore.sql_podcast_store.get_subscriptions", err.Error(), nil)
 	}
 	return podcasts, nil

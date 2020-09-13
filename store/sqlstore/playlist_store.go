@@ -19,7 +19,7 @@ type sqlPlaylistStore struct {
 func (s *sqlPlaylistStore) Save(playlist *model.Playlist) *model.AppError {
 	playlist.PreSave()
 
-	res, err := s.Insert_("playlist", playlist)
+	res, err := s.Insert("playlist", playlist)
 	if err != nil {
 		return model.New500Error("sql_store.sql_playlist_store.save", err.Error(), nil)
 	}
@@ -28,8 +28,7 @@ func (s *sqlPlaylistStore) Save(playlist *model.Playlist) *model.AppError {
 }
 
 func (s *sqlPlaylistStore) Get(playlistId int64) (*model.Playlist, *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("playlist").
 		Where("id = ?", playlistId)
 
@@ -41,8 +40,7 @@ func (s *sqlPlaylistStore) Get(playlistId int64) (*model.Playlist, *model.AppErr
 }
 
 func (s *sqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("playlist").
 		Where("user_id = ?", userId)
 
@@ -54,12 +52,10 @@ func (s *sqlPlaylistStore) GetByUser(userId int64) (res []*model.Playlist, appE 
 }
 
 func (s *sqlPlaylistStore) GetByUserPaginated(userId int64, offset int, limit int) (res []*model.Playlist, appE *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("playlist").
 		Where("user_id = ?", userId).
-		Offset(offset).
-		Limit(limit)
+		Offset(offset).Limit(limit)
 
 	var playlists []*model.Playlist
 	if err := s.Query(&playlists, query); err != nil {
@@ -99,7 +95,7 @@ func (s *sqlPlaylistStore) UpdateMemberStats(playlistId int64) *model.AppError {
 		count, previewImage, playlistId,
 	)
 
-	if err := s.Exec(sql); err != nil {
+	if err := s.ExecRaw(sql); err != nil {
 		return model.New500Error("sql_store.sql_playlist_store.update_member_stats", err.Error(), nil)
 	}
 	return nil
@@ -107,12 +103,12 @@ func (s *sqlPlaylistStore) UpdateMemberStats(playlistId int64) *model.AppError {
 
 func (s *sqlPlaylistStore) Delete(playlistId int64) *model.AppError {
 	sql := fmt.Sprintf(`DELETE FROM playlist_member WHERE playlist_id = %d`, playlistId)
-	if err := s.Exec(sql); err != nil {
+	if err := s.ExecRaw(sql); err != nil {
 		return model.New500Error("sql_store.sql_playlist_store.delete", err.Error(), nil)
 	}
 
 	sql = fmt.Sprintf(`DELETE FROM playlist WHERE id = %d`, playlistId)
-	if err := s.Exec(sql); err != nil {
+	if err := s.ExecRaw(sql); err != nil {
 		return model.New500Error("sql_store.sql_playlist_store.delete", err.Error(), nil)
 	}
 	return nil
@@ -128,8 +124,7 @@ func (s *sqlPlaylistStore) SaveMember(member *model.PlaylistMember) *model.AppEr
 }
 
 func (s *sqlPlaylistStore) GetMember(playlistId, episodeId int64) (*model.PlaylistMember, *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("playlist_member").
 		Where("playlist_id = ? AND episode_id = ?", playlistId, episodeId)
 
@@ -145,35 +140,32 @@ func (s *sqlPlaylistStore) GetMembers(playlistIds, episodeIds []int64) (res []*m
 		return
 	}
 
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("playlist_member").
-		Where("playlist_id IN (?) AND episode_id IN (?)", playlistIds, episodeIds)
+		Where("playlist_id IN ? AND episode_id IN ?", playlistIds, episodeIds)
 
 	var playlistMembers []*model.PlaylistMember
-	if err := s.Query(&playlistMembers, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&playlistMembers, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get_members", err.Error(), nil)
 	}
 	return playlistMembers, nil
 }
 
 func (s *sqlPlaylistStore) GetMembersByPlaylist(playlistId int64) (res []*model.PlaylistMember, appE *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("playlist_member").
 		Where("playlist_id = ?", playlistId).
 		OrderBy("position ASC")
 
 	var playlistMembers []*model.PlaylistMember
-	if err := s.Query(&playlistMembers, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&playlistMembers, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playlist_store.get_members_by_playlist", err.Error(), nil)
 	}
 	return playlistMembers, nil
 }
 
 func (s *sqlPlaylistStore) GetMemberByPosition(playlistId int64, position int) (*model.PlaylistMember, *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("playlist_member").
 		Where("playlist_id = ? AND position = ?", playlistId, position)
 
@@ -185,8 +177,7 @@ func (s *sqlPlaylistStore) GetMemberByPosition(playlistId int64, position int) (
 }
 
 func (s *sqlPlaylistStore) GetMemberCount(playlistId int64) (int, *model.AppError) {
-	query := sqlf.
-		Select("COUNT(*)").
+	query := sqlf.Select("COUNT(*)").
 		From("playlist_member").
 		Where("playlist_id = ?", playlistId)
 
@@ -207,7 +198,7 @@ func (s *sqlPlaylistStore) ChangeMemberPosition(playlistId int64, episodeId int6
 			datetime.Unix(), playlistId, to, from,
 		)
 
-		if err := s.Exec(sql); err != nil {
+		if err := s.ExecRaw(sql); err != nil {
 			return model.New500Error("sql_store.sql_playlist_store.change_member_position", err.Error(), nil)
 		}
 
@@ -219,7 +210,7 @@ func (s *sqlPlaylistStore) ChangeMemberPosition(playlistId int64, episodeId int6
 			datetime.Unix(), playlistId, from, to,
 		)
 
-		if err := s.Exec(sql); err != nil {
+		if err := s.ExecRaw(sql); err != nil {
 			return model.New500Error("sql_store.sql_playlist_store.change_member_position", err.Error(), nil)
 		}
 	}
@@ -232,7 +223,7 @@ func (s *sqlPlaylistStore) ChangeMemberPosition(playlistId int64, episodeId int6
 		to, datetime.Unix(), playlistId, episodeId,
 	)
 
-	if err := s.Exec(sql); err != nil {
+	if err := s.ExecRaw(sql); err != nil {
 		return model.New500Error("sql_store.sql_playlist_store.change_member_position", err.Error(), nil)
 	}
 	return nil
@@ -244,7 +235,7 @@ func (s *sqlPlaylistStore) DeleteMember(playlistId int64, episodeId int64) *mode
 		playlistId, episodeId,
 	)
 
-	if err := s.Exec(sql); err != nil {
+	if err := s.ExecRaw(sql); err != nil {
 		return model.New500Error("store.sqlstore.sql_playlist_store.delete_member", err.Error(), nil)
 	}
 	return nil

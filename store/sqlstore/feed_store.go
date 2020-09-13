@@ -14,7 +14,7 @@ type sqlFeedStore struct {
 func (s *sqlFeedStore) Save(feed *model.Feed) *model.AppError {
 	feed.PreSave()
 
-	res, err := s.Insert_("feed", feed)
+	res, err := s.Insert("feed", feed)
 	if err != nil {
 		return model.New500Error("sql_store.sql_feed_store.save", err.Error(), nil)
 	}
@@ -38,8 +38,7 @@ func (s *sqlFeedStore) GetAllPaginated(lastId int64, limit int) ([]*model.Feed, 
 	query := sqlf.Select("*").
 		From("feed").
 		Where("id > ?", lastId).
-		OrderBy("id").
-		Limit(limit)
+		OrderBy("id").Limit(limit)
 
 	var feeds []*model.Feed
 	if err := s.Query(&feeds, query); err != nil {
@@ -64,8 +63,7 @@ func (s *sqlFeedStore) GetBySourcePaginated(source string, offset, limit int) (r
 	query := sqlf.Select("*").
 		From("feed").
 		Where("source = ?", source).
-		Offset(offset).
-		Limit(limit)
+		Offset(offset).Limit(limit)
 
 	var feeds []*model.Feed
 	if err := s.Query(&feeds, query); err != nil {
@@ -83,8 +81,7 @@ func (s *sqlFeedStore) GetForRefreshPaginated(lastId int64, limit int) ([]*model
 			next_refresh_at < ? AND
 			id > ?
 		`, datetime.Unix(), lastId).
-		OrderBy("id").
-		Limit(limit)
+		OrderBy("id").Limit(limit)
 
 	var feeds []*model.Feed
 	if err := s.Query(&feeds, query); err != nil {
@@ -97,8 +94,7 @@ func (s *sqlFeedStore) GetFailedToImportPaginated(lastId int64, limit int) (res 
 	query := sqlf.Select("*").
 		From("feed").
 		Where("last_refresh_comment <> '' AND id > ?", lastId).
-		OrderBy("id").
-		Limit(limit)
+		OrderBy("id").Limit(limit)
 
 	var feeds []*model.Feed
 	if err := s.Query(&feeds, query); err != nil {

@@ -25,7 +25,7 @@ func (s *sqlPlaybackStore) Save(playback *model.Playback) *model.AppError {
 		cols(playback), vals(playback), datetime.Now(), datetime.Unix(),
 	)
 
-	if err := s.Exec(sql); err != nil {
+	if err := s.ExecRaw(sql); err != nil {
 		return model.New500Error("sql_store.playback_store.save", err.Error(), nil)
 	}
 	return nil
@@ -43,7 +43,7 @@ func (s *sqlPlaybackStore) Upsert(playback *model.Playback) *model.AppError {
 		cols(playback), vals(playback), datetime.Now(), datetime.Unix(),
 	)
 
-	if err := s.Exec(sql); err != nil {
+	if err := s.ExecRaw(sql); err != nil {
 		return model.New500Error("sql_store.playback_store.save", err.Error(), nil)
 	}
 	return nil
@@ -67,24 +67,22 @@ func (s *sqlPlaybackStore) GetByUserPaginated(userId int64, offset int, limit in
 func (s *sqlPlaybackStore) GetByUserByEpisodes(userId int64, episodeIds []int64) (res []*model.Playback, appE *model.AppError) {
 	query := sqlf.Select("*").
 		From("playback").
-		Where("user_id = ? AND episode_id IN (?)", userId, episodeIds)
+		Where("user_id = ? AND episode_id IN ?", userId, episodeIds)
 
 	var playbacks []*model.Playback
-	if err := s.Query(&playbacks, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&playbacks, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_playback_store.get_by_user_by_episodes", err.Error(), nil)
 	}
 	return playbacks, nil
 }
 
 func (s *sqlPlaybackStore) Update(playback *model.Playback) *model.AppError {
-	sql := fmt.Sprintf(
-		`UPDATE playback
-			SET current_progress = %f, updated_at = %d
-			WHERE user_id = %d AND episode_id = %d`,
-		playback.CurrentProgress, datetime.Unix(), playback.UserId, playback.EpisodeId,
-	)
+	query := sqlf.Update("playback").
+		Set("current_progress", playback.CurrentProgress).
+		Set("updated_at", datetime.Unix()).
+		Where("user_id = ? AND episode_id = ?", playback.UserId, playback.EpisodeId)
 
-	if err := s.Exec(sql); err != nil {
+	if err := s.Exec(query); err != nil {
 		return model.New500Error("sql_store.sql_playback_store.update", err.Error(), nil)
 	}
 	return nil

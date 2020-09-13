@@ -46,10 +46,10 @@ func (s *sqlCategoryStore) GetByIds(categoryIds []int64) ([]*model.Category, *mo
 
 	query := sqlf.Select("*").
 		From("category").
-		Where("id IN (?)", categoryIds)
+		Where("id IN ?", categoryIds)
 
 	var categories []*model.Category
-	if err := s.Query(&categories, query, sqldb.ExpandVars); err != nil {
+	if err := s.Query(&categories, query); err != nil {
 		return nil, model.New500Error("sql_store.sql_category_store.get_by_ids", err.Error(), nil)
 	}
 	return categories, nil

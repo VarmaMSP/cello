@@ -23,15 +23,14 @@ func (s *sqlSubscriptionStore) Save(subscription *model.Subscription) *model.App
 		cols(subscription), vals(subscription), datetime.Unix(),
 	)
 
-	if err := s.Exec(sql); err != nil {
+	if err := s.ExecRaw(sql); err != nil {
 		return model.New500Error("sql_store.sql_subscription_store.save", err.Error(), nil)
 	}
 	return nil
 }
 
 func (s *sqlSubscriptionStore) GetByUser(userId int64) ([]*model.Subscription, *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("subscription").
 		Where("user_id = ?", userId)
 
@@ -43,8 +42,7 @@ func (s *sqlSubscriptionStore) GetByUser(userId int64) ([]*model.Subscription, *
 }
 
 func (s *sqlSubscriptionStore) IsUserSubscribed(userId int64, podcastId int64) (bool, *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("subscription").
 		Where("user_id = ? AND podcast_id = ?", userId, podcastId)
 
@@ -64,7 +62,7 @@ func (s *sqlSubscriptionStore) Delete(userId int64, podcastId int64) *model.AppE
 		podcastId, userId,
 	)
 
-	if err := s.Exec(sql); err != nil {
+	if err := s.ExecRaw(sql); err != nil {
 		return model.New500Error("sql_store.sql_subscription_store.delete", err.Error(), nil)
 	}
 	return nil

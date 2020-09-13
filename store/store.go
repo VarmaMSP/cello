@@ -69,7 +69,8 @@ type UserStore interface {
 	SaveSocialAccount(accountType string, account model.DbModel) *model.AppError
 	Get(userId int64) (*model.User, *model.AppError)
 	GetGuestAccount(id string) (*model.GuestAccount, *model.AppError)
-	GetSocialAccount(accountType, id string) (model.DbModel, *model.AppError)
+	GetGoogleAccount(id string) (*model.GoogleAccount, *model.AppError)
+	GetFacebookAccount(id string) (*model.FacebookAccount, *model.AppError)
 }
 
 type PlaybackStore interface {

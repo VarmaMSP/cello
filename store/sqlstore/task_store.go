@@ -11,8 +11,7 @@ type sqlTaskStore struct {
 }
 
 func (s *sqlTaskStore) GetAll() ([]*model.Task, *model.AppError) {
-	query := sqlf.
-		Select("*").
+	query := sqlf.Select("*").
 		From("task").
 		Where("active = 1")
 
