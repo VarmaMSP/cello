@@ -17,22 +17,21 @@ type Broker interface {
 	// Returns master connection
 	GetMaster() *sqlx.DB
 
-	// Insert runs insert query for table without a autso generated PK.
-	Insert(table string, item model.DbModel) (sql.Result, error)
-	// Insert runs insert query for table with a auto increment PK.
-	Insert_(table string, item model.DbModel) (sql.Result, error)
-	// BulkInsert inserts multiple items in single query
-	BulkInsert(table string, items []model.DbModel) (sql.Result, error)
+	// Insert model
+	Insert(table string, item interface{}) (sql.Result, error)
+	// Bulk Insert
+	BulkInsert(table string, items ...interface{}) (sql.Result, error)
+
 	// Patch persists changes to item
 	Patch(table string, old, new model.DbModel) (sql.Result, error)
+
 	// Exec executes given sql
-	Exec(sql string, values ...interface{}) error
+	Exec(stmt *sqlf.Stmt) error
+	// Exec raw sql query
+	ExecRaw(sql string, values ...interface{}) error
 
 	// Runs a query and copy results to desctination
-	Query(dest interface{}, stmt *sqlf.Stmt, options ...QueryOption) error
+	Query(dest interface{}, stmt *sqlf.Stmt) error
 	// Runs a query that returns a single row and copy it to destination
-	QueryRow(dest interface{}, stmt *sqlf.Stmt, options ...QueryOption) error
-
-	// To Be Depreicated
-	QueryRow_(copyTo []interface{}, sql string, values ...interface{}) error
+	QueryRow(dest interface{}, stmt *sqlf.Stmt) error
 }

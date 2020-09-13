@@ -8,20 +8,22 @@ import (
 	"github.com/leporo/sqlf"
 )
 
-func (splr *supplier) Query(dest interface{}, stmt *sqlf.Stmt) error {
+func (splr *supplier) Exec(stmt *sqlf.Stmt) error {
 	sql, err := dbr.InterpolateForDialect(stmt.String(), stmt.Args(), dialect.MySQL)
 	if err != nil {
 		return err
 	}
 	fmt.Println(sql)
-	return splr.db.Select(dest, sql)
+	_, err = splr.db.Exec(sql)
+	return err
 }
 
-func (splr *supplier) QueryRow(dest interface{}, stmt *sqlf.Stmt) error {
-	sql, err := dbr.InterpolateForDialect(stmt.String(), stmt.Args(), dialect.MySQL)
+func (splr *supplier) ExecRaw(sql_ string, values ...interface{}) error {
+	sql, err := dbr.InterpolateForDialect(sql_, values, dialect.MySQL)
 	if err != nil {
 		return err
 	}
 	fmt.Println(sql)
-	return splr.db.Get(dest, sql)
+	_, err = splr.db.Exec(sql)
+	return err
 }

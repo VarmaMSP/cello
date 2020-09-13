@@ -3,6 +3,8 @@ package sqldb
 import (
 	"time"
 
+	"github.com/doug-martin/goqu/v9"
+	_ "github.com/doug-martin/goqu/v9/dialect/mysql"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/varmamsp/cello/model"
@@ -10,6 +12,7 @@ import (
 
 type supplier struct {
 	db *sqlx.DB
+	q  goqu.DialectWrapper
 }
 
 func NewBroker(config *model.Config) (Broker, error) {
@@ -17,7 +20,7 @@ func NewBroker(config *model.Config) (Broker, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &supplier{db: db}, nil
+	return &supplier{db: db, q: goqu.Dialect("mysql")}, nil
 }
 
 func (splr *supplier) C() *sqlx.DB {

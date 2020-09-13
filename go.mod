@@ -11,12 +11,14 @@ require (
 	github.com/dghubble/gologin v2.1.0+incompatible // indirect
 	github.com/dghubble/gologin/v2 v2.2.0
 	github.com/dghubble/oauth1 v0.6.0
+	github.com/doug-martin/goqu/v9 v9.9.0
 	github.com/futurenda/google-auth-id-token-verifier v0.0.0-20170311140316-2a5b89f28b7e
 	github.com/go-http-utils/headers v0.0.0-20161116095340-dd89efed1674
 	github.com/go-ini/ini v1.51.0 // indirect
 	github.com/go-playground/validator v9.30.0+incompatible // indirect
 	github.com/go-playground/validator/v10 v10.0.0 // indirect
-	github.com/go-sql-driver/mysql v1.4.1
+	github.com/go-sql-driver/mysql v1.5.0
+	github.com/gocraft/dbr/v2 v2.7.0
 	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/grokify/html-strip-tags-go v0.0.0-20190424092004-025bd760b278
@@ -46,7 +48,6 @@ require (
 	golang.org/x/sys v0.0.0-20190812172437-4e8604ab3aff // indirect
 	gonum.org/v1/gonum v0.6.2 // indirect
 	google.golang.org/api v0.7.0
-	google.golang.org/appengine v1.6.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/jdkato/prose.v2 v2.0.0-20190814032740-822d591a158c
 	gopkg.in/neurosnap/sentences.v1 v1.0.6 // indirect

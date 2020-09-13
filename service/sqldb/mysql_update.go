@@ -35,11 +35,6 @@ func (splr *supplier) Patch(table string, old, new model.DbModel) (sql.Result, e
 	return splr.db.Exec(sql, values...)
 }
 
-func (splr *supplier) Exec(sql string, values ...interface{}) error {
-	_, err := splr.db.Exec(sql, values...)
-	return err
-}
-
 func valuesFromAddrs(addrs []interface{}) []interface{} {
 	values := make([]interface{}, len(addrs))
 	for i := range values {
