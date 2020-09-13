@@ -9,7 +9,7 @@ import (
 )
 
 type Feed struct {
-	Id                 int64  `db:"id"`
+	Id                 int64  `db:"id" goqu:"skipinsert"`
 	Source             string `db:"source"`
 	SourceId           string `db:"source_id"`
 	Url                string `db:"url"`
@@ -17,7 +17,7 @@ type Feed struct {
 	LastModified       string `db:"last_modified"`
 	RefreshEnabled     int    `db:"refresh_enabled"`
 	RefreshInterval    int    `db:"refresh_interval"`
-	LastRefreshAt      int64  `db:"last_refresh_interval"`
+	LastRefreshAt      int64  `db:"last_refresh_at"`
 	LastRefreshComment string `db:"last_refresh_comment"`
 	NextRefreshAt      int64  `db:"next_refresh_at"`
 	CreatedAt          int64  `db:"created_at"`

@@ -17,14 +17,14 @@ const (
 )
 
 type Playback struct {
-	UserId             int64
-	EpisodeId          int64
-	PlayCount          int
-	CurrentProgress    float64
-	CumulativeProgress float32
-	LastPlayedAt       string
-	CreatedAt          int64
-	UpdatedAt          int64
+	UserId             int64   `db:"user_id"`
+	EpisodeId          int64   `db:"episode_id"`
+	PlayCount          int     `db:"play_count"`
+	CurrentProgress    float64 `db:"current_progress"`
+	CumulativeProgress float32 `db:"cumulative_progress"`
+	LastPlayedAt       string  `db:"last_played_at"`
+	CreatedAt          int64   `db:"created_at"`
+	UpdatedAt          int64   `db:"updated_at"`
 }
 
 type PlaybackEvent struct {

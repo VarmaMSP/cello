@@ -26,7 +26,7 @@ type Job interface {
 }
 
 type Task struct {
-	Id        int64  `db:"id"`
+	Id        int64  `db:"id" goqu:"skipinsert"`
 	Name      string `db:"name"`
 	Type      string `db:"type"`
 	Interval  int    `db:"interval"`

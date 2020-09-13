@@ -20,7 +20,7 @@ const (
 )
 
 type Episode struct {
-	Id          int64  `json:"id"                    db:"id"`
+	Id          int64  `json:"id"                    db:"id" goqu:"skipinsert"`
 	PodcastId   int64  `json:"podcast_id"            db:"podcast_id"`
 	Guid        string `json:"-"                     db:"guid"`
 	Title       string `json:"title"                 db:"title"`

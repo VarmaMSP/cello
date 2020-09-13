@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 
-	twitterLogin "github.com/dghubble/gologin/v2/twitter"
 	"github.com/varmamsp/cello/model"
 	google "google.golang.org/api/oauth2/v2"
 )
@@ -39,9 +38,8 @@ func (a *App) CreateUserWithGuest(guest *model.GuestAccount) (*model.User, *mode
 
 func (a *App) CreateUserWithGoogle(googleUser *google.Userinfoplus) (*model.User, *model.AppError) {
 	// return user if exists
-	if account, err := a.Store.User().GetSocialAccount("google", googleUser.Id); err == nil {
-		googleAccount, _ := account.(*model.GoogleAccount)
-		return a.Store.User().Get(googleAccount.UserId)
+	if account, err := a.Store.User().GetGoogleAccount(googleUser.Id); err == nil {
+		return a.Store.User().Get(account.UserId)
 	}
 
 	user := &model.User{
@@ -95,9 +93,8 @@ func (a *App) LinkGoogleToUser(user *model.User, googleUser *google.Userinfoplus
 
 func (a *App) CreateUserWithFacebook(facebookId, facebookName, facebookEmail string) (*model.User, *model.AppError) {
 	// Check if user already exists
-	if account, err := a.Store.User().GetSocialAccount("facebook", facebookId); err == nil {
-		facebookAccount, _ := account.(*model.FacebookAccount)
-		return a.Store.User().Get(facebookAccount.UserId)
+	if account, err := a.Store.User().GetFacebookAccount(facebookId); err == nil {
+		return a.Store.User().Get(account.UserId)
 	}
 
 	user := &model.User{
@@ -134,49 +131,6 @@ func (a *App) LinkFacebookToUser(user *model.User, facebookId, facebookName, fac
 	}
 
 	return nil
-}
-
-func (a *App) CreateUserWithTwitter(ctx context.Context) (*model.User, *model.AppError) {
-	twitterUser, err := twitterLogin.UserFromContext(ctx)
-	if err != nil {
-		return nil, nil
-	}
-
-	// Check if user already exists
-	if account, err := a.Store.User().GetSocialAccount("twitter", twitterUser.IDStr); err == nil {
-		twitterAccount, _ := account.(*model.TwitterAccount)
-		return a.Store.User().Get(twitterAccount.UserId)
-	}
-
-	user := &model.User{
-		Name:         twitterUser.Name,
-		Email:        twitterUser.Email,
-		SignInMethod: "TWITTER",
-	}
-	if err := a.Store.User().Save(user); err != nil {
-		return nil, err
-	}
-
-	twitterAccount := &model.TwitterAccount{
-		Id:             twitterUser.IDStr,
-		UserId:         user.Id,
-		Name:           twitterUser.Name,
-		ScreenName:     twitterUser.ScreenName,
-		Location:       twitterUser.Location,
-		Url:            twitterUser.URL,
-		Description:    twitterUser.Description,
-		FollowersCount: twitterUser.FollowersCount,
-		FriendsCount:   twitterUser.FriendsCount,
-		ProfileImage:   twitterUser.ProfileImageURLHttps,
-	}
-	if twitterUser.Verified {
-		twitterAccount.Verified = 1
-	}
-	if err := a.Store.User().SaveSocialAccount("twitter", twitterAccount); err != nil {
-		return nil, err
-	}
-
-	return user, nil
 }
 
 func (a *App) GetUser(userId int64) (*model.User, *model.AppError) {

@@ -8,7 +8,7 @@ import (
 )
 
 type Playlist struct {
-	Id           int64  `json:"id"                      db:"id"`
+	Id           int64  `json:"id"                      db:"id" goqu:"skipinsert"`
 	UserId       int64  `json:"user_id"                 db:"user_id"`
 	Title        string `json:"title"                   db:"title"`
 	Description  string `json:"description,omitempty"   db:"description"`
