@@ -17,11 +17,13 @@ CREATE TABLE `feed` (
     `created_at`                 BIGINT,
     `updated_at`                 BIGINT,
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`url`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE UNIQUE INDEX `unique_feed_url` ON `feed` (`url`);
 
 CREATE TABLE `podcast` (
     `id`                         INT,
+    `uid`                        VARCHAR(12),
     `title`                      VARCHAR(500),
     `summary`                    VARCHAR(300),
     `description`                BLOB,
@@ -46,8 +48,11 @@ CREATE TABLE `podcast` (
     FOREIGN KEY (`id`) REFERENCES `feed` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+CREATE INDEX `podcast_uid` ON `podcast` (`uid`);
+
 CREATE TABLE `episode` (
     `id`                         INT AUTO_INCREMENT,
+    `uid`                        VARCHAR(12),
     `podcast_id`                 INT,
     `guid`                       VARCHAR(500),
     `title`                      VARCHAR(500),
@@ -70,6 +75,8 @@ CREATE TABLE `episode` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE INDEX `episode_uid` ON `episode` (`uid`);
 
 CREATE TABLE `category` (
     `id`                         INT,

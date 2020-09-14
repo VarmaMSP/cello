@@ -4,7 +4,7 @@ SELECT name, type, interval_,
     CONVERT_TZ(FROM_UNIXTIME(updated_at), "+00:00", "+05:30") AS last_run_at from task;
 
 -- USER ACTIVITY
-SELECT id, name, email, CONVERT_TZ(FROM_UNIXTIME(created_at), "+00:00", "+05:30") AS joined_at FROM user
+SELECT id, name, email, gender, sign_in_method, CONVERT_TZ(FROM_UNIXTIME(created_at), "+00:00", "+05:30") AS joined_at FROM user
     ORDER BY joined_at;
 
 -- NO OF SIGN UPS PER DAY

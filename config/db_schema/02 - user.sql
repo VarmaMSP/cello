@@ -1,25 +1,30 @@
 USE `phenopod`;
 
-DROP TABLE IF EXISTS `email_account`;
-DROP TABLE IF EXISTS `google_account`;
-DROP TABLE IF EXISTS `facebook_account`;
-DROP TABLE IF EXISTS `twitter_account`;
-DROP TABLE IF EXISTS `playback`;
-DROP TABLE IF EXISTS `subscription`;
-DROP TABLE IF EXISTS `playlist_member`;
-DROP TABLE IF EXISTS `playlist`;
-DROP TABLE IF EXISTS `user`;
-
 CREATE TABLE `user` (
     `id`                         INT AUTO_INCREMENT,
+    `uid`                        VARCHAR(12),
     `name`                       VARCHAR(100),
     `email`                      VARCHAR(255),
     `gender`                     VARCHAR(20),
-    `sign_in_method`             ENUM('EMAIL', 'GOOGLE', 'FACEBOOK', 'TWITTER'),
+    `sign_in_method`             enum('EMAIL','GOOGLE','FACEBOOK','TWITTER', 'GUEST'),
     `is_admin`                   TINYINT DEFAULT 0,
     `created_at`                 BIGINT,
     `updated_at`                 BIGINT,
     PRIMARY KEY(`id`)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE INDEX `user_uid` ON `user` (`uid`);
+
+CREATE TABLE `guest_account` (
+    `id`                         VARCHAR(255),
+    `user_id`                    INT,
+    `device_uuid`                VARCHAR(255),
+    `device_os`                  VARCHAR(100),
+    `device_model`               VARCHAR(100),
+    `created_at`                 BIGINT,
+    `updated_at`                 BIGINT,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE 
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `email_account` (
@@ -58,46 +63,3 @@ CREATE TABLE `facebook_account` (
     PRIMARY KEY(`id`),
     FOREIGN KEY(`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-CREATE TABLE `twitter_account` (
-    `id`                         VARCHAR(50), 
-    `user_id`                    INT,
-    `name`                       VARCHAR(60),
-    `screen_name`                VARCHAR(60),
-    `location`                   VARCHAR(100),
-    `url`                        VARCHAR(255),
-    `description`                MEDIUMBLOB,
-    `verified`                   TINYINT,
-    `followers_count`            INT,
-    `friends_count`              INT,
-    `profile_image`              VARCHAR(255),
-    `created_at`                 BIGINT,
-    `updated_at`                 BIGINT,
-    PRIMARY KEY(`id`),
-    FOREIGN KEY(`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
-) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-CREATE TABLE `playback` (
-    `user_id`                   INT,
-    `episode_id`                INT,
-    `play_count`                SMALLINT,
-    `current_progress`          FLOAT,
-    `cumulative_progress`       FLOAT,
-    `last_played_at`            DATETIME,
-    `created_at`                BIGINT,
-    `updated_at`                BIGINT,
-    PRIMARY KEY (`user_id`, `episode_id`),
-    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (`episode_id`) REFERENCES `episode` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE `subscription` (
-    `user_id`                    INT,
-    `podcast_id`                 INT,
-    `active`                     TINYINT,
-    `created_at`                 BIGINT,
-    `updated_at`                 BIGINT, 
-    PRIMARY KEY (`user_id`, `podcast_id`),
-    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (`podcast_id`) REFERENCES `podcast` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
-);

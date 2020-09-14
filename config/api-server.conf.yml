@@ -69,7 +69,7 @@ jobs:
     worker_limit: 10
 
   task_scheduler:
-    enable: true
+    enable: false
     worker_limit: 10
 
   sync_playback:
@@ -87,9 +87,3 @@ oauth:
     client_secret: f302cd975a5ebef96a295486be7b6aa3
     redirect_url: http://localhost:8080/api/callback/facebook
     scopes: ["email"]
-
-  twitter:
-    client_id: cmn3dPHdbvuIwh03R1Cy1ajYr
-    client_secret: RtzXg4suls5qaJgiH3El2UiKwziXe9KNUGUwEYyPhzYSs8FHNM
-    redirect_url: http://localhost:8080/api/callback/twitter
-    scopes: []
