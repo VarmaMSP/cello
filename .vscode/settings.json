@@ -1,20 +1,25 @@
 {
-    "go.useLanguageServer": true,
-    "go.lintTool": "revive",
-    "go.toolsEnvVars": {
-        "GO111MODULE": "on"
-    },
-    "go.lintFlags": [
-        "--config=${workspaceRoot}/revive.toml",
-        "--formatter=stylish"
-    ],
+  "go.useLanguageServer": true,
+  "go.lintTool": "revive",
+  "go.toolsEnvVars": {
+    "GO111MODULE": "on"
+  },
+  "go.lintFlags": [
+    "--config=${workspaceRoot}/revive.toml",
+    "--formatter=stylish"
+  ],
+  "editor.insertSpaces": false,
+  "editor.formatOnSave": false,
+  "[go]": {
+    "editor.insertSpaces": false,
+    "editor.formatOnSave": true
+  },
+  "[yaml]": {
     "editor.insertSpaces": true,
-    "editor.formatOnSave": false,
-    "[go]": {
-        "editor.insertSpaces": false,
-        "editor.formatOnSave": true
-    },
-    "[yaml]": {
-        "editor.formatOnSave": true
-    }
+    "editor.formatOnSave": true
+  },
+  "[toml]": {
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true
+  }
 }
