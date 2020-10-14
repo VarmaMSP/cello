@@ -1,4 +1,13 @@
 {
+  // Common
+  "editor.fontSize": 13,
+  "editor.insertSpaces": false,
+  "editor.formatOnSave": false,
+  "editor.minimap.enabled": false,
+  "editor.detectIndentation": false,
+  "files.insertFinalNewline": true,
+  "workbench.colorTheme": "Blink (rainglow)",
+
   "go.useLanguageServer": true,
   "go.lintTool": "revive",
   "go.toolsEnvVars": {
@@ -8,8 +17,7 @@
     "--config=${workspaceRoot}/revive.toml",
     "--formatter=stylish"
   ],
-  "editor.insertSpaces": false,
-  "editor.formatOnSave": false,
+  
   "[go]": {
     "editor.insertSpaces": false,
     "editor.formatOnSave": true
