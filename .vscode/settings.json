@@ -1,5 +1,5 @@
 {
-  // Common
+  // Common to all
   "editor.fontSize": 13,
   "editor.insertSpaces": false,
   "editor.formatOnSave": false,
@@ -23,10 +23,12 @@
     "editor.formatOnSave": true
   },
   "[yaml]": {
+	"editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.formatOnSave": true
   },
   "[toml]": {
+	"editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.formatOnSave": true
   }
