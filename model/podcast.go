@@ -41,11 +41,9 @@ type Podcast struct {
 	EarliestEpisodePubDate string `json:"earliest_episode_pub_date,omitempty" db:"earliest_episode_pub_date"`
 	CreatedAt              int64  `json:"-"                                   db:"created_at"`
 	UpdatedAt              int64  `json:"-"                                   db:"updated_at"`
-
-	// For search
-	TitleHighlighted       string `json:"title_highlighted,omitempty"       db:"-"`
-	AuthorHighlighted      string `json:"author_highlighted,omitempty"      db:"-"`
-	DescriptionHighlighted string `json:"description_highlighted,omitempty" db:"-"`
+	TitleHighlighted       string `json:"title_highlighted,omitempty"         db:"-"`
+	AuthorHighlighted      string `json:"author_highlighted,omitempty"        db:"-"`
+	DescriptionHighlighted string `json:"description_highlighted,omitempty"   db:"-"`
 
 	// From Feed
 	FeedUrl           string `json:"feed_url,omitempty"             db:"-"`

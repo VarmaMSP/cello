@@ -21,11 +21,6 @@ type User struct {
 	Subscription []*Subscription `json:"subscriptions" db:"-"`
 }
 
-type Session struct {
-	UserId  int64
-	IsAdmin int
-}
-
 // google.golang.org/api/oauth2/v2
 type GoogleAccount struct {
 	Id         string `db:"id"`

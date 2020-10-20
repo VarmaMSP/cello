@@ -2,8 +2,6 @@ package session
 
 import (
 	"github.com/dghubble/gologin/v2"
-	"github.com/dghubble/oauth1"
-	twitterOAuth "github.com/dghubble/oauth1/twitter"
 	"github.com/varmamsp/cello/web"
 	"golang.org/x/oauth2"
 	facebookOAuth "golang.org/x/oauth2/facebook"
@@ -34,14 +32,5 @@ func facebookOAuthConfig(c *web.Context) *oauth2.Config {
 		RedirectURL:  c.App.Config.OAuth.Facebook.RedirectUrl,
 		Scopes:       c.App.Config.OAuth.Facebook.Scopes,
 		Endpoint:     facebookOAuth.Endpoint,
-	}
-}
-
-func twitterOAuthConfig(c *web.Context) *oauth1.Config {
-	return &oauth1.Config{
-		ConsumerKey:    c.App.Config.OAuth.Twitter.ClientId,
-		ConsumerSecret: c.App.Config.OAuth.Twitter.ClientSecret,
-		CallbackURL:    c.App.Config.OAuth.Twitter.RedirectUrl,
-		Endpoint:       twitterOAuth.AuthorizeEndpoint,
 	}
 }
