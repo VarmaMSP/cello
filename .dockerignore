@@ -1,0 +1,8 @@
+.git
+.vscode
+tmp
+
+.gitignore
+Makefile
+README.md
+revive.toml
