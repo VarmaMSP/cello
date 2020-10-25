@@ -1,9 +1,82 @@
-version: "3.0"
+version: "3.9"
 services:
+  api-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    networks:
+      - phenopod
+    volumes:
+      - ./:/app
+    ports:
+      - 8080:8080
+    depends_on:
+      - elasticsearch
+      - minio
+      - rabbitmq
+      - redis
+      - mysql
+
+  elasticsearch:
+    image: elasticsearch:7.9.2
+    logging:
+      driver: none
+    networks:
+      - phenopod
+    ports:
+      - 9200:9200
+    environment:
+      discovery.type: single-node
+      ELASTIC_PASSWORD: birds
+
+  minio:
+    image: minio/minio
+    logging:
+      driver: none
+    networks:
+      - phenopod
+    ports:
+      - 9000:9000
+    environment:
+      MINIO_ACCESS_KEY: H8N6Q04KFKQDA5B9UW5U
+      MINIO_SECRET_KEY: HgKy1+eDdykb2tfTkulHk9+Fy+Fj9fClF0AN3jOz
+      MINIO_REGION_NAME: us-east-1
+    command: ["server", "/data"]
+
+  rabbitmq:
+    image: rabbitmq:3.8
+    logging:
+      driver: none
+    networks:
+      - phenopod
+    ports:
+      - 5672:5672
+    environment:
+      RABBITMQ_DEFAULT_PASS: birds
+
   redis:
-    image: redis:latest
+    image: redis:6.0
+    logging:
+      driver: none
+    networks:
+      - phenopod
     ports:
       - 6379:6379
-    volumes:
-      - ./config/redis.conf:/redis.conf
-    command: ["redis-server", "/redis.conf"]
+    command: ["redis-server"]
+
+  mysql:
+    image: mysql:8.0
+    restart: always
+    logging:
+      driver: none
+    networks:
+      - phenopod
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: phenopod
+      MYSQL_ROOT_PASSWORD: birds
+
+networks:
+  phenopod:
+    driver: bridge

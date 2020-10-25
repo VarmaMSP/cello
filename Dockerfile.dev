@@ -1,0 +1,26 @@
+FROM golang:1.15.3-alpine
+
+# Install dockerize
+RUN apk add --no-cache openssl
+RUN DOCKERIZE_VERSION=v0.6.1 \
+	&& wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN GO111MODULE=on && go mod download
+RUN go get -u github.com/cosmtrek/air
+
+COPY . ./
+EXPOSE 8080
+ENTRYPOINT [ \
+	"dockerize", \
+	"-wait", "http://elasticsearch:9200/_cluster/health", \
+	"-wait", "http://minio:9000/minio/health/live", \
+	"-wait", "tcp://rabbitmq:5672", \
+	"-wait", "tcp://redis:6379", \
+	"-wait", "tcp://mysql:3306", \
+	"-timeout", "1m", \
+	"air", "-c", ".air.toml" \
+]

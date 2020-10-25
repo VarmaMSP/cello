@@ -1,6 +1,9 @@
 run-cello:
 	air
 
+docker-compose-up:
+	DOCKER_BUILDKIT=1 && docker-compose up --remove-orphans --build
+
 purge-data: 
 	curl -X DELETE 'http://localhost:9200/_all'
 
