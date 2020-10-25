@@ -77,7 +77,7 @@ func New(config *model.Config) (*Server, error) {
 		return nil, err
 	} else {
 		svr.httpSvr = &http.Server{
-			Addr:    "127.0.0.1:8080",
+			Addr:    config.Adress,
 			Handler: newRouter(app),
 		}
 	}
@@ -94,7 +94,7 @@ func New(config *model.Config) (*Server, error) {
 func (svr *Server) Start() {
 	svr.jobSvr.Start()
 
-	fmt.Println("Server Running on PORT 8081")
+	fmt.Println("Server Running on PORT :8080")
 	err := svr.httpSvr.ListenAndServe()
 	if err != nil {
 		fmt.Println(err)

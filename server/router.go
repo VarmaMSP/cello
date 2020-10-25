@@ -13,35 +13,41 @@ import (
 )
 
 func newRouter(app *app.App) http.Handler {
-	web := &web.Web{App: app}
+	w := &web.Web{App: app}
 	r := httprouter.New()
 
-	// SignIn for Web
-	r.Handler("GET", "/signin/google", web.H_(session.LoginWithGoogle))
-	r.Handler("GET", "/signin/facebook", web.H_(session.LoginWithFacebook))
-	r.Handler("GET", "/callback/google", web.H_(session.GoogleLoginCallback))
-	r.Handler("GET", "/callback/facebook", web.H_(session.FacebookLoginCallback))
-	// SignIn for mobile
-	r.Handler("POST", "/mobile/signin/guest", web.H(session.LoginWithGuest))
-	r.Handler("POST", "/mobile/signin/google", web.H(session.LoginWithGoogleMobile))
-	r.Handler("POST", "/mobile/signin/facebook", web.H(session.LoginWithFacebookMobile))
+	r.Handler("GET", "/", w.H(page.Home))
+	r.Handler("GET", "/results", w.H(page.Results))
+	r.Handler("GET", "/history", w.HAuth(page.History))
+	r.Handler("GET", "/subscriptions", w.HAuth(page.Subscriptions))
+	r.Handler("GET", "/playlists", w.HAuth(page.Library))
 
-	r.Handler("GET", "/", web.H(page.Home))
-	r.Handler("GET", "/results", web.H(page.Results))
-	r.Handler("GET", "/history", web.HAuth(page.History))
-	r.Handler("GET", "/subscriptions", web.HAuth(page.Subscriptions))
-	r.Handler("GET", "/playlists", web.HAuth(page.Library))
+	r.Handler("GET", "/suggest", w.H(page.Suggest))
 
-	r.Handler("GET", "/suggest", web.H(page.Suggest))
+	r.Handler("GET", "/charts/:chartUrlParam", w.H(page.Chart))
+	r.Handler("GET", "/podcasts/:podcastUrlParam", w.H(page.Podcast))
+	r.Handler("GET", "/podcasts/:podcastUrlParam/search", w.H(page.PodcastSearch))
+	r.Handler("GET", "/episodes/:episodeUrlParam", w.H(page.Episode))
+	r.Handler("GET", "/playlists/:playlistUrlParam", w.H(page.Playlist))
 
-	r.Handler("GET", "/charts/:chartUrlParam", web.H(page.Chart))
-	r.Handler("GET", "/podcasts/:podcastUrlParam", web.H(page.Podcast))
-	r.Handler("GET", "/podcasts/:podcastUrlParam/search", web.H(page.PodcastSearch))
-	r.Handler("GET", "/episodes/:episodeUrlParam", web.H(page.Episode))
-	r.Handler("GET", "/playlists/:playlistUrlParam", web.H(page.Playlist))
+	r.Handler("GET", "/ajax/browse", w.H(browse.RootHandler))
+	r.Handler("POST", "/ajax/service", w.H(service.RootHandler))
 
-	r.Handler("GET", "/ajax/browse", web.H(browse.RootHandler))
-	r.Handler("POST", "/ajax/service", web.H(service.RootHandler))
+	r.Handler("GET", "/signin/google", w.H_(session.LoginWithGoogle))
+	r.Handler("GET", "/signin/facebook", w.H_(session.LoginWithFacebook))
+	r.Handler("GET", "/callback/google", w.H_(session.GoogleLoginCallback))
+	r.Handler("GET", "/callback/facebook", w.H_(session.FacebookLoginCallback))
+
+	r.Handler("POST", "/mobile/signin/guest", w.H(session.LoginWithGuest))
+	r.Handler("POST", "/mobile/signin/google", w.H(session.LoginWithGoogleMobile))
+	r.Handler("POST", "/mobile/signin/facebook", w.H(session.LoginWithFacebookMobile))
+
+	r.Handler("GET", "/health", w.H_(
+		func(c *web.Context, w http.ResponseWriter, req *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("OK"))
+		},
+	))
 
 	return r
 }
