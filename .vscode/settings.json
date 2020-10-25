@@ -4,7 +4,6 @@
   "editor.formatOnSave": false,
   "editor.minimap.enabled": false,
   "editor.detectIndentation": false,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "workbench.colorTheme": "Blink (rainglow)",
   "workbench.editor.enablePreview": false,
   "files.insertFinalNewline": true,
@@ -24,24 +23,27 @@
     "editor.formatOnSave": true
   },
 
-  "[yaml]": {
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true,
-    "editor.formatOnSave": true
-  },
   "[toml]": {
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.formatOnSave": true
   },
+  "[yaml]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "[json]": {
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

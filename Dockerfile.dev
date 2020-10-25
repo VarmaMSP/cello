@@ -7,11 +7,13 @@ RUN DOCKERIZE_VERSION=v0.6.1 \
 	&& tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
 	&& rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
+# Install dependencies
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN GO111MODULE=on && go mod download
 RUN go get -u github.com/cosmtrek/air
 
+# Run server
 COPY . ./
 EXPOSE 8080
 ENTRYPOINT [ \
