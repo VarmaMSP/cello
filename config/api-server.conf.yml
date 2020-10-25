@@ -1,27 +1,27 @@
 env: dev
 
 mysql:
-  address: localhost:3306
+  address: mysql:3306
   database: phenopod
   user: root
   password: birds
 
-rabbitmq:
-  address: localhost:5672
-  user: guest
-  password: guest
-
 elasticsearch:
-  address: localhost:9200
+  address: elasticsearch:9200
   user: elastic
-  password: changeme
+  password: birds
+
+rabbitmq:
+  address: rabbitmq:5672
+  user: guest
+  password: birds
 
 redis:
-  address: localhost:6379
+  address: redis:6379
   max_idle_conn: 10
 
 minio:
-  address: localhost:9000
+  address: minio:9000
   access_key: H8N6Q04KFKQDA5B9UW5U
   secret_key: HgKy1+eDdykb2tfTkulHk9+Fy+Fj9fClF0AN3jOz
   region: us-east-1
