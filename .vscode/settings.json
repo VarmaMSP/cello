@@ -1,12 +1,13 @@
 {
-  // Common to all
   "editor.fontSize": 13,
   "editor.insertSpaces": false,
   "editor.formatOnSave": false,
   "editor.minimap.enabled": false,
   "editor.detectIndentation": false,
-  "files.insertFinalNewline": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "workbench.colorTheme": "Blink (rainglow)",
+  "workbench.editor.enablePreview": false,
+  "files.insertFinalNewline": true,
 
   "go.useLanguageServer": true,
   "go.lintTool": "revive",
@@ -17,18 +18,29 @@
     "--config=${workspaceRoot}/revive.toml",
     "--formatter=stylish"
   ],
-  
+
   "[go]": {
     "editor.insertSpaces": false,
     "editor.formatOnSave": true
   },
+
   "[yaml]": {
-	"editor.tabSize": 2,
+    "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.formatOnSave": true
   },
   "[toml]": {
-	"editor.tabSize": 2,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true
+  },
+  "[json]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true
+  },
+  "[jsonc]": {
+    "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.formatOnSave": true
   }
