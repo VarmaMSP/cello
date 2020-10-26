@@ -1,9 +1,22 @@
 docker-compose-up:
+	$(MAKE) verify-network
 	DOCKER_BUILDKIT=1 && docker-compose up --remove-orphans --build
 
+open-redis-cli:
+	$(MAKE) verify-network
+	docker run -it --rm --network phenopod_network redis:6.0 redis-cli -h redis
+
+open-mysql-cli:
+	$(MAKE) verify-network
+	docker run -it --rm --network phenopod_network mysql:8.0 mysql -hmysql -uroot -pbirds
+
+verify-network:
+	docker network create -d bridge phenopod-network || true
+
 #
-# NOT USED ANYMORE
+# DEPRECATED: Not being used anymore with the latest docker setup
 #
+
 # purge-data: 
 # 	curl -X DELETE 'http://localhost:9200/_all'
 # 	rabbitmqadmin purge queue name=create_thumbnail

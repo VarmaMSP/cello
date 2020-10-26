@@ -92,4 +92,5 @@ services:
 
 networks:
   phenopod:
-    driver: bridge
+    name: phenopod-network
+    external: true
