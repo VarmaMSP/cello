@@ -1,17 +1,19 @@
+NETWORK_NAME := phenopod-network
+
 docker-compose-up:
-	$(MAKE) verify-network
+	@$(MAKE) verify-network
 	DOCKER_BUILDKIT=1 && docker-compose up --remove-orphans --build
 
 open-redis-cli:
-	$(MAKE) verify-network
-	docker run -it --rm --network phenopod_network redis:6.0 redis-cli -h redis
+	@$(MAKE) verify-network
+	docker run -it --rm --network $(NETWORK_NAME) redis:6.0 redis-cli -h redis
 
 open-mysql-cli:
-	$(MAKE) verify-network
-	docker run -it --rm --network phenopod_network mysql:8.0 mysql -hmysql -uroot -pbirds
+	@$(MAKE) verify-network
+	docker run -it --rm --network $(NETWORK_NAME) mysql:8.0 mysql -h mysql -u root -pbirds
 
 verify-network:
-	docker network create -d bridge phenopod-network || true
+	@docker network create -d bridge $(NETWORK_NAME) || true
 
 #
 # DEPRECATED: Not being used anymore with the latest docker setup
