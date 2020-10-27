@@ -4,7 +4,7 @@ tmp_dir = "tmp"
 
 [build]
 bin = "tmp/main"
-cmd = "go build -o ./tmp/main ./cmd/cello/main.go"
+cmd = "go build -o ./tmp/main ./cmd/api-server/main.go"
 # Customize binary.
 full_bin = "APP_ENV=dev APP_USER=air ./tmp/main"
 # Watch these filename extensions.

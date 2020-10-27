@@ -18,10 +18,10 @@ require (
 	github.com/grokify/html-strip-tags-go v0.0.0-20190424092004-025bd760b278
 	github.com/huandu/facebook/v2 v2.5.2
 	github.com/jmoiron/sqlx v1.2.0
-	github.com/julienschmidt/httprouter v1.2.0
+	github.com/julienschmidt/httprouter v1.3.0
 	github.com/leporo/sqlf v1.1.1
 	github.com/magiconair/properties v1.8.1 // indirect
-	github.com/minio/minio-go/v6 v6.0.43
+	github.com/minio/minio-go/v6 v6.0.57
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/olivere/elastic/v7 v7.0.5
 	github.com/pelletier/go-toml v1.4.0 // indirect
