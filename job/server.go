@@ -4,7 +4,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/filestorage"
-	"github.com/varmamsp/cello/service/messagequeue"
+	"github.com/varmamsp/cello/service/message_queue"
 	"github.com/varmamsp/cello/service/searchengine"
 	"github.com/varmamsp/cello/store"
 )
@@ -24,7 +24,7 @@ type Server struct {
 	taskRunner      Job
 }
 
-func NewJobServer(store store.Store, se searchengine.Broker, mq messagequeue.Broker, fs filestorage.Broker, log zerolog.Logger, config *model.Config) (*Server, error) {
+func NewJobServer(store store.Store, se searchengine.Broker, mq message_queue.Broker, fs filestorage.Broker, log zerolog.Logger, config *model.Config) (*Server, error) {
 	svr := &Server{
 		log:    log,
 		config: config,

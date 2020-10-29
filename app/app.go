@@ -9,7 +9,7 @@ import (
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/cache"
 	"github.com/varmamsp/cello/service/filestorage"
-	"github.com/varmamsp/cello/service/messagequeue"
+	"github.com/varmamsp/cello/service/message_queue"
 	"github.com/varmamsp/cello/service/searchengine"
 	"github.com/varmamsp/cello/store"
 )
@@ -21,18 +21,18 @@ type App struct {
 
 	Store        store.Store
 	SearchEngine searchengine.Broker
-	MessageQueue messagequeue.Broker
+	MessageQueue message_queue.Broker
 	FileStorage  filestorage.Broker
 	Cache        cache.Broker
 
 	SessionManager *scs.SessionManager
 
-	SyncPlaybackP messagequeue.Producer
+	SyncPlaybackP message_queue.Producer
 
 	Log zerolog.Logger
 }
 
-func NewApp(store store.Store, se searchengine.Broker, mq messagequeue.Broker, fs filestorage.Broker, cache cache.Broker, log zerolog.Logger, config *model.Config) (*App, error) {
+func NewApp(store store.Store, se searchengine.Broker, mq message_queue.Broker, fs filestorage.Broker, cache cache.Broker, log zerolog.Logger, config *model.Config) (*App, error) {
 	app := &App{
 		Dev:          false,
 		HostName:     "https://phenopod.com",
@@ -51,8 +51,8 @@ func NewApp(store store.Store, se searchengine.Broker, mq messagequeue.Broker, f
 	}
 
 	if p, err := mq.NewProducer(
-		messagequeue.EXCHANGE_PHENOPOD_DIRECT,
-		messagequeue.ROUTING_KEY_SYNC_PLAYBACK,
+		message_queue.EXCHANGE_PHENOPOD_DIRECT,
+		message_queue.ROUTING_KEY_SYNC_PLAYBACK,
 		config.Queues.RefreshPodcast.DeliveryMode,
 	); err != nil {
 		return nil, err

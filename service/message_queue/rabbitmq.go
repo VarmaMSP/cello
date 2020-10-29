@@ -1,4 +1,4 @@
-package messagequeue
+package message_queue
 
 import (
 	"fmt"
@@ -32,6 +32,7 @@ func NewBroker(config *model.Config) (Broker, error) {
 	if err := splr.createExchange(EXCHANGE_PHENOPOD_DIRECT); err != nil {
 		return nil, err
 	}
+
 	if err := splr.createExchange(EXCHANGE_PHENOPOD_DLX); err != nil {
 		return nil, err
 	}
@@ -79,6 +80,15 @@ func NewBroker(config *model.Config) (Broker, error) {
 		QUEUE_SYNC_PLAYBACK,
 		EXCHANGE_PHENOPOD_DIRECT,
 		ROUTING_KEY_SYNC_PLAYBACK,
+		nil,
+	); err != nil {
+		return nil, err
+	}
+
+	if err := splr.createAndBindQueue(
+		QUEUE_SCHEDULED_TASK,
+		EXCHANGE_PHENOPOD_DIRECT,
+		ROUTING_KEY_SCHEDULED_TASK,
 		nil,
 	); err != nil {
 		return nil, err

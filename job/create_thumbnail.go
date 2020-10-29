@@ -14,7 +14,7 @@ import (
 	"github.com/streadway/amqp"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/filestorage"
-	"github.com/varmamsp/cello/service/messagequeue"
+	"github.com/varmamsp/cello/service/message_queue"
 	"github.com/varmamsp/cello/store"
 )
 
@@ -28,7 +28,7 @@ type CreateThumbnailJob struct {
 	log         zerolog.Logger
 	httpClient  *http.Client
 	rateLimiter chan struct{}
-	input       messagequeue.Consumer
+	input       message_queue.Consumer
 }
 
 type CreateThumbnailJobInput struct {
@@ -38,9 +38,9 @@ type CreateThumbnailJobInput struct {
 	ImageTitle string `json:"image_title"`
 }
 
-func NewCreateThumbnailJob(store store.Store, mq messagequeue.Broker, fs filestorage.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
+func NewCreateThumbnailJob(store store.Store, mq message_queue.Broker, fs filestorage.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
 	createThumbnailC, err := mq.NewConsumer(
-		messagequeue.QUEUE_CREATE_THUMBNAIL,
+		message_queue.QUEUE_CREATE_THUMBNAIL,
 		config.Queues.CreateThumbnail.ConsumerName,
 		config.Queues.CreateThumbnail.ConsumerAutoAck,
 		config.Queues.CreateThumbnail.ConsumerExclusive,

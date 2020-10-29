@@ -12,7 +12,7 @@ import (
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/cache"
 	"github.com/varmamsp/cello/service/filestorage"
-	"github.com/varmamsp/cello/service/messagequeue"
+	"github.com/varmamsp/cello/service/message_queue"
 	"github.com/varmamsp/cello/service/searchengine"
 	"github.com/varmamsp/cello/service/sqldb"
 	"github.com/varmamsp/cello/store"
@@ -43,8 +43,8 @@ func New(config *model.Config) (*Server, error) {
 		seBroker = se
 	}
 
-	var mqBroker messagequeue.Broker
-	if mq, err := messagequeue.NewBroker(config); err != nil {
+	var mqBroker message_queue.Broker
+	if mq, err := message_queue.NewBroker(config); err != nil {
 		return nil, err
 	} else {
 		mqBroker = mq

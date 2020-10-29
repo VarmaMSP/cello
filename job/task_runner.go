@@ -6,7 +6,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/varmamsp/cello/crawler"
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/service/messagequeue"
+	"github.com/varmamsp/cello/service/message_queue"
 	"github.com/varmamsp/cello/service/searchengine"
 	"github.com/varmamsp/cello/store"
 	"github.com/varmamsp/cello/util/datetime"
@@ -15,22 +15,22 @@ import (
 type TaskRunnerJob struct {
 	store store.Store
 	se    searchengine.Broker
-	mq    messagequeue.Broker
+	mq    message_queue.Broker
 	log   zerolog.Logger
 
 	itunesCrawler   *crawler.ItunesCrawler
-	refreshPodcastP messagequeue.Producer
+	refreshPodcastP message_queue.Producer
 }
 
-func NewTaskRunnerJob(store store.Store, se searchengine.Broker, mq messagequeue.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
+func NewTaskRunnerJob(store store.Store, se searchengine.Broker, mq message_queue.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
 	itunesCrawler, err := crawler.NewItunesCrawler(store, mq, log, config)
 	if err != nil {
 		return nil, err
 	}
 
 	refreshPodcastP, err := mq.NewProducer(
-		messagequeue.EXCHANGE_PHENOPOD_DIRECT,
-		messagequeue.ROUTING_KEY_REFRESH_PODCAST,
+		message_queue.EXCHANGE_PHENOPOD_DIRECT,
+		message_queue.ROUTING_KEY_REFRESH_PODCAST,
 		config.Queues.RefreshPodcast.DeliveryMode,
 	)
 	if err != nil {

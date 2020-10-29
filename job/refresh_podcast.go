@@ -10,7 +10,7 @@ import (
 
 	h "github.com/go-http-utils/headers"
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/service/messagequeue"
+	"github.com/varmamsp/cello/service/message_queue"
 	"github.com/varmamsp/cello/store"
 	"github.com/varmamsp/cello/util/datetime"
 	"github.com/varmamsp/cello/util/hashid"
@@ -22,13 +22,13 @@ type RefreshPodcastJob struct {
 	log              zerolog.Logger
 	httpClient       *http.Client
 	rateLimiter      chan struct{}
-	createThumbnailP messagequeue.Producer
-	input            messagequeue.Consumer
+	createThumbnailP message_queue.Producer
+	input            message_queue.Consumer
 }
 
-func NewRefreshPodcastJob(store store.Store, mq messagequeue.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
+func NewRefreshPodcastJob(store store.Store, mq message_queue.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
 	refreshPodcastC, err := mq.NewConsumer(
-		messagequeue.QUEUE_REFRESH_PODCAST,
+		message_queue.QUEUE_REFRESH_PODCAST,
 		config.Queues.RefreshPodcast.ConsumerName,
 		config.Queues.RefreshPodcast.ConsumerAutoAck,
 		config.Queues.RefreshPodcast.ConsumerExclusive,
@@ -39,8 +39,8 @@ func NewRefreshPodcastJob(store store.Store, mq messagequeue.Broker, log zerolog
 	}
 
 	createThumbnailP, err := mq.NewProducer(
-		messagequeue.EXCHANGE_PHENOPOD_DIRECT,
-		messagequeue.ROUTING_KEY_CREATE_THUMBNAIL,
+		message_queue.EXCHANGE_PHENOPOD_DIRECT,
+		message_queue.ROUTING_KEY_CREATE_THUMBNAIL,
 		config.Queues.CreateThumbnail.DeliveryMode,
 	)
 	if err != nil {

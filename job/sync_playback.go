@@ -8,20 +8,20 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/streadway/amqp"
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/service/messagequeue"
+	"github.com/varmamsp/cello/service/message_queue"
 	"github.com/varmamsp/cello/store"
 )
 
 type SyncPlaybackJob struct {
 	store          store.Store
 	log            zerolog.Logger
-	input          messagequeue.Consumer
+	input          message_queue.Consumer
 	inputBatchSize int
 }
 
-func NewSyncPlaybackJob(store store.Store, mq messagequeue.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
+func NewSyncPlaybackJob(store store.Store, mq message_queue.Broker, log zerolog.Logger, config *model.Config) (Job, error) {
 	syncPlaybackC, err := mq.NewConsumer(
-		messagequeue.QUEUE_SYNC_PLAYBACK,
+		message_queue.QUEUE_SYNC_PLAYBACK,
 		config.Queues.SyncPlayback.ConsumerName,
 		config.Queues.SyncPlayback.ConsumerAutoAck,
 		config.Queues.SyncPlayback.ConsumerExclusive,

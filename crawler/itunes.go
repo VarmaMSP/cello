@@ -9,7 +9,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/rs/zerolog"
 	"github.com/varmamsp/cello/model"
-	"github.com/varmamsp/cello/service/messagequeue"
+	"github.com/varmamsp/cello/service/message_queue"
 	"github.com/varmamsp/cello/store"
 )
 
@@ -30,7 +30,7 @@ type ItunesCrawler struct {
 	// logger
 	log zerolog.Logger
 	// message queue
-	importPodcastP messagequeue.Producer
+	importPodcastP message_queue.Producer
 	// url frontier
 	urlF *Frontier
 	// itunes Id frontier
@@ -43,10 +43,10 @@ type ItunesCrawler struct {
 	rateLimiter chan struct{}
 }
 
-func NewItunesCrawler(s store.Store, b messagequeue.Broker, log zerolog.Logger, config *model.Config) (*ItunesCrawler, error) {
+func NewItunesCrawler(s store.Store, b message_queue.Broker, log zerolog.Logger, config *model.Config) (*ItunesCrawler, error) {
 	importPodcastP, err := b.NewProducer(
-		messagequeue.EXCHANGE_PHENOPOD_DIRECT,
-		messagequeue.ROUTING_KEY_IMPORT_PODCAST,
+		message_queue.EXCHANGE_PHENOPOD_DIRECT,
+		message_queue.ROUTING_KEY_IMPORT_PODCAST,
 		config.Queues.ImportPodcast.DeliveryMode,
 	)
 	if err != nil {
