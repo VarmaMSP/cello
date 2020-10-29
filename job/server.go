@@ -21,7 +21,6 @@ type Server struct {
 	refreshPodcast  Job
 	createThumbnail Job
 	syncPlayback    Job
-	taskRunner      Job
 }
 
 func NewJobServer(store store.Store, se searchengine.Broker, mq message_queue.Broker, fs filestorage.Broker, log zerolog.Logger, config *model.Config) (*Server, error) {
@@ -62,13 +61,13 @@ func NewJobServer(store store.Store, se searchengine.Broker, mq message_queue.Br
 		}
 	}
 
-	if svr.config.Jobs.TaskScheduler.Enable {
-		if job, err := NewTaskRunnerJob(store, se, mq, svr.log, svr.config); err != nil {
-			return nil, err
-		} else {
-			svr.taskRunner = job
-		}
-	}
+	// if svr.config.Jobs.TaskScheduler.Enable {
+	// 	if job, err := (store, se, mq, svr.log, svr.config); err != nil {
+	// 		return nil, err
+	// 	} else {
+	// 		svr.taskRunner = job
+	// 	}
+	// }
 
 	return svr, nil
 }
@@ -88,9 +87,5 @@ func (svr *Server) Start() {
 
 	if svr.syncPlayback != nil {
 		svr.syncPlayback.Start()
-	}
-
-	if svr.taskRunner != nil {
-		svr.taskRunner.Start()
 	}
 }

@@ -7,7 +7,6 @@ type Store interface {
 	Podcast() PodcastStore
 	Episode() EpisodeStore
 	Category() CategoryStore
-	Task() TaskStore
 	User() UserStore
 	Playback() PlaybackStore
 	Subscription() SubscriptionStore
@@ -56,11 +55,6 @@ type CategoryStore interface {
 	GetByIds(categoryIds []int64) ([]*model.Category, *model.AppError)
 	SavePodcastCategory(category *model.PodcastCategory) *model.AppError
 	GetPodcastCategories(podcastId int64) ([]*model.PodcastCategory, *model.AppError)
-}
-
-type TaskStore interface {
-	GetAll() ([]*model.Task, *model.AppError)
-	Update(old, new *model.Task) *model.AppError
 }
 
 type UserStore interface {

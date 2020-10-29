@@ -11,6 +11,7 @@ import (
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/message_queue"
 	"github.com/varmamsp/cello/store"
+	"github.com/varmamsp/cello/util/web_crawler"
 )
 
 const (
@@ -32,9 +33,9 @@ type ItunesCrawler struct {
 	// message queue
 	importPodcastP message_queue.Producer
 	// url frontier
-	urlF *Frontier
+	urlF *web_crawler.Frontier
 	// itunes Id frontier
-	itunesIdF *Frontier
+	itunesIdF *web_crawler.Frontier
 	// chan to hold pages till processed
 	pageQ chan io.ReadCloser
 	// http client

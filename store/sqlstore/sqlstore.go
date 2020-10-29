@@ -10,7 +10,6 @@ type sqlStore struct {
 	podcast      store.PodcastStore
 	episode      store.EpisodeStore
 	category     store.CategoryStore
-	task         store.TaskStore
 	user         store.UserStore
 	playback     store.PlaybackStore
 	subscription store.SubscriptionStore
@@ -23,7 +22,6 @@ func NewSqlStore(broker sqldb.Broker) (store.Store, error) {
 	s.podcast = &sqlPodcastStore{Broker: broker}
 	s.episode = newSqlEpisodeStore(broker)
 	s.category = newSqlCategoryStore(broker)
-	s.task = &sqlTaskStore{Broker: broker}
 	s.user = &sqlUserStore{Broker: broker}
 	s.subscription = &sqlSubscriptionStore{Broker: broker}
 	s.playback = &sqlPlaybackStore{Broker: broker}
@@ -46,10 +44,6 @@ func (s *sqlStore) Episode() store.EpisodeStore {
 
 func (s *sqlStore) Category() store.CategoryStore {
 	return s.category
-}
-
-func (s *sqlStore) Task() store.TaskStore {
-	return s.task
 }
 
 func (s *sqlStore) User() store.UserStore {
