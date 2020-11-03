@@ -4,6 +4,7 @@ import (
 	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
+	"github.com/varmamsp/cello/store"
 )
 
 type sqlEpisodeStore struct {
@@ -11,7 +12,7 @@ type sqlEpisodeStore struct {
 	episodeQuery *sqlf.Stmt
 }
 
-func newSqlEpisodeStore(broker sqldb.Broker) *sqlEpisodeStore {
+func newSqlEpisodeStore(broker sqldb.Broker) store.EpisodeStore {
 	return &sqlEpisodeStore{
 		Broker: broker,
 	}
@@ -139,9 +140,9 @@ func (s *sqlEpisodeStore) Block(episodeIds []int64) *model.AppError {
 
 // NOT IMPLEMENTED WITH MYSQL
 func (s *sqlEpisodeStore) Search(query, sortBy string, offset, limit int) ([]*model.Episode, *model.AppError) {
-	panic("episode.search method not implemented by search layer")
+	panic("episode.search method not implemented by sql layer")
 }
 
 func (s *sqlEpisodeStore) SearchByPodcast(podcastId int64, query string, offset, limit int) ([]*model.Episode, *model.AppError) {
-	panic("episode.search method not implemented by search layer")
+	panic("episode.search_podcast method not implemented by sql layer")
 }

@@ -7,11 +7,18 @@ import (
 	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
+	"github.com/varmamsp/cello/store"
 	"github.com/varmamsp/cello/util/datetime"
 )
 
 type sqlSubscriptionStore struct {
 	sqldb.Broker
+}
+
+func newSqlSubscriptionStore(broker sqldb.Broker) store.SubscriptionStore {
+	return &sqlSubscriptionStore{
+		Broker: broker,
+	}
 }
 
 func (s *sqlSubscriptionStore) Save(subscription *model.Subscription) *model.AppError {

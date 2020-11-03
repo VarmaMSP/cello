@@ -4,11 +4,18 @@ import (
 	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
+	"github.com/varmamsp/cello/store"
 	"github.com/varmamsp/cello/util/datetime"
 )
 
 type sqlFeedStore struct {
 	sqldb.Broker
+}
+
+func newSqlFeedStore(broker sqldb.Broker) store.FeedStore {
+	return &sqlFeedStore{
+		Broker: broker,
+	}
 }
 
 func (s *sqlFeedStore) Save(feed *model.Feed) *model.AppError {

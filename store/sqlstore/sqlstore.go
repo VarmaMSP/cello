@@ -18,14 +18,14 @@ type sqlStore struct {
 
 func NewSqlStore(broker sqldb.Broker) (store.Store, error) {
 	s := &sqlStore{}
-	s.feed = &sqlFeedStore{Broker: broker}
-	s.podcast = &sqlPodcastStore{Broker: broker}
+	s.feed = newSqlFeedStore(broker)
+	s.podcast = newSqlPodcastStore(broker)
 	s.episode = newSqlEpisodeStore(broker)
 	s.category = newSqlCategoryStore(broker)
-	s.user = &sqlUserStore{Broker: broker}
-	s.subscription = &sqlSubscriptionStore{Broker: broker}
-	s.playback = &sqlPlaybackStore{Broker: broker}
-	s.playlist = &sqlPlaylistStore{Store: s, Broker: broker}
+	s.user = newSqlUserStore(broker)
+	s.subscription = newSqlSubscriptionStore(broker)
+	s.playback = newSqlPlaybackStore(broker)
+	s.playlist = newSqlPlaylistStore(broker)
 
 	return s, nil
 }
@@ -60,4 +60,8 @@ func (s *sqlStore) Subscription() store.SubscriptionStore {
 
 func (s *sqlStore) Playlist() store.PlaylistStore {
 	return s.playlist
+}
+
+func (s *sqlStore) File() store.FileStore {
+	panic("method not implemented by sql layer")
 }

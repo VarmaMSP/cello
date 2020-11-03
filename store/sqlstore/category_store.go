@@ -4,13 +4,14 @@ import (
 	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
+	"github.com/varmamsp/cello/store"
 )
 
 type sqlCategoryStore struct {
 	sqldb.Broker
 }
 
-func newSqlCategoryStore(broker sqldb.Broker) *sqlCategoryStore {
+func newSqlCategoryStore(broker sqldb.Broker) store.CategoryStore {
 	return &sqlCategoryStore{
 		Broker: broker,
 	}

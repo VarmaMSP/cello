@@ -16,6 +16,12 @@ type sqlPlaylistStore struct {
 	sqldb.Broker
 }
 
+func newSqlPlaylistStore(broker sqldb.Broker) store.PlaylistStore {
+	return &sqlPlaylistStore{
+		Broker: broker,
+	}
+}
+
 func (s *sqlPlaylistStore) Save(playlist *model.Playlist) *model.AppError {
 	playlist.PreSave()
 

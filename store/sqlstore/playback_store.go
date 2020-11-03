@@ -6,11 +6,18 @@ import (
 	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
+	"github.com/varmamsp/cello/store"
 	"github.com/varmamsp/cello/util/datetime"
 )
 
 type sqlPlaybackStore struct {
 	sqldb.Broker
+}
+
+func newSqlPlaybackStore(broker sqldb.Broker) store.PlaybackStore {
+	return &sqlPlaybackStore{
+		Broker: broker,
+	}
 }
 
 func (s *sqlPlaybackStore) Save(playback *model.Playback) *model.AppError {

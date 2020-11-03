@@ -4,10 +4,17 @@ import (
 	"github.com/leporo/sqlf"
 	"github.com/varmamsp/cello/model"
 	"github.com/varmamsp/cello/service/sqldb"
+	"github.com/varmamsp/cello/store"
 )
 
 type sqlPodcastStore struct {
 	sqldb.Broker
+}
+
+func newSqlPodcastStore(broker sqldb.Broker) store.PodcastStore {
+	return &sqlPodcastStore{
+		Broker: broker,
+	}
 }
 
 func (s *sqlPodcastStore) Save(podcast *model.Podcast) *model.AppError {
